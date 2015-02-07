@@ -1,8 +1,0 @@
-{% load tabs %}
-				<div class="left_col">
-                	<h3>Options</h3>
-                	<ul class="side_menus">
-                        <li><a href="/staff/payment/" class="side_menu{% ifactivetab "leftnav" "trans" %} on{% endifactivetab %}"><strong>Transaction History</strong></a></li> 
-						<!--li><a href="/staff/payment/manageprice/" class="side_menu{% ifactivetab "leftnav" "price" %} on{% endifactivetab %}"><strong>Manage Price</strong></a></li-->
-                    </ul>
-                </div> 

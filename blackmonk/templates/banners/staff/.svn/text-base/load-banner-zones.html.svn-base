@@ -1,8 +1,0 @@
-{% load i18n %}
-<!--option value="0">Select a Zone</option-->
-<option value=""></option>
-{% if bannner_section_obj.module_zones.all %}
-{% for zone in bannner_section_obj.module_zones.all %}
-   <option value="{{zone.id}}" {% if selected_zone.id == zone.id %} selected="selected" {% endif %}>{{zone.name}}</option>
-{% endfor %}
-{% endif %}

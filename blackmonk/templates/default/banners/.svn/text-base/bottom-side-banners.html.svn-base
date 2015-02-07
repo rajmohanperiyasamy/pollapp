@@ -1,3 +1,0 @@
-{% for banner in banners %}
-    {% autoescape off %}{{banner.script}}{% endautoescape %}
-{% endfor %} 

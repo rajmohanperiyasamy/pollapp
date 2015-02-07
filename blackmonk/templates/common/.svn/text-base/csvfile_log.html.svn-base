@@ -1,4 +1,0 @@
-Upload Log of the file (<a href="{{ MEDIA_URL }}{{ object.file }}">{{object}}</a>)
-<hr>
-<pre>{{object.log}}</pre>
-<hr>

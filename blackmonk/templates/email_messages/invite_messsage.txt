@@ -1,7 +1,0 @@
-{% load get_settings %}
-I found this new city portal called {% get_settings 'domain' %}. You might be interested in it, too.
-It is a place where people get info about {% get_settings 'city' %}. Check it out!!
-
-<p>Please check out {{ accept_url }} to join</p>
-
-<p>Go to <a href="{% get_settings 'website_url' %}">{% get_settings 'domain' %}</a>.</p>

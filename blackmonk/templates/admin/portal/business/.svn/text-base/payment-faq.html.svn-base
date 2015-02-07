@@ -1,9 +1,0 @@
-{% load i18n %}
-<div id="aside" class="side-bar col_4">
-	<div class="section">
-        <h5>{% trans 'FAQs' %}</h5>
-        <h6>{% trans 'Payment Options' %}</h6>
-        <p>{% trans 'Payment options are the mode of payment which your customers can choose to pay at your business.' %}</p>
-		 <p>{% trans 'Example: VISA, MasterCard,etc.' %}</p>
-	</div>                                    
-</div>     

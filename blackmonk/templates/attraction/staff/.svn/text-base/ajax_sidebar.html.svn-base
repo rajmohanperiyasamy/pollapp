@@ -1,4 +1,0 @@
-{% load i18n %}	
-<li class="published-state"><strong id="id_pub">{{ published }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Published' %}</a></li>
-<li class="blocked-state"><strong id="id_blk">{{ blocked }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Blocked' %}</a></li>
-<li class="sum"><strong id="id_tot">{{ total }}</strong> {% trans 'total attraction posted.' %}</li>    

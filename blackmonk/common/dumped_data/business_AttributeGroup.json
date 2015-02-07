@@ -1,1 +1,0 @@
-[{"pk": 6, "model": "business.attributegroup", "fields": {"display_position": "C", "order_by": 2, "name": "Feature"}}, {"pk": 3, "model": "business.attributegroup", "fields": {"display_position": "C", "order_by": 1, "name": "Services"}}, {"pk": 11, "model": "business.attributegroup", "fields": {"display_position": "C", "order_by": 1, "name": "Amenities"}}]

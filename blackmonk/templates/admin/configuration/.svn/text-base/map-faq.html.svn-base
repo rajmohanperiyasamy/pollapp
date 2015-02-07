@@ -1,9 +1,0 @@
-{% load i18n %}
-<div id="aside" class="side-bar col_4 D_faq ads_faq">
-    <div class="section">
-        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.cuggf6fk0njj" target="_blank"><span class="icon">?</span>Quick help</a>
-        <hr>
-        <h5>{% trans 'Highlights' %}</h5>
-        <p>{% trans 'Get latitude and longitude values from <a href="http://www.getlatlon.com" target="_blank">{getlatlon}</a>.Fill the values in the text box provided.' %}</p>
-    </div>
-</div>

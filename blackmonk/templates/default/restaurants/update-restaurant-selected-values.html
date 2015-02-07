@@ -1,6 +1,0 @@
-{% if sorted_list %}
-{% for sl in sorted_list %}
-<a href="javascript:void(0);" onclick="remove_selected_values($(this),'{{sl.type}}','{{sl.id}}')" class="lBl bS-bRdR dFt fS11 mRb5 mRr5 bM-dEv-aNchR">{{sl.name}}<span class="fS14 mRl5">&times;</span></a>
-{% endfor %}
-<a href="javascript:void(0);" onclick="clear_all_selected_values();" class="bLk fS11 cLr-lTgRy">Clear all</a>
-{% endif %}

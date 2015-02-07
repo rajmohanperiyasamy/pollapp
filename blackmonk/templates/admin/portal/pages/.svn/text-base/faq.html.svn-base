@@ -1,9 +1,0 @@
-{% load i18n %}
-<div id="aside" class="side-bar col_4">
-	<div class="section">
-        <h5>{% trans 'Highlights' %}</h5>
-        <h6>{% trans 'Adding a Page' %}</h6>
-        <p>{% trans 'Choose an appropriate title for example: About Us, Fill the content in the editor and update the SEO.' %}</p>
-        <hr>
-	</div>                                    
-</div>     

@@ -1,9 +1,0 @@
-{% load i18n %}
-<div id="aside" class="side-bar col_4">
-	<div class="section">
-        <h5>{% trans 'FAQs' %}</h5>
-        <h6>{% trans 'Add a new Topic ?' %}</h6>
-        <p>{% trans 'Enter the Forum Name, select a category and enter the description.' %}</p>
-		<p>{% trans 'You can change the order of displaying the forum name, And select the moderators who are responsible to manage the forum.' %}</p>
-	</div>                                    
-</div>     

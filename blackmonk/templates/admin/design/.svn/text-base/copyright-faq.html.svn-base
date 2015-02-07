@@ -1,9 +1,0 @@
-{% load i18n %}
-<div id="aside" class="side-bar col_4">
-    <div class="section">
-        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.6qofxso2hb54" target="_blank"><span class="icon">?</span>Quick help</a>
-        <hr>
-        <h5>{% trans 'Copyright' %}</h5>
-        <p>{% trans 'Update the Copyright information whenever there is a change required.' %}</p>
-    </div>
-</div>

@@ -1,1 +1,0 @@
-[{"pk": 1, "model": "article.articleprice", "fields": {"ownstory_price": 2.0, "pressrelease_is_paid": true, "ownstory_is_paid": false, "advertorial_price": 15.0, "advertorial_is_paid": true, "requestreview_is_paid": true, "pressrelease_price": 10.0, "requestreview_price": 22.0}}]

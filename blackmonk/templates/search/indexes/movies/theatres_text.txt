@@ -1,7 +1,0 @@
-{{ object.name }}
-{{ object.address.address1 }}
-{{ object.address.address2 }}
-{{ object.address.city }}
-{{ object.address.state }}
-{{ object.address.country }}
-{% autoescape off %}{{ object.address.description }}{% endautoescape %}    

@@ -1,8 +1,0 @@
-{% load i18n %}
-<div id="aside" class="side-bar col_4">
-    <div class="section">
-        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.c1x004ivzz9b" target="_blank"><span class="icon">?</span>Quick help</a>
-        <hr>
-		<p>Specify the settings which pertain to the comments. You can either choose inhouse commenting or a third party (<a href='http://www.disqus.com/' target="_blank" >DISQUS</a>) commenting system.</p>
-    </div>
-</div>

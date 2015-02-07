@@ -1,1 +1,0 @@
-[{"pk": 1, "model": "meetup.meetuptopics", "fields": {"topic": "Get Together", "slug": "get-together"}}, {"pk": 4, "model": "meetup.meetuptopics", "fields": {"topic": "Meeting", "slug": "meeting"}}]

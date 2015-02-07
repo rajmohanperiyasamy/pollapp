@@ -1,8 +1,0 @@
-path	business/staffviews.py
-path	business/userviews.py
-path	business/utils.py
-path	templates/business/staff/add_business.html
-path	templates/business/staff/ajax_listing.html
-path	templates/business/user/ajax_object_listing.html
-path	templates/business/user/claim_business.html
-path	templates/events/staff/addEvent.html
