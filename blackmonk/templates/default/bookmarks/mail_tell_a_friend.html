@@ -1,0 +1,25 @@
+{% load i18n %}
+<b>{% trans 'Hey!' %} {{ to_name }},</b>
+<br />
+<p>{% trans 'Your friend' %} <b>{{ from_name }}</b> {% trans 'has sent you the bookmark details' %}
+<b>"{{ bookmark.title }}"</b> {% trans 'from' %} <a href='{{ globalsettings.website_url }}' target="_blank">{{ globalsettings.website_url }}</a>
+ {% blocktrans %}city portal. You might be interested in it too. It’s a website with useful information about movies,events,videos,stories and much more.{% endblocktrans %}
+ <b>Check it out!</b>
+<br /><br />
+
+"<a href='{{ globalsettings.website_url }}/bookmarks/{{ bookmark.slug }}.html' target="_blank">{{ globalsettings.website_url }}/bookmarks/{{ bookmark.slug }}.html</a>"
+
+<br /><br />
+<i>"{{ msg }}"</i>
+
+<br><br>{% trans 'Have Fun,' %}<br>{{ globalsettings.domain }} {% trans 'Team' %}<b><br>
+
+<br>
+<div><hr size="1" color="#cccccc" noshade="noshade"></div>
+<a href="{{globalsettings.website_url}}/" target="_blank">{% trans 'Home' %}</a>&nbsp;|&nbsp;
+<a href="{{globalsettings.website_url}}/privacy-policy.html" target="_blank">{% trans 'Privacy Policy' %}</a>&nbsp;|&nbsp;
+<a href="{{globalsettings.website_url}}/terms-of-use.html" target="_blank">{% trans 'Terms of Use' %}</a>&nbsp;|&nbsp;
+<a href="{{globalsettings.website_url}}/contact/" target="_blank">{% trans 'Contact Us' %}</a>
+
+
+<br>{% trans 'Copyright' %} © 2011-2012 {{ globalsettings.domain }}. {% trans 'All rights reserved' %}.

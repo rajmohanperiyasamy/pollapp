@@ -1,0 +1,247 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Videos' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Videos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block head %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/videos/user_video.js"></script>
+	<script src="{{ STATIC_URL }}themes/js/fxslider.js"></script>
+	<script src="{{ STATIC_URL }}themes/js/bootstrap-collapse.js"></script>
+{% endblock %}
+
+{% block navigation %}
+    {% activetab "leftnav" "videos" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+                    <div class="span10 sP9mX979 sP12mX767">
+                        <div class="row-fluid">
+                            <div class="main span9">
+                                <section class="sCn pD0">
+                                    <div class="cLrFx pD20">
+                                        <div class="pLlT">
+                                            <h3 class="mR0 tRnCt">Add Videos</h3>
+                                        </div>
+                                    </div>
+                                    <hr class="mRb20 mRt0">
+                                    <div id="share-videos">
+                                        <div class="pD20 pDt0">                                                                                     
+                                            <div class="row-fluid">
+                                                <ul class="nav nav-tabs tB-cStM pD015">
+                                                    <li id="service_youtube" class="servicebutton active">
+                                                        <a href="javascript:void(0);"><i class="bUi-iCn-vDeO-aLt-24 fS16 mRr5 ib cLr-yTb"></i> <span class="hMp">Youtube Videos</span></a>
+                                                    </li>
+                                                    <li id="service_vimeo" class="servicebutton">
+                                                        <a href="javascript:void(0);"><i aria-hidden="true" class="bUi-iCn-pLy-aLt-24 fS16 mRr5 ib cLr-vMo"></i> <span class="hMp">Vimeo Videos</span></a>                                          
+                                                    </li>
+                                                    <li id="service_links" class="servicebutton">
+                                                        <a href="javascript:void(0);"><i aria-hidden="true" class="bUi-iCn-lInK-16 fS16 ib mRr5 cLr-iNd"></i> <span class="hMp">Enter a URL</span></a>                                          
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <hr class="mRb20 mRt0 oTsT-hRz20">
+    <!-- ----------YouTube-Video-Upload------------------------------------------------------------------------------------------ -->
+    										<div id="service_youtube_searchbox" class="servicesearchbox">
+    	                                        <div class="tLbR mRb10 cLrFx">                     
+    	                                            <div class="pLlT mRr10">
+    	                                                <div class="form-search mRb0" action="#">
+    	                                                    <div class="input-append iNsD">
+    	                                                        <input class="search-query fS13 pD510 h34" id="id_search_from_yt" name="search_from_yt" type="text" placeholder="Search Youtube Videos" autofocus>
+    	                                                        <button type="submit" onclick="searching();" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14 ib"></i></button>
+    	                                                    </div>
+    	                                                </div>
+    	                                            </div>
+    	                                            <div class="pLrT mRt10SmP pLlTSmP">
+    	                                                <span class="pLlT fS11 pDt7 cLr-gRy">View:  </span>
+    	                                                <select class="bUiSlCtbtn-link tXt-sMl pLrT sort_by" onchange="searching();">
+    	                                                    <option value="relevance">Relevance</option>
+    	                                                    <option value="updated">Upload date</option>
+    	                                                    <option value="viewCount">View count </option>
+    	                                                </select>
+    	                                            </div>  
+    	                                        </div>
+    											<!--Select Videos starts here-->
+    		                                	<div class="row-fluid mRt20">
+    		                                     	<div class="hT400 pDmR-10 mRb30 rLvE video-library search-results">
+                                                        <div class="tBl-bLk pDt0" id="service_youtube_novideo">
+                                                            <div class="tBl-cEl">
+                                                                <span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-vDeO-aLt-24 fS42-1 cLr-lTgRy ib"></i></span>
+                                                                <p class="bLk mRt20 fS14 cLr-lTgRy oP75">Type your keyword in the box above to find videos.</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tBl-bLk pDt0" id="service_youtube_loading" style="display: none;">
+                                                            <div class="tBl-cEl">
+                                                                <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+                                                            </div>
+                                                        </div>
+    		                                        	<ul class="tWcL-lT modulesBrowseData tWcL mDa-lT mDa-oT-lT pDfX mDa-sLcT mDaH72 dSrS480 video_list hide" id="service_youtube_video"></ul>
+    			                                    </div>
+													<div class="tXt-cTr hide extra_loading">
+                                                        <img align="..." src="/static/ui/images/global/loading.gif">
+                                                    </div>
+    											</div> 
+    											<!--Select Videos ends here-->
+    										</div>
+    <!-- ----------VIMEO-Video-Upload-------------------------------------------------------------------------------------------- -->
+    										<div id="service_vimeo_searchbox" class="servicesearchbox" style="display: none;">
+    	                                        <div class="tLbR mRb10 cLrFx">                     
+    	                                            <div class="pLlT mRr10">
+    	                                                <div class="form-search mRb0" action="#">
+    	                                                    <div class="input-append iNsD">
+    	                                                        <input class="search-query fS13 pD510 h34" id="id_search_from_yt_viemo" name="search_from_yt_vimeo" type="text" placeholder="Search Vimeo Videos">
+    	                                                        <button type="submit" onclick="searching_vimeo();" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14 ib"></i></button>
+    	                                                    </div>
+    	                                                </div>
+    	                                            </div>
+    	                                            <div class="pLrT mRt10SmP pLlTSmP">
+    	                                                <span class="pLlT fS11 pDt7 cLr-gRy">View:  </span>
+    	                                                <select class="bUiSlCtbtn-link tXt-sMl pLrT sort_by" onchange="searching_vimeo();">
+    	                                                    <option value="relevance">Relevance</option>
+                                                            <option value="newest">Upload date</option>
+                                                            <option value="most_played">View count </option>
+    	                                                </select>
+    	                                            </div>  
+    	                                        </div>
+    											<!--Select Videos starts here-->
+    		                                	<div class="row-fluid mRt20">
+    		                                     	<div class="hT400 pDmR-10 mRb30 rLvE video-library search-results">
+                                                        <div class="tBl-bLk pDt0" id="service_vimeo_novideo">
+                                                            <div class="tBl-cEl">
+                                                                <span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-vDeO-aLt-24 fS42-1 cLr-lTgRy ib"></i></span>
+                                                                <p class="bLk mRt20 fS14 cLr-lTgRy oP75">Type your keyword in the box above to find videos.</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tBl-bLk pDt0" id="service_vimeo_loading" style="display: none;">
+                                                            <div class="tBl-cEl">
+                                                                <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+                                                            </div>
+                                                        </div>
+    		                                        	<ul class="tWcL-lT modulesBrowseData tWcL mDa-lT mDa-oT-lT pDfX mDa-sLcT mDaH72 dSrS480 video_list hide" id="service_vimeo_video"></ul>
+    			                                    </div>
+													<div class="tXt-cTr hide extra_loading">
+                                                        <img align="..." src="/static/ui/images/global/loading.gif">
+                                                    </div>
+    											</div> 
+    											<!--Select Videos ends here-->
+    										</div>
+    <!-- ----------URL-Video-Upload---------------------------------------------------------------------------------------------- -->
+    										<div id="service_links_searchbox" class="servicesearchbox" style="display: none;">
+                                                <div class="row-fluid mRt20">
+                                                    <div class="hT400 pDmR-10 mRb30 rLvE">
+                                                        <div class="tBl-bLk pDt0">
+                                                            <div class="tBl-cEl">
+                                                                <div class="form-search">
+                                                                    <input type="text" class="iSp8 search-query fS14" placeholder="Paste YouTube or Vimeo URL" id="share_by_video_url">
+                                                                    <button type="button" onclick="share_by_url()" class="btn btn-danger fW-bLd mRl5 lH1"><i aria-hidden="true" class="bUi-iCn-pLs-16"></i></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+    										</div>
+    <!-- ----------Selected-Videos-starts-here----------------------------------------------------------------------------------- -->
+    										<div class="mRb30 cLrFx pD15 wLl hide" id="selected_videos">
+    	                                     	<div class="cLrFx">
+    												<div class="pLlT">
+    													<h4 class="mR0 tRnCt">Selected videos<span class="lBl dRk lRg lRg-bRdR fS12 ib fW-bLd mRl10" id="d_selected_videos_count">0</span></h4>
+    												</div>
+    		                                        <a href="javascript:void(0);" data-toggle-icon="bUi-iCn-aNg-b-12" data-target="#sLtDvD" data-toggle="collapse" class="pLrT"><i aria-hidden="true" class="bUi-iCn-aNg-rT-12 fS18 cLr-gRy"></i></a>
+    											</div>
+    											<div class="mXhT136 pDmR-015 vScRl collapse" id="sLtDvD">
+    			                                    <ul id="id_video_slider" class="oVrfLw-vSbL modulesBrowseData fOcL tWcLmP mDa-gD mDa-oT-tP pDfX mRt20">
+    	                                                
+    												</ul>
+    											</div> 
+    										</div>
+    <!-- ----------Selected-Videos-ends-here------------------------------------------------------------------------------------- -->
+                                            <hr class="oTsT-hRz20 mRb0 mRt0">
+                                            <div class="row-fluid">
+                                                <div class="form-actions pD0 pLrT">
+                                                    <a href="{% url 'user_video_home_listingboard' %}" class="btn btn-light fS12 fW-bLd">Cancel</a>
+                                                    <button class="btn btn-primary fS12 fW-bLd mRl5 dSbLd" type="submit" id="user-selected-submit" onclick="savevideo_now();" disabled="disabled">Next step</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div> <!-- /.main -->
+                            <aside class="sD-bR span3">
+                                <div>
+                                    <section class="tXt-cTr pD0 bNr-aD"> 
+                                       
+                                    </section>
+                                </div>
+                            </aside>
+                        </div>  <!-- /.row-fluid -->
+                    </div>  <!-- /.span10 -->
+                </div>  <!-- /.row-fluid -->    
+{% endblock %}
+
+{% block footerarea %}
+<script type="text/javascript">
+		$(document).ready(function() {
+			$(".servicebutton").bind("click",function(){
+				$('.servicesearchbox').hide();
+				$('.servicebutton').removeClass('active');
+				$(this).addClass('active');
+				$("#"+$(this).attr('id')+"_searchbox").show();
+                $("#"+$(this).attr('id')+"_searchbox").find('.search-query').focus();
+			});
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+	video_ids=[];
+    $('#share_by_video_url').bind('keypress', function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if(code == 13) {share_by_url()}
+    });
+	$('#id_search_from_yt_viemo').bind('keypress', function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+ 		if(code == 13) {searching_vimeo('relevance','{% url 'user_video_ajax_vimeo_search' %}');}
+	});	
+	$('#id_search_from_yt').bind('keypress', function(e) {
+	
+	var code = (e.keyCode ? e.keyCode : e.which);
+ 	if(code == 13) {
+   		searching('relevance');
+	}
+	});	
+	//////////////////////////  Here is the Issue Default that relevance button is not showing black 
+	$('#search_sort_options a').click(function(){
+	 if(!$(this).hasClass('disabled')){
+	 	$('#search_sort_options a').removeClass('disabled');
+		$('#search_sort_options a').css('color','#4083A9');
+		$(this).addClass('disabled');
+		$(this).css('color','black');
+	}
+	});
+});
+$("#service_youtube_searchbox .search-results").scroll(function() {
+    var pad = 20;
+    var buffer = 75 + pad;
+    var myPos = $("#service_youtube_searchbox .search-results").prop('scrollHeight') - $("#service_youtube_searchbox .search-results").scrollTop();
+    var switchPos = $("#service_youtube_searchbox .search-results").height();
+    switchPos = switchPos + pad;
+	if (myPos == switchPos)   {
+		load_more();
+	}
+});
+$("#service_vimeo_searchbox .search-results").scroll(function() {
+    var pad = 20;
+    var buffer = 75 + pad;
+    var myPos = $("#service_vimeo_searchbox .search-results").prop('scrollHeight') - $("#service_vimeo_searchbox .search-results").scrollTop();
+    var switchPos = $("#service_vimeo_searchbox .search-results").height();
+    switchPos = switchPos + pad;
+	if (myPos == switchPos)   {
+		load_more_vimeo();
+	}
+});
+</script>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% load i18n %}
+<section class="sCn">
+    <div class="sCn-tTl mRb5">
+        <h3><span>{% trans 'Get Deals just for you' %}</span></h3>
+    </div>
+    <p class="fS12 cLr-gRy">{% trans 'Sign up now for local deals that you really want.' %}</p>
+    <form class="mRt20 mRb0">
+        <div class="control-group" id="subcribe_frm_div">
+            <input type="text" value="" id="id_sub_email" custom-value="{% if request.user.email %}{{request.user.email}}{% endif %}" placeholder="{% trans 'Your Email Address' %}" class="mRb5 fS13 input-block-level">
+            <span class="help-block bm-error-txt-spn fS12 hide">{% trans 'Invalid email address' %}</span>
+        </div>
+        <div class="control-group mRb0" id="id_response_div">
+        	<button type="button" id="id_subscribe_btn" onclick="save_subscribe();" class="btn btn-primary fS12 fW-bLd">{% trans 'Subscribe' %}</button>
+        </div>
+    </form>
+</section>
+
+                       
+<script type="text/javascript">
+$(document).ready(function(){
+	{% if request.user.email %}						
+		$('#id_sub_email').focus(function(){
+			$('#id_sub_email').val($('#id_sub_email').attr('custom-value'));
+		});
+	{% endif %}	
+	$('#id_sub_email').focusout(function(){
+	   var flg = validateForm($('#id_sub_email').val());	   									
+       if(flg){$('#subcribe_frm_div').removeClass('error');$('.bm-error-txt-spn').addClass('hide');}
+       else{$('#subcribe_frm_div').addClass('error');$('.bm-error-txt-spn').removeClass('hide');}
+	});
+});
+
+function validateForm(x)
+{
+	var atpos=x.indexOf("@");
+	var dotpos=x.lastIndexOf(".");
+	if(atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length){return false;}
+	else{return true;}
+}
+
+function save_subscribe(){
+	var val=$('#id_sub_email').val();
+	var flag=validateForm(val);
+	if(flag){
+		$('#subcribe_frm_div').removeClass('error');	
+		$('.bm-error-txt-spn').addClass('hide');
+		$('#id_subscribe_btn').addClass('dSbLd');	
+		$.ajax({
+			type: "POST",
+			url: "{% url 'deal_ajax_subscribe' %}",
+			data: "email=" + val,
+			dataType:'json',
+			success: function(data){
+				var rhtml = '<span class="ib lH1 mRl10"  id="id_rsp_msg"><i class="bUi-iCn-oK-aLt-16 cLr-gRn ib" aria-hidden="true"></i> <span class="ib">'+data.msg+'</span></span>';				
+				$('#id_subscribe_btn').addClass('hide');			
+				$('#id_response_div').append(rhtml);
+				setTimeout(function(){$('#id_rsp_msg').remove(),$('#id_subscribe_btn').removeClass('hide dSbLd');},4000);	
+							
+			}
+		});
+	}else{
+		$('#subcribe_frm_div').addClass('error');
+		$('.bm-error-txt-spn').removeClass('hide');
+	}
+}
+</script>

@@ -1,0 +1,101 @@
+{% load i18n %}
+<div class="row-fluid">
+	<form class="form-horizontal uSr-aCnT mRt20">
+    	<table class="table mRb20 table-bordered table-condensed">
+            <tbody>
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Name/Title</strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{{payment.object_name}}{% if not payment.content_object %} ({% trans 'Deleted'%}){% endif %}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Listing Type</strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{{payment.listing_type|capfirst}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Module</strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{% if payment.content_type == 'order' %}Shop{% else %}{{payment.content_type.name|capfirst}}{% endif %}</span>
+                    </td>
+                </tr>
+				{% if payment.start_date and payment.end_date %}
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Duration</strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{{ payment.start_date|timesince:payment.end_date }}</span>
+						<span>{{payment.start_date|date:"M d Y"}} - {{payment.end_date|date:"M d Y"}}</span>
+                    </td>
+                </tr>
+				{% endif %}
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Payment Mode </strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{{payment.payment_mode}}</span>
+                    </td>
+                </tr>
+				{% if payment.get_pay_obj %}
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Subscription ID </strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{{payment.get_pay_obj}}</span>
+                    </td>
+                </tr>
+				{% endif %}
+				{% if payment.invoice_no %}
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Invoice No</strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{{payment.invoice_no}}</span>
+                    </td>
+                </tr>
+				{% endif %}
+                <tr>
+                    <th class="span4 dSsP tXt-rT">
+                        <strong>Transaction ID</strong>
+                    </th>
+                    <td class="span8 dSsP">
+                        <span>{% if payment.transactionid %}{{payment.transactionid}}{% else %}---{% endif %}</span>
+                    </td>
+                </tr>
+				{% if not payment.content_object %}
+					{% if stripe_object %}
+					<tr>
+	                    <th class="span4 dSsP tXt-rT">
+	                        <strong>Subscription status</strong>
+	                    </th>
+	                    <td class="span8 dSsP">
+	                        <span>{% if stripe_object %}{{stripe_object.subscription_status}}{% endif %}</span>
+							<input type='hidden' value='{{stripe_object.id}}' name='stripe_id' id='stripe_id'>
+							{% if stripe_object.subscription_status == 'active' %}
+								{% if stripe_object.get_unsubscribe_request %}
+									<span style="font-weight: bold; float: right; margin-right: 10px; color: rgb(224, 66, 61);">Unsubscribe Request On Hold</span>
+								{% else %}  
+									 <a href="{% url 'stripe_unsubscribe' stripe_object.id %}" data-target="#stripeunsubscribe" style="font-weight: bold; float: right; margin-right: 10px; color: rgb(224, 66, 61);">unsubscribe</a>
+								{% endif %}
+							{% endif %}
+						</td>
+	                </tr>
+					{% endif %}
+				{% endif %}
+            </tbody>
+        </table>
+        
+    </form>
+</div>

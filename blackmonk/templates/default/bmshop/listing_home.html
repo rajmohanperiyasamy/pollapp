@@ -1,0 +1,1017 @@
+{% extends base %}
+{% load modulotag %}
+{% load comparison %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Shop' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Shop' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+	<script src="{{STATIC_URL}}js/jquery-ui-1.10.3.custom-slider.min.js"></script>
+	<script src="{{STATIC_URL}}js/fleximage.js"></script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+<div id="content-container">
+        <div class="container-fluid">
+        	<!-- Module Search -->
+        	<div class="iNvRt sRcHbR hasCategory zIx9999oV bS-bRdR">
+                <div class="row-fluid">
+                    <div class="span9 sP10mN768">
+                        <div class="dropdown pD2015 pDr0 sTtC pLlT hP"> 
+                            <a id="shopByCat" data-toggle="dropdown" href="#" class="mDl-nM bLk dropdown-toggle mRt4 "> 
+                                <i aria-hidden="true" class="bUi-iCn-sToR-24"></i>
+                                <span class="ib">Shop By Category <i aria-hidden="true" class="bUi-iCn-aNg-b-12 mRl10 bDrD"></i> </span>
+                            </a>
+                            <ul class="nav nav-list fS12 dropdown-menu iNvRt" id="shopByPCatCont">
+                                <ul class="nav nav-list aWsM-cAt-lSt iNvRt w100mN768 dRmN678" id="shopByPCat">
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Mobile Phones</a>
+                                        <ul class="dropdown-menu fOcL">
+                                            <li class="mRb25">
+                                                <h4 class="mRt0 mRb12 pDl20">Clothing</h4>
+                                                <ul class="unstyled pDl20">
+                                                    <li class="mRb5"><a href="#">Camera Accessories (255)</a></li>
+                                                    <li class="mRb5"><a href="#">Cameras - Digicams (124)</a></li>
+                                                    <li class="mRb5"><a href="#">Computer Peripherals (35)</a></li>
+                                                    <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                    <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                    <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                    <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                    <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                    <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                    <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                    <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                    <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                    <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                    <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                </ul>
+                                            </li>
+                                            
+                                            <li class="mRb25">
+                                                <h4 class="mRt0 mRb12 pDl20">Footwear</h4>
+                                                <ul class="unstyled pDl20">
+                                                    <li class="mRb5"><a href="#">Camera Accessories</a></li>
+                                                    <li class="mRb5"><a href="#">Cameras - Digicams</a></li>
+                                                    <li class="mRb5"><a href="#">Computer Peripherals</a></li>
+                                                    <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                    <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                    <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                    <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                    <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                    <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                    <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                    <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                    <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                    <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                    <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                    <li class="mRb5"><a href="#">Camera Accessories</a></li>
+                                                    <li class="mRb5"><a href="#">Cameras - Digicams</a></li>
+                                                    <li class="mRb5"><a href="#">Computer Peripherals</a></li>
+                                                    <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                    <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                    <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                    <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                    <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                    <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                    <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                    <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                    <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                    <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                    <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="mRb25">
+                                                <h4 class="mRt0 mRb12 pDl20">Watches</h4>
+                                                <ul class="unstyled pDl20">
+                                                    <li class="mRb5"><a href="#">Camera Accessories</a></li>
+                                                    <li class="mRb5"><a href="#">Cameras - Digicams</a></li>
+                                                    <li class="mRb5"><a href="#">Computer Peripherals</a></li>
+                                                    <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                    <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                    <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                    <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                    <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                    <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                    <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                    <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                    <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                    <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                    <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Electronics &amp; Technology</a>
+                                        
+
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Mobile - Cell Phones</a></li>
+                                            <li><a href="#">Mobile Accessories</a></li>
+                                        </ul>
+
+
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Home &amp; Lifestyle</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Air Conditioners &amp; Coolers</a></li>
+                                            <li><a href="#">Antiques - Handicrafts </a></li>
+                                            <li><a href="#">Baby - Infant Products</a></li>
+                                            <li><a href="#">Bags - Luggage</a></li>
+                                            <li><a href="#">Barter - Exchange</a></li>
+                                            <li><a href="#">Books - Magazines</a></li>
+                                            <li><a href="#">Clothing - Garments</a></li>
+                                            <li><a href="#">Coins - Stamps</a></li>
+                                            <li><a href="#">Collectibles</a></li>
+                                            <li><a href="#">Discounted - Sale Items</a></li>
+                                            <li><a href="#">Fashion Accessories</a></li>
+                                            <li><a href="#">Gifts - Stationary</a></li>
+                                            <li><a href="#">Health - Beauty Products</a></li>
+                                            <li><a href="#">Home - Kitchen Appliances</a></li>
+                                            <li><a href="#">Home - Office Furniture</a></li>
+                                            <li><a href="#">Home Decor - Furnishings</a></li>
+                                            <li><a href="#">Household</a></li>
+                                            <li><a href="#">Jewellery</a></li>
+                                            <li><a href="#">Music - Movies</a></li>
+                                            <li><a href="#">Musical Instruments</a></li>
+                                            <li><a href="#">Paintings</a></li>
+                                            <li><a href="#">Sport - Fitness Equipment</a></li>
+                                            <li><a href="#">Toys - Games</a></li>
+                                            <li><a href="#">Watches</a></li>
+                                            <li><a href="#">Wholesale - Bulk</a></li>
+                                            <li><a href="#">Everything Else</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Real Estate</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Apartments - For Sale</a></li>
+                                            <li><a href="#">Apartments - Rent - Lease</a></li>
+                                            <li><a href="#">Flatmates</a></li>
+                                            <li><a href="#">Land - Plot For Sale</a></li>
+                                            <li><a href="#">Office-Commercial For Rent - Lease</a></li>
+                                            <li><a href="#">Office-Commercial For Sale</a></li>
+                                            <li><a href="#">Paying Guest - Hostel</a></li>
+                                            <li><a href="#">Service Apartments</a></li>
+                                            <li><a href="#">Vacation Rentals - Timeshare</a></li>
+                                            <li><a href="#">Villas/Bungalows for Rent</a></li>
+                                            <li><a href="#">Villas/Bungalows for Sale</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Cars &amp; Bikes</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Bicycles</a></li>
+                                            <li><a href="#">Buses - Tempos - Trucks - Vans</a></li>
+                                            <li><a href="#">Cars</a></li>
+                                            <li><a href="#">Construction Vehicles</a></li>
+                                            <li><a href="#">Driving Schools</a></li>
+                                            <li><a href="#">Motor Service - Repair</a></li>
+                                            <li><a href="#">Motorcycles</a></li>
+                                            <li><a href="#">Scooters</a></li>
+                                            <li><a href="#">Spare Parts - Accessories</a></li>
+                                            <li><a href="#">SUVs &amp; Vans</a></li>
+                                            <li><a href="#">Other Vehicles</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Jobs</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Accounting - Tax - Audit</a></li>
+                                            <li><a href="#">Advertising - Media - PR</a></li>
+                                            <li><a href="#">Airline - Travel</a></li>
+                                            <li><a href="#">Architects - Interior Designers</a></li>
+                                            <li><a href="#">Banking - Finance - Insurance</a></li>
+                                            <li><a href="#">BPO - Call Center - KPO</a></li>
+                                            <li><a href="#">Catering - Hospitality</a></li>
+                                            <li><a href="#">Content Writers - Translators</a></li>
+                                            <li><a href="#">Customer Service</a></li>
+                                            <li><a href="#">Education - Teaching</a></li>
+                                            <li><a href="#">Engineering</a></li>
+                                            <li><a href="#">Fashion Designing - Merchandising</a></li>
+                                            <li><a href="#">Freelancers</a></li>
+                                            <li><a href="#">Healthcare - Medicine</a></li>
+                                            <li><a href="#">HR</a></li>
+                                            <li><a href="#">Internet - Web Designers</a></li>
+                                            <li><a href="#">IT Hardware</a></li>
+                                            <li><a href="#">IT Software</a></li>
+                                            <li><a href="#">Marketing</a></li>
+                                            <li><a href="#">Non Profit - NGO</a></li>
+                                            <li><a href="#">Part Time - Temps</a></li>
+                                            <li><a href="#">Real Estate - Construction</a></li>
+                                            <li><a href="#">Resumes</a></li>
+                                            <li><a href="#">Retail</a></li>
+                                            <li><a href="#">Sales</a></li>
+                                            <li><a href="#">Secretarial - Office Staff</a></li>
+                                            <li><a href="#">Summer Trainees - Freshers</a></li>
+                                            <li><a href="#">Telecom</a></li>
+                                            <li><a href="#">Work From Home</a></li>
+                                            <li><a href="#">Other Jobs</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Services</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Advertising - Design</a></li>
+                                            <li><a href="#">Airline - Train - Bus Tickets</a></li>
+                                            <li><a href="#">Astrology - Numerology</a></li>
+                                            <li><a href="#">Baby Sitters - Nanny</a></li>
+                                            <li><a href="#">Business Offers</a></li>
+                                            <li><a href="#">Car Rentals - Taxi Services</a></li>
+                                            <li><a href="#">Carpenters - Upholstery</a></li>
+                                            <li><a href="#">Catering -Tiffin Services</a></li>
+                                            <li><a href="#">Computer - Web Services</a></li>
+                                            <li><a href="#">Cooks</a></li>
+                                            <li><a href="#">Courier Services</a></li>
+                                            <li><a href="#">Doctors</a></li>
+                                            <li><a href="#">Drivers</a></li>
+                                            <li><a href="#">DTH &amp; Set Top Boxes</a></li>
+                                            <li><a href="#">Electronics - Appliances Repair</a></li>
+                                            <li><a href="#">Event -Party Planners - DJ</a></li>
+                                            <li><a href="#">Health - Fitness</a></li>
+                                            <li><a href="#">Hotels - Resorts</a></li>
+                                            <li><a href="#">Household Repairs - Renovation</a></li>
+                                            <li><a href="#">Interior Designers - Architects</a></li>
+                                            <li><a href="#">Investment - Financial Planning</a></li>
+                                            <li><a href="#">Lawyers - Advocates</a></li>
+                                            <li><a href="#">Loans - Insurance</a></li>
+                                            <li><a href="#">Maids &amp; Housekeeping</a></li>
+                                            <li><a href="#">Movers &amp; Packers</a></li>
+                                            <li><a href="#">Parlours and Salons</a></li>
+                                            <li><a href="#">Placement - Recruitment Agencies</a></li>
+                                            <li><a href="#">Plumbers - Electricians</a></li>
+                                            <li><a href="#">Restaurants - Coffee Shops</a></li>
+                                            <li><a href="#">Retail</a></li>
+                                            <li><a href="#">Taxation - Audit</a></li>
+                                            <li><a href="#">Travel Agents</a></li>
+                                            <li><a href="#">Vaastu</a></li>
+                                            <li><a href="#">Vacation - Tour Packages</a></li>
+                                            <li><a href="#">Everything Else</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Entertainment</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Acting - Modeling Roles</a></li>
+                                            <li><a href="#">Acting Schools</a></li>
+                                            <li><a href="#">Actor - Model Portfolios</a></li>
+                                            <li><a href="#">Art Directors - Editors</a></li>
+                                            <li><a href="#">Fashion Designers - Stylists</a></li>
+                                            <li><a href="#">Make Up - Hair</a></li>
+                                            <li><a href="#">Modeling Agencies</a></li>
+                                            <li><a href="#">Musicians</a></li>
+                                            <li><a href="#">Photographers - Cameraman</a></li>
+                                            <li><a href="#">Script Writers</a></li>
+                                            <li><a href="#">Set Designers</a></li>
+                                            <li><a href="#">Sound Engineers</a></li>
+                                            <li><a href="#">Studios - Locations for hire</a></li>
+                                            <li><a href="#">Other Entertainment</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Education &amp; Learning</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Career Counseling</a></li>
+                                            <li><a href="#">Coaching &amp; Tuitions</a></li>
+                                            <li><a href="#">Dance - Music Classes</a></li>
+                                            <li><a href="#">Distance Learning Courses</a></li>
+                                            <li><a href="#">Hobby Classes</a></li>
+                                            <li><a href="#">Play Schools - Creche</a></li>
+                                            <li><a href="#">Professional &amp; Short Term Courses</a></li>
+                                            <li><a href="#">Text books &amp; Study Material</a></li>
+                                            <li><a href="#">Workshops</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Pets &amp; Pet Care</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Pet Adoption</a></li>
+                                            <li><a href="#">Pet Care - Accessories</a></li>
+                                            <li><a href="#">Pet Clinics</a></li>
+                                            <li><a href="#">Pet Foods</a></li>
+                                            <li><a href="#">Pet Training &amp; Grooming</a></li>
+                                            <li><a href="#">Pets</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Community</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Announcements</a></li>
+                                            <li><a href="#">Car Pool - Bike Ride</a></li>
+                                            <li><a href="#">Charity - Donate - NGO</a></li>
+                                            <li><a href="#">Lost - Found</a></li>
+                                            <li><a href="#">Tender Notices</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Events</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Dance - Music Concerts</a></li>
+                                            <li><a href="#">Exhibitions - Trade Fairs</a></li>
+                                            <li><a href="#">Festivals</a></li>
+                                            <li><a href="#">Theatre - Plays - Movies</a></li>
+                                            <li><a href="#">Workshops - Seminars</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="hS-dRpDwN dD-rT"> <a href="#">Matrimonial</a>
+                                        <ul class="dropdown-menu tWcL">
+                                            <li><a href="#">Brides</a></li>
+                                            <li><a href="#">Grooms</a></li>
+                                            <li><a href="#">Wedding Planners</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </ul>
+                        </div>
+                        <form class="form-search mRb0 pD2015">
+                            <div class="span7 sP6mN768 pDl30  pD0p">
+                                <input type="text" placeholder="Search for a product, category or brand">
+                            </div>
+                            <div class="ib sUb-bTn mRl12 sTtC aBpT15">
+                                <button class="btn btn-success" type="submit"> <i class="bUi-iCn-sRh-16" aria-hidden="true"></i> </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="pLrT pD2015 devider">
+                        <div class="pDr30 pDl30 pDl0mN768 pDr0mN768 pD0p">
+                            <h3 class="mDl-nM mRt6 mRb4"> <i aria-hidden="true" class="bUi-iCn-cRtV-24"></i> <a class="ib cLr-wHt" data-toggle="modal" role="button" data-target="#myModal1" href="e-commerce-cart.html">Cart
+                                <label class="lBl sMl lH1 mR0 cIr wHt cLr-dRk">0</label>
+                                </a> </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay"></div>
+			<!-- Module Search -->
+			<ul class="bRdCrB">
+                <li>
+                    <a href="#">e-commerce</a>
+                    <span class="sPrTr"></span>
+                </li>
+                <li>
+                    <a href="#">Footwear</a>
+                    <span class="sPrTr"></span>
+                </li>
+                <li>
+                    <a href="#">Men's Footwear</a>
+                    <span class="sPrTr"></span>
+                </li>
+                <li>
+                    <a href="#"> Shoes </a>
+                    <span class="sPrTr"></span>
+                </li>
+                <li class="aCtV">
+                     Casual Shoes 
+                </li>
+            </ul>
+			<div class="row-fluid">
+				<div class="main">
+					<div class="row-fluid">
+						<div class="span3 sP12mX767">
+							<section class="sCn pD200">
+                        		<ul class="nav nav-list fS12">
+                                    <li class="nav-header"><a href="#" class="pD0 mR0" style="color: rgb(173, 177, 183);">Category</a></li>
+                                    <ul class="nav nav-list cMpCt pD0 mXh250A">
+                                        <li><a href="#"><i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 fW-bLd " style="color:#3B3F44 !important"></i> Apartments - For Sale </a>
+                                            <ul class="nav nav-list cMpCt">
+                                                <li><a href="#" class="cLr-dRk"><i class="bUi-iCn-aNg-b-aLt-12 fW-bLd" aria-hidden="true" style="color:#3B3F44 !important"></i> Category</a>
+                                                    <ul class="nav nav-list cMpCt">
+                                                        <li>
+                                                            <a class="cLr-dRk" href="#category-filter" data-toggle="collapse">
+                                                                <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 fW-bLd" style="color:#3B3F44 !important"></i> <span>Sub Category</span></a>
+                                                            <ul id="category-filter" class="unstyled mRl25 collapse in">
+                                                                <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <li class="nav-header mRt10">
+                                        <span class="pD0 mR0">
+                                            <span class="pLlT" style="color: rgb(173, 177, 183);">Bedrooms 
+                                                <span class="close ib mRl5 oP50 lH05">×</span>
+                                            </span>
+                                            <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter1" data-toggle="collapse">
+                                                <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                    <ul id="filter1" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 collapse in mXh250A">
+                                        <li class="mRb5">
+                                            <input type="text"  placeholder="Search By Brand" class="search-query fS12 mR0 h32">
+                                        </li>
+                                        <li><a href="#">Studio
+                                            <span class="lSt-cNt ">(1238)</span>
+                                            </a></li>
+                                        <li><a href="#">1 BR
+                                            <span class="lSt-cNt">(878)</span>
+                                            </a></li>
+                                        <li><a href="#">2 BR
+                                            <span class="lSt-cNt ">(670)</span>
+                                            </a></li>
+                                        <li><a href="#">3 BR
+                                            <span class="lSt-cNt">(113)</span>
+                                            </a></li>
+                                        <li><a href="#">4 BR
+                                            <span class="lSt-cNt">(78)</span>
+                                            </a></li>
+                                    </ul>
+                                    <li class="nav-header mRt10">
+                                        <span class="pD0 mR0">
+                                            <span class="pLlT" style="color: rgb(173, 177, 183);">Bedrooms 
+                                                <span class="close ib mRl5 oP50 lH05">×</span>
+                                            </span>
+                                            <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter2" data-toggle="collapse">
+                                                <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                    <ul id="filter2" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 mXh250A collapse in">
+                                        <li><label><input type="checkbox" class="mRt-4"> Security</label></li>
+                                        <li><label><input type="checkbox" class="mRt-4"> Additional Rooms</label></li>
+                                        <li><label><input type="checkbox" class="mRt-4"> Pool</label></li>
+                                        <li><label><input type="checkbox" class="mRt-4"> Air Condition</label></li>
+                                    </ul>
+                                </ul>
+
+                    		</section>
+						</div>
+						<div class="span9 sP12mX767">
+							<section class="sCn">
+								<div class="sCn-tTl sCn-tTl-bR mRb10 cLrFx">
+                                    <div class="cLrFx">
+                                        <h2 class="pLlT">
+                                            <span>Casual Shoes</span>
+                                        </h2>
+                                        <form class="form-search mRb0 pLrT" action="#">
+                                            <div class="input-append iNsD">
+                                                <input type="text" style="" placeholder="Search within Casual Shoes" id="" class="search-query fS12 pD510 w240">
+                                                <button role="button" class="btn btn-link pD510 pDt9 cLr-gRy" type="submit"><i class="bUi-iCn-sRh-16 fS14 mRt4 ib" aria-hidden="true"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="cLrFx">
+                                        <ul class="unstyled cLr-dRk fS13 mRb0">
+                                            <li class="ib">
+                                                <b>Brand :</b>
+                                                <span class="cLr-gRy fS13 mRl5"> Puma</span>
+                                                <a href="#" class="close ib mRl5 oP50">×</a>
+                                            </li>
+                                            <li class="ib sPrTr vEr">
+                                                <b>Type :</b>
+                                                <span class="cLr-gRy fS13 mRl5"> Loafers</span>
+                                                <a href="#" class="close ib mRl5 oP50">×</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="tLbR mRb40 hP">
+		                            <div class="tLbR-iR">
+                                        <span class="fS12 mRt8 ib cLr-gRy"> Showing 2572 products </span>
+		                            	<div class="pLrT">
+			                            	<select class="bUiSlCtbtn-link tXt-sMl">
+	                                            <option value="sort=popularity">Popularity</option>
+                                                <option value="sort=price_desc">Price -- High to Low</option>
+                                                <option value="sort=price_asc">Price -- Low to High</option>
+                                                <option value="sort=discount">Discount</option>
+                                                <option value="sort=recency_desc">Newest First</option>
+	                                        </select>
+		                            	</div>
+		                            </div>
+		                        </div>
+                                <ul class="modulesBrowseData tHcL mDa-gD pDfX nObG fGd dSgDwDt">
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW1 bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> 
+                                                                    <img class="mDa-oT responsive_iMg" data-size0="static/img/e-co/1-s.jpg" data-size1="static/img/e-co/1-n.jpg" src="ui-images/preload.gif" />
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> 
+                                                        <a href="#myModal" role="button" data-toggle="modal" class="btn w50P mRb10" style="">
+                                                            <i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                        </a> 
+                                                        <a href="#" class="btn btn-danger w50P">
+                                                            <i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                        </a> 
+                                                    </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Flippd Suede Leather Mid Ankle Sneakers</a></h5>
+                                                <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>                                            
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/h/9/9/brown-orange-cs141001-flippd-8-400x400-imadrhz6akhyyuyz.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Adidas Alphard Outdoors</a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img8.flixcart.com/image/shoe/r/8/m/black-green-111520-converse-12-400x400-imadzazv6abdy4hh.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Converse Canvas Sneakers             </a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img7a.flixcart.com/image/shoe/q/h/p/olive-lc1695-lee-cooper-44-400x400-imadr64eghbdfbvf.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Quechua Forclaz 500 Ankle Length Trekking Shoes</a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/g/p/n/brown-804140-hush-puppies-6-400x400-imadr8at8gaefxrd.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Lee Cooper Corporate Casuals</a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img8a.flixcart.com/image/shoe/m/f/d/khaki-new-taco-buckaroo-43-400x400-imadpm8cfqsbnb27.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Puma Terrae Mid Africa L Boots</a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img7a.flixcart.com/image/shoe/r/g/g/01-fossil-chocolate-brown-304288-puma-9-400x400-imadhpfpzzkyhkx8.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Nike Dewired Canvas Sneakers</a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/g/z/v/camel-gc-0712109w13-woodland-43-400x400-imadppwxtykpazsr.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Clarks Crafter Cool Corporate Casuals</a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/e/v/s/khaki-gc-0572108w13-woodland-43-400x400-imadppwzh4yhvqzn.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+                                                <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                    <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                        <span class="ib">Quick View</span>
+                                                        </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                        <span class="ib">Add To Wishlist</span>
+                                                        </a> </div>
+                                                    <span class="ib hAtO"></span>
+                                                </div>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Reebok Classics Royal Chukka Focus Lp Mid Ankle Sneakers             </a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+	                                <li class="mDa mRb40 w50mP">
+	                                    <div class="mDa-iN mRr15 mRl15">
+	                                        <div class="mDa-wPr"> 
+	                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img8a.flixcart.com/image/shoe/f/r/z/601n-brown-391r170-fila-9-400x400-imadqxcj5j4ghdac.jpeg" alt="">
+	                                                                <span class="vRtL-aLn"> </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </a>
+	                                        </div>
+	                                        <div class="mDa-bDy pD0 pDt5 h140">
+	                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Reebok On Court Iii Lp Canvas Shoes             </a></h5>
+	                                            <div class="mDa-dTa mRt8">
+                                                    <div class="sTr-rT ib mRb0 pDt0">
+                                                        <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                    </div>
+                                                    <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                    <hr class="mRt5 gRy">
+                                                    <div>
+                                                        <span class="ib">
+                                                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fS22 cLr-bLk">$485.99</span>
+                                                    </div>
+                                                </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+                                </ul>
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+<script src="{{STATIC_URL}}js/jquery-ui-1.10.3.custom-slider.min.js"></script>
+<script src="{{STATIC_URL}}js/fleximage.js"></script>
+<script src="{{STATIC_URL}}js/jquery.bUislider.js"></script>
+<script src="{{STATIC_URL}}js/jquery.raty.js"></script> 
+<script>	
+		$(function(){
+            $('.responsive_iMg').bmLoad({onLoadComplete: function() {$(this).closest('.fLxiMgW1').setrSpVWidth(0);}});
+			 $( "#price_sL" ).slider({
+				range: true,
+				min: 0,
+				max: 500,
+				values: [ 75, 300 ],
+				slide: function( event, ui ) {
+				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+				}
+				});
+				$( "#amount" ).val( "$" + $( "#price_sL" ).slider( "values", 0 ) +
+				" - $" + $( "#price_sL" ).slider( "values", 1 ) );
+			
+			$('.fTrD-cRsL').bUiSlider({
+				pager:false,
+				speed:600,
+				//auto:true,
+				slideWidth: 5000,
+				adaptiveHeight: true,
+			    minSlides:3,
+			    maxSlides: 3,
+			    slideMargin: 12,
+			});
+		})
+	</script>
+<script type="text/javascript">
+    var tMbpGrpRwpGr;
+    var tMbpGrpRw;
+    tMbpGrpRwpGr = $('#tMbpGr').bUiSlider({
+        slideWidth: 56,
+        minSlides: 1,
+        maxSlides: 8,
+        slideMargin: 6,
+        infiniteLoop: false,
+        hideControlOnEnd: true,
+
+    });
+    $('#tMbpGrpRw').bUiSlider({
+        pagerCustom: '#tMbpGr',
+        animatepager: true,
+        infiniteLoop: false,
+        pagerSl:tMbpGrpRwpGr,
+        hideControlOnEnd: true,
+    });
+
+
+    $('.sTr-rT-rD').raty({
+        readOnly: true, 
+        score: 3.6, 
+        //precision: true,
+        //target    : '#rw0001',
+        //targetKeep: true,
+        size      : 16
+    });
+    $(document).ready(function() {
+        var width = $('#shopByPCatCont').width()-230;
+        $('#shopByPCat').find('.dropdown-menu').css({'width':width+'px','min-width':width+'px'});
+        var $dropdown = $('#shopByCat');
+        var $dropdownCh = $dropdown.parent().find('.hS-dRpDwN');
+        var $dropdownChF = $dropdownCh.first();
+        var activeOver = false;
+        $dropdown.on('click',function() {
+            $('body').toggleClass('eNoverlay');
+            $dropdownChF.addClass('hover');
+        });
+        $(document).on('click', function() {
+            if( this.id != 'shopByCat') {
+                $('body').removeClass('eNoverlay');
+            }
+        });
+        $dropdownCh.mouseover(function() {
+            if($dropdownChF.hasClass('hover')){
+                $dropdownChF.removeClass('hover');
+            }
+        });
+        $('#shopByPCat').mouseout(function() {
+            $dropdownChF.addClass('hover');
+        });
+
+    });
+</script>
+{% endblock %}    		

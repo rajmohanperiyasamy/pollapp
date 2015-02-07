@@ -1,0 +1,13 @@
+{% load i18n %}
+<div id="aside" style="display:{% if wx_api_obj.option == 'WO' %}block;{% else %}none;{% endif %}" class="side-bar col_4 wfaq WO_faq">
+    <div class="section">
+        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.j2198kl5525x" target="_blank"><span class="icon">?</span>Quick help</a>
+        <hr>
+        <h5>{% trans 'WorldWeatherOnline.com' %}</h5>
+        <p>{% trans 'You have chosen WorldWeatherOnline.com as your weather API for your website.' %}</p>
+        <p>{% trans 'Please sign up with <a target="_blank" href='http://worldweatheronline.com'>worldweatheronline.com</a> choosing your appropriate region and fill the weather URL and weather unit(Fahrenheit or Celsius) in the text box provided.' %}</p>
+    </div>
+</div>
+
+
+

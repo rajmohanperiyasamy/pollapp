@@ -1,0 +1,107 @@
+{% load i18n %}
+{% load ds_utils %}
+ 
+<div id="profile-preview" class="preview-center group">
+    <div class="preview-items">
+        <div class="preview-group">   
+            <div class="preview-item title">
+                <div class="label"><h4>{% trans 'Name:' %}</h4></div>
+                <div class="value">
+                    <strong class="profile-name">{{profile.get_full_name|default:profile.display_name}}</strong>                                                            
+                </div>                                              
+            </div><!--preview-item--> 
+            <div class="preview-item email">
+                <div class="label"><h4>{% trans 'E-mail' %}:</h4></div>
+                <div class="value">
+                    <span class="profile-name">{{profile.useremail}}</span>                                                          
+                </div>
+            </div><!--preview-item-->
+            {% if profile.about %}
+            <div class="preview-item description">
+                <div class="label"><h4>{% trans 'Short Bio' %}:</h4></div>
+                <div class="value">
+                    <span class="profile-about">{{profile.about|linebreaks}}</span>                                                    
+                </div>
+            </div><!--preview-item-->
+            {% endif %}
+            <div class="preview-item contribution">
+                <div class="label"><h4>{% trans 'Contribution' %}:</h4></div>
+                <div class="value">
+                    <ul>
+                        <li class="group">
+                            <span class="contribution_item" style="float:left;">Articles <span class="count" id="id_articles">()</span></span>
+                        </li>
+                         <li class="group">
+                            <span class="contribution_item" style="float:left;">Business <span class="count" id="id_business">()</span></span>
+                        </li>
+                        <li class="group">
+                            <span class="contribution_item" style="float:left;">Events <span class="count" id="id_events">()</span></span>
+                        </li>
+                        <li class="group">
+                            <span class="contribution_item" style="float:left;">Photos <span class="count" id="id_photos">()</span></span>
+                        </li>
+                        <li class="group">
+                            <span class="contribution_item" style="float:left;">Videos <span class="count" id="id_videos">()</span></span>
+                        </li>
+                        <li class="group">
+                            <span class="contribution_item" style="float:left;">Community <span class="count" id="id_community">()</span></span>
+                        </li>
+                        <li class="group">
+                            <span class="contribution_item" style="float:left;">Classifieds <span class="count" id="id_classifieds">()</span></span>
+                        </li>
+                    </ul>                                                    
+                </div>
+            </div><!--preview-item--> 
+            {% if profile.get_social_profile %}
+            <div class="preview-item social_profile">
+                <div class="label"><h4>{% trans 'Social Profiles' %}:</h4></div>
+                <div class="value">
+                    <ul class="profile-links">
+                    {% for prof in profile.get_social_profile %}
+                        <li class="group">
+                            <a href="{{ prof.media_url }}">
+                                <img src="{% get_social_fav_icon prof.media_url %}" class="favicon">
+                                <span class="profile-url" style="float:left;">{% if prof.label %}{{ prof.label }}{% else %}{{ prof.media_url }}{% endif %}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>                                                    
+                </div>
+            </div><!--preview-item--> 
+            {% endif %}                                                      
+        </div>                                                                                 
+    </div>          
+</div>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>   
+<script type="text/javascript">
+$(document).ready(function(){
+    show_contribution();
+})
+
+function show_contribution(){
+    $.ajax({
+            dataType: "GET",
+            url: "{% url 'admin_ajax_get_user_contribution' %}?uid={{profile.user.id}}",
+            dataType:'JSON',
+            success: function(data){
+                $('#id_articles').html('('+String(data.article)+')');
+                $('#id_business').html('('+String(data.business)+')');
+                $('#id_events').html('('+String(data.events)+')');
+                $('#id_photos').html('('+String(data.photos)+')');
+                $('#id_videos').html('('+String(data.videos)+')');
+                $('#id_community').html('('+String(data.questions)+')');
+                $('#id_classifieds').html('('+String(data.classifieds)+')');
+            }
+        });
+
+}
+</script> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

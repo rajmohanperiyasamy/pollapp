@@ -1,0 +1,98 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'config' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Weather Settings' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+var validate=false;
+$(document).ready(function(){
+    $('input[name=option]').live('change',function(e){
+        type=$('input[name=option]:checked').val();
+        $('.tgle').not(':animated').slideUp();
+        $('#'+type).not(':animated').slideDown();
+        $('.wfaq').hide();
+        $('.'+type+'_faq').fadeIn(300);
+    })
+});
+
+function save_weather_setting(){
+
+var success=true;
+var type=$('input[name=option]:checked').val();
+
+if($.trim($('#id_weather_url_'+type).val())==''){
+    $('#id_weather_url_'+type).parent('div').parent('div').addClass('field-error');
+    $('#id_weather_url_'+type).addClass('error');
+    success=false;
+}
+else{
+    $('#id_weather_url_'+type).parent('div').parent('div').removeClass('field-error');
+    $('#id_weather_url_'+type).removeClass('error');
+}
+
+var wunit=$('input[name='+type+'_wunit]:checked').val();
+if(success){
+        var datastring='option='+type+'&weather_url='+encodeURIComponent($('#id_weather_url_'+type).val())+'&weather_unit='+wunit;
+        $('#weather_api_settings_div').hide();
+        $('#ajax_content_loading').show();
+        var url = $('#mform').attr('action');
+        $.ajax({
+        type: "POST",
+        url: url,
+        data: datastring,
+        dataType:'JSON',
+        success: function(data){
+                show_msg(gettext(data.msg),data.mtype);
+                $('#ajax_content_loading').hide();
+                $('#weather_api_settings_div').fadeIn(800).html(data.html);
+            }
+        });
+}
+else{return false;}
+}
+
+</script>
+
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+    <div id="admin-platform" class="group">
+        <div class="header-bar">
+            <div id="nav-roll">
+                <ul>
+                    <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                    <li><a href="{% url 'admin_api_weather_configuration' %}" style="z-index:8">{% trans 'Weather' %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="core-wraper" class="group">
+            <div class="admin-main col_12">
+                {% block leftnavigation %}
+                    {% activetab 'topnav' 'config' %}
+                    {% activetab 'leftnav' 'weather' %}
+                    {{ block.super }}
+                {% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Weather API Settings' %}</h2>
+                            <p class="ltxt80">{% trans "Select a weather API which you would like to integrate in the website." %}</p>
+                        </div>
+                        {% include 'admin/portal/api/weather-api-settings.html' %}
+                       </div>
+                 </div>
+               </div>
+            {% include 'admin/portal/api/wo-faq.html' %}
+            {% include 'admin/portal/api/wn-faq.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,270 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "videos" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Videos' %} {% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+                  	<div class="header-bar has-sub">
+					<h2>{% trans 'Videos' %}</h2>
+                        <section class="sub-header-bar">
+                            <div class="group">
+                                  <div class="filter-view-tabs">
+                                        <ul class="left">
+                                              <li><label>{% trans 'View:' %}</label></li>
+                                              <li class="view-tab tip tip1" id="filter_a">
+												    <a title="{% trans 'View All' %}" name="all" id="video_all" class="view-both tttxt-n active first" href="javascript:void(0)"><span>{% trans 'All' %}</span></a>
+                                                    <a title="{% trans 'Pending Only' %}" name="N" id="video_pending" class="view-pending tttxt-n" href="javascript:void(0)"><span>{% trans 'Pending' %}</span></a>
+                                                    <a title="{% trans 'Published only' %}" name="P" id="video_published" class="view-published tttxt-n" href="javascript:void(0)"><span>{% trans 'Published' %}</span></a>
+                                                    <a title="{% trans 'Blocked only' %}" name="B" id="video_blocked" class="view-blocked tttxt-n" href="javascript:void(0)"><span>{% trans 'Blocked' %}</span></a>
+													<a title="{% trans 'Rejected only' %}" name="R" id="video_rejected" class="view-rejected tttxt-n last" href="javascript:void(0)"><span>{% trans 'Rejected' %}</span></a>
+											  </li>	
+											  <li class="view-tab tip tip2" id="filter_b">
+                                                    <a title="{% trans 'View All' %}"  name="all" class="view-both tttxt-n active first" href="javascript:void(0)"><span>{% trans 'All' %}</span></a>
+                                                    <a title="{% trans 'Show Featured' %}" name="F" class="view-featured tttxt-n " href="javascript:void(0)"><span>{% trans 'Featured' %}</span></a>
+                                    				<a title="{% trans 'Show Basic' %}" name="B" class="view-free tttxt-n last" href="javascript:void(0)"><span>{% trans 'Basic' %}</span></a>
+											  </li>
+											  <li class="view-tab tip tip3" id="filter_c">
+                                                    <a title="{% trans 'View All' %}" class="view-both tttxt-n active first" name="all" href="javascript:void(0)"><span>{% trans 'All' %}</span></a>
+                                                    <a title="{% trans 'Show my Video' %}"  name="CSM" class="view-mine tttxt-n" href="javascript:void(0)"><span>{% trans 'Your' %}</span></a>
+                                                    <a title="{% trans 'Show videos posted by others' %}" name="CSO" class="view-others tttxt-n last" href="javascript:void(0)"><span>{% trans 'Others' %}</span></a>
+                                              </li>
+										</ul>
+										
+									   <div class="item-preview-wrapper" id="id_s_test" ></div><!-- Video Player --->
+
+										
+										 <form action="#" id="article-search-form" class="module-search tip tip4">
+                                            <button role="button" class="cform-button search-button" type="button" onclick="$('#id_search').val('true'),sort_search_top();"><span class="search-icon">{% trans 'Search' %}</span></button>
+                                            <div class="inline-block relative-block">
+                                            	<!--span onclick="clear_search();" class="reset txt-button tttxt" id="close_search" title="{% trans 'Clear Search' %}" style="{% if not search %}display:none;{% endif %}">Clear search</span-->
+                                                <input type="text" placeholder="{% trans 'Search videos' %}" onkeyup="$('.search_adv2').val(this.value);" name="search_keyword" id="id_search_keyword" class="search-list-items search_adv1">
+                                                <div class="call-advanced-search">
+                                                    <span class="arrow-down tttxt" title="{% trans 'Show search options' %}" onclick="activate_search();"></span>
+                                                </div> 
+                                                <div id="advanced-search-options" style="display: none;">
+                                                	<div class="search-head">
+                                                    	<!-- h5>Search</h5 -->
+                                                    	<span class="inline-block icon-close close-this"></span>
+                                                    </div>
+	                                               <div class="advanced-search-fields">
+                                                		<dl class="vertical">
+                                                			<dt><label>{% trans 'Search' %}</label></dt>
+                                                			<dd>
+                                                            	<input type="text" class="search_adv2" onkeyup="$('.search_adv1').val(this.value);"  placeholder="{% trans 'keywords' %}" name="id_search_keyword" id="id_search_keyword" style="width:161px;height:25px;">
+                                                			</dd>                                                        
+															<dt></dt>
+                                                			<dd>
+                                                    	         <select name="search_category" id="search_category" onchange="$('#id_search_cat').val($(this).val())" class="select-menu" style=" width:167px;">
+								                                        <option value="">{% trans 'All Categories'%}</option>
+								                                        {% for v in categories %}
+								                                        <option value="{{v.id}}" {% ifequal cat v.id %} selected="selected" {% endifequal %}>{{v.name}}</option>
+								                                        {% endfor %}
+								                                 </select>
+															</dd>
+                                                		</dl>
+													</div>                                                         
+                                                	<!--div class="form-submit"><button type="button" id="bottom_search_button"  class="btn-txt-blue small advnc_search" disabled="disabled" onclick="$('#id_search').val('true'),sort_search();" role="button"><span class="btn-txt">{% trans 'Search' %}</span></button></div-->
+                                                	<div class="form-submit"><button type="button" id="bottom_search_button"  class="btn-txt-blue small advnc_search" onclick="enable_search();" role="button"><span class="btn-txt">{% trans 'Search' %}</span></button></div>
+												</div> 
+											</div>                                                
+                                        </form>
+									</div>	
+                                <div class="add-section-right">
+								  	<a  id="video_uploding" class="btn-txt-prime add-video {% if not perms.videos.add_videos %}disabled{% endif %}" title="Share Videos" href="{% url 'staff_video_ajax_adding' %}?add=true"  ><span class="btn-txt">{% trans 'Add New Video' %}</span></a>
+								</div> 	
+								</div>
+                            </section>   
+						</div> 
+						<div id="core-wraper" class="group">
+                        	<div class="staff-main">
+                              	<div class="page-wrap">
+									<div id="video" class="group">
+                                        <section class="toolbars">
+                                            <div class="group">
+                                                <ul class="toolbar left">
+                                            		<li class="master-check tool">
+														<span class="cform-checkbox-container"><input type="checkbox" value="true"  id="master_check" name="master_check"><span class="cform-checkbox-element"></span></span>
+													</li>
+                                                     {% if perms.videos.delete_videos or perms.videos.publish_videos or perms.videos.promote_videos %} 
+													 <li class="tool action_status tip tip5">
+												       <select data-placeholder={% trans 'Action' %} name="actionSelect"  id="actionSelect" onchange="$('#id_action').val($(this).val()),action();" style="width:140px;"  class="select-menu">
+                                                              <option value="#"></option>
+                                                              {% if perms.videos.delete_videos %}
+															  	<option value="DEL">{% trans 'Delete' %}</option>
+															  {% endif %}
+															  {% if perms.videos.publish_videos or perms.videos.promote_videos %}
+                                                              <optgroup label="Status">
+                                                              	{% if perms.videos.publish_videos %}
+																	<option value="P" class='publish_action'>{% trans 'Publish' %}</option>
+	                                                              	<option value="R" class='reject_action'>{% trans 'Reject' %}</option>
+	                                                              	<option value="B" class='block_action'>{% trans 'Block' %}</option>
+																{% endif %}
+																{% if perms.videos.promote_videos %}
+																	<option value="F" class='feature_action'>{% trans 'Featured'%}</option>
+																	<option value="BAC" class='basic_action'>{% trans 'Basic'%}</option>
+																{% endif %}
+                                                              </optgroup>
+															  {% endif %}
+                                                        </select>
+                                        			</li>
+													{% endif %}
+                                        			<li class="tool tip tip6">
+                                                        <label class="inline-block">{% trans 'Sort by:' %}</label>
+                                                        <select id="orderSelect" onchange="$('#id_sort').val($(this).val()),filter_content();" class="select-menu" style="width:140px;">
+                                                              <option value="-created_on" selected="">{% trans 'Newest' %}</option>
+                                                              <option value="created_on">{% trans 'Oldest' %}</option>
+                                                              <option value="-video_view">{% trans 'Most viewed' %}</option>
+                                                        </select>                                                    
+                                        			</li>
+											   </ul>
+                                                {% include 'common/pagination_top.html'%} <!-- pagination top -->  
+                                            </div>
+                                        </section>
+										<span id="ajax_content_loading" class="load-list-items" style="display:none">
+										 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+										</span>
+										<div style="display:none;" class="info-bar" id="top_info_bar"></div>
+										<div id="id_content_listing" class="group">
+	                                            {% include 'videos/staff/ajax-video-listing.html'%} 
+										</div>	                                       
+                                    </div> <!-- end table -->
+                              </div>  <!-- end page wrap -->
+                        </div>  <!-- end main-col -->                            
+                         <div id="aside" class="side-bar">
+                	     <input type="hidden" value="{% url 'staff_video_ajax_edit_video' %}" name="ajax_update" id="ajax_update">
+							 <input type="hidden" value="{% url 'video_staff_ajax__state' %}" name="id_video_status_url" id="id_video_status_url">
+                        	<div id="module-stats" class="section">
+                            	<div class="group">
+                                    <h5>{% trans 'State' %}</h5>
+                                    <div class="stats-toggle tip tip7">
+                                        <a class="state-all statefltr {% if status == 'all' %}active{% endif %} tttxt" onclick="show_count('all');"  href="javascript:void(0)" id="id_status_all" title="{% trans 'Show all state' %}"><span class="icon-state-all"></span></a>                                                    
+                                        <a class="state-you statefltr {% if status == 'mine' %}active{% endif %} tttxt" onclick="show_count('mine');" href="javascript:void(0)" id="id_status_mine" title="{% trans 'Show your state' %}"><span class="icon-state-you"></span></a>                             
+                                    </div>
+									<span id="ajax_loading" class="loading-stats"  style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" align="..."></span>
+								</div>
+                            	<ol class="stats-summary" id="id_module_state_listing">
+                                	 <li class="pending-state" ><strong id="id_pend">{{ pending}}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Pending' %}</a></li>
+							         <li class="published-state" ><strong id="id_pub">{{ published }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Published' %}</a></li>
+							         <li class="rejected-state" ><strong id="id_rej">{{ rejected }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Rejected' %}</a></li>
+									 <li class="blocked-state"><strong id="id_blk">{{ blocked }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Blocked'%}</a></li>
+							         <li class="sum"><strong id="id_tot">{{ total }}</strong> {% trans 'total video posted.' %}</li>
+     
+                                </ol>
+                            </div>
+                            {% include 'videos/staff/video-faq.html' %}                                    
+                        </div> 
+					</div> 
+				</div>	
+					  
+ 
+{% endblock %}				
+{% block footer_include %}	
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$(function($){
+		checkall = function(){
+		var cb = document.getElementById("master_check");
+		if(cb.checked){
+			$(".cbox").attr("checked","true");
+		}if(!cb.checked){
+			$(".cbox").removeAttr("checked");
+		}
+	}});
+	
+	$(document).ready(function(){
+		$('.tool.action_status .chzn-container').addClass('chzn-disabled , disabled_chosen');
+		{% if recent %}
+			$('#id_status').val('N');
+			$('#filter_a a').removeClass('active');
+			$('#listing_pending').addClass('active');
+			filter_content();
+		{% endif %}
+		
+	}); 	
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/videos/staff_video.js"></script>
+	
+<script>
+	function search_video() {
+	
+	$("#id_video_listing").hide();
+	$("#ajax_content_loading").show()
+	var url= $('#id_search_url').val();
+	var dataString = 'listing='+$('#id_listing_type').val()+'&status='+$('#id_status').val()+'&kwd='+$('#id_search_keyword').val()+'&type='+$('#search_type').val()+'&cat='+$('#search_category').val()+'&page='+$('#id_pagentn').val()+'&status_actv_dactv='+$('#search_status').val()+'&created='+$('#id_created').val()+'&search=true';
+	if($('#id_item_per_page').val()!=''){
+		dataString+='&item_perpage='+$('#id_item_per_page').val();
+	}
+		$.ajax({
+			   type: "GET",
+			   url: url,
+			   data:dataString,
+			   success: function(html_from_server){	
+					$("#ajax_content_loading").hide();
+			   		$("#id_video_listing").html(html_from_server);
+			     	$("#id_video_listing").fadeIn(300);
+				}
+		});
+    }
+ function activate_search(){
+	$('#bottom_search_button').removeAttr('disabled','disabled');
+	}
+ function enable_search(){
+ 	var kw = $('#id_search_keyword').val();
+	var status = $('#search_status').val();
+	var cat = $('#search_category').val();
+	var order = $('#search_type').val();
+	$('#id_search').val('true');
+	sort_search();
+	
+	if (kw){
+			//$('#bottom_search_button').removeAttr('disabled','disabled');
+			//$('#id_search').val('true');
+			//$('#advanced-search-options').removeClass('cAt');
+	}
+	else{
+			//alert('Please enter a keyword');
+			//$('#advanced-search-options').addClass('cAt');
+			
+		}
+	if (status){
+			$('#bottom_search_button').removeAttr('disabled','disabled');
+			//$('#id_search').val('true');
+			//sort_search();
+
+	}
+	if (cat){
+			
+			//$('#id_search').val('true');
+			//sort_search();
+	}
+ } 
+
+function sort_search_top(){
+	var keyword = $('#id_search_keyword').val();
+	if (keyword){
+		$('#top_search_btn').removeAttr('disabled','disabled');
+		$('#id_search').val('true')
+		sort_search();
+	}
+	
+}
+</script>
+<ul class="tour_link">
+    <li class="tool-tip tttxt-t1"><a class="link1" href="/bmt/tour/videos/staff/status.html"></a></li>
+    <li class="tool-tip tttxt-t2"><a class="link2" href="/bmt/tour/videos/staff/listing_type.html"></a></li>
+    <li class="tool-tip tttxt-t3"><a class="link3" href="/bmt/tour/videos/staff/submissions.html"></a></li>
+    <li class="tool-tip tttxt-t4"><a class="link4" href="/bmt/tour/videos/staff/search.html"></a></li>
+    <li class="tool-tip tttxt-t5"><a class="link5" href="/bmt/tour/videos/staff/actions.html"></a></li>
+    <li class="tool-tip tttxt-t6"><a class="link6" href="/bmt/tour/videos/staff/sorting.html"></a></li>
+    <li class="tool-tip tttxt-t7"><a class="link7" href="/bmt/tour/videos/staff/state.html"></a></li>
+    <li class="tool-tip tttxt-t8"><a class="link8" href="/bmt/tour/videos/staff/status_aside.html"></a></li>
+    <li class="tool-tip tttxt-t9"><a class="link9" href="/bmt/tour/videos/staff/settings.html"></a></li>
+</ul>
+{% endblock %}				

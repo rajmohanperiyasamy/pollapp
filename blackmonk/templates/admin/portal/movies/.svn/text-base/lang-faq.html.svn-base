@@ -1,0 +1,12 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+        <h5>{% trans 'FAQs' %}</h5>
+        <h6>{% trans 'Movie Language?' %}</h6>
+        <p>{% trans 'Add a movie language which plays in your city or region.' %}</p>
+		<p>{% trans 'Example: English, Polish, French' %}</a>.</p>
+        <hr>
+        <h6>{% trans 'Updating a Movie Language?' %}</h6>
+        <p>{% trans 'Update an existing Movie Language if you wish to modify.' %}</p>
+	</div>                                    
+</div>     

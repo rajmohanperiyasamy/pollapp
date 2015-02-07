@@ -1,0 +1,59 @@
+{% load i18n %}		
+{% if classified %} 
+	{% for cls in classified %}	
+	{% for ni in new_id %}
+	{% ifequal ni cls.id %}
+    <li class="table-list" id="li_{{cls.id}}">
+			<div class="table-list-container check-item group">
+		 	{% if cls.listing_type == 'F' %}
+		 		<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+			{% else %}
+				{% if cls.listing_type == 'S' %}
+		 			<span class="list-type sponsored-item"><a class="tttxt" title="{% trans 'Item listed as sponsored' %}" href="#">{% trans 'Sponsored' %}</a></span>
+				{% endif %}
+			{% endif %}
+		 	<span class="checkbox-wrap">
+				<span class="cform-checkbox-container"><input type="checkbox" value="{{cls.id}}" id="id_event_action" name="artCulture" class="check-overflow cbox"><span class="cform-checkbox-element"></span></span>
+			</span>
+			<div class="item-info relative-block">
+                <h3 class="title"><a href="{% url 'user_preview_classified' cls.id %}">{{cls.title}}</a></h3>
+                <p class="ltxt80">{{cls.category.name}} <span class="divider12">|</span> {% trans 'By' %} <a href="{% url 'user_profile' cls.created_by.profile_slug %}">{{cls.created_by.display_name}}</a> <span class="divider12">|</span>{{cls.created_on|date:"M d, Y"}}</p>
+                <ul class="quick-stats group">
+                    <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{cls.most_viewed}}</a></li>
+                    <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span>46</a></li-->
+                </ul>
+                <div class="item-status no-options dev_hide_list_status" onclick="display_change_status({{cls.id}},$('#id_estatus_{{cls.id}}').attr('name'));">
+                	<span class="status-inside inline-block" id="id_span_chge_sts_{{cls.id}}">
+						<span title="{{cls.get_status|capfirst}}" name="{{cls.status}}" id="id_estatus_{{cls.id}}" class="inline-block status-idty icon-{{cls.get_status}}"></span>	 
+                    </span>
+                </div>                                                        
+            </div>
+            <div class="action-buttons {% if forloop.counter == 1 %}tip tip6{% endif %}">
+                <div class="relative-block">
+                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{cls.id}}" onclick="display_settings({{cls.id}});"><span class="action-icon icon-manage"></span></span>
+                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{cls.id}}" style="display:none">
+                    	{% if cls.status == 'P' and cls.listing_type != 'F' %}
+							<li><a title="{% trans 'Upgrade Listing Type' %}" href="{% url 'user_classified_upgrade_listing_type' cls.id %}" class="bm-classifieds-listing">{% trans 'Upgrade Listing Type' %}</a></li>
+							<li><span class="line-break"></span></li>
+						{% else %}
+							{% if cls.status == 'D' %}
+								<li><a title="{% trans 'Send for Approval' %}" href="{% url 'user_classified_upgrade_listing_type' cls.id %}" class="bm-classifieds-listing">{% trans 'Send for Approval' %}</a></li>
+								<li><span class="line-break"></span></li>
+							{% endif %}
+						{% endif %}
+						<li><a title="{% trans ' Edit Classified Ad' %}" href="{% url 'user_update_classified' cls.id %}">{% trans ' Edit' %}</a></li>
+						<li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'user_classified_seo' cls.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+
+        	            <li><span class="line-break"></span></li>
+            	        <li><a onclick="if(confirm(gettext('Are you sure you want to delete the Classified ?'))){filter_action({{cls.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+                    </ul>
+				</div>                                                              	                                                         
+            </div>
+        </div>
+    </li> 
+	{% endifequal %}
+ {% endfor %}
+ {% endfor %}
+ {% else %}
+<div class="no-data"><p>{% trans 'Sorry , No Classifieds found !' %}</p></div>
+ {% endif %}  

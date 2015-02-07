@@ -1,0 +1,214 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% load upload_tags %}
+{% load thumbnail %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Business' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Business' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block head %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/common_user.js"></script>
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "business" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+        	<div class="span10 sP9mX979 sP12mX767">
+                <div class="row-fluid">
+					<div class="main span9">
+						<section class="sCn pD0">
+							<div class="cLrFx pD2015">
+								<div class="pLlT w100mP">
+									<h3 class="mR0 tRnCt">Business <span class="lBl dRk lRg lRg-bRdR fS12 ib fW-bLd" title="Total Businesses" id="total_count">{{total}}</span></h3>
+								</div>
+                                <div class="clearfix pLlTmP mRt10mX480">
+                                	<div class="pLrT w100pSmP mRt10SmP mRl10">
+                                        <a href="{% url 'user_add_business' %}" title="Add Business" data-toggle="modal" class="btn fS12 btn-danger "><i aria-hidden="true" class="bUi-iCn-pLs-12"></i></a>
+                                    </div>
+                                    <div class="pLrT">
+                                        <form class="form-search mRb0" action="#">
+                                            <div class="input-append iNsD">
+                                                <input class="search-query fS13 pD510 h34" onkeyup="if($(this).val().length > 2){$('#id_search').val('true');hm_sort();}if($(this).val().length == 0){clear_search();}" name="search_keyword" id="content_search" type="text" placeholder="Search Business" maxlength="100">
+                                                <button type="button" onclick="$('#id_search').val('true');hm_sort();" id="search_content_id" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14 ib"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+							</div>
+							<div class="pD150">
+								<div class="tLbR mRb5 pD015">
+		                            <div class="tLbR-iR">
+		                            	<div class="pLrT">
+		                            		<span class="pLlT fS11 pDt7 cLr-gRy">View:  </span>
+			                            	<select class="bUiSlCtbtn-link tXt-sMl pLrT" id="filter_by" onchange="call_the_filter()">
+												<option value="-created_on" selected="selected">Newest</option>
+												<option value="created_on">Oldest</option>
+												<option value="-most_viewed">Most viewed</option>
+												<option data-divider="true"></option>
+												<option value="N" onclick="" >Pending</option>
+												<option value="P">Published</option>
+												<option value="D">Draft</option>
+												<option value="R">Rejected</option>
+												<option value="B">Blocked</option>
+												<option value="E">Expired</option>
+												<option data-divider="true"></option>
+												<option value="F">Featured</option>
+												<option value="O">Sponsored</option>
+												<option value="Y">Free</option>
+	                                        </select>
+		                            	</div>
+		                            </div>
+	                            </div>
+	                            <hr class="mRb12 mRt0">
+								<div class="hT600 rLvE" id="ajax_content_loading" style="display:none;">
+                                     <div class="tBl-bLk pDt0">
+                                        <div class="tBl-cEl">
+                                            <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+                                        </div>
+                                    </div>
+                                </div>
+								<div id="id_content_listing">
+									{% include 'business/user/ajax_object_listing.html' %}
+								</div>
+							</div>
+						</section>
+					</div> <!-- /.main -->
+					<aside class="sD-bR span3">
+						<div>
+							<section class="tXt-cTr pD0 bNr-aD"> 
+	                           
+	                        </section>
+						</div>
+					</aside>
+				</div>  <!-- /.row-fluid -->
+			</div>  <!-- /.span10 -->
+
+<div id="update_seo" class="modal hide fade mW40" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 id="myModalLabel" class="mR50">Title / Description (SEO)</h4>
+	    </div>
+	    <div class="modal-body">
+			<div style="text-align: center; width: 100%;">
+				<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+			</div>
+	    </div>
+	    <div class="modal-footer">
+	        <button class="btn btn-primary" type="button" onclick="callme();" onmousedown="save_seo();">Update</button>
+	    </div>
+	</div>
+<div id="ULT" class="modal hide fade mW70" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 id="myModalLabel" class="mR50">Update Listing Type</h4>
+	    </div>
+	    <div class="modal-body">
+			<div style="text-align: center; width: 100%;">
+				<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+			</div>
+	    </div>
+	</div>
+	<div id="businessunsubscribe" class="modal hide fade mW40" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 id="myModalLabel" class="mR50">Request Unsubscription</h4>
+	    </div>
+	    <div class="modal-body">
+	    </div>
+	    <div class="modal-footer">
+	        <button class="btn btn-primary" type="button" role='button' onclick='unsubscribe();' xdata-dismiss="modal">Done</button>
+	    </div>
+	</div>
+<script src="{{ STATIC_URL }}js/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/business/staff.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+			$("a[data-target=#ULT]").click(function(ev) {
+			   ev.preventDefault();
+			   target = $(this).attr("href");
+			
+			   // load the url and show modal on success
+			   $("#ULT .modal-body").load(target, function() {
+			        $("#ULT").modal("show");
+			   });
+			});
+			$("a[data-target=#update_seo]").click(function(ev) {
+			   ev.preventDefault();
+			   target = $(this).attr("href");
+			
+			   // load the url and show modal on success
+			   $("#update_seo .modal-body").load(target, function() {
+			        $("#update_seo").modal("show");
+			   });
+			});
+		});
+	function callme(){
+		var flag = $('#mform').validate().form()
+		var id=0;
+		if(flag==true){
+			var dataString='&slug='+encodeURIComponent($('#id_slug').val());
+			dataString+='&seo_title='+encodeURIComponent($('#id_seo_title').val());
+			dataString+='&seo_description='+encodeURIComponent($('#id_seo_description').val());
+			bus_id=$("#bus_id").val();
+			urls="/user/business/seo/"+bus_id;
+			$.ajax({
+			type: "POST",
+			url: urls,
+			data: dataString,
+			dataType:'JSON',
+			success: function(data){
+					$('#ajax_content_loading_seo').html(data.msg);
+					if(data.status){
+						$('#update_seo').modal('hide');
+					}else{
+						$('#ajax_content_loading_seo').hide();
+						$('#update_seo').modal('show');
+					}
+				}
+			});
+		}
+    }
+function unsubscribe(){
+	var flag = $('#sform').validate().form()
+	if(flag){
+		var dataString = 'emailid=' + $('#emailid').val();
+		dataString += '&reason=' + $('#reason').val();
+		dataString += '&phoneno=' + $('#phoneno').val();
+		$.ajax({
+			type: "POST",
+			url: $('#sform').attr('action'),
+			data: dataString,
+			dataType:'html',
+			success: function(data){
+				$("#businessunsubscribe").modal("hide");
+				$("#unsub_" + $('#sform').attr('data-bizid')).html("<a>Your unsubscription request has been submitted</a>");
+			}
+		});
+	}
+}
+$(document).ready(function(){
+	   // load the url and show modal on success
+	   $("a[data-target=#businessunsubscribe]").click(function(ev) {
+	   ev.preventDefault();
+	   target = $(this).attr("href");
+	
+	   // load the url and show modal on success
+	   $("#businessunsubscribe .modal-body").load(target, function() {
+	        $("#businessunsubscribe").modal("show");
+	   });
+	});
+});
+	</script>
+{% endblock %}

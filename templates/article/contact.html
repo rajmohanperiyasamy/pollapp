@@ -1,0 +1,41 @@
+{% extends "home.html" %}
+
+{% block title %}contact django peoples{% endblock %}
+
+{% block content %}
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+<script>
+$("#commentForm").validate();
+</script>
+<h1>Send mail from sample application</h1>
+<form id="commentForm" action="/contact/" method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="fieldWrapper">
+        
+        <label for="id_subject">Email subject:</label>
+        {{ form.subject }}
+		{{ form.subject.errors }}
+    </div>
+    <div class="fieldWrapper">
+        
+        <label for="id_message">Your message:</label>
+        {{ form.message }}
+		{{ form.message.errors }}
+    </div>
+    <div class="fieldWrapper">
+        
+        <label for="id_sender">Your email address:</label>
+        {{ form.sender }}
+		{{ form.sender.errors }}
+    </div>
+    <div class="fieldWrapper">
+        
+        <label for="id_cc_myself">CC yourself?</label>
+        {{ form.cc_myself }}
+		{{ form.cc_myself.errors }}
+    </div>
+    <p><input type="submit" value="Send message" /></p>
+</form>
+
+{% endblock %}

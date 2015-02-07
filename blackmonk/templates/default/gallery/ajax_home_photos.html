@@ -1,0 +1,67 @@
+{% load truncate_filter %}
+{% load i18n %}
+{% load ds_utils %}
+{% load mptt_comments_tags %}
+{% load thumbnail %}
+	<div class="tLbR mRt20">
+        <div class="tLbR-iR">
+            <div class="sCn-tTl pLlT mRb0">
+                <h2>{% if q %}Search Result for {{q}}{% else %}{{selected_category.name|default:"Most Recent"}}{% endif %}</h2>
+            </div>                             
+            <div class="btn-toolbar pLrT hP">
+                <div id="media-toggle" class="btn-group pLrT" data-toggle="buttons-radio">                                            
+                    <button type="button" title='Grid View' class="btn btn-link c-gD {% if view_type == 'grid' %}active{% endif %}" onclick="change_url_parm('grid');"><i class="bUi-iCn-tH-lR-aLt-16" aria-hidden="true"></i></button>
+                    <button type="button" title='List View' class="btn btn-link mRl5 c-lT {% if view_type == 'list' %}active{% endif %}" onclick="change_url_parm('list');"><i class="bUi-iCn-rE-oDr-aLt-16" aria-hidden="true"></i></button>
+                </div>
+                <div class="pLrT mRr10">
+                    <select data-link="true" class="bUiSlCtbtn-link tXt-sMl">
+                        <option {% if not selected_category %}selected="selected"{% endif %} data-location="{% url 'gallery_home' %}">{% trans 'All Categories' %}</option>
+                        {% for category in photocategories %}
+                        {% if category.is_editable %}	
+                        <option {% if category.id == selected_category.id %}selected="selected"{% endif %} data-location="{{category.get_absolute_url}}">{{category.name}}</option>
+                        {% endif %}	
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>  
+        </div>
+    </div>
+    <ul class="modulesBrowseData tHcL {% if view_type == 'grid' %}mDa-gD dSgDwDt mDa-oT-tP pDfX{% else %}mDa-lT mDa-oT-lT{% endif %}" >
+        {% for album in photoalbums %}
+        <li class="mDa" itemscope itemtype="http://schema.org/ImageGallery">
+        	<input type="hidden" name="fbids" class="bids" value="{{album.id}}">
+            <div class="mDa-iN">
+                <div class="mDa-wPr"> 
+                    <a class="bUi-tMb-wPr tMb-50 fLxiMgW bUi-tMb-210" href="{{album.get_absolute_url}}">
+                        <span class="bUi-tMb">
+                            <span class="bUi-tMb-pRpL">
+                                <span class="bUi-tMb-cLp">
+									{% with album.new_cover_image as cover %}
+										{% if cover %}
+		                                    <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if cover.photo %}{% thumbnail cover.photo 300x0 %}{% else %}{{ cover }}{% endif %}" alt="{{album.title}}" itemprop="image">
+		                                        <span class="vRtL-aLn"> </span>
+		                                    </span>
+										{% else %}
+											<span class="iCn-bRdR50 oP25" title="{{album.title}}"><i aria-hidden="true" class="bUi-iCn-pHoT-24 cLr-gRy ib"></i></span>
+											<div class="vRtL-aLn"></div>
+										{% endif %}
+									{% endwith %}
+                                </span>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+                <div class="mDa-bDy">
+                    <span class="fS11 uC cLr-lTbLu" itemprop="genre">{{album.category}}</span>
+                    <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{album.title}}" itemprop="name"><a href="{{album.get_absolute_url}}" itemprop="url">{{album.title}}</a></h5>
+                    
+                    <div class="mDa-dTa mRt4">
+                       <span class="fS11 cLr-lTgRy mR0">{{album.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span><meta itemprop="datePublished" content="{{ album.published_on|get_iso_time_format }}">
+                       <a href="javascript:void(0);" title="{{album.most_viewed}} {% trans 'views' %}" class="fS12 cLr-lTgRy sPrTr mRb0"><i aria-hidden="true" class="bUi-iCn-vEw-16 ib lH1 fS12"></i> <span class="ib">{{album.most_viewed}}</span></a><a class="fS12 cLr-lTgRy sPrTr mRb0 ib" href="{{album.get_absolute_url}}#id_comment" data-slide-index="{{forloop.counter0}}"><i aria-hidden="true" title="Comments" class="bUi-iCn-bBlS-12"></i>{% get_mptt_comment_count for album as comment_count %}{{comment_count}}</a>
+                    </div>                                          
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% include 'default/common/pagination.html' %}

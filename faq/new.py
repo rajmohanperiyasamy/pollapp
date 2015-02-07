@@ -1,0 +1,15 @@
+1.skylethbridge/blackmonk/
+blackmonk/userurls.py
+2./skylethbridge/blackmonk/blackmonk/urls.py
+3./skylethbridge/blackmonk/common/user_messages.py
+4./skylethbridge/blackmonk/templates/article/user/ajax_object_listing.html
+5./skylethbridge/blackmonk/templates/article/user/article_form.html
+6./skylethbridge/blackmonk/templates/article/user/article_type.html
+7./skylethbridge/blackmonk/templates/article/user/content_manager.html
+8./skylethbridge/blackmonk/templates/default/article/ajax_home_articles.html
+9./skylethbridge/blackmonk/templates/default/article/displayarticles.html
+10./skylethbridge/blackmonk/templates/default/article/latest-popular-articles.html
+11./skymedicinehat/blackmonk/templates/usercp_left_navi.html
+12./skylethbridge/blackmonk/templates/default/add_object_search.html
+13./skylethbridge/blackmonk/article/forms.py
+14./skylethbridge/blackmonk/templates/default/common/home.html

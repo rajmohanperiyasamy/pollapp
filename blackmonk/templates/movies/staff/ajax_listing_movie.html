@@ -1,0 +1,27 @@
+<table class=" " align="center" id="table_{{a.id}}" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; margin:10px 0 10px 20px;font-size:12px;">
+			<colgroup>
+            	<col width="25">
+				<col width="500">
+				<col width="80">
+			</colgroup>				
+			<tbody>
+				<tr class="row">
+                	<td class="check" style="padding:10px 0px 10px 10px">
+						<span style="font-size:16px;">#</span>
+					</td>
+                	<td class="in_picture">
+						<div class="in_picture_details">
+							<h5 style="margin:0 0 3px 0; padding:0"><a href="#" title="See article details">{{a.theatre.name}}</a></h5>
+                            <span style="font-size:11px;color:#808080">Movies Playing: <span style="color:#000">{% for npm in a.theatre.get_movies %}{{npm.movie.title}}{% if not forloop.last %} , {% endif %}{% endfor %}</span></span>
+						</div>
+					</td>
+					<td class="action" style="vertical-align:middle; background-color:#e8e8e8; text-align:center">
+						<div class="action_link">
+							<div class="action_nav" style="font-size:11px;">
+                            <a href="#1" onclick="editmovie({{a.id}})">Edit</a>&nbsp;|&nbsp;<a href="javascript:void(0);" class="delete" onclick="$.jConfirm('Are you sure you want  delete this showtime ?',',',function(r){if(r==true){delete_showtime({{a.id}});}});">Delete</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+                </tbody>
+                </table>

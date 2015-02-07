@@ -1,0 +1,88 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<style type="text/css">
+	.video_show{width:120px;float:left;pagging:10px;margin:5px;}
+</style>
+<form style="width:720px;">
+<fieldset id="basic_info" style="width:720px;">
+	<div class="title"><h2>Add Video URL</h2>
+		<p>You can add multiple youtube video url.</p>
+	</div>
+	<div style="width:600px;" id="video_ajax">
+		{% for video in videos %}
+		<div class="video_show" id="video_show{{video.id}}" >
+			<img onclick="show_box('{{video.video_url}}')" src="http://img.youtube.com/vi/{{video.video_url}}/2.jpg">
+			<a href="javascript:delete_video({{video.id}})" style="float:right;">X</a>
+		</div>
+		{% endfor %}
+	</div><br>
+	<dl class="horizontal" id="main_area">
+		<dt><br><input type="text" name="video0" id="id_video0" class="textField long"></dt>
+	</dl>
+	<dl class="horizontal">
+		<dt><a href="javascript:add_new()" style="float:left;" >Add Another</a></dt>
+		<dd></dd>
+	</dl>
+</fieldset>
+<input type="hidden" value="" name="list" id="list">
+<input type="button" value="Save" onclick="save_link()" class="inputsubmit on" style="margin-right:190px;float:right;"><br>
+</form>
+<script type="text/javascript">
+var list=[];
+list.push(0);
+var id=1;
+function add_new(){
+	var field='<dt><input type="text" name="video'+id+'" id="id_video'+id+'" class="textField long"><a id="link'+id+'" href="javascript:remove('+id+')">X</a></dt>';
+	$('#main_area').append(field);
+	list.push(id);
+	id=id+1;
+	$('#list').val(list);
+}
+function remove(id){
+	$('#id_video'+id).remove();
+	$('#link'+id).remove();
+	list.splice( $.inArray(id, list), 1 );
+	$('#list').val(list);
+}
+function save_link(){
+	var html_data="";
+	var dataString="id={{attraction.id}}&list="+list;
+	for(i=0;i<list.length;i++){
+		var youtube_id=$('#id_video'+list[i]).val();
+		dataString+="&video_"+list[i]+"="+youtube_id;
+	}
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_attraction_ajax_add_url' %}",
+		data: dataString,
+		success: function(data){
+			if(data!=0){
+				$('#video_ajax').append(data);
+				list=[];
+				list.push(0);
+				var field='<dt><input type="text" name="video0" id="id_video0" class="textField long"></dt>';
+				$('#main_area').html(field);
+			}else{
+				alert('Oops !!! Not able to process your request.');
+			}
+		}
+	});
+}
+function delete_video(id){
+	if(confirm('Are you sure you want to remove this video ?')){
+		$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_attraction_ajax_add_url_delete' %}",
+		data: "id="+id,
+		success: function(data){
+			if(data!=0){
+				$('#video_show'+id).remove();
+			}else{
+				alert('Oops !!! Not able to process your request.');
+			}
+		}
+	});
+	}
+}
+</script>

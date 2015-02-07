@@ -1,0 +1,344 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+.thick_box .mod_florist{
+    background: url("../images/global/left_176_blue_bg.gif") repeat-y scroll left top #FFFFFF !important;
+}
+.module_search .search_florist {
+    float: left;
+    margin-right: 10px;
+}
+#florist_extras {
+    padding-bottom: 10px;
+}
+.floristone_photos{
+	float: left;
+    padding-left: 0;
+    width: 490px;
+}
+.floristone_photos_inner{ 
+padding:0 10px;
+}
+.florist-111{
+	background-color: #FAFAFA;
+    border: 1px solid #E6E6E6;
+    border-radius: 4px 4px 4px 4px;
+    display: block;
+    float: left;
+    height: 155px;
+    margin-bottom: 8px;
+    margin-right: 10px;
+    padding: 5px 9px;
+    position: relative;
+    text-align: center;
+    width: 90px;
+}
+.florist-111-image {
+    display: block;
+    height: 105px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 90px;
+	border-radius:2px;
+}
+.florist-111-image img {
+	left: -3px;
+    position: absolute;
+    top: -3px;
+}
+.florist-111-image h3.price{
+	background: none repeat scroll 0 0 white;
+    border-radius: 2px;
+    bottom: 2px;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.28);
+    color: green;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    left: 2px;
+    line-height: 18px;
+    padding: 0 4px 0 3px;
+    position: absolute;
+    z-index: 9;
+}
+.florist-111-summary {
+    overflow: hidden;
+}
+.florist-111-summary h5 {
+    font-size: 11px;
+    line-height: 13px;
+    margin: 3px 0 4px;
+    max-height: 26px;
+    overflow: hidden;
+	text-align:left;
+}
+.florist-111-summary span.info {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: left;
+}
+.florist-111-summary span.info a {
+	color: #AAAAAA;
+    display: block;
+    font-weight: normal;
+}
+.florist-111-summary span.info a:hover {
+	color: #333;
+}
+.florist-111-summary span.info a.left {
+	float: left;
+}
+.florist-111-summary span.info a.right {
+	float: right;
+}
+.florist-111-summary_inner {
+    overflow: hidden;
+    position: relative;
+}
+
+#florist_extras .extra_title{font-size:14px; font-weight:normal;margin:20px 10px 4px 10px;padding:0 0 4px 0;color:#3d3d3d;/*background-color:#FFF; -moz-border-radius-topleft:6px;*/border-bottom:1px solid #e6e6e6;}
+
+.florist-cat-cont {
+    height:1%;
+    overflow:hidden;
+    padding:15px 10px 10px 10px;
+	font-size:12px;
+}
+.florist-cat h3 a {
+    color:#3d3d3d;
+    display:block;
+    height:100%;
+    text-decoration:none;
+}
+.florist-cat h3.florist-cat-title{
+	border-bottom: 1px solid #E6E6E6;
+    color: #333333;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    padding: 2px 0; 
+}
+.florist-cat-cont ul {
+    list-style-image:none;
+    list-style-position:outside;
+    list-style-type:none;
+	padding-bottom:6px;
+}
+.florist-cat-cont li {
+    font-size: 11px;
+    line-height: 13px;
+    padding: 2px 0;
+}
+.florist-cat-cont li a{
+}
+.florist-cat-cont li.active a {
+	color: #333333;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.florist-cat-cont li a:hover{
+	color:#003;
+	text-decoration:none;
+}
+.florist-cat-cont .count {
+    color:#808080;
+    font-size:11px;
+    padding-left:1px;
+}
+.florist-cat-cont #refine_area select{width:154px;font-size:11px;}
+.florist-cat-cont #refine_price input.text_field {width:65px; font-size:11px;}
+
+/*detail*/
+
+.title_bar {
+    border-bottom: 1px solid #E6E6E6;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    position: relative;
+}
+#florist-det_all .detail_main {
+    float: left;
+    margin-left: 20px;
+    width: 326px;
+}
+#florist-det_all .detail_main button {
+	border-radius:4px;
+	*width:142px;
+}
+#florist-det_all .detail_main button:hover {
+	background-color:#E33100;
+}
+#florist-det_all .detail_main button:hover span.buy-now {
+	background-color:#d12f02;
+	-moz-transition:all 0.3s;
+}
+#florist-det_all .detail_main button span.buy-now {
+	border-left: 1px solid #BD421F ;
+    border-right: medium none;
+    margin-right: 0;
+    padding: 7px 10px 9px;
+	float:left;
+	-moz-transition:all 0.3s;
+
+}
+#florist-det_all .detail_main button span.price {
+	border-right: 1px solid #F86942;
+    font-size: 14px;
+    padding: 7px 10px 9px;
+	float:left;
+}
+#florist-det_all .detail_main .title-cont {
+    border-bottom: 1px solid #E6E6E6;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+#florist-det_all .detail_main .title {
+    color: #3D3D3D;
+    font-size: 19px;
+    font-weight: bold;
+    line-height: 22px;
+}
+#florist-det_all .detail_main span.item-no {
+    color: #777777;
+    display: block;
+    font-size: 11px;
+    margin-top: 3px;
+}
+#florist-det_all {
+    border-top-left-radius: 0.6em;
+    border-top-right-radius: 0.6em;
+    margin-bottom: 12px;
+    padding: 10px;
+}
+#florist-det_all .description {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 0 0 20px 0;
+}
+#florist-det_all .description span.florist-buy {
+    float:right;
+}
+#florist-det_all .description h3 {
+    color: #212121;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+#florist-det_all .description p {
+    color: #333333;
+    font-size: 13px;
+    line-height: 18px;
+}
+#florist-det_all .toggle, #theater_all .toggle {
+    font-size: 11px;
+}
+#florist-det_all ul.info {
+    margin: 8px 0 10px;
+}
+#florist-det_all ul.contact {
+    margin-bottom: 10px;
+}
+#florist-det_all p.respond {
+    padding: 0 0 10px 110px;
+}
+#florist-det_all ul.info li {
+    color: #777777;
+    font-size: 12px;
+    height: 18px;
+}
+#florist-det_all ul.info li:after {
+    clear: both;
+    content: ".";
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+#florist-det_all ul.info strong {
+    display: block;
+    float: left;
+    font-weight: normal;
+    margin-right: 10px;
+    width: 100px;
+}
+#florist-det_all ul.info span {
+    color: #212121;
+    display: block;
+    float: left;
+    width: 226px;
+}
+#florist-det_all ul.info span.price {
+    color: #CC3300;
+    font-size: 14px;
+    font-weight: bold;
+}
+#florist-det_all .detail-cont{
+	overflow:hidden;
+	margin-bottom:10px;
+}
+#florist-det_all p.detail{
+    margin-bottom: 1em;
+    margin-top: 0;
+}
+
+#ad_photos .photos {
+    background-color: #FFFFFF;
+}
+#ad_photos .photos .photo_s {
+}
+#ad_photos .photos .thumbs li {
+    float: left;
+}
+#ad_photos .photos .thumbs li a {
+    background-color: #000000;
+    display: block;
+    float: left;
+    margin: 2px;
+}
+#ad_photos .photos .thumbs img {
+    background-color: #000000;
+    display: block;
+    height: 68px;
+    opacity: 0.68;
+    width: 68px;
+}
+#ad_photos .photos .thumbs .selected img, #ad_photos .photos .thumbs a:hover img {
+    border: 3px solid #999999;
+    height: 62px;
+    opacity: 1;
+    width: 62px;
+}
+#galleryc {
+    height: 100%;
+    position: relative;
+}
+
+
+.list_actions {
+    border-bottom: 1px solid #EEEEEE;
+    font-size: 11px;
+    margin: 0 0 15px;
+    padding: 10px 10px 5px;
+}
+.list_actions label {
+    color: #3D3D3D;
+    font-weight: bold;
+}
+.list_actions select {
+    color: #666666;
+    font-size: 11px;
+    margin-left: 4px;
+    width: 96px;
+}
+.list_actions .sort {
+    width: 140px;
+}
+.list_actions .filter {
+    text-align: right;
+}
+
+.module_search label{
+	*display:block;
+	*float:left;
+}

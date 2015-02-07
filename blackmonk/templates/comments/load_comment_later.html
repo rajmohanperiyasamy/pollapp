@@ -1,0 +1,31 @@
+<ol class="cMnTs {% if appname != 'community' %}bBl{% endif %} aVtR-cRcL rWrT mRb30 load_later" id="comment_remaining_div">
+<li itemscope itemtype="http://schema.org/Review">
+<div style="" id="show_replay_from_loading">
+<div style="text-align:center;" class="cMnTs-pNl-lDnG show_replay_from_loading_div">
+    <p class="bUi-sPnR">
+        <i aria-hidden="true" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" alt="Loading icon"></i>
+        <span class="bUi-sPnR-mSg cLr-gRy fS13">Loading...</span>
+    </p>
+</div>
+</div>
+</li>
+</ol>
+<div class="cMnTs-pNl-lDnG tXt-cTr" id="comment_remaining_div_loading" style="display:none;">
+    <a class="btn btn-light btn-large btn-block fS13" href="javascript:void(0);">
+        <span class="">
+            <i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i>
+            <span class="bUi-sPnR-mSg cLr-gRy fS13">Loading...</span>
+        </span>
+    </a>
+</div>
+<div class="cMnTs-pNl-lDnG tXt-cTr" id="comment_remaining_p" style="display: none;">
+    <a class="btn btn-light btn-large btn-block fS13" href="javascript:load_more()">
+        <span class="fW-bLd cLr-bLu ">More</span>
+    </a>
+</div>
+<script type="text/javascript">
+function reply_thread(id){
+    $('#replay_signup_'+id).hide();
+    $('#replay_'+id).show();
+}
+</script>

@@ -1,0 +1,3 @@
+<div class="col_4 mr_0 mod_goin_out content group">
+                            <iframe scrolling="no" frameborder="0" src="http://www.facebook.com/plugins/likebox.php?href={{ globalsettings.get_facebook_page_url }}&amp;connections=8&amp;width=238&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;stream=false&amp;header=true&amp;" style="border:none; overflow:hidden; width:238px; height:290px;" allowtransparency="true"></iframe>
+                        </div>

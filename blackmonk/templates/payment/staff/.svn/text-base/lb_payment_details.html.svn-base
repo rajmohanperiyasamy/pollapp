@@ -1,0 +1,12 @@
+<body id="mb_staff" class="yui-skin-sam">
+    <div id="content">
+    	<h2 style="display:block;background:none repeat 0 0 #777; color:#FFF; font-size:13px; font-weight:bold;margin:10px 10px 0px;padding:6px 10px;">Payment Details</h2>
+		<ul style="margin:0px 10px 10px;border-width:1px 1px 2px 1px; border-color:#e2e2e2 #e2e2e2 #e6e6e6;border-style:solid;">
+			<li style="display:block; padding:4px 10px;background-color:#f6f6f6; border-top:1px solid #e6e6e6;"><strong style="display:inline-block;width:180px;">Module</strong>{{ payment_detail.content_type|capfirst }}</li>
+			<li style="display:block; padding:4px 10px;background-color:#FCFCFC; border-top:1px solid #e6e6e6;"><strong style="display:inline-block;width:180px;">Invoice No</strong>{{ payment_detail.order.invoice_no }}</li>
+			<li style="display:block; padding:4px 10px;background-color:#f6f6f6; border-top:1px solid #e6e6e6;"><strong style="display:inline-block;width:180px;">Transaction Id</strong>{{ payment_detail.order.transaction_id }}</li>
+			<li style="display:block; padding:4px 10px;background-color:#FCFCFC; border-top:1px solid #e6e6e6;"><strong style="display:inline-block;width:180px;">Listing Type</strong>{{ payment_detail.listing_type|title }} </li>
+			<li style="display:block; padding:4px 10px;background-color:#f6f6f6; border-top:1px solid #e6e6e6;"><strong style="display:inline-block;width:180px;">Duration</strong>{% if payment_detail.duration %}{{ payment_detail.duration }} {{ payment_detail.duration_type }}(s)&nbsp;&nbsp;{% endif %}{% if payment_detail.end_date %}{{ payment_detail.start_date|date:'M j Y' }} - {{ payment_detail.end_date|date:'M j Y' }}{% endif %}</li>
+		</ul>									
+	</div>
+</body>

@@ -1,0 +1,97 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load bm_channeltags %}
+<div class="span8">
+	<div class="row-fluid">
+		{% show_latest_business channel=channel limit=6 as channel_business %}
+		{% with channel_business.latest_business as latest_business %}
+		{% if latest_business %}
+        <section class="sCn">
+			<div class="sCn-tTl sCn-tTl-bR">
+				<h3 class="clearfix oFl">
+					<span class="ib pLlT">{{ business_title }}‎</span>
+					{# <a class="tXt-lNk rGhT" href="/business/">View all</a> #}
+				</h3>
+			</h3>
+		</div>
+		{% with channel_business.business_categories as business_categories %}
+		{% if business_categories %}
+		<div class="span3 dSsP pDl0">
+			<ul class="nav nav-stacked fS13 bDrD">
+				<li class="category" id="categories_all">
+					<a>All</a>
+				</li>
+				{% for categories in business_categories %}
+				<li class="category" id="{{ categories.id }}">
+					<a>{{ categories.name }}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+		{% endwith %}
+		<div class="span9 dSsP" id="catBusiness">
+			<div class="row-fluid latestBusiness">
+				<div class="mDa-lT-mNi">
+					<ul class="mDa-lT mDa-oT-lT">
+		                {% for business in latest_business %}
+						{% with business.address.all.0 as address %}
+                        <li class="mDa">
+							<div class="mDa-iN">
+								<div class="mDa-wPr">
+									<a href="{{business.get_absolute_url}}" class="bUi-tMb-wPr bUi-tMb-110 tMb-75 fLxiMgH bS-bRdR">
+										<span class="bUi-tMb">
+											<span class="bUi-tMb-pRpL">
+												<span class="bUi-tMb-cLp">
+													<span class="bUi-tMb-cLp-iN">
+														<img src="{% if business.logo.logo %}{% thumbnail business.logo.logo 226x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{address.pointer_lat}},{{address.pointer_lng}}&zoom=15&size=226x180&markers={{address.pointer_lat}},{{address.pointer_lng}}&sensor=false{% endif %}" alt="{{business.name}}" title="{{business.nmae}}">
+															<span class="vRtL-aLn">
+															</span>
+														</span>
+													</span>
+												</span>
+											</span>
+										</a>
+									</div>
+									<div class="mDa-bDy pD0150">
+										<h5 title="Allegiant Expands Service at Orlando Sanford Airport" class="mDa-hD tRnCt0 mRb0 mXw35">
+											<a href="{{business.get_absolute_url}}">{{ business.name }}</a>
+										</h5>
+                                        {% if address %}
+										<div class="mDa-dTa mRt4">
+											<span class="fS12 cLr-lTgRy tRnCt">
+												<i class="bUi-iCn-mP-mKr-12" aria-hidden="true"></i>
+												<a class="cLr-lTgRy" href="{% url 'events_view_venue_event' address.slug %}">{{ address.venue }}&nbsp;{{ address.address1 }}&nbsp;{{ address.address2 }}&nbsp;{{ address.city }}&nbsp;{{ address.pin }}</a>
+											</span>
+										</div>
+                                        {% endif %}
+										<div class="fTrD-mTa fS11 pDt5">
+											<div class="sTr-rT ib mRb0 mNi sTtC">
+												<span data-rating="{{ business.ratings }}" class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4">
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+						{% endwith %}
+                        {% endfor %}
+                        </ul>
+					</div>
+				</div>
+			</div>
+		</section>
+       {% endif %}
+	   {% endwith %}
+     </div>
+</div>
+<script>
+$(document).ready(function() {
+	$('#categories_all').addClass('active');
+	$('ul li.category').click(function(){
+		$('.category').removeClass('active');
+		$(this).addClass('active');
+	});	
+	
+});
+</script>

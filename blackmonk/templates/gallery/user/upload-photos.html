@@ -1,0 +1,196 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load upload_tags %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Photos' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Photos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/bm.common.js"></script>
+
+{% endblock %}
+{% block navigation %}
+	{% activetab "leftnav" "photos" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<div class="span10 sP9mX979 sP12mX767">
+        <div class="row-fluid">
+			<div class="main span9">
+				<section class="sCn pD0">
+					<div class="cLrFx pD20">
+						<h3 class="mR0 tRnCt">Add Photos</h3>
+					</div>
+					<div class="dSpLy-tBl tHcL bRdR pD0 mRb20 sTpS-hRz hMp">
+						<div>
+							<h3><em class="sTp-cNt">1</em> Create gallery</h3>
+						</div>
+						<div class="aCtV">
+							<h3><em class="sTp-cNt">2</em> Upload photos</h3>
+						</div>
+						<div>
+							<h3><em class="sTp-cNt">3</em> Add title &amp; description</h3>
+						</div>
+					</div>
+					<div class="pD20 pDt0">                                                                                     
+                        <div class="row-fluid rLvE">
+                        	<ul class="nav nav-tabs tB-cStM pD015">
+                                <li class="active">
+                                	<a href="{% url 'user_add_gallery_upload_photos' id %}"><i class="bUi-iCn-uP-lD-16 fS16 mRr5 ib cLr-gRn"></i> <span class="hMp">Upload from computer</span></a>
+                                 </li>
+                                <li style="{#% if gallery.get_gallery_uploaded_images %#} xdisplay: none; {#% endif %#}">
+                                	<a href="{% url 'user_add_gallery_add_photos' id %}"><i aria-hidden="true" class="bUi-iCn-fLr-16 fS16 mRr5 ib cLr-iNd"></i> <span class="hMp">Flickr photos</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <hr class="mRb20 mRt0">
+                    	<div class="row-fluid mRt20">
+                            <div id="fileupload" style="position: relative;">
+                                <div class="upload-button-wrapper aBsLt tR0" style="top: -65px; position: absolute;">
+                                    <a class="btn fS12 btn-danger fW-bLd" href="#">Upload photo</a>
+                                    <div class="fileinput-button">
+                                       <input style="cursor:pointer;width:90px;" type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+                                    </div>
+                                </div>
+                                <div class="fileupload-content">
+                                    <ul class="tMbS fOcL pDfX files bm-uploader-list mRb0 sLpRiMg hT500 vScRl">
+                                        <li id='no-photos' class="hide fade">
+                                            <div class="tBl-bLk pDt0 hT500">
+                                                <div class="tBl-cEl">
+                                                    <span class="iCn-bRdR80 oP25"><i class="bUi-iCn-pHoT-24 fS42-1 cLr-lTgRy ib" aria-hidden="true"></i></span>
+                                                    <p class="bLk mRt20 fS22 cLr-gRy oP75">Drag photos here</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                {% csrf_token %}
+                            </div>
+                        </div> 
+						<hr class="oTsT-hRz20 mRb0 mRt0">
+						<div class="row-fluid">
+                        <form  name="photomform" method ="post" id="photomform" action="{% url 'user_add_gallery_upload_photos' id %}">
+							<div class="form-actions pD0 pLrT">
+								<button type="button" onclick="location.replace('{% url 'user_manage_gallery' %}')" class="btn btn-light fS12 fW-bLd ">Cancel</button>
+								<button class="btn btn-primary fS12 fW-bLd mRl5" type="submit">Next step</button>
+                        </form">
+							</div>
+						</div>
+					</div>
+				</section>
+			</div> <!-- /.main -->
+			<aside class="sD-bR span3">
+				<div>
+					<section class="tXt-cTr pD0 bNr-aD"> 
+                       
+                    </section>
+				</div>
+			</aside>
+		</div>  <!-- /.row-fluid -->
+	</div>  <!-- /.span10 -->
+    <div id="update_caption" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 id="myModalLabel" class="mR50">Update Caption</h4>
+        </div>
+        <div class="modal-body">
+			<div style="text-align: center; width: 100%;">
+				<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+			</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-light" type="button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="button" onclick="update_caption();">Done</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footerarea %}
+<!-- TAGS -->
+{% gal_usrcp_img_upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript">  
+function show_update_caption_lb(url) {
+   target = url+'?user="true"';
+   // load the url and show modal on success
+   $("#update_caption .modal-body").load(target, function() {
+        $("#update_caption").modal("show");
+   });
+}
+function update_caption(){
+     $.ajax({
+        type: "POST",
+        url: $('#id_form_update_caption').attr('action'),
+        data: 'caption='+encodeURIComponent($('#id_caption').val()),
+        dataType:'JSON',
+        success: function(data){
+                if(data.status){
+                   $('#update_caption').modal('hide');
+                }
+                else{
+                    $("#update_caption .modal-body").html(data.html);
+                }
+            }
+    });
+}
+function biz_image_upload(url,limit,uploadTemplateId,downloadTemplateId) {
+    'use strict';
+    $('#fileupload').fileupload({
+        sequentialUploads:true,
+       maxNumberOfFiles:limit,
+       autoUpload:true,
+       uploadTemplate:$('#'+uploadTemplateId),
+       downloadTemplate:$('#'+downloadTemplateId),
+       url:url,
+       acceptFileTypes:/(\.|\/)(gif|jpe?g|png)$/i,
+    });
+    biz_image_download(url);
+    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+        e.preventDefault();
+        $('<iframe style="display:none;"></iframe>')
+            .prop('src', this.href)
+            .appendTo('body');
+        setTimeout(function(){
+            inline_text()
+        },1000);
+    });
+}
+function biz_image_download(url){
+     $.getJSON(url, function (files) {
+        var fu = $('#fileupload').data('fileupload');
+        fu._adjustMaxNumberOfFiles(-files.length);
+        fu._renderDownload(files)
+            .appendTo($('#fileupload .files'))
+            .fadeIn(function () {
+                // Fix for IE7 and lower:
+                $(this).show();
+        });
+        show_hide();
+    });
+}
+$(document).ready(function(){
+    biz_image_upload("{% url 'gallery_ajax_upload_photos' %}?id={{id}}",25,'template-upload-galimage','template-download-galimage');
+    $('#fileupload').bind('fileuploadstart',function(e, data){show_hide()});
+    $('#fileupload').bind('fileuploaddestroy',function(e, data){setTimeout(function(){show_hide();},1000);});
+});
+
+function show_hide(){
+    if($('.bm-uploader-file').length>=1){
+        $('#no-photos').addClass("fade");
+        $('#no-photos').addClass("hide");
+    }
+    else{
+        $('#no-photos').removeClass("hide");
+        $('#no-photos').removeClass("fade");
+    }
+}
+</script>
+{% endblock %}

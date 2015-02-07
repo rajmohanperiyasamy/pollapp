@@ -1,0 +1,121 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'config' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Newsletter Settings' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+var validate=false;
+$(document).ready(function(){
+    $('input[name=option]').live('change',function(e){
+        type=$('input[name=option]:checked').val();
+        $('.tgle').not(':animated').slideUp();
+        $('#'+type).not(':animated').slideDown();
+        $('.wfaq').hide();
+        $('.'+type+'_faq').fadeIn(300);
+    })
+});
+
+function save_newsletter_setting(){
+
+var success=true;
+var type=$('input[name=option]:checked').val();
+
+if($.trim($('#id_api_key_'+type).val())==''){
+    $('#id_api_key_'+type).parent('div').parent('div').addClass('field-error');
+    $('#id_api_key_'+type).addClass('error');
+    success=false;
+}
+else{
+    $('#id_api_key_'+type).parent('div').parent('div').removeClass('field-error');
+    $('#id_api_key_'+type).removeClass('error');
+}
+
+if($.trim($('#id_listid_'+type).val())==''){
+    $('#id_listid_'+type).parent('div').parent('div').addClass('field-error');
+    $('#id_listid_'+type).addClass('error');
+    success=false;
+}
+else{
+    $('#id_listid_'+type).parent('div').parent('div').removeClass('field-error');
+    $('#id_listid_'+type).removeClass('error');
+}
+
+if($.trim($('#id_suburl_'+type).val())==''){
+    $('#id_suburl_'+type).parent('div').parent('div').addClass('field-error');
+    $('#id_suburl_'+type).addClass('error');
+    success=false;
+}
+else{
+    $('#id_suburl_'+type).parent('div').parent('div').removeClass('field-error');
+    $('#id_suburl_'+type).removeClass('error');
+}
+
+var wunit=$('input[name='+type+'_wunit]:checked').val();
+if(success){
+        var datastring='option='+type+'&api_key='+encodeURIComponent($('#id_api_key_'+type).val());
+        datastring+='&list_id='+encodeURIComponent($('#id_listid_'+type).val());
+        datastring+='&sub_url='+encodeURIComponent($('#id_suburl_'+type).val());
+        $('#weather_api_settings_div').hide();
+        $('#ajax_content_loading').show();
+        var url = $('#mform').attr('action');
+        $.ajax({
+        type: "POST",
+        url: url,
+        data: datastring,
+        dataType:'JSON',
+        success: function(data){
+                show_msg(gettext(data.msg),data.mtype);
+                $('#ajax_content_loading').hide();
+                $('#weather_api_settings_div').fadeIn(800).html(data.html);
+            }
+        });
+}
+else{return false;}
+}
+
+</script>
+
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+    <div id="admin-platform" class="group">
+        <div class="header-bar">
+            <div id="nav-roll">
+                <ul>
+                    <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                    <li><a href="{% url 'admin_api_newsletter_configuration' %}" style="z-index:8">{% trans 'Newsletter' %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="core-wraper" class="group">
+            <div class="admin-main col_12">
+                {% block leftnavigation %}
+                    {% activetab 'topnav' 'config' %}
+                    {% activetab 'leftnav' 'news_letter' %}
+                    {% activetab 'leftnavsub' 'news_letter' %}
+                    {{ block.super }}
+                {% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Newsletter API Settings' %}</h2>
+                            <p class="ltxt80">{% trans "Integrate MailChimp newsletter API in the website to send automatic email notifications." %}</p>
+                        </div>
+                        {% include 'admin/configuration/include_newsletter_config.html' %}
+                       </div>
+                 </div>
+               </div>
+            {% include 'admin/configuration/MC-nwesletter-faq.html' %}
+            {#% include 'admin/portal/api/CC-nwesletter-faq.html' %#}
+        </div>
+    </div>
+</div>
+{% endblock %}

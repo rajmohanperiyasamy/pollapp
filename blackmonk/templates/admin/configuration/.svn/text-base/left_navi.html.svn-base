@@ -1,0 +1,133 @@
+{% load tabs %}
+{% load i18n %}
+{% load available_apps %}
+{% load_availableapps_obj%}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.expand_span').live("click",function(event){
+		event.preventDefault();
+		if($(this).hasClass('nav-collaps')){
+			$('.left-nav-container').removeClass('selected-child');
+			$(this).parent('a').parent('li').addClass('selected-child');
+			$('.nav-expand').addClass('nav-collaps').removeClass('nav-expand');
+			$(this).removeClass('nav-collaps').addClass('nav-expand');	
+		}else{
+			$(this).parent('a').parent('li').toggleClass('selected-child');
+			$(this).toggleClass('nav-collaps').toggleClass('nav-expand');
+		}
+	});
+});
+</script>
+<div class="left-nav-list col_3">
+    <ul>
+		<li class="left-nav-container {% ifactivetab "leftnav" "general" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_general' %}" class="left-nav">
+		      <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="general"></span>
+		      <span class="display-name">{% trans 'General' %}</span><span class="nav-collaps">&rsaquo;</span>
+		  </a>
+		</li>
+		<li class="left-nav-container {% ifactivetab "leftnav" "email-config" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_site_email_settings' %}" class="left-nav">
+		      <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="email"></span>
+		      <span class="display-name">{% trans 'Email Settings' %}</span><span class="nav-collaps">&rsaquo;</span>
+		  </a>
+		</li>
+		<li class="left-nav-container {% ifactivetab "leftnav" "signup" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_general_signup' %}" class="left-nav">
+		      <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="signup"></span>
+		      <span class="display-name">{% trans 'Sign in Options' %}</span><span class="nav-collaps">&rsaquo;</span>
+		  </a>
+		</li>
+		<li class="left-nav-container {% ifactivetab "leftnav" "share_buttons" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_share_buttons' %}" class="left-nav">
+		      <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="social"></span>
+		      <span class="display-name">{% trans 'Share Buttons' %}</span><span class="nav-collaps">&rsaquo;</span>
+		  </a>
+		</li>
+		<li class="left-nav-container {% ifactivetab "leftnav" "payment" %}selected-child{% endifactivetab %}">
+		    <a href="{% url 'admin_configuration_payment' %}" class="left-nav">
+		          <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="payment"></span>
+		          <span class="display-name">{% trans 'Currency/Payment' %}</span><span class="nav-collaps">&rsaquo;</span>                                            
+		    </a>
+		</li>
+		<!--li class="left-nav-container {% ifactivetab "leftnav" "analytics" %}selected-child{% endifactivetab %}">
+		    <a href="{% url 'admin_configuration_analytics' %}" class="left-nav">
+		          <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="analytics"></span>
+		          <span class="display-name">{#% trans 'Analytics' %#}</span><span class="nav-collaps">&rsaquo;</span>                                            
+		    </a>
+		</li-->
+		{% if aa_weather.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "weather" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_api_weather_configuration' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="weather"></span>
+              <span class="display-name">{% trans 'Weather' %}</span><span class="nav-collaps">&rsaquo;</span>                                            
+          </a>
+        </li>
+		{% endif %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "location" %}selected-child{% endifactivetab %}"">
+            <a href="{% url 'admin_portal_locality' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="venues"></span>
+              <span class="display-name">{% trans 'Location' %}</span> <span class="expand_span {% ifactivetab "leftnav" "location" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_locality' %}" class="{% ifactivetab "leftnavsub" "loc_overview" %}selected{% endifactivetab %}">{% trans 'Overview' %}</a></li>
+				  <li><a href="{% url 'admin_portal_locality_zipcode' %}" class="{% ifactivetab "leftnavsub" "loc_zip" %}selected{% endifactivetab %}">{% trans 'Zip/Postalcodes' %}</a></li>
+				  <li><a href="{% url 'admin_portal_locality_venuetype' %}" class="{% ifactivetab "leftnavsub" "loc_type" %}selected{% endifactivetab %}">{% trans 'VenueType' %}</a></li>
+				  <li><a href="{% url 'admin_portal_locality_venue' %}" class="{% ifactivetab "leftnavsub" "loc_venue" %}selected{% endifactivetab %}">{% trans 'Venue' %}</a></li>
+                  <li><a href="{% url 'admin_portal_locality_venue_seo' %}" class="{% ifactivetab "leftnavsub" "loc_seo" %}selected{% endifactivetab %}">{% trans 'SEO' %}</a></li>
+            </ul>                                                       
+        </li>     
+		<li class="left-nav-container {% ifactivetab "leftnav" "email" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_emailtemplates' %}" class="left-nav">
+		      <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="email"></span>
+		      <span class="display-name">{% trans "Email Templates" %}</span><span class="nav-collaps">&rsaquo;</span>                                            
+		  </a>
+		</li>
+		<li class="left-nav-container  {% ifactivetab "leftnav" "apps" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_configuration_available_apps' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="available_apps"></span>
+              <span class="display-name">{% trans 'Available Apps' %}</span><span class="nav-collaps">&rsaquo;</span>                                            
+          </a>
+        </li>
+		<li class="left-nav-container  {% ifactivetab "leftnav" "comment" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_config_manage_comment_settings' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="comments"></span>
+              <span class="display-name">{% trans 'Comments' %}</span><span class="nav-collaps">&rsaquo;</span>                                            
+          </a>
+        </li>
+         <li class="left-nav-container  {% ifactivetab "leftnav" "seo" %}selected-child{% endifactivetab %}"">
+          <a href="{% url 'admin_seo_overview' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="seo"></span>
+              <span class="display-name">{% trans 'SEO'  %}</span><span class="nav-collaps">&rsaquo;</span>
+          </a>
+        </li>
+		<li class="left-nav-container {% ifactivetab "leftnav" "map" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_map_marker' %}" class="left-nav">
+		          <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="map-settings"></span>
+		          <span class="display-name">{% trans 'Google Maps' %}</span><span class="nav-collaps">&rsaquo;</span>
+		  </a>
+		</li>
+		
+		<li class="left-nav-container {% ifactivetab "leftnav" "banners" %}selected-child{% endifactivetab %}">
+		  <a href="{% url 'admin_configuration_mange_banner_zones' %}" class="left-nav">
+		      <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif"  class="advertisement"></span>
+		      <span class="display-name">{% trans 'Banner Ads' %}</span><span class="expand_span {% ifactivetab "leftnav" "advertisement" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+		  </a>
+		  <ul class="sub-items" id="id_ads_subnav">
+		    	<li><a href="{% url 'admin_configuration_mange_banner_zones' %}" id="id_banner_zones" {% ifactivetab "leftnavsub" "banner-zones" %} class="selected" {% endifactivetab %}>{% trans 'Zones/Types' %}</a></li>
+		    	<li><a href="{% url 'admin_configuration_banners_banner_payment_settings' %}" {% ifactivetab "leftnavsub" "banner-payment" %} class="selected" {% endifactivetab %} id="id_banner_payments">{% trans 'Pricing' %}</a></li>
+				<li><a href="{% url 'admin_configuration_banner_settings' %}" {% ifactivetab "leftnavsub" "banner-settings" %} class="selected" {% endifactivetab %} id="id_banner_payments">{% trans 'Settings' %}</a></li>
+
+
+		    </ul>	
+		</li>
+		{% if aa_newsletter.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "news_letter" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_api_newsletter_configuration' %}" class="left-nav">
+              <span class="icon"><img alt="" src={{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="news_letter"></span>
+              <span class="display-name">{% trans 'Newsletter' %}</span><span class="nav-collaps">&rsaquo;</span>                                            
+          </a>
+        </li>
+		{% endif %}
+    </ul> 
+</div>

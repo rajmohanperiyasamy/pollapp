@@ -1,0 +1,75 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{{ advice }}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{ advice.category.seo_description }}" />
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/local_qa.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "advice" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+{% include 'default/advice/search.html' %}   
+<div class="group">
+	<div class="col_11">
+		<div class="thick_box" id="qa_answers">
+            <div class="thick_box_core group">
+                <div class="question place_list group">
+                    <div class="item group br_0">
+                        <div class="q_icon"><span>?</span></div>
+                        <div class="detail">
+                            <h4 class="title"><a href="javascript:void(0)">{% trans "Are you sure you want to unsubscribe form" %} {{advice}}</a></h4>
+                            <form method="post" action="{% url 'advice_unsubscribe' advice.id %}" style="margin-top:10px;">{% csrf_token %}
+						    	<p>
+									<input type="submit" class="button super red large" value="{% trans "Yes, I am sure." %}" />&nbsp;
+						    		<input type="button" class='button super blue medium' onClick="javascript:window.location.replace({% url 'advice_list' %});" value="{% trans "Cancel" %}" />
+								</p>
+							</form>
+						</div> 
+                        <div class="footer"></div>    
+                    </div>
+                </div>
+				
+            </div> 
+		</div>
+    </div>
+	<div class="secondary">
+        <div class="advt ad_300x250">
+        	<span class="declare">{% trans 'Advertisement' %}</span>
+        	<div class="display_ad" id="banner_deal">
+        	</div>
+        </div>
+		<div class="category_list">
+            <h2 class="section_title">{% trans 'Q & A by category' %}</h2>
+            <ul class="by2">
+                {% for cat in category %}
+                <li><a id="nav_typenavigator_1" href="{% url 'advice_cat_list' cat.slug %}">{{cat}}</a>&nbsp;({{cat.get_advices_count_published}})</li>
+				{% endfor %}
+
+            </ul> 
+            <div class="clear"></div>                                       
+        </div><br>
+		<div class="category_list">
+            <h2 class="section_title">{% trans 'Q & A by tags' %}</h2>
+            <ul class="by2">
+                {% for t in tags %}
+                <li><a id="nav_typenavigator_1" href="javascript:goto_tag('{{t.id}}')">{{t}}</a></li>
+				{% endfor %}
+
+            </ul> 
+            <div class="clear"></div>                                       
+        </div>
+		<div style="margin-top:10px;background-color:#fcfcfc; border:1px solid #e6e6e6;">
+			<iframe src="http://www.facebook.com/plugins/likebox.php?href={{ globalsettings.get_facebook_page_url }}&amp;width=300&amp;connections=10&amp;stream=false&amp;header=true&amp;height=295" scrolling="no" frameborder="0" style="border:none !important; overflow:hidden; width:300px; height:295px;" allowTransparency="true"></iframe>
+        </div>
+    </div> 
+</div>
+{% endblock %}
+
+
+
+ 

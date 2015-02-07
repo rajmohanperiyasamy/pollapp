@@ -1,0 +1,20 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+        <h5>{% trans 'Highlights' %}</h5>
+		<h6>{% trans 'Videos Listed' %}</h6>
+        <p>{% trans 'Get a quick snapshot of how many videos have been added, rejected, featured and more by staff and user submissions.' %}</p>
+		<p>{% trans 'Note:Videos can be uploaded through YouTube URL' %}</p>
+		<hr>
+        <h6>{% trans 'Categories' %}</h6>
+        <p>{% trans 'Check the number of categories updated in the Staff CP.' %}</p>
+		<hr>
+        <h6>{% trans 'Video Approval Settings' %}</h6>
+        <p>{% trans 'The Staff member should be able to approve the Video(s) submitted by the user.' %}</p>
+		<p>{% trans 'Please tick the checkbox to approve the conditions when the user submits a Video(s).' %}</p>
+        <hr>
+        <h6>{% trans 'Automatic Email Notifications' %}</h6>
+        <p>{% trans 'To send email automatically when a user submits Video(s).' %}</p>
+		<p>{% trans 'To send email automatically when a user updates the content of an existing Video(s).' %}</p>
+	</div>                                    
+</div>     

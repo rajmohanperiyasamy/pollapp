@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load thumbnail %}
+<li class="table-list-row manage-items has-thumb90" id="li_{{video.id}}">
+    <div class="table-list-row-inner group">
+        <div class="item-media">
+            <span class="item-thumb thumb-90">
+                <span class="thumb-in">
+					<span class="thumb"><img src="{% if video.photo %}{% thumbnail video.photo 110x0 %}{% else %}{{STATIC_URL}}themes/green/videos/global/nophoto_90.jpg{% endif %}" alt="{{video.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                </span>
+            </span>
+        </div>   
+		<div class="item-detail">
+        	<h4>{{video.title}}</h4>
+ 			
+        </div>
+       	<div class="action-buttons">
+            <div>
+                <a href="{% url 'staff_restaurant_video_add' video.restaurant.id video.id %}" class="tttxt-w bm-add-video" original-title="{% trans 'Edit video' %} {{video}}"><span class="action-icon icon-edit"></span></a>
+                <a href="javascript:delete_video({{video.id}})" class="tttxt-w" original-title="Delete"><span class="action-icon icon-delete"></span></a>
+			</div>                                                            
+      	</div>
+    </div>
+</li>

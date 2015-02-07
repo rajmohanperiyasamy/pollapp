@@ -1,0 +1,317 @@
+/* Common elements */
+
+/* Search widget container. Here you can change border, background and text style of the widget */
+.search-widget {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #f6f6f6;
+    background: #f6f6f6;
+    font-size: 11px;
+    text-align: left;
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: #333333;
+    overflow: hidden; /* Cut the content out of the bounds of search-widget */
+}
+
+/* Search widget inner indents */
+.search-widget .search-widget-inner {
+    float: left;
+}
+
+/* Reset default browser properties for the used elements */
+.search-widget div,
+.search-widget ul,
+.search-widget li,
+.search-widget form,
+.search-widget label {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+/* Reset default browser properties for list elements */
+.search-widget ul,
+.search-widget li {
+    list-style: none;
+}
+
+/* Labels for input fields. They are located above the appropriate elements  */
+.search-widget label {
+    display: block;
+    margin-bottom: 2px;
+    margin-left: 1px;
+    overflow: hidden; /* Cut too long labels */
+}
+
+/* Properties for input fields. Here you can change font, color, border and background style */
+.search-widget input.textbox,
+.search-widget select {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    font-size: 1.2em !important;
+    color: #333333;
+    border: 1px solid #aaaaaa;
+    background: #fff url("https://www.travelnow.com/templates/389775/static/0/default/images/widgets/searchwidget/control-bg.jpg") repeat-x left top;
+    margin: 0 0 9px 0; /* Bottom indent */
+    width: 100%; /* Textboxes and select elements occupy the whole width of appropriate part of search widget */
+    padding: 1px;
+}
+
+/* Reset the default browser properties for checkbox and radio button elements */
+.search-widget input.checkbox,
+.search-widget input.radio {
+    margin: 0 5px 0 2px;
+    padding: 0;
+    height: 14px;
+    width: 14px;
+    border: none;
+}
+
+.search-widget .button-block {
+    clear: both; /* By default the button is a new line */
+}
+
+/* Reset the default button properties and set custom properties, such as background, font, color, border, round corners */
+.search-widget button {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    padding: 2px 9px !important;
+    margin: 0 !important;
+    cursor: pointer;
+    background: #e53216;
+    border: 1px solid #d12a10 !important;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.25em;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    width: auto;
+    overflow: visible; /* Reset paddings in IE */
+    display: inline-block;
+}
+
+/* Set custom properties of hovered and selected button. Here you can change background, color and border */
+.search-widget button:hover,
+.search-widget button:focus {
+    background: #e53216;
+    color: #fff;
+}
+
+/* Predefined destinations section */
+.search-widget .predefined-destinations-block {
+    float: left;
+    width: 100%;
+}
+
+/* Predefined destinations list. It occupies the whole width of search widget. */
+.search-widget .predefined-destinations-block ul {
+    float: left;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 100%;
+}
+
+/* Predefined destinations list item */
+.search-widget .predefined-destinations-block li {
+    float: left;
+    overflow: hidden; /* Cut long labels */
+    width: 33%; /* Items can be divided into 2 columns (50%) or 3 columns (33%) */
+    margin-top: 1px;
+}
+
+/* Predefined destinations list item labels */
+.search-widget .predefined-destinations-block input {
+    float: left;
+}
+
+.search-widget .predefined-destinations-block label {
+    vertical-align: top;
+    margin-top: 0;
+}
+
+/* Destination section */
+.search-widget .destination-block {
+    padding-right: 13px;
+}
+
+/* Destination input field. It occupies the whole width of search widget */
+.search-widget .destination-block input {
+    width: 100%;
+}
+
+/* Check-in, check-out, rooms, adults, children, hotel-chains, star-rating */
+
+.search-widget .check-in-block,
+.search-widget .check-out-block,
+.search-widget .rooms-block,
+.search-widget .adults-block,
+.search-widget .children-block,
+.search-widget .hotel-chains-block,
+.search-widget .star-rating-block {
+    float: left; /* Search widget sections are displayed in line */
+}
+
+.search-widget .check-in-block,
+.search-widget .hotel-chains-block {
+    clear: both; /* Check-in section and Hotel chains section start from new line */
+}
+
+/* Calendar icon (for check-in, check-out fields) */
+.search-widget .calendar-icon {
+    background: url("https://www.travelnow.com/templates/389775/static/1/default/images/widgets/searchwidget/ico-calendar.png") right top no-repeat;
+    width: 21px;
+    height: 22px;
+    float: right;
+    cursor: pointer;
+}
+
+/* Reset dates section */
+.search-widget .reset-dates-block {
+    clear: both; /* Reset dates section starts from new line */
+    white-space: nowrap;
+    overflow: hidden; /* Cut long label */
+}
+
+/* Align label with checkbox */
+.search-widget .reset-dates-block label {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 6px;
+}
+    /* Clear calendar's float, using dialog inbuilt form element */
+    #check-inDialogContainer .bd form {
+        clear:left;
+    }
+
+    /* Have calendar squeeze upto bd bounding box */
+    #check-inDialogContainer .bd {
+        padding:0;
+    }
+
+    #check-inDialogContainer .hd {
+        text-align:left;
+    }
+
+    /* Center buttons in the footer */
+    #check-inDialogContainer .ft .button-group {
+        text-align:center;
+    }
+
+    /* Prevent border-collapse:collapse from bleeding through in IE6, IE7 */
+    #check-inDialogContainer.yui-overlay-hidden table {
+        *display:none;
+    }
+
+    /* Remove calendar's border and set padding in ems instead of px, so we can specify an width in ems for the container */
+    #check-inContainerCalendar {
+        border:none;
+        padding:1em;
+    }
+    /* Clear calendar's float, using dialog inbuilt form element */
+    #check-outDialogContainer .bd form {
+        clear:left;
+    }
+
+    /* Have calendar squeeze upto bd bounding box */
+    #check-outDialogContainer .bd {
+        padding:0;
+    }
+
+    #check-outDialogContainer .hd {
+        text-align:left;
+    }
+
+    /* Center buttons in the footer */
+    #check-outDialogContainer .ft .button-group {
+        text-align:center;
+    }
+
+    /* Prevent border-collapse:collapse from bleeding through in IE6, IE7 */
+    #check-outDialogContainer.yui-overlay-hidden table {
+        *display:none;
+    }
+
+    /* Remove calendar's border and set padding in ems instead of px, so we can specify an width in ems for the container */
+    #check-outContainerCalendar {
+        border:none;
+        padding:1em;
+    }
+
+
+/* 250x250, variant A specific */
+
+/* Set size of widget (2px less because of the border) */
+.size250x250A {
+    width: 248px;
+    height: 248px;
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+}
+
+/* Search widget inner intends */
+.size250x250A .search-widget-inner {
+    padding: 7px 3px 0 9px;
+}
+
+/* Don't display predefined destinations section */
+.size250x250A .predefined-destinations-block {
+    display: none;
+}
+
+/* Set sizes for check-in, check-out, hotel chains and star rating sections (they are divided into 2 columns) */
+.size250x250A .check-in-block,
+.size250x250A .check-out-block,
+.size250x250A .hotel-chains-block,
+.size250x250A .star-rating-block {
+    width: 107px;
+    padding-right: 11px;
+}
+
+/* Set sizes for check-in, check-out input fields */
+.size250x250A .check-in-block input,
+.size250x250A .check-out-block input {
+    width: 81px;
+}
+
+/* Set size for rooms section */
+.size250x250A .rooms-block {
+    width: 65px;
+    padding-right: 7px;
+}
+
+/* Set size for adults and children sections */
+.size250x250A .adults-block,
+.size250x250A .children-block {
+    width: 73px;
+    padding-right: 7px;
+}
+
+.size250x250A .reset-dates-block {
+    display: none;
+}
+
+/* Correct sizes for IE7 Quirks Mode (it uses border-box sizing model) */
+* html .size250x250A {
+    width /**/: 250px;
+    height /**/: 250px;
+}
+
+* html .size250x250A .check-in-block,
+* html .size250x250A .check-out-block,
+* html .size250x250A .hotel-chains-block,
+* html .size250x250A .star-rating-block {
+    width /**/: 118px;
+}
+
+* html .size250x250A .rooms-block {
+    width /**/: 72px;
+}
+
+* html .size250x250A .adults-block,
+* html .size250x250A .children-block {
+    width /**/: 80px;
+}

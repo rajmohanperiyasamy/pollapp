@@ -1,0 +1,293 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "Enquiry" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Enquiry Advertisement' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+  	<div class="header-bar">
+	<h2>{% trans 'Enquiry' %}</h2>
+ 		</div>
+		<div id="core-wraper" class="group">
+        	<div class="staff-main">
+              	<div class="page-wrap">
+					<div id="articles" class="group">
+                        <section class="toolbars">
+                            <div class="group">
+	                        <ul class="right">
+								<li align="right">
+	                              <form action="{% url 'search_results' %}" id="article-search-form" method="post" class="module-search tip tip3">
+	                               {% csrf_token %}
+		                            <button role="button" class="cform-button search-button" type="button" onclick = "$('#article-search-form').submit();"><span class="search-icon">{% trans 'Search' %}</span></button>
+			                            <div class="inline-block relative-block">
+			                                <input type="text" placeholder="{{ keyword }}" name="search_keyword" id="id_search_keyword" class="search-list-items search_adv1">  
+			                            </div>
+	                              </form>
+								</li>
+	                        </ul>
+                            <ul class="toolbar left">
+                                    <li class="master-check tool">
+										<span class="cform-checkbox-container"><input type="checkbox" value="true" id="master_check" name="master-check"><span class="cform-checkbox-element"></span></span>
+									</li>
+									<li class="tool action_status tip tip1">
+                                        <select  data-placeholder={% trans 'Action' %} id="actionSelect" class="select-menu" onchange="$('#id_action').val($(this).val()),action();" style=" width:140px;">
+                                          <option value="#"></option>
+                                          	<option value="DEL">{% trans 'Delete' %}</option>
+                                        </select>
+                                    </li>                                
+								<li class="tool tip tip2">      
+									<form action="{% url 'advertise_sort' %}"
+											style="display: inline-block"
+									        method="post" id = "sort">
+									{% csrf_token %}
+                                    <label class="inline-block">{% trans 'Sort by:' %}</label>
+                                    <select id="xorderSelect" onchange="$('#sort').submit();" style="width:150px;" class="select-menu" name = "sorting">
+                                          <option value="all" {% if filter == "all" %}selected="selected"{% endif %}>{% trans 'All' %}</option>
+                                          <option value="-created_on" {% if filter == "-created_on" %}selected="selected"{% endif %}>{% trans 'Newest' %}</option>
+                                          <option value="created_on" {% if filter == "created_on" %}selected="selected"{% endif %}>{% trans 'Oldest' %}</option>
+                                    </select> 
+									</form>                                                   
+                                </li>
+                            </ul>
+                        </div>
+                        </section>
+						<span id="ajax_content_loading" class="load-list-items" style="display:none">
+						 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+						</span>
+						<div style="display:none;" class="info-bar" id="top_info_bar"></div>
+						<input type="hidden" value="" name="id_action" id="id_action">
+						{% if search %}
+                          <div id="top_info_bar" class="info-bar">Showing search result for '{{ keyword }}' Advertisment <a href="/staff/enquiry/advertisement" class="text-link">Clear filter</a></div>
+						{% endif %}
+							 <div id="ajax_content_cls" class="group">
+			            		<ol class="data-table table-lists-container" id="ajax_content_list">
+								   {% if advertisements %}
+									{% for advertise in advertisements %}
+									<li class="table-list" id="li_{{buz.id}}">
+											<div class="table-list-container check-item group">
+											<span class="checkbox-wrap">
+												<span class="cform-checkbox-container">
+													<input type="checkbox" onclick="fix_action()" status="P" value="{{advertise.id}}" id="id_event_action" name="artCulture" class="check-overflow cbox check_action">
+												<span class="cform-checkbox-element"></span></span>
+											</span>
+											<div class="item-info relative-block">
+								                <h3 class="title "><a class = "bm-add-gadget light_box" href="{% url 'advertisment_details' advertise.id %}" title = "Advertisement Details" >{{ advertise.company }}</a></h3>
+								                <p class="ltxt80">
+													{{ advertise.email }} -
+													{{ advertise.phone_no }}
+												</p> 
+												<p class="ltxt80">
+													{% trans 'By - ' %} <a href="#">{{advertise.name}}</a> 
+													<span class="divider12">|</span>{{advertise.created_on|date:"M d, Y"}}
+												</p>
+								            </div>
+								            <div class="action-buttons {% if forloop.counter == 1 %}tip tip4{% endif %}">
+								                <div class="relative-block">
+								                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{advertise.id}}" onclick = "display_settings({{advertise.id}});"><span class="action-icon icon-manage"></span></span>
+								                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{advertise.id}}" style="display:none">
+								            	        <li onclick = "delete_data({{ advertise.id }})"><a href ="#">{% trans 'Delete this Advertise' %}</a></li>
+								                    </ul>
+												</div>                                                              	                                                         
+								            </div>
+								        </div>
+								    </li> 
+								  {% endfor %}
+								{% else %}
+									<div class="no-data">
+										<p>Sorry , No Advertisement found !</p>
+									</div>
+								{% endif %}
+								</ol>
+			           		  </div>	 
+                               {% if is_paginated %}
+      							    <div class="base-page-nav">
+	               						<ul class="page-nav">
+						              	{% if has_previous %}
+											<li><a href="{{url}}?page={{ prev }}" id="{{ prev }}">&lsaquo;</a></li>
+						                {% else %}
+											 <li ><a href="javascript:void(0)" id="{{ prev }}" class="inactive">&lsaquo;</a></li>
+						                {% endif %}
+						                
+						                {% if not in_leading_range %}
+											{% for num in pages_outside_trailing_range %}
+												{% ifequal num current_page %}
+													 <li><span title="{% trans 'Page' %} {{ num }} " class="active">{{ num }} ff</span></li>
+												{% else %}
+													 <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}">{{ num }} gg</a></li>
+												{% endifequal %}
+											{% endfor %}
+												...
+									    {% endif %} 
+						                 
+						                {% for num in page_numbers %}
+											{% ifequal num current_page %}
+												 <li><span title="{% trans 'Page' %} {{ num }} " class="active">{{ num }}</span></li>
+											{% else %}
+												<li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}&{% if sort %} sorted as= {{ sort }}{% endif %}">{{ num }}</a></li>
+											{% endifequal %}
+										{% endfor %}
+						                 
+						                {% if not in_trailing_range %}
+											...
+											{% for num in pages_outside_leading_range reversed %}
+												{% ifequal num current_page %}
+													 <li><span title="{% trans 'Page' %} {{ num }} " class="active">{{ num }}</span></li>
+												{% else %}
+													<li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}">{{ num }}</a></li>
+												{% endifequal %}
+											{% endfor %}
+										{% endif %}
+										
+										{% if has_next %}
+											<li><a  href="{{url}}?page={{ next }}" id="{{next}}" >&raquo;</a></li>
+										{% else %}
+											 <li><a href="javascript:void(0)" id="{{next}}" class="inactive">&raquo;</a></li>
+										{% endif %}
+								        </ul>
+        					       </div>   
+         	   				    {% endif %}                                      
+                    </div> <!-- end table -->
+              </div>  <!-- end page wrap -->
+        </div>  <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+        	<div class="preview-aside-meta group">
+               <ul class="side-navigation">
+                    <li class="active"><a href="/staff/enquiry/advertisement">Advertisement</a></li>
+                    <!--li><a href="/staff/enquiry/feedback">Feedback</a></li-->
+					<li><a href="/staff/enquiry/contacts">Contacts</a></li>
+                </ul> 
+            </div>
+            {% include 'enquiry/staff/faq.html' %}  
+        </div>                            
+	</div>                                                    
+</div>
+{% endblock %}			
+{% block footer_include %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.tool.action_status .chzn-container').addClass('chzn-disabled , disabled_chosen');
+ function advertisement_details(url){
+    $.colorbox({width: "620",initialWidth: "620", top:"5%", initialHeight: "200", href:url, onOpen:function(){$("#colorbox").addClass("no_title");} });
+}   
+
+});
+function display_settings(id){
+	$('.dev_settingsdrpdwn').hide();
+	$('span.item-manage').removeClass('active')
+	$('#settings_id_'+id).toggle();
+	$('#id_span_settings_'+id).toggleClass('active')
+	$('.dev_hide_list_status ul.dropdown-list').hide();
+	$('span.status-inside').removeClass('active')
+}
+var pathname = window.location.pathname;
+function delete_data(id)
+{
+var array_data='';
+array_data = "&id="+id;
+    $.ajax({
+            type: "GET",
+            url: "/staff/enquiry/delete-advertisement/",
+            data: array_data,
+            success: function(response){
+            if(response==0)
+            {
+            location.replace("/staff/enquiry/advertisement");
+            }
+            else
+            {
+            location.replace(pathname);
+            }
+            }
+    });
+    
+}
+function filter_action(ids,action){
+	var all_ids=[];
+	var dataString='';
+	
+	dataString+="sort="+$('#id_sort').val();
+	dataString+="&listing="+$('#id_listing_type').val();
+	dataString+="&created="+$('#id_created').val();
+	if($('#id_status').val()!='' && $('#id_status').val()!=null){
+			dataString+="&status="+$('#id_status').val();
+		}
+	if($('#id_pagentn').val()!='' && $('#id_pagentn').val()!=null){
+		dataString+="&page="+$('#id_pagentn').val();
+	}
+	if($('#id_item_per_page').val()!='' && $('#id_item_per_page').val()!=null){
+		dataString+="&item_perpage="+$('#id_item_per_page').val();
+	}
+	if($('#id_search').val()!='' && $('#id_search').val()!=null){
+		dataString+="&search=true";
+		dataString+="&kwd="+$('#id_search_keyword').val();
+		dataString+="&type="+$('#search_type').val();
+		dataString+="&cat="+$('#search_category').val();
+		if($('#search_status').val()!='' && $('#search_status').val()!=null){
+			dataString+="&status="+$('#search_status').val();
+		}
+	}
+	if(action=='#'){
+		dataString+="&action="+$('#id_action').val();
+		if(ids==0){
+			var ids=[];
+			$('.cbox:checked').each(function(){
+				ids.push($(this).val());
+			});
+		}
+	}else{dataString+="&action="+action;}
+	$('.cbox').each(function(){
+		all_ids.push($(this).val());
+	});
+	dataString+="&ids="+ids;
+	dataString+="&all_ids="+all_ids;
+	$('#ajax_action_loading').show();
+	hide_top_info_bar();
+	$.ajax({
+	type: "GET",
+	url: "{% url 'ajax_advertisement_action' %}",
+	data: dataString,
+	dataType:'JSON',
+	success: function(data){
+			if(data.status == 1){
+				location.replace("/staff/enquiry/contacts");
+			}
+			else{
+				alert(data.err);
+			}
+		}
+	});
+}
+function action(){
+	var flag=false;
+	var flag_action=false;
+	if($('#id_action').val()!='0'){
+		$('.cbox:checked').each(function(){
+			flag=true;
+		});
+		if(flag){
+			if($('#id_action').val()=='DEL'){
+				if(confirm(gettext('Are you sure you want to delete Advertisement(s) ?'))){flag_action=true;}
+			}
+			if(flag_action){filter_action(0,'#');}
+		}else{
+			alert('Please select Advertisement(s)')
+		}
+	}
+}
+function filter_content(){}
+</script>
+<ul class="tour_link">
+    <li class="tool-tip tttxt-t1"><a class="link1" href="/bmt/tour/enquiry/staff/actions.html"></a></li>
+    <li class="tool-tip tttxt-t2"><a class="link2" href="/bmt/tour/enquiry/staff/sorting.html"></a></li>
+    <li class="tool-tip tttxt-t3"><a class="link3" href="/bmt/tour/enquiry/staff/search.html"></a></li>
+    <li class="tool-tip tttxt-t4"><a class="link4" href="/bmt/tour/enquiry/staff/settings.html"></a></li>
+</ul>
+{% endblock %}	

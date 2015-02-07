@@ -1,0 +1,80 @@
+{% load i18n %}
+<div id="ajax_content_menu_outer">
+<div id="ajax_content_loading_menu" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving menu...' %}</p>
+</div>
+<div id="ajax_content_menu" class="modal-form">
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	{% if form.errors %}
+		<div class="messageerror" >
+			<strong>{% trans 'There is a problem with your submission' %}</strong>
+            <ul style="list-style:square;margin-left:20px;">
+           		{% for field in form %}
+           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+          	 	{% endfor %}
+			</ul>
+	 	</div>
+	{% endif %}
+     <form id="mform" action="{% url 'staff_restaurant_menu_add' restaurant.id %}{% if menu_obj %}/?mid={{menu_obj.id}}{% endif %}"  method="post" enctype="multipart/form-data">
+    	<div class="fields hform">
+            <div class="field-group" style="width:320px">
+                <div class="field text-field">	
+                    <div class="label" name="title"><label>{% trans 'Title' %}<span class="required-field">*</span></label></div>	
+                    <div class="value">{{form.title}}</div>
+				</div>
+				<div class="field select-field">
+                    <div class="label"><label>{% trans 'Category' %}<span class="required-field">*</span></label></div>
+                    <div class="value">{{ form.categories }}</div>
+            	</div>
+            	<div class="field select-field">
+                    <div class="label"><label>{% trans 'Description' %}</label></div>
+                    <div class="value">{{ form.description }}</div>
+            	</div>
+            	<div class="field select-field">
+                    <div class="label"><label>{% trans 'Price' %}</label></div>
+                    <div class="value">{{globalsettings.currency}}{{ form.price }}</div>
+            	</div>
+            	<!--div class="field select-field">
+                    <div class="label"><label>{% trans 'Discount Price' %}</label></div>
+                    <div class="value">{{globalsettings.currency}}{{ form.discount_price }}</div>
+            	</div-->
+            	
+			 	<!--div class="field select-field">
+                    <div class="label" id="fid"><label for="">{% trans 'Upload CSV File' %}<span class="required-field">*</span></label></div>
+                     <div class="value">
+                             {{ form.files }}
+                      </div>
+                 </div-->   
+			</div>
+		</div>
+        <div class="modal-base form-submit group">
+          <button role="button" class="cform-button prime right" type="submit"><span class="cform-button-text">{% if menu_obj %}{% trans 'UPDATE' %}{% else %}{% trans 'SAVE' %}{% endif %}</span></button>
+        </div>           
+    </form>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/inline.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+
+
+	$("#mform").validate({
+		ignore: "",
+		highlight: function(element, errorClass){add_error_class(element)},
+		unhighlight: function(element, errorClass){remove_error_class(element)},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			title: "required",
+			categories:"required"
+	   	}
+
+	});
+	
+
+
+});
+</script>
+</div>

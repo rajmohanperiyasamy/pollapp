@@ -1,0 +1,55 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load modulotag %}
+{% block pagetitle %}{% blocktrans %}Deal FAQ's{% endblocktrans %} | {% trans 'Get answers for your deal queries.' %}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "deals" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid"> 
+        {% block headernavigation %}
+            {% activetab 'headernav' 'help' %}
+            {% include 'default/deals/top-header-part.html' %}
+            {{ block.super }}
+        {% endblock %}
+        <div class="row-fluid">
+            <div class="span8 main mRb30">
+                <section class="sCn">
+                    <div class="sCn-tTl sCn-tTl-bR">
+                        <h3 class="clearfix oFl">
+                            <span class="ib pLlT">{% trans 'Deal FAQs' %}</span>
+                        </h3>
+                    </div>
+                    {% if faqs %}
+                    <div class="body">
+                        {% for faq in faqs %}
+                        <h5><strong>{{ faq.question }}</strong></h5> 
+                        <p class="fS13">{{ faq.answer }}</p>  
+                        {% if not forloop.last %}<hr>{% endif %} 
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </section>
+            </div>
+            <!--main-->
+            <aside class="sD-bR span4 mSnRy">
+                <div>
+                    <section class="tXt-cTr pD15 bNr-aD" id="banner_placement_right"></section> 
+                </div>
+                <div>
+                    {% include 'default/deals/part_subscribe.html' %}
+                </div>
+                <div>
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}            

@@ -1,0 +1,43 @@
+{% load i18n %}
+<p>
+<table>
+	<tr>
+		<td>{% trans 'Name' %}</td>
+		<td><strong>{{ contact.name }}</strong></td>
+	</tr>
+	
+	{% if contact.company %}
+	<tr>
+		<td>{% trans 'Company' %}</td>
+		<td><strong>{{ contact.company }}</strong></td>
+	</tr>
+	{% endif %}
+
+	{% if contact.phone %}
+	<tr>
+		<td>{% trans 'Phone' %}</td>
+		<td><strong>{{ contact.phone }}</strong></td>
+	</tr>
+	{% endif %}
+
+	<tr>
+		<td>{% trans 'Email' %}</td>
+		<td><strong>{{ contact.email }}</strong></td>
+	</tr>
+
+	{% if contact.subject %}	
+	<tr>
+		<td>{% trans 'Subject ' %}</td>
+		<td><strong>{{ contact.subject  }}</strong></td>
+	</tr>
+	{% endif %}
+
+	{% if contact.notes %}	
+	<tr>
+		<td>{% trans 'Message' %}</td>
+		<td><strong>{{ contact.notes }}</strong></td>
+	</tr>
+	{% endif %}
+</table>
+</p><br/><br/>
+<p><strong>{% trans 'This Information is mailed by' %} <a href="{{globalsettings.website_url}}">{{globalsettings.domain}}</a></strong></p>

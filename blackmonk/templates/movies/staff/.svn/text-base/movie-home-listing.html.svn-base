@@ -1,0 +1,244 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "movies" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Movie Home ' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+	               <input type="hidden" value="{% url 'movie_staff_ajax__state' %}" name="id_movie_status_url" id="id_movie_status_url">
+                  	<div class="header-bar has-sub has-sub-menu">
+					<h2 style="height:24px">
+						<span class="inline-block change_module">{% trans 'Movies' %}<span class="inline-block arrow"></span></span>
+                        <div class="sub_nav">
+                        	<ul>
+                            	<li class="movies">
+                                	<a href="/staff/movies/"><span class="icon"></span>{% trans 'Movies' %}</a>
+                                </li>
+                                <li class="theaters">
+                                	<a href="/staff/movies/theatre-listing"><span class="icon"></span>{% trans 'Theaters' %}</a>
+                                </li>
+                            </ul>
+                        </div>
+					</h2>
+                        <section class="sub-header-bar">
+                            <div class="group">
+                                  <div class="filter-view-tabs">
+                                        <ul class="left">
+                                              <li><label>{% trans 'View:' %}</label></li>
+                                              <li class="view-tab tip tip1" id="filter_a">
+												    <a title="{% trans 'View All' %}" name="all" id="movie_all" class="view-both tttxt-n active first" href="javascript:void(0)"><span>{% trans 'All' %}</span></a>
+                                                    <a title="{% trans 'Inactive Only' %}" name="B" id="movie_pending" class="view-pending tttxt-n" href="javascript:void(0)"><span>{% trans 'Inactive' %}</span></a>
+                                                    <a title="{% trans 'Active only' %}" name="P" id="movie_published" class="view-published tttxt-n last" href="javascript:void(0)"><span>{% trans 'Active' %}</span></a>
+											  </li>	
+											  <li class="view-tab tip tip2" id="filter_c">
+                                                    <a title="{% trans 'View All' %}" class="view-both tttxt-n active first" name="all" href="javascript:void(0)"><span>{% trans 'All' %}</span></a>
+                                                    <a title="{% trans 'Show my Movies' %}"  name="CSM" class="view-mine tttxt-n" href="javascript:void(0)"><span>{% trans 'Your' %}</span></a>
+                                                    <a title="{% trans 'Show movies posted by others' %}" name="CSO" class="view-others tttxt-n last" href="javascript:void(0)"><span>{% trans 'Others' %}</span></a>
+                                              </li>
+										</ul>
+					 				 <form action="#" id="article-search-form" class="module-search tip tip3">
+                                            <button role="button" class="cform-button search-button" type="button" onclick="$('#id_search').val('true'),sort_search_top();"><span class="search-icon">{% trans 'Search' %}</span></button>
+                                            <div class="inline-block relative-block">
+                                             <!--span onclick="clear_search();" class="reset txt-button tttxt" id="close_search" title="{% trans 'Clear Search' %}" style="{% if not search %}display:none;{% endif %}">Clear search</span-->
+                                              <input type="text" id = "id_search_keyword" onkeyup="$('.search_adv2').val(this.value);"  placeholder="Search Movies" name="search_keyword"  class="search-list-items search_adv1">
+                                                <div class="call-advanced-search">
+                                                    <span class="arrow-down tttxt" title="{% trans 'Show search options' %}"></span>
+                                                </div> 
+                                                <div id="advanced-search-options" style="display: none;">
+                                                	<div class="search-head">
+                                                    	<!-- h5>Search</h5 -->
+                                                    	<span class="inline-block icon-close close-this"></span>
+                                                    </div>
+	                                                <div class="advanced-search-fields">
+                                                		<dl class="vertical">
+                                                			<dt><label>{% trans 'Search' %}</label></dt>
+                                                			<dd>
+                                                            <input type="text"  class="search_adv2" onkeyup="$('.search_adv1').val(this.value);"  onchange="disable_search();" style="width: 161px;" id = "id_search_keyword1"  placeholder="Keywords" name="search_keyword"  class="search_adv2">
+                                                			</dd>                                                        
+                                                			<dt></dt>
+                                                			<dd>
+										                      <select onchange="disable_search();"  name="search_type" id="search_type" class="select-menu" style="width: 167px;">
+							                                        <option value="all" {% ifequal searchby 'all'%} selected="selected"{% endifequal %}>{% trans 'All Order'%}</option>
+							                                        <option value="upcoming" {% ifequal search_type 'upcoming'%} selected="selected"{% endifequal %}>UpComing</option>
+							                                        <option value="nowplaying" {% ifequal search_type 'nowplaying'%} selected="selected"{% endifequal %}>Now Playing</option>
+							                                  </select>	
+                                                			</dd>
+															<dt></dt>
+															<dd>
+																<select onchange="disable_search();" name="search_category" id="search_category" class="select-menu" style="width: 167px;">
+								                                        <option value="">{% trans 'All Categories'%} </option>
+								                                        {% for v in categories %}
+								                                        <option value="{{v.id}}" {% ifequal cat v.id %} selected="selected" {% endifequal %}>{{v.name}}</option>
+								                                        {% endfor %}
+								                                 </select>
+															</dd>	 
+                                                		</dl>
+													</div>                                                        
+                                                	<div class="form-submit"><button type="button" id="bottom_search_button" class="btn-txt-blue small advnc_search" disabled="disabled" onclick="$('#id_search').val('true'),sort_search();" role="button"><span class="btn-txt">{% trans 'Search' %}</span></button></div>
+                                                </div> 
+											</div>                                                
+                                        </form>
+                                  </div>
+                                  <div class="add-section-right">
+                                      <a href="{% url 'movie_staff_addmovie' %}" class="btn-txt-prime bm-upload-videos {% if not perms.movies.add_movies %}disabled{% endif %}" title="Add Movie"><span class="btn-txt">{% trans 'Add New Movie' %}</span></a>
+                                  </div> 
+                            </div>
+                        </section>                          
+                 		</div>
+						<div id="core-wraper" class="group">
+                    	<div class="staff-main">
+                          	<div class="page-wrap">
+								<div id="articles" class="group">
+                                    <section class="toolbars">
+                                        <div class="group">
+                                            <ul class="toolbar left">
+                                                <li class="master-check tool">
+													<span class="cform-checkbox-container"><input type="checkbox"  value="true" id="master_check" name="master-check"><span class="cform-checkbox-element"></span></span>
+												</li>
+                                                {% if perms.movies.delete_movies or perms.movies.publish_movies %}
+												<li class="tool action_status tip tip4">
+													 <select data-placeholder={% trans 'Action' %}   id="actionSelect" name="actionSelect" onchange="$('#id_action').val($(this).val()),action();" style="width:140px;"  class="select-menu">
+                                                          <option selected value="#" ></option>
+                                                          {% if perms.movies.delete_movies %}
+														  	<option value="DEL">{% trans 'Delete' %}</option>
+														   {% endif %}
+														   {% if perms.movies.publish_movies %}
+	                                                          <optgroup label="Status">
+	                                                                <option value="P" class='publish_action'>{% trans 'Activate' %}</option>
+	                                                                <option value="B" class='block_action'>{% trans 'Deactivate' %}</option>
+	                                                          </optgroup>
+															{% endif %}
+                                                     </select> 
+												</li>
+												{% endif %}
+											    <li class="tool tip tip5">
+                                                <label class="inline-block">{% trans 'Sort by:' %}</label>
+	                                                    <select id="orderSelect" onchange="$('#id_sort').val($(this).val()),sort_content();" style="width:140px;" class="select-menu">
+	                                                          <option value="-created_on" selected="">{% trans 'Newest' %}</option>
+	                                                          <option value="created_on">{% trans 'Oldest' %}</option>
+	                                                          <option value="nowplaying">{% trans 'Now Playing' %}</option>
+															  <option value="upcoming">{% trans 'Upcoming' %}</option>
+	                                                    </select>                                                   
+	                                               </li>
+                                            </ul>
+                                            {% include 'common/pagination_top.html'%} <!-- pagination top -->  
+                                        </div>
+                                    </section>
+									<span id="ajax_content_loading" class="load-list-items" style="display:none">
+									 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+									</span>
+									<div style="display:none;" class="info-bar" id="top_info_bar"></div>
+									<div id="id_content_listing" class="group">
+                                           {% include  'movies/staff/ajax-movie-listing.html'%} 
+									</div>	                                       
+                                </div> <!-- end table -->
+                          </div>  <!-- end page wrap -->
+                    </div>  <!-- end main-col -->   
+                    <div id="aside" class="side-bar">
+                    	<div id="module-stats" class="section">
+                        	<div class="group">
+                                <h5>{% trans 'State' %}</h5>
+                                <div class="stats-toggle tip tip6">
+                                    <a class="state-all statefltr {% if status == 'all' %}active{% endif %}" id="id_status_all" onclick="show_count('all');" href="javascript:void(0)" title="{% trans 'Show all state' %}"><span class="icon-state-all"></span></a> 
+								    <a class="state-you statefltr {% if status == 'mine' %}active{% endif %}" id="id_status_mine" onclick="show_count('mine');" href="javascript:void(0)" title="{% trans 'Show your state' %}"><span class="icon-state-you"></span></a>                                                    
+							    </div>
+							<span id="ajax_loading" class="loading-stats"  style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" align="..."></span>
+							</div>                                    
+                        	<ol class="stats-summary" id="id_module_state_listing">
+                            	 <li class="active-state" ><strong id="id_pub">{{ published }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Active' %}</a></li>
+							 	 <li class="inactive-state" ><strong id="id_blocked">{{ blocked }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Inactive' %}</a></li>
+							     <li class="sum"><strong id="id_tot">{{ total }}</strong> {% trans 'Total Movies posted.' %}</li>
+                            </ol>
+                        </div>
+                        {% include 'movies/staff/movie-faq.html' %}                                    
+                    </div>                            
+					</div>                                                    
+				</div>
+{% endblock %}				
+{% block footer_include %}	
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/movies/staff_movies.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.tool.action_status .chzn-container').addClass('chzn-disabled , disabled_chosen');
+	$('.header-bar.has-sub-menu h2 .change_module ').click(
+		function() { 
+		$('.header-bar.has-sub-menu h2 .sub_nav').toggle();
+		 }
+	);  
+		$('div#content').click(
+			function() { 
+			$('.header-bar.has-sub-menu h2 .sub_nav').hide();
+			 }
+		);
+		$('.header-bar.has-sub-menu h2 .change_module').click(function(event){
+		   event.stopPropagation();
+		});
+
+
+
+	$('#master_check').click(function(){
+		if($("#master_check").is(':checked')){$(".cbox").attr('checked',true);}
+		else{$(".cbox").attr('checked',false);}
+	});
+});
+	function sort_search_top(){
+	var keyword = $('#id_search_keyword').val();
+	if (keyword){
+		$('#top_search_btn').removeAttr('disabled','disabled');
+		$('#id_search').val('true')
+		sort_search();
+	}
+	
+}
+
+ function disable_search(){
+ 	var kw = $('#id_search_keyword').val();
+	var status = $('#search_status').val();
+	var cat = $('#search_category').val();
+	var order = $('#search_type').val();
+	if (kw){
+			$('#bottom_search_button').removeAttr('disabled','disabled');
+		//	$('#id_search').val('true');
+		//	sort_search();
+	}
+	if (status){
+			$('#bottom_search_button').removeAttr('disabled','disabled');
+			//$('#id_search').val('true');
+			//sort_search();
+
+	}
+	if (cat){
+			
+			//$('#id_search').val('true');
+			//sort_search();
+	}
+	if (order){
+		$('#bottom_search_button').removeAttr('disabled','disabled');
+	}
+	else{
+		$('#bottom_search_button').attr('disabled','disabled');
+	}	
+	
+ } 
+</script>
+<ul class="tour_link">
+    <li class="tool-tip tttxt-t1"><a class="link1" href="/bmt/tour/movies/staff/status.html"></a></li>
+    <li class="tool-tip tttxt-t2"><a class="link2" href="/bmt/tour/movies/staff/submissions.html"></a></li>
+    <li class="tool-tip tttxt-t3"><a class="link3" href="/bmt/tour/movies/staff/search.html"></a></li>
+    <li class="tool-tip tttxt-t4"><a class="link4" href="/bmt/tour/movies/staff/actions.html"></a></li>
+    <li class="tool-tip tttxt-t5"><a class="link5" href="/bmt/tour/movies/staff/sorting.html"></a></li>
+    <li class="tool-tip tttxt-t6"><a class="link6" href="/bmt/tour/movies/staff/state.html"></a></li>
+    <li class="tool-tip tttxt-t7"><a class="link7" href="/bmt/tour/movies/staff/status_aside.html"></a></li>
+    <li class="tool-tip tttxt-t8"><a class="link8" href="/bmt/tour/movies/staff/settings.html"></a></li>
+</ul>
+{% endblock %}

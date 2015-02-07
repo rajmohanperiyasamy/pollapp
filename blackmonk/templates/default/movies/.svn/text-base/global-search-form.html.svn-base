@@ -1,0 +1,111 @@
+{% load i18n bm_movie_tags %}
+{% get_home_page_movies as movie_pack %}
+<form class="form-search mRb0" action="{% url 'showtime_search' %}">
+    <input type="hidden" name="search" value="true">
+    <input type="hidden" name="sfh" value="true">
+	<input type="hidden" name="keyword" id="keyword">
+    <div class="mDl">
+        <h3 class="mDl-nM">
+            <i aria-hidden="true" class="bUi-iCn-mOv-24 fS16"></i>
+            	<span class="ib mRb0"><a href="{% url 'movies_listing' 'nowplaying' %}" style="color: rgb(59, 63, 68) ! important;">{% trans 'Movies' %}</a><i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+            </span>
+        </h3>
+    </div>
+    <div class="span5 cLrFx">
+        <div class="btn-group w100P bUi-sLcT" id="dropdown-select">
+            <button style="" data-toggle="dropdown" class="btn btn-light dropdown-toggle fS13 w100P">
+            	<span class="pLlT" name ="dropdown-value" id="dropdown-value" value="" >Select Movie Or Cinemas</span><i class="bUi-iCn-cRt-tB-12 pLrT fS12" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu tWcL fS12 show_movies" id="movie_search_dR">
+            	<li class="radio">
+                    <label class="radio inline fW-nRmL">
+                        <input checked="checked" type="radio" name="type" id="show_movies" value='movie'> Movies
+                    </label>
+                     <label class="radio inline fW-nRmL">
+                        <input type="radio" name="type" id="show_theatre" value='theatre'> Cinemas
+                    </label>
+                </li>
+                <li class="divider"></li>
+				{% with movie_pack.released_movies as released_movies %}
+					{% if released_movies %}
+                        <li class="nav-header movie_S">
+                            Now Playing
+                        </li>
+						{% for movie in released_movies %}
+                            <li class="movie_S">
+                                <a class="select_theatre_movie" href="javascript:void(0)" data-val="{{ movie.title }}" title='{{movie.title}}'>{{movie.title|truncatechars:25}}</a>
+                            </li>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+				{% with movie_pack.upcoming_movies as upcoming_movies %}
+                    <li class="divider movie_S"></li>
+					{% if upcoming_movies %}
+                        <li class="nav-header movie_S">
+                            Upcoming
+                        </li>
+						{% for movie in upcoming_movies %}
+                            <li class="movie_S">
+                                <a class="select_theatre_movie" href="javascript:void(0)" data-val="{{ movie.title }}" title='{{movie.title}}'>{{movie.title|truncatechars:25}}</a>
+                            </li>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+				<li class="divider_s movie_S"></li>
+				{% with movie_pack.theatres as theatres %}
+					{% if theatres %}
+						{% for theatre in theatres %}
+                            <li class="theatre_S">
+                                <a class="select_theatre_movie" href="javascript:void(0)" data-val="{{ theatre.name }}" title='{{theatre.name}}'>{{theatre.name|truncatechars:25}}</a>
+                            </li>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+            </ul>
+        </div>
+    </div>    <div class="span3">
+        <select class="bUiSlCt-wHt fS13" name="date">
+            {% for dt in movie_pack.datelist %}
+                <option value="{{dt|date:'Y-m-d'}}">{{dt|date:'l, M d'}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="ib sUb-bTn mRl12 mRl0mP bOt0">
+        <button type="submit" class="btn btn-primary pDlR18mN980mX199">
+        <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+        </button>
+    </div>
+</form>
+<style>
+	#movie_search_dR.show_movies .movie_S{
+		display:block;
+	}
+	#movie_search_dR.show_movies .theatre_S{
+		display:none;
+	}
+	#movie_search_dR.show_theatre .theatre_S{
+		display:block;
+	}
+	#movie_search_dR.show_theatre .movie_S{
+		display:none;
+	}	
+</style> 
+<script>
+$(document).ready(function(){
+	$('#show_movies').click(function(){
+		$('#movie_search_dR').removeClass('show_theatre').addClass('show_movies');	
+	})
+	$('#show_theatre').click(function(){
+		$('#movie_search_dR').removeClass('show_movies').addClass('show_theatre');	
+	})
+});
+var sValue = $('#dropdown-value');
+			$('#dropdown-select a').click(function(){
+				var value = $(this).text();	
+				sValue.text(value);
+			})
+			$('.select_theatre_movie').click(function(){
+				var value = $(this).attr('data-val');	
+				$('#keyword').val(value);
+			})
+</script>

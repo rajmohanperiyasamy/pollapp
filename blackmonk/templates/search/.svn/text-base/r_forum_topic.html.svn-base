@@ -1,0 +1,17 @@
+
+{% load ds_utils %}
+{% load truncate_filter %}
+ <td class="added_on">
+    <h5 class="module_title forum">Forum</h5>
+ <!--   <span>Posted On<br>8 July, 2008</span> -->
+</td>
+<td class="forum">
+    <div class="item group">
+        <div class="item_inner">
+            <div class="read_icon">
+                   <a class="title" href="{{object.get_absolute_url }}">{{object.name}}</a>
+                <span class="sub_title">by <a href="#" class="auth_name">{{ object.user}}</a> on <span class="time">{% ds_time object.created %}</span></span>
+            </div>                                                
+        </div>                                         
+    </div> 
+</td>

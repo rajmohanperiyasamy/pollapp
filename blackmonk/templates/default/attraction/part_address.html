@@ -1,0 +1,48 @@
+{% load i18n ds_utils %}
+{% load mptt_comments_tags %}
+
+<div class="fTrD-tXt" itemscope itemtype="http://schema.org/Place">
+    <div class="fTrD-tXt-iN pD0">
+        <div class="row-fluid">
+            <div class="pD15 cLrFx">
+            	{% with attraction.venue as venue %}
+                <ul class="iCnC-lSt iCn10 iN-bLk mRb0 sMrY cLr-lT pDl0 span8 pDb15mX768 sP7mX768">
+                    <li class="iCnC-lSt-iTm cLr-dRk fS12" itemprop="address"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i><span class=""><a itemprop="map" href="{% url 'events_view_venue_event' venue.slug %}" title="Address" class="cLr-dRk">{{venue.venue}} {{venue.address1}}</a></span></li>
+                    {% if venue.telephone1 or venue.mobile %}<li class="iCnC-lSt-iTm cLr-dRk fS12"><i class="bUi-iCn-cAl-12"></i><span class="fS12" itemprop="telephone">{{venue.telephone1|default:venue.mobile}}</span></li>{% endif %}
+                    {% if attraction.website_url %}<li class="iCnC-lSt-iTm cLr-dRk fS12"><i aria-hidden="true" class="bUi-iCn-gLb-12"></i><span class="fS12"><a title="Website" href="{{attraction.website_url}}" target="_blank"  class="cLr-dRk">{{ attraction.website_url|format_web_address }}</a></span></li>{% endif %}
+                    <li class="iCnC-lSt-iTm cLr-dRk fS12"><i aria-hidden="true" class="bUi-iCn-tAg-12"></i><span><a href="{{attraction.category.all.0.get_absolute_url}}" title="Category" class="cLr-dRk">{{attraction.category.all.0.name}}</a></span></li>
+                    {% if attraction.start_time or attraction.end_time %}<li class="iCnC-lSt-iTm cLr-dRk fS12" itemscope itemtype="http://schema.org/openingHoursSpecification"><i aria-hidden="true" class="bUi-iCn-oPn-12"></i><span><span class="cLr-dRk oPn-tMs" data-toggle="popover">Today {% if attraction.start_time %}{{attraction.start_time|date:'g:i a'}} – {% endif %}{% if attraction.end_time %}{{attraction.end_time|date:'g:i a'}}{% endif %}</span></span>
+                    {% if attraction.start_time %}<meta itemprop="opens" content="{{ attraction.start_time|get_iso_time_format }}"/>{% endif %}{% if attraction.end_time %}<meta itemprop="closes" content="{{ attraction.end_time|get_iso_time_format }}"/>{% endif %}<!--li class="iCnC-lSt-iTm cLr-dRk fS12"><span>$$$$</span></li-->
+					</li>{% endif %}
+                </ul>
+                {% endwith %}
+                {% if attraction.rating != 0 %}
+                <div class="span4 pLlTtB pDl0mX768 sP6mX768"  itemscope itemtype="http://schema.org/AggregateRating">
+                    <div class="sTr-rT mRb0 oVrL-sCr pLlTtB">
+                        {% if attraction.rating != 0 %}
+                            <span class="cLr-gRy fS9 uC">{% trans 'overall score' %}</span><br>
+                            <span class="rT-oVrL-sCr ib cLr-dRk" itemprop="ratingValue">{{attraction.rating}}</span>
+							<meta itemprop="worstRating" content="1"/>
+						    <meta itemprop="bestRating" content="5"/>
+                        {% endif %}
+                        <div class="ib">{% if attraction.rating != 0 %}<span id="id_rating" class="sTr-wPr sTr-rT-rD rEd iCn16 mRt-4"></span>{% endif %}<a href="#" class="cLr-gRy fS12 sPrTr" itemprop="reviewCount">{% get_mptt_comment_count for attraction as comment_count %}{{comment_count}} {% trans 'reviews' %}</a> <a href="#" class="cLr-gRy hide" ><i aria-hidden="true" class="bUi-iCn-eDt-16 fS12"></i></a></div>
+                    </div>
+                </div>
+                {% endif %}
+                 <!--div class="oPn-tMs-lSt hide">
+                    <ul class="unstyled fS12 oPn-tMs-dTa mRb0">
+                        <li><span class="dY">Sunday</span><span class="tMs">Closed</span></li>
+                        <li><span class="dY">Monday</span><span class="tMs">9:00 am - 5:00 pm</span></li>
+                        <li><span class="dY">Tuesday</span> <span class="tMs">9:00 am - 5:00 pm</span></li>
+                        <li><span class="dY">Wednesday</span> <span class="tMs">9:00 am - 5:00 pm</span></li>
+                        <li><span class="dY">Thursday</span> <span class="tMs">9:00 am - 5:00 pm</span></li>
+                        <li><span class="dY">Friday</span> <span class="tMs">9:00 am - 5:00 pm</span></li>
+                        <li class="tDy"><span class="dY">Saturday</span> <span class="tMs">Closed</span></li>
+                    </ul>
+                </div-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.TrD-tXt -->  
+

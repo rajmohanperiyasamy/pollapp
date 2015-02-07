@@ -1,0 +1,78 @@
+{% load i18n %}
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Loading ...' %}</p>
+</div>
+<div class="main_col" id="ajax_content">
+	<div id="add-new-category" class="modal-form" style="width:560px !important;">
+    <form name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+        <div class="field-group cr_wmr">   
+            <div class="fields-head">
+                <h4>Claim Detail:</h4>
+            </div>     
+            <div class="field text-field">
+                <div class="label">
+                    <label style="display: inline-block; width: 75px;">Business</label>
+                    <label style="font-weight: bold; margin-left: 10px;">: {{claim.business}}</label>
+                </div>
+            </div>      
+            <div class="field text-field">
+                <div class="label">
+                    <label style="display: inline-block; width: 75px;">Claimed By</label>
+                    <label style="font-weight: bold; margin-left: 10px;">: <a href="{% url 'user_profile' claim.user.profile_slug %}" target="_blank">{{claim.user}}</a></label>
+                </div>
+            </div>      
+            <div class="field text-field">
+                <div class="label">
+                    <label style="display: inline-block; width: 75px;">Is Paid</label>
+                    <label style="font-weight: bold; margin-left: 10px;{% if not claim.is_paid %}color: red;{% endif %}">: {% if claim.is_paid %}Yes{% else %}No{% endif %}</label>
+                </div>
+            </div>      
+            <div class="field text-field">
+                <div class="label">
+                    <label style="display: inline-block; width: 75px;">Listing Type</label>
+                    <label style="font-weight: bold; margin-left: 10px;">: {% if claim.payment_status == 'B' %}Free{% elif claim.payment_status == 'F' %}Professional{% else %}Premium{% endif %} Business</label>
+                </div>
+            </div>      
+        </div>     
+        <div class="field-group cr_wmr">   
+            <div class="fields-head">
+                <h4>Select an Action:</h4>
+            </div>
+            {% if claim.is_paid %}
+            <div class="field text-field">
+                <div class="value">
+                    <span class="cform-radio-container"><input type="radio" value="AP" class="checkbox mrl0"  name="claimoption"><span class="cform-radio-element"></span></span><label for="all-day">{% trans 'Approve and Publish' %}</label>
+                </div>
+            </div>      
+            <div class="field text-field">
+                <div class="value">
+                    <span class="cform-radio-container"><input type="radio" value="AN" class="checkbox mrl0"  name="claimoption"><span class="cform-radio-element"></span></span><label for="all-day">{% trans 'Approve and mark as Pending' %}</label>
+                </div>
+            </div>
+            {% endif %}
+            <div class="field text-field">
+                <div class="value">
+                    <span class="cform-radio-container"><input type="radio" value="RP" class="checkbox mrl0"  name="claimoption"><span class="cform-radio-element"></span></span><label for="all-day">{% trans 'Reject and Pubish' %}</label>
+                </div>
+            </div>      
+            <div class="field text-field">
+                <div class="value">
+                    <span class="cform-radio-container"><input type="radio" value="RN" class="checkbox mrl0"  name="claimoption"><span class="cform-radio-element"></span></span><label for="all-day">{% trans 'Reject and mark as Pending' %}</label>
+                </div>
+            </div>      
+            <div class="field text-field">
+                <div class="value">
+                    <span class="cform-radio-container"><input type="radio" value="RB" class="checkbox mrl0"  name="claimoption"><span class="cform-radio-element"></span></span><label for="all-day">{% trans 'Reject and mark as Blocked' %}</label>
+                </div>
+            </div>      
+			<span class="tip">Note: If you reject this claim. The claim request will be deleted and business will be marked as Unclaimed.</span>                                                           
+        </div>            
+        <div class="modal-base form-submit group">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="save_claimoption({{business.id}})"><span class="cform-button-text">{% trans 'Update' %}</span></button>
+		</div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+</div>

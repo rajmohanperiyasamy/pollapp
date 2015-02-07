@@ -1,0 +1,165 @@
+{% load thumbnail %}
+{% load modulotag %}
+{% load upload_tags %}
+{% load i18n %}
+<!-- Photos details start  -->
+    <div class="row-fluid buz_block" id="buz_photos" style="{% if view != 'photos' %}display:none;{% endif %}">
+        <section class="mRb30">
+            <div class="sCn-tTl">
+                <h3><span>{% trans 'Photos' %}</span></h3>
+				{% if usr_editable %}
+					<div id="fileupload" >
+						<div class="upload-button-wrapper" style="position: absolute; right: 0px; top: 0px;">
+							<a class="btn btn-small btn-danger fW-bLd pLrT">Add Images</a>
+							<div class="fileinput-button">
+							   <input style="cursor:pointer;width:90px;" type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+						    </div>
+						</div>
+						<div class="fileupload-content">
+							<ul class="tMbS sXcL pDfX files bm-uploader-list mRb0"></ul>
+						</div>
+						{% csrf_token %}
+					</div>
+				{% endif %}
+	        </div>
+        	<div class="hT360 rLvE {% if business.get_photo_gallery %}hide{% endif %}" id="no-photo">
+                <div class="tBl-bLk pDt0">
+                   <div class="tBl-cEl">
+                       <span class="iCn-bRdR80 oP75"><i aria-hidden="true" class="bUi-iCn-oFr-24 fS42-1 cLr-lTgRy ib"></i></span>
+                       <p class="bLk mRt20 fS16 cLr-lTgRy ">You haven't added any Photos yet.</p>
+                   </div>
+               </div>
+            </div>
+			{% if not usr_editable %}
+				{% if business.get_photo_gallery %}
+				   <ul class="tMbS sXcL pDfX fxslider">
+		               {% for image in business.get_photo_gallery %}
+			                <li data-src="{{image.photo.url}}">
+			                    <a class="bUi-tMb-wPr tMb-100 fLxiMgH lRg-bRdR swipebox" href="#">
+			                        <span class="bUi-tMb">
+			                            <span class="bUi-tMb-pRpL">
+			                                <span class="bUi-tMb-cLp">
+			                                    <span class="bUi-tMb-cLp-iN">
+			                                        <img class="mDa-oT" src="{% thumbnail image.photo 0x191 %}" alt="{{image.title}}">
+			                                        <span class="vRtL-aLn">
+			                                        </span>
+			                                    </span>
+			                                </span>
+			                            </span>
+			                        </span>
+			                    </a>
+			                </li>
+		                {% endfor %}
+					</ul>
+				{% endif %}
+			{% endif %}
+        </section>
+    </div>
+{% if usr_editable %}
+    <div id="update_caption" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 id="myModalLabel" class="mR50">Update Caption</h4>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; width: 100%;">
+                <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="submit" onclick="update_caption();">Done</button>
+        </div>
+    </div>
+<script src="{{ STATIC_URL }}js/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+{% biz_usrcp_prevw_img_upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/business/staff.js"></script>
+<script type="text/javascript">  
+function show_update_caption_lb(url) {
+    target = url+'?user="true"';
+   // load the url and show modal on success
+   $("#update_caption .modal-body").load(target, function() {
+        $("#update_caption").modal("show");
+   });
+}
+function update_caption(){
+     $.ajax({
+        type: "POST",
+        url: $('#id_form_update_caption').attr('action'),
+        data: 'caption='+encodeURIComponent($('#id_caption').val()),
+        dataType:'JSON',
+        success: function(data){
+                if(data.status){
+                   $('#update_caption').modal('hide');
+                }
+                else{
+                    $("#update_caption .modal-body").html(data.html);
+                }
+            }
+    });
+}
+function biz_image_upload(url,limit,uploadTemplateId,downloadTemplateId) {
+    'use strict';
+    $('#fileupload').fileupload({
+        sequentialUploads:true,
+       maxNumberOfFiles:limit,
+       autoUpload:true,
+       uploadTemplate:$('#'+uploadTemplateId),
+       downloadTemplate:$('#'+downloadTemplateId),
+       url:url,
+       acceptFileTypes:/(\.|\/)(gif|jpe?g|png)$/i,
+		complete: function () {
+			$('#no-photo').addClass("hide");
+		},
+    });
+    biz_image_download(url);
+    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+        e.preventDefault();
+        $('<iframe style="display:none;"></iframe>')
+            .prop('src', this.href)
+            .appendTo('body');
+        setTimeout(function(){
+            inline_text()
+        },1000);
+		
+    });
+}
+function biz_image_download(url){
+     $.getJSON(url, function (files) {
+            var fu = $('#fileupload').data('fileupload');
+            fu._adjustMaxNumberOfFiles(-files.length);
+            fu._renderDownload(files)
+                .appendTo($('#fileupload .files'))
+                .fadeIn(function () {
+                    // Fix for IE7 and lower:
+                    $(this).show();
+                });
+        });
+}
+$(document).ready(function(){
+    biz_image_upload("{% url 'business_ajax_upload_photos' %}?id={{business.id}}",20,'template-upload-bizimage','template-download-bizimage');
+	$('#fileupload').bind('fileuploadstart',function(e, data){show_hide()});
+	$('#fileupload').bind('fileuploaddestroy',function(e, data){setTimeout(function(){show_hide();},1000);});
+});
+
+function show_hide(){
+	if($('.bm-uploader-file').length>=1){
+		$('#no-photo').addClass("hide");
+		$('.upload-button-wrapper').css('margin-left','0px');
+		$('.upload-button-wrapper').css('text-align','left');
+	}
+    else{
+		$('#no-photo').removeClass("hide");
+		$('.upload-button-wrapper').css('margin-left','300px');
+		$('.upload-button-wrapper').css('text-align','left');
+	}
+}
+       
+</script>
+{% endif %}
+<!-- Photos details end  -->                       

@@ -1,0 +1,406 @@
+{% load thumbnail %}
+{% load comparison %}
+{% load ds_utils bm_attraction_tags %}
+{% load i18n %}
+
+<!-- About Start Here -->
+<div class="row-fluid atr_block" id="home" style="{% if view != 'home' %}display:none;{% endif %}">
+    <div class="row-fluid">
+        <div class="span6">
+            <section class="sCn">
+                <div class="sCn-tTl">
+                    <h4><span>{% trans 'Details' %}</span></h4>
+                </div>
+                <div class="dTs-cRd">
+                    <dl class="dl-horizontal">
+                        <dt><span class="dT-iN">{% trans 'Type' %}</span></dt>
+                        <dd class="cLr-dRk lH135 pDb10">{% for cat in attraction.category.all %}{{cat}}{% if not forloop.last %}, {% endif %}{% endfor %}</dd>
+                        {% if attraction.activities %}
+                        <dt><span class="dT-iN">{% trans 'Activities' %}</span></dt>
+                        <dd class="cLr-dRk lH135 pDb10"><span class="sPrTr">{{ attraction.activities }}</span></dd>
+                        {% endif %}
+                        {% if attraction.time_of_activity %}
+                        <dt><span class="dT-iN">{% trans 'Time of Activity' %}</span></dt>
+                        <dd class="cLr-dRk lH135 pDb10">{{ attraction.time_of_activity }}</dd>
+                        {% endif %}
+                        {% if attraction.ticket_cost_free or attraction.ticket_cost_adult or attraction.ticket_cost_child or attraction.admission_notes %}
+                        <dt><span class="dT-iN">{% trans 'Admission' %}</span></dt>
+                        <dd class="cLr-dRk lH135 pDb10">
+	                        {% if attraction.ticket_cost_free %}{% trans 'Free' %}{{attraction.admission_notes}}{% else %}{% if attraction.ticket_cost_adult %}{% trans 'Adults ' %}{{globalsettings.currency}}{{attraction.ticket_cost_adult}} {% endif %}{% if attraction.ticket_cost_child %}{% trans 'Children '%}{{globalsettings.currency}}{{attraction.ticket_cost_child}}{% endif %}{% endif %}
+	                        {% if attraction.admission_notes %}{{ attraction.admission_notes }}{% endif %}
+                            <span class="bLk">
+                            	{% if attraction.ticket_url %}<a href="{{attraction.ticket_url}}" target="_blank" class="btn pD612 btn-success mRt15">{% trans 'Buy Tickets' %} <i aria-hidden="true" class="bUi-iCn-eXtL-lK-12"></i></a>{% endif %}
+                            </span>
+                        </dd>
+                    	{% endif %}
+                    	{#% if attraction.ticket_url %#}
+                    	<!--dt></dt>
+                        <dd class="cLr-dRk lH135 pDb10"><a href="{{attraction.ticket_url}}" target="_blank" class="btn pD612 btn-success">{% trans 'Buy Tickets' %} <i aria-hidden="true" class="bUi-iCn-eXtL-lK-12"></i></a></dd-->
+                        {#% endif %#}
+                    </dl>
+                    
+                    <h5>{% trans 'Description' %}</h5>
+                    {% if attraction.description|length|get_digit:"-1" > 435 %} 
+						<div class="dSc sMl cLr-dRk mRb20" id="less_synopsis">
+						    {% autoescape off %}{{ attraction.description|truncatechars:436 }}{% endautoescape %} <a onclick="show_toggle()" href="javascript:void(0)">{% trans 'More' %}</a>
+						</div>
+						<div class="dSc sMl cLr-dRk mRb20" id="more_synopsis" style="display:none;" itemprop="description">
+						    {% autoescape off %}{% spaceless %}{{ attraction.description|rstrip_cont }}{% endspaceless %}{% endautoescape %} <a onclick="show_toggle()" href="javascript:void(0)">{% trans 'Less' %}</a>
+						</div>
+					{% else %}
+						<div class="dSc sMl cLr-dRk mRb20" id="all_synopsis" itemprop="description">
+							{% autoescape off %}{{ attraction.description }}{% endautoescape %}
+						</div>
+					{% endif %}
+					{% if attraction.fb_url or attraction.twitter_url or attraction.gooleplus_url %}	
+                    <hr class="mRt10 mRb15">
+                    <ul class="nav nav-list tHcL pDfX iCnC-lSt iCn12 mRb0">                                        
+                        {% if attraction.fb_url %}<li><a href="{{ attraction.fb_url }}" target="_blank" class="iCn-fB"><i aria-hidden="true" class="bUi-iCn-fB-16"></i>{% trans 'Facebook' %}</a></li>{% endif %}        
+                        {% if attraction.twitter_url %}<li><a href="{{ attraction.twitter_url }}" target="_blank" class="iCn-tW"><i aria-hidden="true" class="bUi-iCn-tWr-16"></i>{% trans 'Twitter' %}</a></li>{% endif %}
+                        {% if attraction.gooleplus_url %}<li><a href="{{ attraction.gooleplus_url }}" target="_blank" class="iCn-gP"><i aria-hidden="true" class="bUi-iCn-gOo-pLs-16"></i>{% trans 'Google+' %}</a></li>{% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+        <div class="span6">
+            {% get_attraction_weather_info attraction=attraction as weather_datas %}
+            {% if weather_datas %}
+            <section class="sCn">
+                <div class="sCn-tTl hide">
+                    <h4><span>Attraction Weather</span></h4>
+                </div>
+                <div class="oTsT-hRz">
+                    <div class="dSpLy-tBl tHcL bRdR bRb0 bRt0 tXt-cTr">
+                        {% for weather in weather_datas %}
+                        <div>
+                            <span class="bLk mRb10">
+                                <span class="uC fS12 cLr-dRk bLk lH1 fW-bLd">{% if today == weather.wdate %}{% trans 'Today' %}{% else %}{{weather.wdate|date:'l'}}{% endif %}</span>
+                            </span>    
+                            <div class="wThR"> 
+                                <a class=""> 
+                                    <i class="fS24 mRr5 cLr-dRk" aria-hidden="true" data-icon-weather="O"></i>
+                                    <span class="fS16 cLr-gRy fW200 bLk">
+                                        <span class="cLr-dRk">{{ weather.temp_max }}</span><span class="fS11 cLr-dRk">°C</span> - <span class="cLr-dRk">{{ weather.temp_min }}</span><span class="fS11 cLr-dRk">°C</span>
+                                    </span>
+                                </a> 
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!--div>
+                            <span class="bLk mRb10">
+                                <span class="uC fS12 cLr-dRk bLk lH1 fW-bLd">Thursday</span>
+                            </span>    
+                            <div class="wThR"> 
+                                <a href="#" class=""> 
+                                    <i class="fS24 mRr5 cLr-dRk" aria-hidden="true" data-icon-weather="H"></i>
+                                    <span class="fS16 cLr-gRy fW200 bLk">
+                                        <span class="cLr-dRk">18</span><span class="fS11 cLr-dRk">°C</span> - <span class="cLr-dRk">9</span><span class="fS11 cLr-dRk">°C</span>
+                                    </span>
+                                </a> 
+                            </div>
+                        </div>
+                        <div>
+                            <span class="bLk mRb10">
+                                <span class="uC fS12 cLr-dRk bLk lH1 fW-bLd">Wednesday</span>
+                            </span>    
+                            <div class="wThR"> 
+                                <a href="#" class=""> 
+                                    <i class="fS24 mRr5 cLr-dRk" aria-hidden="true" data-icon-weather="Q"></i>
+                                    <span class="fS16 cLr-gRy fW200 bLk">
+                                        <span class="cLr-dRk">18</span><span class="fS11 cLr-dRk">°C</span> - <span class="cLr-dRk">9</span><span class="fS11 cLr-dRk">°C</span>
+                                    </span>
+                                </a> 
+                            </div>
+                        </div-->
+                        
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+            {% with attraction.get_attraction_photos.all as attraction_photos %}
+            {% if attraction_photos %}
+            <section class="sCn">
+                <div class="sCn-tTl">
+                    <h4><span>{% trans 'Photos' %}</span> <a href="javascript:void(0);" onclick="show_block('photos');" class="tXt-lNk rGhT">{% trans 'View all photos' %} ({{ attraction_photos.count }})</a></h4>
+                </div>
+                <ul class="tMbS fOcL pDfX pDmNi mRb0 fxslider" itemprop="photos" itemscope itemtype="http://schema.org/ImageObject">
+                	{% for photo in attraction_photos|slice:":8" %}
+                    <li data-src="{{photo.photo.url}}">
+                        <a class="bUi-tMb-wPr tMb-100 fLxiMgH" href="#">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+											{% if photo.photo %}
+	                                            <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% thumbnail photo.photo 0x130 %}" alt="{{photo.title}}">
+												<meta itemprop="image" content="{{globalsettings.website_url}}{{ photo.photo.url }}"/>
+	                                            <span class="vRtL-aLn">
+	                                            </span>
+											{% else %}
+												<span class="iCn-bRdR50 oP25" title="{{attraction.name}}"><i aria-hidden="true" class="bUi-iCn-aTtR-24 cLr-gRy ib"></i></span><div class="vRtL-aLn"></div>
+											{% endif %}
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row-fluid hide">
+        <div class="sCn-tTl mRt20">
+            <h3><span>1,130 Reviews </span></h3>
+       
+        </div>
+        <ol class="cMnTs bBl aVtR-cRcL rWrT mRb30">
+            <li class="cMnT-pSt">
+                <div class="cMnT-pSt-iN">
+                    <form class="cMnT-fRm mRb0">
+                        <div class="vCrD pLlT">
+                            <span class="bBl-aRw">
+                                <span class="aRw a1"></span>
+                                <span class="aRw a2"></span>
+                            </span>
+                            <a href="#">
+                                <img class="aVtR" src="https://lh3.googleusercontent.com/-BjGdxYCAQ6Y/AAAAAAAAAAI/AAAAAAAAApY/uI1iYqGwERc/s46-c-k-no/photo.jpg">
+                            </a>
+                        </div>
+                        <div class="cMnT-bDy">
+                            <div class="cMnT-bDy-iN">
+                                <div class="cMnT-tXtArA-wRp">
+                                    <div class="sTr-rT nEdS-fCsk">
+                                        <span class="sTr-wPr sTr-rT-aCt iCn16 rEd"></span>
+                                        <span class="rT-sCr"></span>    
+                                    </div>
+                                    <textarea id="" class="cMnT-tXtArA" placeholder="Describe your experience at Magnolia Bakery." name="comment" data-focus="true" data-expand="true"></textarea>
+                                </div>
+                                <p class="fS11 cLr-gRy nEdS-fCs pLlT">Replying as <a href="#" class="cLr-lTbLu">Bilal Ck</a></p>
+                                <div class="cMnT-pSt-bTn pLrT nEdS-fCs">
+                                    <button type="submit" class="btn disabled" disabled="disabled">Post</button>    
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            <ol class="pRnT">
+                <li class="cMnT">
+                    <div class="cMnT-iN">
+                        <div class="vCrD pLlT">
+                            <span class="bBl-aRw">
+                                <span class="aRw a1"></span>
+                                <span class="aRw a2"></span>
+                            </span>
+                            <a href="#">
+                                <img class="aVtR" src="http://cf3.fancyimgs.com/UserImages/abhirockxxx_879170126c89.jpg">
+                            </a>
+                        </div>
+                        <div class="cMnT-bDy">
+                            <div class="cMnT-bDy-iN">
+                                <header class="cMnT-hD">
+                                    <span class="pBlSr"><a href="#">Dennis Morgans</a></span><div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span> <!--span id="rw0001" class="rT-sCr fS14 pDr0">3.8</span --></div><span class="tM sPrTr" title="Friday, June 14 2013 1:25 AM">a day ago</span> 
+                                </header>
+                                <div class="cMnT-tXt">
+                                    <p>Overall the Magnolia Bakery was pretty good, however, I don't feel that it has the value. The food was well designed and looked pretty appetizing, however, to be honest with you there are several other bakeries in the area that I preferred. From what I have been reading though, the pudding is the best, so my experience is limited to the cupcakes.  I would recommend to give the place a try, especially the pudding, I will be going to check that out.</p>                               
+                                </div>
+                                <footer class="cMnT-fTr">
+                                    <span class="cMnT-vTnG ">
+                                        <a href="#" class="cMnT-rTg-uP">
+                                        <span class="cMnT-rTg-pStV" title="13 up, 3 down">233</span>
+                                        <i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i>
+                                    </a>
+                                    <a href="#" class="cMnT-rTg-dWn">
+                                        <!--span class="cMnT-rTg-nGtV" title="3 down">3</span-->
+                                        <i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i>
+                                    </a>
+                                    </span>
+                                    <span class="rPlY sPrTr"><a href="#">Reply</a></span>
+                                    <span class="fS11 sPrTr"><i aria-hidden="true" class="bUi-iCn-rPl-rT-12 ib" title="in reply to"></i> <a href="#" class="pRnT-lNk cLr-lTbLu">dylanmagruder</a> <a href="#" class="sHw-pRnT cLr-lTbLu" data-action="show-parent">(Show the comment)</a></span>
+                                </footer>                                            
+                                <div class="cMnT-oPtN btn-group">
+                                    <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu pLrT mNi">
+                                        <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                                        <li><a href="#" class="comment-link">Direct link</a></li>
+                                        <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                                        <li><a href="#" class="btn-mention_user">Mention user</a></li>
+                                        <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+                                    </ul>
+                                </div>
+                            </div> <!-- /.cMnT-bDy-iN -->
+                        </div><!-- /.cMnT-bDy -->                                        
+                    </div> <!-- /.cMnT-iN -->
+                </li> <!-- /.cMnT -->
+            </ol>
+            <li class="cMnT cLdRn">
+                <div class="cMnT-iN">
+                    <div class="vCrD pLlT">
+                        <span class="bBl-aRw">
+                            <span class="aRw a1"></span>
+                            <span class="aRw a2"></span>
+                        </span>
+                        <a href="#">
+                            <img class="aVtR" src="https://lh3.googleusercontent.com/-NHzO0tpw844/AAAAAAAAAAI/AAAAAAAAYK0/tB0yQpp4OOY/s46-c-k-no/photo.jpg">
+                        </a>
+                    </div>
+                    <div class="cMnT-bDy">
+                        <div class="cMnT-bDy-iN">
+                            <header class="cMnT-hD">
+                                <span class="pBlSr"><a href="#">Junhow Wei</a></span><div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span> <!--span id="rw0001" class="rT-sCr fS14 pDr0">3.8</span --></div> <span class="tM sPrTr" title="Friday, June 14 2013 1:25 AM">a day ago</span>
+                            </header>
+                            <div class="cMnT-tXt">
+                                <p>Everyone goes to Magnolia for the cupcakes, but that is the least interesting thing on the menu. Instead, try the banana pudding, which is the best in the city. There is a line, but it moves quickly and is part of the appeal of going, actually. The staff is always very friendly and helpful.</p>                               
+                            </div>
+                            <footer class="cMnT-fTr">
+                                <span class="cMnT-vTnG ">
+                                    <a href="#" class="cMnT-rTg-uP">
+                                        <span class="cMnT-rTg-pStV" title="13 up, 3 down">63</span>
+                                        <i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i>
+                                    </a>
+                                    <a href="#" class="cMnT-rTg-dWn">
+                                        <!--span class="cMnT-rTg-nGtV" title="3 down">3</span-->
+                                        <i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i>
+                                    </a>
+                                </span>
+                                <span class="rPlY sPrTr"><a href="#">Reply</a></span>
+                            </footer>                                            
+                            <div class="cMnT-oPtN btn-group">
+                                <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu pLrT mNi">
+                                    <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                                    <li><a href="#" class="comment-link">Direct link</a></li>
+                                    <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                                    <li><a href="#" class="btn-mention_user">Mention user</a></li>
+                                    <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cMnT-pSt cLdRn">
+                        <div class="cMnT-pSt-iN">
+                            <form class="cMnT-fRm mRb0">
+                                <div class="vCrD pLlT">
+                                    <span class="bBl-aRw">
+                                        <span class="aRw a1"></span>
+                                        <span class="aRw a2"></span>
+                                    </span>
+                                    <a href="#">
+                                        <img class="aVtR" src="https://lh4.googleusercontent.com/-ACCV6sZR-MM/AAAAAAAAAAI/AAAAAAAAMJE/hkQBn7HwyWg/s28-c-k-no/photo.jpg">
+                                    </a>
+                                </div>
+                                <div class="cMnT-bDy">
+                                    <div class="cMnT-bDy-iN">
+                                        <div class="cMnT-tXtArA-wRp">
+                                            <!-- label class="MnT-tXtArA-lBl">click to leave a comment</label -->
+                                            <textarea id="" class="cMnT-tXtArA" placeholder="Write a comment..." name="comment" data-focus="true"></textarea>
+                                        </div>
+                                        <p class="fS11 cLr-gRy nEdS-fCs pLlT">Replying as <a href="#" class="cLr-lTbLu">Bilal Ck</a></p>
+                                        <div class="cMnT-pSt-bTn pLrT nEdS-fCs">
+                                            <button type="submit" class="btn disabled" disabled="disabled">Post</button>    
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </li> <!-- /.cMnT -->
+            <li class="cMnT">
+                <div class="cMnT-iN">
+                    <div class="vCrD pLlT">
+                        <span class="bBl-aRw">
+                            <span class="aRw a1"></span>
+                            <span class="aRw a2"></span>
+                        </span>
+                        <a href="#">
+                            <img class="aVtR" src="https://si0.twimg.com/profile_images/3708611177/c6f49f76c7972e8e4d3ffd1ab8594e89_normal.jpeg">
+                        </a>
+                    </div>
+                    <div class="cMnT-bDy">
+                        <div class="cMnT-bDy-iN">
+                            <header class="cMnT-hD">
+                                <span class="pBlSr"><a href="#">Eric Weberr</a></span><div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span> <!--span id="rw0001" class="rT-sCr fS14 pDr0">3.8</span --></div> <span class="tM sPrTr" title="Friday, June 14 2013 1:25 AM">4 days ago</span>
+                            </header>
+                            <div class="cMnT-tXt">
+                                <p>These are hands down the best cupcakes in New York City. Every flavor is fantastic and beautifully crafted. I recommend the red velvet!</p>                               
+                            </div>
+                            <footer class="cMnT-fTr">
+                                <span class="cMnT-vTnG ">
+                                    <a href="#" class="cMnT-rTg-uP">
+                                        <span class="cMnT-rTg-pStV" title="13 up, 3 down"></span>
+                                        <i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i>
+                                    </a>
+                                    <a href="#" class="cMnT-rTg-dWn">
+                                        <!--span class="cMnT-rTg-nGtV" title="3 down">3</span-->
+                                        <i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i>
+                                    </a>
+                                </span>
+                                <span class="rPlY sPrTr"><a href="#">Reply</a></span>
+                            </footer>
+                            <div class="cMnT-oPtN btn-group">
+                                <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu pLrT mNi">
+                                    <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                                    <li><a href="#" class="comment-link">Direct link</a></li>
+                                    <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                                    <li><a href="#" class="btn-mention_user">Mention user</a></li>
+                                    <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- /.cMnT-bDy -->
+                    <div class="cMnT-pSt cLdRn">
+                        <div class="cMnT-pSt-iN">
+                            <form class="cMnT-fRm mRb0">
+                                <div class="vCrD pLlT">
+                                    <span class="bBl-aRw">
+                                        <span class="aRw a1"></span>
+                                        <span class="aRw a2"></span>
+                                    </span>
+                                    <a href="#">
+                                        <img class="aVtR" src="https://lh4.googleusercontent.com/-ACCV6sZR-MM/AAAAAAAAAAI/AAAAAAAAMJE/hkQBn7HwyWg/s28-c-k-no/photo.jpg">
+                                    </a>
+                                </div>
+                                <div class="cMnT-bDy">
+                                    <div class="cMnT-bDy-iN">
+                                        <div class="cMnT-tXtArA-wRp">
+                                            <!-- label class="MnT-tXtArA-lBl">click to leave a comment</label -->
+                                            <textarea id="" class="cMnT-tXtArA" placeholder="Write a comment..." name="comment" data-focus="true"></textarea>
+                                        </div>
+                                        <p class="fS11 cLr-gRy nEdS-fCs pLlT">Replying as <a href="#" class="cLr-lTbLu">Bilal Ck</a></p>
+                                        <div class="cMnT-pSt-bTn pLrT nEdS-fCs">
+                                            <button type="submit" class="btn disabled" disabled="disabled">Post</button>    
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                                        
+                </div> <!-- /.cMnT-iN -->
+            </li> <!-- /.cMnT -->
+        </ol> <!-- /.cMnTs -->
+    </div>
+	<div class="row-fluid">
+        {% with attraction as object %}
+            {% with 'attractions' as appname %}
+                {% include 'comments/include_comment.html' %}
+            {% endwith %}
+        {% endwith %}
+    </div>
+</div>
+<!-- About Ends Here -->
+<script type="text/javascript">
+function show_toggle(){
+	$('#less_synopsis').toggle();
+	$('#more_synopsis').toggle();
+}
+</script>

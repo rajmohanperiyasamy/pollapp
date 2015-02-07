@@ -1,0 +1,81 @@
+{% extends base %}
+{% load comparison %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Venues' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Venues' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+	
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "venues" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+	<div class="container-fluid">
+        <div class="row-fluid">
+          <div class="main span8 mRb0mX769">
+            <section class="sCn pD15">
+              <div class="cLrFx pD0">
+                <div class="pG-hD mRb10 rLvE">
+                  <h3 class="pLlT mRt4 iM">{% trans 'Venues' %}</h3>
+                  <div class="pLrT iM span8 ">
+                    <div class="pLrT sRcH-bLK-hDn eXpD hide">
+                        <form action="#" class="form-search mRb0">
+                          <div class="input-append iNsD">
+                            <input type="text" maxlength="100" placeholder="Search for Venues" id="movies-search-field" name="" class="search-query fS12 pD510">
+                            <button role="button" class="btn  btn-link pD510 cLr-gRy" type="submit"><i class="bUi-iCn-sRh-16 fS14" aria-hidden="true"></i></button>
+                          </div>
+                        </form>
+                    </div>
+                </div>
+                </div>
+              </div>
+              <hr class="oTsT-hRz mRb10 mRt0">
+              <div class="tLbR mRb0 hP">
+                    <div class="tLbR-iR">
+                    	<div class="pLrT mRr0">
+                        	<select class="bUiSlCtbtn-link tXt-sMl pLrT" style="display: none;" onchange="location.replace($(this).val());">
+								<option {% if not venuetype %}selected="selected"{% endif %} value="{% url 'events_venue_list' %}">All category</option>
+								{% for vt in venue_types %}
+								  <option {% if venuetype.id == vt.id %}selected="selected"{% endif %}  value="{% url 'events_search_venue_list_event' vt.slug %}">{{ vt }}</option>
+								{% endfor %}
+                            </select>
+                    	</div>
+                    </div>
+                </div>
+              <ul class="modulesBrowseData mDa-lT mDa-oT-lT">
+          		{% for venue in venues %}
+	                <li class="mDa">
+	                  <div class="mDa-iN">
+	                    <div class="mDa-bDy pD0">
+	                      <div class="pLlT iM"> <span class="pD15 bLk pDr10mP pDl0mP"><i class="bUi-iCn-mP-mKr-16 cLr-rEd fS24" aria-hidden="true"></i></span> </div>
+	                      <div class="cLr-lT">
+	                        <h5 title="{{venue.venue}}" class="mDa-hD tRnC mRt10 mRb5 w85P rLvE"><a class="fW-bLd" href="{% url 'events_view_venue_event' venue.slug %}">{{ venue.venue }}</a></h5>
+	                        <div class="mDa-dTa fS12 cLr-gRy"> <span>{{ venue.address1 }}{% if venue.address2 %}, {{ venue.address2 }}{% endif %}{% if venue.zip %} {{ venue.zip }}{% endif %}</span>{% if venue.telephone or venue.mobile %}<span class="sPrTr">{% if venue.telephone %}{{ venue.telephone}}{% elif venue.mobile %}{{ venue.mobile}}{% endif %} </span>{% endif %}
+	                        <a href="{% url 'events_view_venue_event' venue.slug %}#events" class="fS16 cLr-lTgRy pLrT"><i class="bUi-iCn-cLdR-16" aria-hidden="true"></i> {{ venue.get_events.count }}</a> </div>
+	                      </div>
+	                    </div>
+	                  </div>
+	                </li>
+                {% endfor %}
+              </ul>
+              {% include 'default/common/pagination-white.html' %}
+            </section>
+          </div>
+          <aside class="sD-bR span4 oF3mN768 sP9mN768">
+            <div>
+            	<section class="tXt-cTr pD15 bNr-aD" id="banner_placement_right"></section> 
+            </div>
+            <div>
+              	{% include 'default/likebox.html' %}
+            </div>
+          </aside>
+        </div>
+      </div>
+{% endblock %}

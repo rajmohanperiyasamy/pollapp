@@ -1,0 +1,150 @@
+{% extends base %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load tabs %}
+{% load thumbnail %}
+{% load i18n %}
+{% load ds_utils %}
+{% load bm_biztags %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Business' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Business' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>
+    <script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+	<script type="text/javascript">
+    $(document).ready(function(){
+	 $('.bids').each(function(){
+			bids.push($(this).val());
+		});
+		$('.bicts').each(function(){
+			var cat=$(this).val();
+			cat=cat.toString();
+			var a='&';
+			var b='and';
+			category_name=cat.replace(a,b)
+	        category.push(category_name);
+	        });
+        module_listing(bids,category);
+	});
+	
+	</script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "business" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        {% include 'default/business/part_search.html' %}
+        <div class="row-fluid">
+            <div class="main span9 mRb0mX769">
+                <div class="row-fluid">
+                    <div class="span4 sP3mN768 sP12mX767">
+                        <section class="sCn pD200">
+                            <ul class="nav nav-list fS12">
+                                <li class="nav-header">{% trans 'Categories' %}</li>
+                                <ul class="nav nav-list cMpCt tWcL fOmX767 pDfX pD0 fW-bLd w100mN768">
+									{% with buscategory as bus_category %}
+                                    {% for parent_cat in bus_category %}
+                                        <li><a href="{{parent_cat.get_absolute_url}}" title="{{parent_cat.name}}">{{parent_cat.name}}</a></li>
+                                    {% endfor %} 
+									{% endwith %} 
+                                </ul>
+								{% with popular_categories as popular_cat %}
+                                {% if popular_cat %}
+                                <li class="divider"></li>
+                                <li class="nav-header">{% trans 'Popular Categories' %}</li>
+                                <ul class="nav nav-list cMpCt tWcL fOmX767 pDfX pD0 w100mN768">
+                                    {% for cat in popular_cat %}
+                                        <li><a href="{{cat.get_absolute_url}}" title="{{parent_cat.name}}">{{cat.name}}</a></li>
+                                    {% endfor %}  
+                                </ul>
+                                {% endif %}
+								{% endwith %}
+                            </ul>
+                            <!--footer class="sCn-fTr mRb-20 tXt-cTr sCn-fTr-bR"><a href="#" class="tXt-lNk">More Categories <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12"></i></a></footer-->
+                        </section>
+                        {% show_latest_business_gallery %}
+                        {% show_all_business_product limit=3 %}
+                    </div>
+                    <div class="span8 sP9mN768 sP12mX767">
+                        <!--section class="sCn">
+                            <div class="sCn-tTl mRb0">
+                                <h3><span>Recommended places near Orlando, FL, USA</span></h3>
+                            </div>   
+                        </section-->
+                        {% show_featured_business %}
+                        {% show_recommend_business %}
+                        {% show_latest_business %}
+                    </div>
+                </div>
+            </div>
+			<aside class="sD-bR span3 oF3mN768 sP9mN768">
+				<div>{% show_all_business_offers limit=5 %}</div>
+				<div>
+					<section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right">
+						<span class="fS11 mRb15 bLk tXt-rT"><a class="cLr-lTbLu" href="/advertise">See your ad here</a></span>
+					</section>
+				</div>
+				<div>
+				{% show_recent_business_review %}
+				</div>
+			</aside>
+		</div>
+    </div>
+<script>
+	$(document).ready(function(){
+	  $('.bM-dV-rTnG').each(function(){
+	      $(this).raty({number: 5, readOnly: true, score: $(this).attr('data-rating'), size: 12})                             
+	  });
+	});
+    $(function(){
+        try{
+      		$('#sL6').bUiSlider({
+      		   pager:false,
+      		   adaptiveHeight: true,
+      		   speed:600,
+      		   auto:true,
+      		   onSliderLoad:function(){
+      		   	   $('.fTrD-bL').setfTrDtXtHeight();
+      		   	   $('.fLxiMgW').setrSpVWidth(0);
+      		   }
+      		});
+            $('.fTrD-cRsL').bUiSlider({
+			pager:false,
+			speed:600,
+			//auto:true,
+			slideWidth: 179,
+			adaptiveHeight: true,
+			minSlides:1,
+			maxSlides: 5,
+			slideMargin: 12,
+			pager:true,
+			onSliderLoad:function(){
+			  $('.fLxiMgW').setrSpVWidth(0);
+		   }
+		}); 
+			$('.fTrD-cRsL1').bUiSlider({
+				pager:false,
+				speed:600,
+				//auto:true,
+				slideWidth: 5000,
+				adaptiveHeight: true,
+				minSlides:1,
+				maxSlides: 1,
+				slideMargin: 0,
+				onSliderLoad:function(){
+				  $('.fLxiMgW').setrSpVWidth(0);
+			   }
+			}); 
+        }
+        catch(e){}    
+    })
+</script>
+{% endblock %}   

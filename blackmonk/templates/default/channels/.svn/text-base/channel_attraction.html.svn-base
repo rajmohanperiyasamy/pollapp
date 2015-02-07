@@ -1,0 +1,62 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load bm_channeltags %}
+{% get_attraction_categories channel=channel limit=10 as channel_categories %}
+{% with channel_categories.attract_categories as attraction_categories %}
+{% if attraction_categories %}
+<section class="sCn">
+    <div class="sCn-tTl sCn-tTl-bR">
+        <h3 class="clearfix oFl">
+            <span class="ib pLlT">Places To Visit</span>
+            <a class="tXt-lNk rGhT" href="/attractions/">View all</a>
+        </h3>
+        </h3>
+    </div>
+    <div class="row-fluid">
+        <div class="span3 clearfix mRb12mP">
+            <ul class="nav nav-list pD0 oNcL pDfX">
+				{% for categories in attraction_categories %}
+                <li>
+                    <a class="pDt0" href="{{ categories.get_absolute_url }}">{{ categories.name }}
+                        <span class="lSt-cNt">{{ categories.get_attractions_count }}</span>
+                    </a>
+                </li>
+				{% endfor %}
+            </ul>
+        </div>
+        <div class="span9 clearfix">
+            <div id="map-canvas" style="height:330px"></div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endwith %}
+<!-- Sample Google Map -->
+
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}themes/js/gmap-markerwithlabel.js"></script>
+<script type="text/javascript">
+var markers=[];
+$(document).ready(function(){
+	{% with channel_categories.attraction as attractions %}
+	{% if attractions %}
+    {% for attraction in attractions %}
+            {% with attraction.venue as venue %}
+                var marker = new Object();
+                marker["lat"] = {{venue.lat}};
+                marker["lng"] = {{venue.lon}};
+                marker["zoom"] = {{venue.zoom}};
+                marker["name"] = "{{ attraction.name }}";
+                marker["title"] = "2";
+                marker["label"] = "{{forloop.counter}}",
+                marker["address"] = "{{ venue.name|escape|linebreaks }}{{ venue.address1 }} - {{venue.zip }}";
+                marker["icon"]="{{STATIC_URL}}themes/img/icons/marker-regular.png";
+                markers.push(marker);
+            {% endwith %}
+    {% endfor %}
+	{% endif %}
+	{% endwith %}
+    load_multi_marker_with_numeric_overlay('map-canvas',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},markers)            
+});
+</script>

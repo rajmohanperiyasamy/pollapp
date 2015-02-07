@@ -1,0 +1,87 @@
+{% load i18n %}
+<!--div class="sCn-tTl hide">
+    <h2><span class="cLr-oRg">Starters</span></h2>
+    <p class="mRb0">All entrees served with starch and vegetable of the day.</p>
+</div>
+<hr-->
+<ul class="mDa-lT mRb20">
+    {% for menu in menu_list %}
+    <li class="mDa">
+        <div class="mDa-iN">
+            <div class="mDa-bDy">
+                {% if menu.price %}<span class="pLrT fS14 fW-bLd tXt-rT iM">{{globalsettings.currency}}{{menu.price}}</span>{% endif %}
+                <h4 class="mDa-hD" title="{{menu.title}}"><a href="javascript:void(0);">{{menu.title}}</a></h4>
+                <div class="mDa-dTa mRt4 w85P">
+                   <p class="fS11-125 cLr-gRy">{{menu.description}}</p>
+                </div>
+                <div class="mRt10 hide">
+                    <a class="fS11 cLr-lTgRy" href="#"><i aria-hidden="true" class="bUi-iCn-bBlS-12"></i> 13 reviews</a>
+                    <a class="fS11 sPrTr cLr-lTgRy" href="#"><i aria-hidden="true" class="bUi-iCn-pHt-12"></i> 3 photos</a>
+                </div>
+                <ul class="tMbS pDfX pDmNi mRb0 mRt20 tWlCl hide">
+                    <li class="span1">
+                        <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh6.googleusercontent.com/-hnNK-rWTIlQ/UGR5NnDMsSI/AAAAAABZE68/UppL-S2r0EY/s768-no/Everglades+Restaurant">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="https://lh6.googleusercontent.com/-hnNK-rWTIlQ/UGR5NnDMsSI/AAAAAABZE68/UppL-S2r0EY/s768-no/Everglades+Restaurant" alt="">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="span1">
+                        <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh4.googleusercontent.com/-DKtRQthzQsY/UGSYBAmgAkI/AAAAAABY-IA/wwRiR6SJg9c/s768-no/Everglades+Restaurant">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="https://lh4.googleusercontent.com/-DKtRQthzQsY/UGSYBAmgAkI/AAAAAABY-IA/wwRiR6SJg9c/s768-no/Everglades+Restaurant" alt="">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="span1">
+                        <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh6.googleusercontent.com/-UmL7GgcGLgc/UDSzmEIg6KI/AAAAAAB8B74/FiRY6YP4s7w/w1229-h819-no/Roy%2527s+Los+Angeles">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="https://lh6.googleusercontent.com/-UmL7GgcGLgc/UDSzmEIg6KI/AAAAAAB8B74/FiRY6YP4s7w/w1229-h819-no/Roy%2527s+Los+Angeles" alt="">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="span1">
+                        <a class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" href="#" title="Add Photo">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <i aria-hidden="true" class="bUi-iCn-pLs-16 ib cLr-gRy"></i>
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>

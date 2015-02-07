@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="section">
+		<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/1qSud3JD7RY5ybuy5vj2Es2lSQmb2Iuwcu8SpHlb5b1Y/edit#bookmark=id.f3l0oa9gkbtm" target="_blank"><span class="icon">?</span>Quick help</a><hr>
+       <h5>{% trans 'Highlights' %}</h5>
+       <h6>{% trans 'Article Info' %}</h6>
+       <p>{% trans 'Enter legitimate article title (This title shows in the search results), choose an appropriate category, enter the summary and content. All fields are mandatory here' %}</p>
+       <hr>
+		{% if user.is_superuser %}
+	       <h5>{% trans 'Category' %}</h5>
+	       <h6>{% trans 'Choose relevant category' %}</h6>
+	       <p>{% trans "If you don't find the desired category, you can add in the " %}<a href="/admin/portal/articles/category" target="_blank">Admin CP</a></p>
+	       <hr>
+		{% endif %}
+       <h6>{% trans 'Using WYSIWYG Editor' %}</h6>
+       <p>{% trans 'The Editor plays a vital role in publishing your article.Copy and paste appropriate content followed by the photos related to the story.' %}</p>
+       <hr>
+       <h6>{% trans 'Using Tags' %}</h6>
+       <p>{% trans 'Tags are the keywords related to the article which are helpful for SEO.' %}</p>
+	   <hr>
+       <h6>{% trans 'Address/Venue' %}</h6>
+       <p>{% blocktrans %}Search for the address which has auto-suggest feature.If you don't find the address, Click on add new venue to add the address.{% endblocktrans %}</p>
+	   <hr>
+       <h6>{% trans 'Using Images' %}</h6>
+       <p>{% trans 'The Editor has two options to upload images either by computer or by website image URL.The photos can be re-sized within the editor before publishing the article.Re-size the image size to approx 530px*320px for horizontal images and 250px*150px for vertical images.(Supports jpeg, png, bmp image formats.)' %}</p>
+	   
+</div>   

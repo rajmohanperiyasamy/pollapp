@@ -1,0 +1,83 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'config' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Location/Map Overview' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                    <li><a href="{% url 'admin_portal_locality' %}" style="z-index:8">{% trans 'Location/Map' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'config' %}
+					{% activetab 'leftnav' 'location' %}
+					{% activetab 'leftnavsub' 'loc_overview' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Location/Map' %}</h2>
+							<p class="ltxt80">{% trans "Location/Map overview gives you a quick snapshot of what's been updated. You can check this page to track if any new Zip/Postal codes, venues are been added in any module." %}</p>
+						</div>
+                        <ul class="overview-list group">
+							<li class="list-item-container group">
+                            	<div class="col-dt">
+                                	<div class="col-inner">
+                                    	<h5>{% trans 'Zip/Postalcodes' %}</h5>
+                                   	</div>
+                               	</div>
+                                <div class="col-dd">
+                                	<div class="col-inner">
+                                    	<h3>{{zipcode}}</h3>
+                                        <a href="{% url 'admin_portal_locality_zipcode' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Zip/Postalcodes' %}">{% trans 'Manage' %}</a>
+                                  	</div>                                                    
+								</div>
+							</li>
+							<li class="list-item-container group">
+                            	<div class="col-dt">
+                                	<div class="col-inner">
+                                    	<h5>{% trans 'Venue' %}</h5>
+                                   	</div>
+                               	</div>
+                                <div class="col-dd">
+                                	<div class="col-inner">
+                                    	<h3>{{venue}}</h3>
+                                        <a href="{% url 'admin_portal_locality_venue' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Venue' %}">{% trans 'Manage' %}</a>
+                                  	</div>                                                    
+								</div>
+							</li>
+                        </ul>
+                  	</div>
+              	</div>                       
+      		</div>  
+			{% include 'admin/portal/locality/faq.html' %}                          
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

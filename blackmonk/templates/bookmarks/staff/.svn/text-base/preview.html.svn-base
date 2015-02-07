@@ -1,0 +1,108 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "bookmark" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Bookmark - Preview' %} {% endblock %}
+{% block head %}
+	
+
+{% endblock %}
+{% block content %}
+ <div id="staff-platform" class="group">
+  	<div class="header-bar has-preview-head">
+        <h2>Bookmarks</h2>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+            	{% if bookmark.featured %}
+        		<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+		 		{% endif %}
+                <div class="item-title">
+                    <h1>{{ bookmark.title|truncatechars:80 }}</h1>
+                    <p class="ltxt80">By <a href="{% url 'user_profile' bookmark.created_by.profile_slug %}">{{bookmark.created_by.display_name}}</a> <span class="divider12">|</span> {{bookmark.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+                <ul class="status-tabs group">
+                    <li>{{bookmark.most_viewed}}<span class="meta">{% trans 'views' %}</span> </li>
+                </ul>                                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="bookmark-preview" class="preview-center group">
+                    <div class="preview-items">
+                        <div class="preview-group">  
+                        	<div class="preview-items-head">
+								{% if perms.bookmarks.change_bookmark %}
+                                	<div class="right-item"><a href="{% url 'staff_bookmark_edit' bookmark.id %}"><div class="cform-button"><span>{% trans 'Edit' %}</span></div></a></div>
+								{% endif %}
+                            	<h3 style="vertical-align:top">{% trans 'Bookmark Details' %}</h3>
+                            </div>            
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Title' %}</h4></div>
+                                <div class="value">{{ bookmark.title }}</div>
+                            </div> 
+                            <div class="preview-item date-time">
+                                <div class="label"><h4>{% trans 'Category' %}</h4></div>
+                                <div class="value">
+                                	<span class="date">{{ bookmark.category }}</span> 
+								</div>
+                            </div>
+                            <div class="preview-item description">
+                                <div class="label"><h4>{% trans 'Summary' %}</h4></div>
+                                <div class="value">
+                                	<div class="description basic-editor-content">
+                                    	<p>{{bookmark.summary}}</p>
+                                	</div>
+								</div>
+                            </div>
+                            <div class="preview-item description">
+                                <div class="label"><h4>{% trans 'Preview' %}</h4></div>
+                                <div class="value">
+                                	<div class="description basic-editor-content">
+                                    	<iframe src="{{ bookmark.source_url }}" style="width: 560px; height: 665px; border: solid; border-color: #aaa; border-width: 1px;"></iframe>
+                                	</div>
+								</div>
+                            </div>
+                        </div>   
+                    </div>                                            
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+            {% include 'bookmarks/staff/bookmark-faq.html' %}      
+        </div>                            
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include%}
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+{% if bookmark.venues.all %}
+<script type="text/javascript">
+var markers=[];
+total_address=0;
+$(document).ready(function(){
+	{% for addr in bookmark.venues.all %}
+		var marker = new Object();
+		marker["lat"] = {{addr.lat}};
+		marker["lng"] = {{addr.lon}};
+		marker["zoom"] = {{addr.zoom}};
+		marker["name"] = "{{ bookmark.name }}";
+		marker["address"] = "{{ addr.address1|escape|linebreaks }}{{ addr.city }} - {{addr.zip }}";
+		markers.push(marker);
+		total_address=total_address+1;
+	{% endfor %}
+	var map_height = total_address*120;
+	map_height = map_height+'px';
+	document.getElementById("map").style.height=map_height;
+	load_multi_marker('map',{{ bookmark.venues.all.0.lat }}, {{ bookmark.venues.all.0.lon }}, {{ globalsettings.google_map_zoom }},markers)				
+});
+</script>
+{% endif %}
+{% endblock %}

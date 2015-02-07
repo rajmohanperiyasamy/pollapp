@@ -1,0 +1,99 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'config' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Comment Settings' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+function save_approval(){
+	var flag = $('#mform').validate().form();
+	if(flag){
+		var dataString='';
+		{% for a in apps %}
+			if($('#id_{{a.id}}').is(':checked')){dataString+='&app_{{a.id}}=1';}
+		{% endfor %}
+		
+		if($('#id_discuss_comment').is(':checked')){
+			dataString+='&discuss_comment=1';
+			dataString+='&discuss_shortcut='+$('#id_discuss_shortcut').val();
+		}
+		
+		if($('#id_like_dislike').is(':checked')){dataString+='&like_dislike=1';}
+		if($('#id_flag').is(':checked')){dataString+='&flag=1';}
+		if($('#id_approval').is(':checked')){dataString+='&approval=1';}
+		if($('#id_threaded').is(':checked')){dataString+='&threaded=1';}
+		if($('#id_avatar').is(':checked')){dataString+='&avatar=1';}
+		if($('#id_rating').is(':checked')){dataString+='&rating=1';}
+
+		//if($('#id_anonymous').is(':checked')){dataString+='&anonymous=1';}
+		//dataString+='&sort='+$('#id_sort').val();
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_config_update_comment_settings' %}",
+		data: dataString,
+		dataType:'json',
+		success: function(data){
+				setTimeout( function() {
+					show_msg(data.msg,data.mtype);
+					$('#ajax_content_loading').hide();
+					$('#ajax_content').show().html(data.html);
+					$('.select-menu').chosen();
+				}, 500 );
+			}
+		});
+	}	
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+		        	<li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+					<li><a href="{% url 'admin_config_manage_comment_settings' %}" style="z-index:8">{% trans 'Comments/Reviews' %}</a></li>
+				</ul>
+			</div>
+        </div>
+        <div id="core-wraper" class="group">
+        	<div class="admin-main col_12 configuration">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'config' %}
+					{% activetab 'leftnav' 'comment' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Comment/Review Settings' %}</h2>
+                          	<p class="ltxt80">Specify the settings which pertain to the comments. You can either choose inhouse commenting or a third party (<a href='http://www.disqus.com/' target="_blank" >DISQUS</a>) commenting system.</p>
+                        </div>
+                        {% include 'admin/configuration/include_commentsettings.html' %}
+                    </div>
+                </div>                       
+            </div> 
+			{% include 'admin/configuration/comment-settings-faq.html' %}                              
+		</div>
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

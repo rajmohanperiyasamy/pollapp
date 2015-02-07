@@ -1,0 +1,5 @@
+{% load i18n %}	
+<li class="published-state"><strong id="id_pub">{{ published }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Published' %}</a></li>
+<li class="blocked-state"><strong id="id_blk">{{ blocked }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Blocked' %}</a></li>
+<li class="pending-state"><strong id="id_blk">{{ pending }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Pending' %}</a></li>
+<li class="sum"><strong id="id_tot">{{ total }}</strong> {% trans 'total advice posted.' %}</li>    

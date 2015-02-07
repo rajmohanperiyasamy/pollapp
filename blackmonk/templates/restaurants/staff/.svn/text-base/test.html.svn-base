@@ -1,0 +1,17 @@
+<html>
+<body>
+{% for rest in restaurant %}
+title : {{ rest.name }}<br>
+{% for cat in rest.categories.all %}
+categories :		{{ cat }}
+{% endfor %}
+<br>
+views: {{ rest.views }}<br>
+created_by : {{rest.created_by.profile.get_full_name}} :: {{rest.created_on|date:"M d, Y"}}  <br><br>
+{% endfor %}
+
+
+</body>
+</html>
+
+				

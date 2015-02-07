@@ -1,0 +1,87 @@
+{% load i18n %}
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving ListingType' %}</p>
+</div>
+<div class="main_col" id="ajax_content">
+	<div id="add-new-category" class="modal-form" style="width:560px !important;">
+    <form name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="fields-head">
+                    <p class="ltxt80">{% trans 'Choose how would you like to promote your restaurant listing in the website.' %}.</p> 
+                </div>             
+                <div class="field text-field">
+                    <div class="label"><label>{% trans 'Listing Type' %}<span class="required-field">*</span></label></div>
+                    <div class="value">
+                    	<div class="fd-cols mrb0 pd50 group">
+                    		{% for restaurant_price in restaurant_price_objects %}
+								<span class="pdr6"><label for="typeFeatured" id="l:typeFeatured"><span class="cform-radio-container"><input type="radio" value="{{restaurant_price.id}}" onclick="payment_option({{restaurant_price.id}})" name="listingtype" {% if forloop.first %}{% if not restaurant %}CHECKED{% endif %}{% endif %}{% ifequal restaurant.payment.id restaurant_price.id %}CHECKED{% endifequal%} id="{{restaurant_price.id}}"><span class="cform-radio-element"></span></span>{{restaurant_price.level_label}}</label></span>
+							{% endfor %}
+						</div> 
+						<div class="fd-cols mrb0 pd50 group" style="float:left;">
+							<span style="float:left; display:block; margin-right:10px;">
+								<select onchange="payment_period($(this).val())" id="period_type" name="period" class="select-menu" style="width:100px;">
+									<option value='M'>{% trans 'Month' %}</option>
+									<option value='Y'>{% trans 'Year' %}</option>
+								</select>
+							</span>
+							<span style="float:left; display:block;">
+								<input type="hidden" id="current_date" value="{% now "Y-m-d" %}">
+								{% trans 'From' %} 
+									<input type="text" style="width:80px !important;" class="cat_price" name="listing_start_date" id="id_listing_start_date" class="tttxt" value="{{restaurant.start_date|date:'d/m/Y'}}">
+								{% trans 'to' %} 
+									<input type="text" style="width:80px !important;" class="cat_price" name="listing_end_date" id="id_listing_end_date" class="tttxt" value="{{restaurant.end_date|date:'d/m/Y'}}">
+							</span>
+						</div>
+						
+							<div id="" class="payment_div" style="float:left;width:200px;padding:5px 0 0 10px;">
+								<h4 class="price_lrg">
+								
+											
+										
+								</h4>
+							</div>
+						
+						<!--span class="tip" style="display:inline-block;">{% trans 'Choose how would you like to promote your business listing in the website.' %}</span-->                                                           
+					</div>	
+                </div> 
+            </div>            
+		</div>    
+        <div class="modal-base form-submit group">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="save_listing_type({{restaurant.id}})"><span class="cform-button-text">{% trans 'Update' %}</span></button>
+		</div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+	<script type="text/javascript">
+		function payment_option(id){
+			$('.payment_div').hide();
+			$('#id_'+id).show();
+			$.colorbox.resize();
+		}
+	$(document).ready(function(){
+		if($("#id_listing_end_date").length){
+			$("#id_listing_end_date").datepicker({ dateFormat: "dd/mm/yy",minDate: new Date() });
+		}
+		if($("#id_listing_start_date").length){
+			$("#id_listing_start_date").datepicker({ dateFormat: "dd/mm/yy",minDate: new Date()});
+		}
+	});
+	function payment_period(type){
+		var now = new Date($('#current_date').val());
+		if(type=='Y'){
+			now.setYear((parseInt(now.getFullYear())+1));
+			$('.year').show();
+			$('.month').hide();
+		}
+		else{
+			now.setMonth((parseInt(now.getMonth())+1));
+			$('.month').show();
+			$('.year').hide();
+		}
+		$('#id_listing_end_date').val($.datepicker.formatDate('dd/mm/yy',now));
+	}
+	</script>
+</div>

@@ -1,0 +1,122 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+    {% activetab "selmodule" "banners" %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Banner Ads' %} {% endblock %}
+{% block head %}
+<!-- TAGS -->
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css" />
+<!-- TAGS -->
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+      <div class="header-bar has-sub has-sub-menu" style="height: auto;">
+      	<h2 style="height:24px">
+			<span class="inline-block change_module">{% trans 'Hero Banner' %}<span class="inline-block arrow"></span></span>
+            <div class="sub_nav">
+            	<ul>
+                	<li class="movies">
+                    	<a href="/staff/banners/"><span class="icon"></span>{% trans 'Banners' %}</a>
+                    </li>
+                    <li class="theaters">
+                    	<a href="/staff/banners/hero-banners"><span class="icon"></span>{% trans 'Hero Banner' %}</a>
+                    </li>
+                </ul>
+            </div>
+		</h2>                        
+      </div>
+        <div id="core-wraper" class="group">
+            <div class="staff-main">
+				<div class="page-wrap">
+                    <div id="articles" class="group">
+                        <span id="ajax_content_loading" class="load-list-items" style="display:none">
+                        	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+                        </span>
+                        <div style="display:none;" class="info-bar" id="top_info_bar"></div>
+                        <div id="ajax_content_cls" class="group">
+                        	{% include 'banners/staff/ajax_herolisting.html'%} 
+                        </div>                                           
+	                </div> <!-- end table -->
+	          	</div>  <!-- end page wrap -->
+			</div>  <!-- end main-col -->                            
+            <div id="aside" class="side-bar">
+	            <div id="module-stats" class="section">
+	            	<div class="add-section-right group" style="margin-bottom: 10px;">
+	          			<a href="{% url 'staff_banners_add_hero_banner' %}" class="btn-txt-prime" title="{% trans 'Add New Banner' %}"><span class="btn-txt">{% trans 'Add Hero Banner' %}</span></a>
+	    			</div> 
+    			</div>
+			</div>                            
+    	</div>                                                    
+</div>
+{% endblock %}            
+{% block footer_include %}
+<!-- TAGS -->
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+<!-- TAGS -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.tool.action_status .chzn-container').addClass('chzn-disabled , disabled_chosen');
+		{% if recent %}
+			$('#id_status').val('N');
+			$('#filter_a a').removeClass('active');
+			$('#listing_pending').addClass('active');
+			filter_content();
+		
+		{% endif %}
+		
+		$('.header-bar.has-sub-menu h2 .change_module ').click(
+			function() { 
+			$('.header-bar.has-sub-menu h2 .sub_nav').toggle();
+			 }
+		);  
+		$('div#content').click(
+			function() { 
+			$('.header-bar.has-sub-menu h2 .sub_nav').hide();
+			 }
+		);
+		$('.header-bar.has-sub-menu h2 .change_module').click(function(event){
+		   event.stopPropagation();
+		});
+	}); 	
+
+	function delete_action(ids){
+		var dataString='';
+	    var url = $('#id_banner_action_url').val();
+		dataString+="&ids="+ids;
+		$('#ajax_action_loading').show();
+		$.ajax({
+		type: "get",
+		url: url,
+		data: dataString,
+		dataType:'json',
+		success: function(data){
+				$('#ajax_action_loading').hide();
+				try{$('#li_'+ids).remove();}
+				catch(e){alert("not removed");}
+				$('#ajax_content_list').append(data.html);
+				show_msg(data.msg,data.mtype);
+				$(".bm-create-gallery").colorbox({width: "880", initialWidth: "880", top:"5%"});
+				$('.light_box').colorbox({width: "560",initialWidth: "560", top:"5%", initialHeight: "200"});
+			}
+		});
+	}
+	
+</script>	
+<ul class="tour_link">
+    <li class="tool-tip tttxt-t1"><a class="link1" href="/bmt/tour/gallery/staff/status.html"></a></li>
+    <li class="tool-tip tttxt-t2"><a class="link2" href="/bmt/tour/gallery/staff/listing_type.html"></a></li>
+    <li class="tool-tip tttxt-t3"><a class="link3" href="/bmt/tour/gallery/staff/submissions.html"></a></li>
+    <li class="tool-tip tttxt-t4"><a class="link4" href="/bmt/tour/gallery/staff/search.html"></a></li>
+    <li class="tool-tip tttxt-t5"><a class="link5" href="/bmt/tour/gallery/staff/actions.html"></a></li>
+    <li class="tool-tip tttxt-t6"><a class="link6" href="/bmt/tour/gallery/staff/sorting.html"></a></li>
+    <li class="tool-tip tttxt-t7"><a class="link7" href="/bmt/tour/gallery/staff/state.html"></a></li>
+    <li class="tool-tip tttxt-t8"><a class="link8" href="/bmt/tour/gallery/staff/status_aside.html"></a></li>
+    <li class="tool-tip tttxt-t9"><a class="link9" href="/bmt/tour/gallery/staff/settings.html"></a></li>
+</ul>
+{% endblock %}

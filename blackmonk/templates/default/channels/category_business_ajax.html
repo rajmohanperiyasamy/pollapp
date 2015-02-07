@@ -1,0 +1,85 @@
+{% load i18n %}
+{% load thumbnail %}
+{% with category_biz as category_biz %}
+{% if category_biz %}
+<div class="row-fluid latestBusiness">
+	<div class="mDa-lT-mNi">
+		<ul class="mDa-lT mDa-oT-lT">
+            {% for business in category_biz %}
+			{% with business.address.all.0 as address %}
+            <li class="mDa">
+				<div class="mDa-iN">
+					<div class="mDa-wPr">
+						<a href="{{business.get_absolute_url}}" class="bUi-tMb-wPr bUi-tMb-110 tMb-75 fLxiMgH bS-bRdR">
+							<span class="bUi-tMb">
+								<span class="bUi-tMb-pRpL">
+									<span class="bUi-tMb-cLp">
+										<span class="bUi-tMb-cLp-iN">
+											<img src="{% if business.logo.logo %}{% thumbnail business.logo.logo 226x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{address.pointer_lat}},{{address.pointer_lng}}&zoom=15&size=226x180&markers={{address.pointer_lat}},{{address.pointer_lng}}&sensor=false{% endif %}" alt="{{business.name}}" title="{{business.nmae}}">
+												<span class="vRtL-aLn">
+												</span>
+											</span>
+										</span>
+									</span>
+								</span>
+							</a>
+						</div>
+						<div class="mDa-bDy pD0150">
+							<h5 title="Allegiant Expands Service at Orlando Sanford Airport" class="mDa-hD tRnCt0 mRb0 mXw35">
+								<a href="{{business.get_absolute_url}}">{{ business.name }}</a>
+							</h5>
+							<div class="mDa-dTa mRt4">
+								<span class="fS12 cLr-lTgRy tRnCt">
+									<i class="bUi-iCn-mP-mKr-12" aria-hidden="true">
+									</i>
+									<a class="cLr-lTgRy" href="javascript:void(0)">{{ address.venue }}&nbsp;{{ address.address1 }}&nbsp;{{ address.address2 }}&nbsp;{{ address.city }}&nbsp;{{ address.pin }}</a>
+								</span>
+							</div>
+							<div class="fTrD-mTa fS11 pDt5">
+								<div class="sTr-rT ib mRb0 mNi sTtC">
+									<span data-rating="{{ business.ratings }}" class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4">
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			{% endwith %}
+            {% endfor %}
+            </ul>
+		</div>
+	</div>
+{% else %}
+<div class="pD20 pDt0 cLrfX">                                                                                     
+	 <div class="hT360 rLvE">
+        <div class="tBl-bLk pDt0">
+           <div class="tBl-cEl">
+               <span class="iCn-bRdR50 oP25"><i class="bUi-iCn-bSn--24 fS42-1 cLr-lTgRy ib fS24" aria-hidden="true"></i></span>
+               <p class="bLk mRt20 fS16 cLr-lTgRy oP75">No business to list.</p>
+           </div>
+       </div>
+   </div>
+</div> 
+{% endif %}
+{% endwith %}
+<script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script>
+<script>
+$(document).ready(function(e) {
+	$('.sTr-rT-rD').raty({
+		readOnly: true, 
+		score: function() {return $(this).attr('data-rating');}, 
+		//precision: true,
+		//target    : '#rw0001',
+		//targetKeep: true,
+		size      : 16
+	});	
+	$('.sTr-rT-mNi').raty({
+		readOnly: true, 
+		score: $(this).attr('data-rating'), 
+		//precision: true,
+		//target    : '#rw0001',
+		//targetKeep: true,
+		size      : 12
+	});
+});
+</script>

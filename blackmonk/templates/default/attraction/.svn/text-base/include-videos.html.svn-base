@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<div class="row-fluid atr_block" id="videos" style="{% if view != 'videos' %}display:none;{% endif %}">
+    <div class="span8 main mRb0">
+        <section class="pD300 mRb30 mH500">
+            <div class="sCn-tTl">
+               <h3><span>{% trans 'All Videos of' %} {{attraction.name}}</span></h3>
+             </div>
+                {% with attraction.attraction_video.all as attraction_videos %}
+                <ul class="modulesBrowseData fOcL mDa-gD dSgDwDt pDfX fxslider">
+                    {% for video in attraction_videos %}
+                    <li class="mDa" data-src="{{video.get_video_player}}" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+                        <div class="mDa-iN">
+                            <div class="mDa-wPr"> 
+                            <a class="bUi-tMb-wPr tMb-65 fLxiMgH" href="#">
+                                    <span class="bUi-tMb">
+                                        <span class="bUi-tMb-pRpL">
+                                            <span class="bUi-tMb-cLp">
+                                                <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{video.get_hq_thumb}}" alt="{{video.title}}" itemprop="thumbnailUrl">
+                                                    <span class="vRtL-aLn"> </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </a>
+                                <div class="mDa-hVr tR-hVr lH1 b5-gD hide"><a data-toggle="tooltip" data-placement="right" title="Share" class="lH1 pDt2b2 iCn-lNk btn btn-mini" href="#">39:45</a></div> 
+                                <div class="mDa-hVr tR-hVr cVr">
+                                    <a class="s-32 cTr" href="#">
+                                        <i class="bUi-iCn-pLy-aLt-24 hT-aTo fS32-1 pLy-iCn" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endwith %}
+        </section>
+    </div>
+</div>  

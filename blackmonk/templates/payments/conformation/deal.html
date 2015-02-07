@@ -1,0 +1,241 @@
+{% extends "user_base.html" %}
+{% load currency %}
+{% load i18n %}
+{% load ds_utils %}
+{% load thumbnail %}
+{% load tabs %}
+
+{% block pagetitle %}{% trans 'Deal Payment Conformation' %}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/bm.common.js"></script>
+{% endblock %}
+
+{% block navigation %}
+    {% activetab "leftnav" "deals" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+	            	<div class="span10 sP9mX979 sP12mX767">
+		                <div class="row-fluid">
+							<div class="main span9">
+								<section class="sCn pD0">
+									<div class="cLrFx pD20">
+										<div class="pLlT">
+											<h3 class="mR0 tRnCt">Deal Payment Confirmation</h3>
+										</div>
+									</div>
+									<hr class="mRb12 mRt0">
+									<div class="pD20">
+										<div class="uSr-aCnT mRb0">
+                                        	<div class="sCn-tTl">
+                                                <h3 class="clearfix oFl">
+                                                    <span class="ib pLlT">Order Details</span>
+                                                </h3>
+                                            </div>
+                                        	<table class="table table-bordered bDrT0Mp">
+                                                <thead class="hMp bFa">
+                                                    <tr>
+                                                        <th class="span4">
+                                                            <span>Item Details</span>
+                                                        </th>
+                                                        <th class="span1">
+                                                            <span>Unit Price</span>
+                                                        </th>
+														<th class="span1">
+                                                            <span>Quantity</span>
+                                                        </th>
+                                                        <th class="tXt-rT span1">
+                                                            <span>Total</span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="span4">
+                                                            <div class="control-group">
+                                                                <label class="control-label pDt0 vOp">Item Details</label>
+                                                                <ul class="modulesBrowseData mDa-lT mDa-oT-lT dSrS480">
+                                                                    <li class="mDa mRb0">
+                                                                        <div class="mDa-iN bDr0 pD0">
+                                                                            <div class="mDa-wPr">
+                                                                                <a class="bUi-tMb-wPr tMb-75 dSpD fLxiMgW bUi-tMb-110" href="{{ deal.get_absolute_url }}">
+                                                                                    <span class="bUi-tMb">
+                                                                                        <span class="bUi-tMb-pRpL">
+                                                                                            <span class="bUi-tMb-cLp">
+                                                                                                <span class="bUi-tMb-cLp-iN">
+                                                                                                    <img class="mDa-oT" alt="{{ deal.title }}" title="{{ deal.title }}" src="{% if deal.album.album_photos.all.0 %}{% thumbnail deal.album.album_photos.all.0.photo 110x0 %}{% else %}{% thumbnail deal.get_default_image.photo 110x0 %}{% endif %}">
+                                                                                                    <span class="vRtL-aLn">
+                                                                                                    </span>
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="mDa-bDy">
+                                                                                <h4 title="{{ deal.title }}" class="mDa-hD tRnCt0 rLvE">
+                                                                                    <a href="{{ deal.get_absolute_url }}">{{ deal.title|truncatechars:106 }}</a>
+                                                                                </h4>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                        <td class="span1">
+                                                           <label class="fW-nRmL">{{ deal.discount_price|floatformat:0|moneyfmt}}</label>
+                                                        </td>
+														<td class="span1">
+                                                           <label class="fW-nRmL">{{ dr.quantity }}</label>
+                                                        </td>
+                                                        <td class="tXt-rT span1"><strong class="fS13 pLlT vOp">Total</strong><strong class="fS14">{{ dr.total_price|floatformat:0|moneyfmt }}</strong></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="row-fluid mRb10 tXt-rT">
+                                                <div class="ib mRr10 cLr-gRy">You pay :</div>
+                                                <h3 class="ib">{{ dr.total_price|floatformat:0|moneyfmt }}</h3>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label">Payment gateway</label>
+                                                <div class="controls">
+													{% if payment_config.paypal_payment %}
+                                                    <label class="radio fW-nRmL mRb0">
+                                                        <input type="radio" name="payment_option" value="paypal" checked="checked">
+                                                        {% trans "Paypal" %} </label>
+													{% endif %}
+													{% if payment_config.stripe %}
+                                                    <label class="radio fW-nRmL mRb0">
+                                                        <input type="radio" name="payment_option" value="creditcard">
+                                                        {% trans "Credit Card" %} </label>
+													{% endif %}
+													{% if payment_config.authorize %}
+                                                    <label class="radio fW-nRmL mRb0">
+                                                        <input type="radio" name="payment_option" value="authorizenet">
+                                                        {% trans "Authorize.net" %} </label>
+													{% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <label for="gender1" class="checkbox inline fW-nRmL fS12">
+                                                        <input type="checkbox" value="1" id="terms" name="terms">
+                                                        I have read and agreed to the
+                                                        <a href="/terms-of-use.html" target="_blank">Terms of Service</a>
+                                                        and
+                                                        <a href="/privacy-policy.html" target="_blank">Privacy Policy</a>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <hr class="oTsT-hRz20 mRb0">
+											{% if payment_config.paypal_payment %}
+												<form style="margin-bottom: 0px;" action="" method="post" id="paypal_form">{% csrf_token %}
+													<input type="hidden" value="paypal" name="payment_options" />
+													<div class="row-fluid">
+														<div class="form-actions pD0 pLrT">
+												   			<input type="submit" name="submit" value="{% trans 'Proceed' %}" class="btn btn-primary fS12 fW-bLd mRl5">
+				                                        </div>
+													</div>
+												</form>
+											{% endif %}
+											{% if payment_config.stripe %}
+												<form style="display:none;margin-bottom: 0px;" method="post" id="stripe_form">
+													<input type="hidden" name="stripeToken" id="stripeToken">
+													<div class="row-fluid">
+														<div class="form-actions pD0 pLrT">
+												   			<input type="submit" id="stripe_button" value="{% trans 'Proceed' %}" class="btn btn-primary fS12 fW-bLd mRl5">
+				                                        </div>
+													</div>
+												</form>
+											{% endif %}
+											{% if payment_config.authorize %}
+												<form style="display:none;margin-bottom: 0px;" action="" method="post" id="authorize_form">{% csrf_token %}
+													<input type="hidden" value="authorizenet" name="payment_options">
+													<div class="row-fluid">
+														<div class="form-actions pD0 pLrT">
+												   			<input type="submit" name="submit" value="{% trans 'Proceed' %}" class="btn btn-primary fS12 fW-bLd mRl5">
+				                                        </div>
+													</div>
+												</form>
+											{% endif %}
+                                        </div>
+									</div>
+								</section>
+							</div> <!-- /.main -->
+							<aside class="sD-bR span3">
+								<div>
+									<section class="tXt-cTr pD0 bNr-aD"> 
+			                           
+			                        </section>
+								</div>
+							</aside>
+						</div>  <!-- /.row-fluid -->
+					</div>
+{% endblock %}
+
+
+{% block footerarea %}
+{% if payment_config.stripe %}
+	<script src="https://checkout.stripe.com/v2/checkout.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('#stripe_button').click(function(){
+			if(!$('#terms').attr('checked')){
+				alert('Please agree to the Terms of Use & Privacy Policy');
+				return false;
+			}
+		  var token = function(res){
+			$('#stripeToken').val(res.id);
+			$('#stripe_form').submit()
+		  };
+		  StripeCheckout.open({
+		    key:         '{{payment_config.stripe_public_key}}',
+		    amount:      {{stripe_sp_cost}},
+		    name:        '{{ deal.title }}',
+		    description: '{{deal.category.name}}',
+		    token:       token,
+			image:		'{% if deal.album.album_photos.all.0.photo %}{% thumbnail deal.album.album_photos.all.0.photo 110x0 %}{% else %}{{STATIC_URL}}ui/images/global/img-none.png{% endif %}',
+			currency:	'{{ payment_config.currency_code }}'
+		  });
+		
+		  return false;
+		});
+	});
+	</script>
+{% endif %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('input[name=submit]').click(function(){
+		if(!$('#terms').attr('checked')){
+			alert('Please agree to the Terms of Use & Privacy Policy');
+			return false;
+		}
+	});
+	$('input[name=payment_option]').change(function(){
+		if($(this).val()=='paypal'){
+			$('#paypal_form').show();
+			$('#authorize_form').hide();
+			$('#stripe_form').hide();
+		}
+		if($(this).val()=='authorizenet'){
+			$('#paypal_form').hide();
+			$('#authorize_form').show();
+			$('#stripe_form').hide();
+		}
+		if($(this).val()=='creditcard'){
+			$('#stripe_form').show();
+			$('#paypal_form').hide();
+			$('#authorize_form').hide();
+		}
+	});
+});
+</script>
+{% endblock %}

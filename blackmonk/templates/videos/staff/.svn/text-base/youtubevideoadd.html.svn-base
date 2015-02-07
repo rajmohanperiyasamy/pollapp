@@ -1,0 +1,210 @@
+{% load i18n %}	
+<script>
+$(document).ready(function(){
+$("#id_search_videos").click(function(){
+	$('#id_search_div').show();
+	$('#id_search_videos').addClass('modal-sc-tab-selected');
+	
+	$('#id_add_videos_div').hide();
+	$('#id_search_div_vimeo').hide();
+	
+	$("#id_search_videos_vimeo").removeClass("modal-sc-tab-selected");
+	$("#id_search_videos_vimeo").addClass("modal-sc-tab-unselected");
+	$("#id_share_video_links").addClass("modal-sc-tab-unselected");
+  	$("#id_share_video_links").removeClass("modal-sc-tab-selected");
+	
+});	
+$("#id_search_videos_vimeo").click(function(){
+	$('#id_search_div_vimeo').show();
+	$('#id_search_videos_vimeo').addClass("modal-sc-tab-selected");
+	
+	$('#id_add_videos_div').hide();
+	$('#id_search_div').hide();
+	
+	$("#id_search_videos").removeClass("modal-sc-tab-selected");
+	$("#id_search_videos").addClass("modal-sc-tab-unselected");
+	$("#id_share_video_links").addClass("modal-sc-tab-unselected");
+  	$("#id_share_video_links").removeClass("modal-sc-tab-selected");
+});	
+$("#id_share_video_links").click(function(){
+	$("#id_share_video_links").addClass("modal-sc-tab-selected");
+  	$('#id_add_videos_div').show();
+
+	$('#id_search_div_vimeo').hide();
+	$('#id_search_div').hide();	
+	
+	$("#id_search_videos").removeClass("modal-sc-tab-selected");
+	$("#id_search_videos").addClass("modal-sc-tab-unselected");
+	$("#id_search_videos_vimeo").addClass("modal-sc-tab-unselected");
+  	$("#id_search_videos_vimeo").removeClass("modal-sc-tab-selected");
+});
+$(".url_class_yb").click(function(){
+	$('#youtube_url_div').show();
+	$('#vimeo_url_div').hide();
+	$('.url_class_yb').removeClass('unselected').addClass('selected');
+	$('.url_class_v').removeClass('selected').addClass('unselected');
+});
+$(".url_class_v").click(function(){
+	$('#vimeo_url_div').show();
+	$('#youtube_url_div').hide();
+	$('.url_class_v').removeClass('unselected').addClass('selected');
+	$('.url_class_yb').removeClass('selected').addClass('unselected');
+});
+});
+</script> 
+<style type="text/css">
+.modal-lc-tabs ul li.unselected a{box-shadow: 1px 0 0 rgba(0, 0, 0, 0.07);color: #CCCCCC;}
+.modal-lc-tabs ul li.unselected span {opacity: 0.25;}
+</style>
+<div id="share-videos">
+    <div class="upload-gadget-main">
+        <div class="hform relative-block">
+            <ul class="modal-sc-tabs group">
+                <li class="modal-sc-tab modal-sc-tab-selected modal-sc-first-tab inline-block bm-upload-videos" id="id_search_videos"><img src="http://www.youtube.com/favicon.ico" class="inline-block fav-icon"/> Search videos</li>
+				<li class="modal-sc-tab modal-sc-tab-unselected inline-block bm-upload-videos" id="id_search_videos_vimeo"><img src="http://vimeo.com/favicon.ico" class="inline-block fav-icon"/> Search videos</li>
+                <li class="modal-sc-tab modal-sc-tab-unselected modal-sc-last-tab inline-block" id="id_share_video_links"><span class="icon-url inline-block"></span> Share video links</li>
+            </ul> 
+			<!-- Adding videos using youtube url-->
+			<div id="id_add_videos_div" style="display:none;">
+				<div class="modal-lc-tabs" >
+					<ul>
+	                	<li class="url_class_yb selected"><a href="javascript:void(0);"><span class="icon-youtube inline-block"></span>Youtube</a></li>
+	                    <li class="url_class_v unselected"><a href="javascript:void(0);"><span class="icon-vimeo inline-block"></span>Vimeo</a></li>
+	                    <!--li class="inactive"><a href="javascript:void(0);"><span class="icon-flickr inline-block"></span>Flickr</a></li-->
+					</ul>                        
+				</div>                       
+	            <div class="share-links-wrapper" id="youtube_url_div">
+	            	<div class="share-link-inset">
+	                    <div class="share-links-field-container">
+	                        <input type="search" placeholder="Paste youtube video link here..." name="youtube_url"  onkeyup="$(this).closest('div').removeClass('field-error');" id="youtube_url" size="42" >
+	                        <button role="button" class="cform-button search-button" type="submit" onclick="addInput()"><span>{% trans 'Share Video'%}</span></button>                    
+	                    </div>
+	                    <div class="help-content">
+	                        <p><span class="icon-help16 o3"></span>{% blocktrans %}It's easy to share video links you've found on YouTube with your friends and social networks.  Please copy and paste the YouTube 'URL' from the address bar or from the 'Share' button underneath any video on the Watch page.{% endblocktrans %}</p>
+	                    </div>
+					</div>                        
+	            </div>
+				<div class="share-links-wrapper" style="display:none;" id="vimeo_url_div">
+	            	<div class="share-link-inset">
+	                    <div class="share-links-field-container">
+	                        <input type="search" placeholder="Paste vimeo video link here..." name="viemo_url"  onkeyup="$(this).closest('div').removeClass('field-error');" id="viemo_url" size="42" >
+	                        <button role="button" class="cform-button search-button" type="submit" onclick="addInput_vimeo()"><span>{% trans 'Share Video'%}</span></button>                    
+	                    </div>
+	                    <div class="help-content">
+	                        <p><span class="icon-help16 o3"></span>{% blocktrans %}It's easy to share video links you've found on Vimeo with your friends and social networks.  Please copy and paste the Vimeo 'URL' from the address bar or from the 'Share' button underneath any video on the Watch page.{% endblocktrans %}</p>
+	                    </div>
+					</div>                        
+	            </div>
+			</div>
+			<!-- Ends -->
+			<!--div class="item-preview-wrapper-link" id="id_s_test" ></div-->
+			<!-- youtube search-->
+			<div id="id_search_div">
+	            <div class="modal-search-bar" style="text-align:left" >
+	            	<div class="modal-search-bar-input group" id="id_search_parent_div">
+	                    <input type="text" placeholder="Search videos.." name="search_from_yt" id="id_search_from_yt" onkeyup="$(this).closest('div').removeClass('field-error');" size="33">
+	                    <button role="button" onclick="searching('relevance'); return false;" class="cform-button search-button" type="submit"><span class="search-icon">Search</span></button>
+						<div id="search_sort_options" class="inline-block" id="activate_after_search">
+	                		{% trans 'Sort by:' %}<a href="javascript:void(0);" id="search_relevance" class="disabled" onclick="searching('relevance')">Relevance</a><span class="item-divider"></span><a onclick="searching('updated')" id="search_upld_date" href="javascript:void(0);">{% trans 'Upload date' %}</a><span class="item-divider"></span><a id="search_view_count"  href="javascript:void(0);" onclick="searching('viewCount')">View count </a>			
+	    				</div>                         
+					</div>
+				</div>   
+				<div class="video-library search-results">
+	                <ul class="video_list"></ul><!-- Selected Videos UL --->
+					<span id="ajax_content_loading" class="load-list-items" style="display:none;text-align: center; padding-left: 400px; padding-top: 10px;">
+					 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+					</span>
+					<div class="hang-items" style="display:block">
+	                    <div  class="lodr" style="display:none"><img src="{{STATIC_URL }}ui/images/global/loading-s.gif" /></div>
+	                    <div class="tip" style="display:block">{% trans 'There are no video(s) found.Please search videos.' %}</div>
+	                 </div>
+	               </div>
+				</div>
+			<!-- Ends -->
+			<!-- vimeo search-->
+			<div id="id_search_div_vimeo" style="display:none;">
+				{% if gsetting %}
+                <div class="modal-search-bar" style="text-align:left" >
+                	<div class="modal-search-bar-input group" id="id_search_parent_div_vimeo">
+                        <input type="text" placeholder="Search videos(vimeos).." name="search_from_yt_vimeo" id="id_search_from_yt_viemo" onkeyup="$(this).closest('div').removeClass('field-error');" size="33">
+                        <button role="button" onclick="searching_vimeo('relevance','{% url 'staff_video_ajax_vimeo_search' %}'); return false;" class="cform-button search-button" type="submit"><span class="search-icon">Search</span></button>
+    					<div id="search_sort_options_vimeo" class="inline-block" id="activate_after_search_vimeo">
+                    		{% trans 'Sort by:' %}<a href="javascript:void(0);" id="search_relevance_vimeo" class="disabled" onclick="searching_vimeo('relevance','{% url 'staff_video_ajax_vimeo_search' %}')">Relevance</a><span class="item-divider"></span><a onclick="searching_vimeo('newest','{% url 'staff_video_ajax_vimeo_search' %}')" id="search_upld_date_vimeo" href="javascript:void(0);">{% trans 'Upload date' %}</a><span class="item-divider"></span><a id="search_view_count_vimeo"  href="javascript:void(0);" onclick="searching_vimeo('most_played','{% url 'staff_video_ajax_vimeo_search' %}')">View count </a>			
+        				</div>                         
+					</div>
+				</div>   
+				<div class="video-library search-results">
+                <ul class="video_list"></ul><!-- Selected Videos UL --->
+				<span id="ajax_content_loading" class="load-list-items" style="display:none;text-align: center; padding-left: 400px; padding-top: 10px;">
+				 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+				</span>
+				<div class="hang-items" style="display:block">
+                    <div  class="lodr" style="display:none"><img src="{{STATIC_URL }}ui/images/global/loading-s.gif" /></div>
+                    <div class="tip" style="display:block">{% trans 'There are no video(s) found.Please search videos.' %}</div>
+                 </div>
+               </div>
+				{% else %}
+				<div class="modal-search-bar" style="font-size: large; font-weight: bold; padding: 18% 27%;">{% trans "It seems like Vimeo search has been disabled." %}</div>
+				{% endif  %}
+			</div>
+			<!-- Ends -->
+
+		    <div class="item-preview-wrapper" id="id_s_test" ></div><!-- Video Player --->
+			<div class="drop-box-bottom video-inside">
+            	<div class="drop-box-header-bar">
+                	<div class="inline-block">
+                    	<div class="drop-box-title" id="d_selected_videos_count">{% trans ' 0 Videos Selected' %}</div>
+                    </div>
+                </div>
+                <div class="drop-box-items">
+                   	<ul id="id_video_slider"></ul><!-- Selected Videos Append Here-->                  
+                    <div class="hang-items" id="id_sel_hangitems" style="display:block">
+                    	<span style="display:none"><img src="{{ STATIC_URL }}ui/images/global/loading-s.gif" /></span>
+                    	<span id="slider_tip"class="tip" style="display:block">{% blocktrans %}Select videos you'd like to share from the above search result.{% endblocktrans %}</span>
+                    </div>                     
+				</div>                                            
+            </div>
+        </div>    
+        <div class="modal-base form-submit group" id="submit_button_hide">
+           <button role="button" id="button_hide_id" class="cform-button prime add-video-category "  disabled="disabled" type="submit" onclick="savevideo_now();" title="Describe upload" ><span class="cform-button-text">{% trans 'Next Step : Add Video Details'%}</span></button>
+        </div>           
+   </div> 
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	video_ids=[];
+	$('#id_search_from_yt').bind('keypress', function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+ 		if(code == 13) {searching('relevance');}
+	});	
+	$('#id_search_from_yt_viemo').bind('keypress', function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+ 		if(code == 13) {searching_vimeo('relevance',"{{% url 'user_video_ajax_vimeo_search' %}");}
+	});	
+	$('#search_sort_options a').click(function(){
+		if(!$(this).hasClass('disabled')){
+	 		$('#search_sort_options a').removeClass('disabled');
+			$('#search_sort_options a').css('color','#4083A9');
+			$(this).addClass('disabled');
+			$(this).css('color','black');
+		}
+	});
+	$('#id_search_div div.video-library').endlessScroll({
+		fireOnce: true,
+	  	fireDelay: false,
+	  	callback: function(p){
+	  		$("#id_search_div #ajax_content_loading").show();
+	  		setTimeout(function(){load_more(status_search)},500);
+	  	}
+	});
+	$('#id_search_div_vimeo div.video-library').endlessScroll({
+		fireOnce: true,
+	  	fireDelay: false,
+	  	callback: function(p){
+	  		$("#id_search_div_vimeo #ajax_content_loading").show();
+	  		setTimeout(function(){load_more_vimeo(status_search_viemo,'{% url 'staff_video_ajax_vimeo_search' %}')},500);
+	  	}
+	});
+});
+</script>

@@ -1,0 +1,7 @@
+{{ object.title }}
+{{ object.summary }}
+{% autoescape off %}{{ object.content }}{% endautoescape %}
+{{ object.category.name}}
+{% for tag in objects.tags.all %}
+{{tag.tag}}
+{% endfor %}

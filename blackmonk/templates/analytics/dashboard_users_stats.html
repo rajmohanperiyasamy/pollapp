@@ -1,0 +1,453 @@
+{% extends "dashboard_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load humanize %}
+{% block navigation %}
+    {% activetab "selmodule" "dashboard" %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Dashboard' %} {% endblock %}
+{% block head %}
+    
+    <link rel="stylesheet" href="{{STATIC_URL}}ui/css/datepicker.css" type="text/css" />
+    
+    <!--[if lt IE 9]>
+            <link rel="stylesheet" type="text/css" href="ui/css/ielt9.css" />
+    <![endif]-->
+    
+    <!--[if lte IE 8]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->  
+    
+    <style>
+        #modules-overview .rw{padding:0 20px;}
+        #modules-overview h4.module-name{font-size:13px; display:inline-block; width:120px;}    
+        #modules-overview .inline-col{display:inline-block; padding:0 10px;font-size:10px; text-transform:uppercase; color:#9A9A9A}
+        #modules-overview .num{font-size:16px; font-weight:bold; color:#333;display:block;}
+        
+        .hAxis-points{width:100%;padding:5px 0;margin:0;}
+        .hAxis-points li {display:block;float:left;color:#666; text-align:center;font-size:10px;}
+		
+<style type="text/css">
+		.keys{text-align:left;padding:6px 0px 0px 10px;font-size:12px;}
+		.browser{width:300px;text-align:center;font-size:14px;}
+		
+		
+	body {margin:0px !important}
+	body table{width:100% !important}	
+.google-visualization-table-table {
+	width:100%;
+		  font-size: 10pt;
+		  cursor: default;
+		  margin: 0px;
+		  background: white;
+		  border-spacing: 0;
+		}
+		table tbody tr td span div div{overflow:visible !important}
+		.google-visualization-table-table tbody {
+		  background: transparent;
+			border-radius: 6px 6px 6px 6px;
+			   -moz-box-shadow: 0 0 0 1px #CCCCCC inset, 0 0 2px 1px rgba(0, 0, 0, 0.09);
+			-webkit-box-shadow: 0 0 0 1px #CCCCCC inset, 0 0 2px 1px rgba(0, 0, 0, 0.09);
+				 -o-box-shadow: 0 0 0 1px #CCCCCC inset, 0 0 2px 1px rgba(0, 0, 0, 0.09);
+					box-shadow: 0 0 0 1px #CCCCCC inset, 0 0 2px 1px rgba(0, 0, 0, 0.09);			
+		}
+		
+		.google-visualization-table-table * {
+		  margin: 0;
+		  vertical-align: middle;
+		  padding: 2px;
+		}
+		
+		.ms-hd{
+			background:url(../images/ie-fix/fetof7.png);
+			background-color: #FEFEFE;
+			background-repeat: repeat-x;
+			background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#F9F9F9));
+			background: -webkit-linear-gradient(top, #FFF, #F9F9F9);
+			background: -moz-linear-gradient(top, #FFF, #F9F9F9);
+			background: -ms-linear-gradient(top, #FFF, #F9F9F9);
+			background: -o-linear-gradient(top, #FFF, #F9F9F9);
+			   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+			-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+				 -o-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+					box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+			color: #777;
+			text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);			
+			border-radius:6px 6px 0 0;
+			border-bottom: 1px solid #CCCCCC;
+		}
+		.ms-hd td{
+			font-weight:normal;
+			font-size:12px;
+			color:#777;
+			padding:8px 2px 6px;
+		}
+		.ms-rw, .ms-rw td {
+		  background-color: #fff;
+		}
+		
+		.ms-odd-rw, .ms-odd-rw td{
+		  background-color: #F9F9F9;
+		}
+		
+		.ms-rw-selected, .ms-rw-selected td{
+		  background-color: #d6e9f8;
+		}
+		
+		.ms-rw-hover, .ms-rw-hover td {
+		  background-color: #e7e9f9;
+		}
+		.google-visualization-table-sorthdr {
+		  cursor: pointer;
+		}
+		.google-visualization-table-sortind {
+		  color: #ccc;
+		  font-size: 9px;
+		  padding-left: 6px; /* do not chage - see table.js */
+		}
+		.ms-col {
+			line-height:24px;
+		  	padding:0 3px 3px;
+			font-size:13px;
+		}
+		.ms-col-int {
+		  text-align: center;
+		  white-space: nowrap;
+		  color:#9A9A9A
+		}
+
+		.google-visualization-table-div-page {
+		  margin: 2px 0 0 0;
+		  padding: 0;
+		}
+
+		.google-visualization-table-td-number {text-align:right}			
+        
+    
+  
+    </style>
+        
+        <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script-->
+        <script>
+            var analytic_url = "{{ globalsettings.website_url }}";
+            var pathname = window.location.pathname;
+        </script>     
+        
+{% endblock %}
+{% block content %}
+    
+            <div id="staff-platform" class="group">
+                <div class="staff-main col_12">
+                    <div class="statitics box group">
+                        <div class="section-header">
+                            <h2>Statistics</h2>
+                            <div class="tabs">
+                                <ul class="group ">
+                                   
+                                   <li><a href="/staff/dashboard"  id="Content"  >Content</a></li>
+									<li><a href="/staff/dashboard/user_stats" class="selected" id="new_registration">New Registration</a></li>
+									<li><a href="{% url 'staff_analytic_home' %}"  onclick="location.replace('{% url 'staff_analytic_home' %}');" id="Traffic" >Traffic</a></li>
+									<li><a href="{% url 'staff_analytic_live' %}" onclick="location.replace('{% url 'staff_analytic_live' %}');" id="Live" >Live</a></li>
+                                </ul>
+                            </div>
+                        </div> 
+                        <div class="traffic-header group" style="padding:10px 15px;">
+                                <h2 style="float:left; font-size:20px; font-weight:bold" id="Traffic_label">Users</h2>
+                                
+                            </div>
+                        <div id="User-overview"> 
+                             <div class="visits">
+                                <div class="visit-inner-div"id="Traffic_stats">
+                                    <div class="report-head group">
+                                        <div class="chart-legend">
+                                            <!--div class="item"><span style="border-color:#058DC7;" class="bullet"></span>&nbsp;Visits</div>
+                                            <div class="item"><span style="border-color:#c70505" class="bullet"></span>&nbsp;Pageviews</div-->
+                                        </div>                                            
+                                        <div class="btn-group right bm-report" id="date_label">
+                                            <a class="first active" href="javascript:void(0);"id="Day"><span>Week</span></a>
+                                            <a class="" href="javascript:void(0);" id="TwoWeek"><span>2 Week</span></a>
+                                            <a class="last" href="javascript:void(0);"id="Month"><span>Month</span></a> 
+                                        </div>
+                                    </div>
+                                    <div id="Userviews" class="chart" style="height:218px;overflow:hidden;">
+                                        <div id="Dayviews" class="bm-chart-div" align="center"><img src="{{STATIC_URL}}/ui/images/global/loading.gif" /></div>
+                                        <div id="TwoWeekviews" class="bm-chart-div" style="display:none;" align="center"><img src="{{STATIC_URL}}/ui/images/global/loading.gif" /></div>
+                                        <div id="Monthviews" class="bm-chart-div" style="display:none;" align="center"><img src="{{STATIC_URL}}/ui/images/global/loading.gif" /></div>       
+                                    </div>
+                                <!--ol id="labels" class="hAxis-points group" style="display:none;">
+                                {% for m in date_list %}
+                                <li class="li_dates">{{m|date:'d M'}}</li>
+                                {% endfor %}
+                            </ol-->         
+                                </div>
+                            </div><!-- /visits --> 
+                            
+                            <div class="score-card">
+                                   <li><p><span class="score-section">Total Users</span><br><strong class="score-value">{{totalusers}}</strong></p></li> 
+								   <li><p><span class="score-section">Blocked Users</span><br><strong class="score-value">{{blocked_users}}</strong></p></li> 
+                                </ul>
+                            </div><!-- /score-card -->
+                            <div class="more-stats">
+                                <div class="left-col">
+                                    <div class="left-col-inner">
+										
+                                    </div>                                        
+                                </div>
+                                <div class="left-tab-content" align="center">
+								<h2 style="float:left; font-size:20px; font-weight:bold; padding:10px" id="Content_label">Popular Modules</h2><br> 
+                                  <div class="left-tab-content-inner" align="center">
+									<div id="popular_modules"><img src="{{STATIC_URL}}/ui/images/global/loading.gif" /></div> 
+								  </div>  
+                                </div>
+                            </div><!-- /more-stats -->             
+                        </div><!-- /traffic-overview -->
+                    </div>
+                </div> 
+                <div id="aside" class="side-bar col_4 mr_0">
+                                                    
+                </div>                                                           
+            </div>
+             
+
+    {% endblock %}    
+
+    {% block footer_include %}
+        
+        
+        
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        
+   <script type="text/javascript">
+      
+				var x=100;
+				z={{length}};
+				$(document).ready(function(){
+				$('.li_dates').css('width',z);
+
+    //Jquery for week,2week,month 
+                $('.bm-report a').click(function(){
+                    if(!$(this).hasClass('active')){
+                        $('.bm-report a').removeClass('active');
+                        $(this).addClass('active');
+                        $('.bm-chart-div').hide();
+                        $('#'+$(this).attr('id')+'views').show();
+                        
+                    }
+                });/*
+						$('#Day').click(function(){
+						$('#labels').hide();
+						});
+						$('#TwoWeek').click(function(){
+						$('#labels').hide();
+						});
+						$('#Month').click(function(){
+						$('#labels').show();
+						});*/
+               });
+    //1 week
+       google.load("visualization", "1", {packages:["corechart"]});
+       google.setOnLoadCallback(OneWeekchart);
+      function OneWeekchart() {
+        var data = google.visualization.arrayToDataTable([
+          ['days', 'users'],
+          
+          {%for keys in one_week_key %}
+              {% for k,v in one_week.items %}
+					{% if keys == k %}
+                    	['{{k|date:"d M"}}',{{v}}],
+					{% endif %}
+                 {% endfor %}                           
+          {% endfor %}
+        ]);
+
+        var options = {
+            backgroundColor: '#FEFEFE',
+			width: 733,
+			height: 270,
+			colors:['#058DC7','#c70505'],
+			chartArea: {left:0, top:15,width:"733", height:"180"},
+			legend: {position: 'none'},
+			titlePosition: 'in', 
+			axisTitlesPosition: 'in',
+			hAxis: {
+				textPosition: 'out', 
+				textStyle: {color: '#666',fontSize:9},
+				gridlines: {color: "#ECECEC",count: {{ grid_numbers }}},
+				viewWindow:{min:'0'},
+			}, 
+			vAxis: {
+				textPosition: 'in',
+				baselineColor: "#AAA",
+				textStyle: {color: '#666',fontSize:10},
+				gridlines: {color: "#ECECEC", count: {{ grid_numbers }}},
+				viewWindow:{min:'0'},
+			},
+			lineWidth:1,
+			pointSize:3,
+			areaOpacity:.1,
+		};	
+        var chart = new google.visualization.AreaChart(document.getElementById('Dayviews'));
+        chart.draw(data, options);
+    
+        }
+        
+    
+    //2 week
+    
+    
+      google.setOnLoadCallback(TwoWeekchart);
+      function TwoWeekchart() {
+        var data = google.visualization.arrayToDataTable([
+          ['days', 'users'],
+          
+          {%for keys in two_week_key %}
+              {% for k,v in two_week.items %}
+					{% if keys == k %}
+                    	['{{k|date:"d M"}}',{{v}}],
+					{% endif %}
+                 {% endfor %}                           
+          {% endfor %}
+        ]);
+
+        var options = {
+            backgroundColor: '#FEFEFE',
+            width: 733,
+            height: 270,
+            colors:['#058DC7','#c70505'],
+            chartArea: {left:0, top:15,width:"733", height:"180"},
+            legend: {position: 'none'},
+            titlePosition: 'in', 
+            axisTitlesPosition: 'in',
+            hAxis: {
+                textPosition: 'out', 
+                textStyle: {color: '#666',fontSize:9},
+                gridlines: {color: "#ECECEC",count: {{ grid_numbers }}},
+				viewWindow:{min:'0'},
+            }, 
+            vAxis: {
+                textPosition: 'in',
+                textStyle: {color: '#666',fontSize:10},
+                gridlines: {color: "#ECECEC", count: {{ grid_numbers }}},
+				viewWindow:{min:'0'},
+            },
+            lineWidth:1,
+            pointSize:4,
+            areaOpacity:.1,
+        };    
+        
+
+        var chart = new google.visualization.AreaChart(document.getElementById('TwoWeekviews'));
+        chart.draw(data, options);
+        }
+        
+        //month
+        
+        google.setOnLoadCallback(monthchart);
+      function monthchart() {
+        var data = google.visualization.arrayToDataTable([
+          ['days', 'users'],
+          {%for keys in one_month_key %}
+              {% for k,v in one_month.items %}
+					{% if keys == k %}
+                    	['{{k|date:"d M"}}',{{v}}],
+					{% endif %}
+                 {% endfor %}                           
+          {% endfor %}
+          
+        ]);
+
+        var options = {
+            backgroundColor: '#FEFEFE',
+            width: 733,
+            height: 270,
+            colors:['#058DC7','#c70505'],
+            chartArea: {left:0, top:15,width:"733", height:"180"},
+            legend: {position: 'none'},
+            titlePosition: 'in', 
+            axisTitlesPosition: 'in',
+            hAxis: {
+                textPosition: 'out', 
+				slantedTextAngle: '45',
+                textStyle: {color: '#666',fontSize:9},
+                gridlines: {color: "#ECECEC",count: {{ grid_numbers }}},
+				showTextEvery:'3',
+				viewWindow:{min:'0'},
+            }, 
+            vAxis: {
+                textPosition: 'in',
+                baselineColor: "#AAA",
+                textStyle: {color: '#666',fontSize:10},
+                gridlines: {color: "#ECECEC", count: {{ grid_numbers }}},
+				viewWindow:{min:'0'},
+            },
+
+            lineWidth:1,
+            pointSize:4,
+            areaOpacity:.1,
+        };    
+        
+        var chart = new google.visualization.AreaChart(document.getElementById('Monthviews'));
+        chart.draw(data, options);
+        }
+
+
+//popular modules
+
+	google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(modulesChart);
+      function modulesChart()  {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Modules');
+        data.addColumn('string', 'Distinct Users');
+        data.addColumn('string', '% Distinct Users');
+        data.addRows([
+	
+		{% for k,v in popular_modules %}
+			  	{% for key,val in percentage_modules.items%}
+			  		{% if k == key %}
+			  
+					  	['{{k}}',' {{v|intcomma}} users',{{val}}+"%"],
+					{% endif %}	
+			   	{% endfor %}
+		{% endfor %}
+         
+        ]);
+		
+		
+		var options = {
+				width:500,
+				allowHtml: true,
+				showRowNumber: true,
+				page:'enable',
+				pageSize:10,
+				cssClassNames:{
+					headerRow: 'ms-hd', 
+					tableRow: 'ms-rw', 
+					oddTableRow: 'ms-odd-rw', 
+					selectedTableRow: 'ms-rw-selected', 
+					hoverTableRow: 'ms-rw-hover', 
+					headerCell: 'ms-hd-col', 
+					tableCell: 'ms-col', 
+					rowNumberCell: 'ms-col-int'
+					},
+		};
+
+        var table = new google.visualization.Table(document.getElementById('popular_modules'));
+        table.draw(data, options);
+      }
+	
+   </script>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    {% endblock %}

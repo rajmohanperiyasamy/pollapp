@@ -1,0 +1,177 @@
+{% extends "base_user.html" %}
+{% load truncate_filter %}
+{% load thumbnail %}
+{% load tabs %}
+{% block pagetitle %}Payment Order Summary{% endblock %}
+{% block head %}
+	<!--link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/user_company.css"-->
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/user_account.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/plan_extra.css">
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			//$('#paypalform').submit();
+			$('input[name=submit]').click(function(){
+				if(!$('#terms').attr('checked')){
+					alert('Please agree to the Terms of Use & Privacy Policy');
+					return false;
+				}
+			});
+			$('#Google_Checkout').click(function(){
+				if(!$('#terms').attr('checked')){
+					alert('Please agree to the Terms of Use & Privacy Policy');
+					return false;
+				}
+			});
+		});
+	</script>
+	
+{% endblock %}
+{% block navigation %}
+		{#% include 'business/company/part_top_navigation.html' %#}
+{% endblock %}
+{% block content %}
+{% if message %}
+	<div class="flash_success_alert"><h2>{{ message }}</h2></div>
+{% endif %}
+<div class="group">
+	<div class="col_13">
+		<div id="item_details" style="position:relative;margin-top:10px">
+			<h2 class="item_title" style="display:block; width:795px;border-bottom:1px solid #e2e2e2; padding:9px 0; position:absolute; top:10px; border-right:1px solid #e6e6e6; text-indent:10px;">Order Summary {% for p in order.get_products %}{% if forloop.first %}<a href="{% ifequal p.content_type.name 'event' %}/events/add-featured/?eid={{p.content_object.id}}{% else %}{% ifequal p.content_type.name 'classifieds' %}/classifieds/addclassified_featured/?id={{p.content_object.id}}&offid={{p.id}}{% else %}{% ifequal p.content_type.name 'featuredlist' %}/business/b/addfeatured/?bid={{p.content_object.business.id}}&offid={{p.content_object.id}}{% else %}{% ifequal p.content_type.name 'business' %}/business/b/addbusinessimages/?bid={{p.content_object.id}}&offid={{p.content_object.id}}{% else %}{% ifequal p.content_type.name 'photo album' %}{% url 'gallery_add_gallery_featured' %}?gid={{p.content_object.id}}{% else %}{{p.content_object.get_req_article_url}}{% endifequal %}{% endifequal %}{% endifequal %}{% endifequal %}{% endifequal %}" style="display: block; width:auto;padding-right:10px;float:right; font-weight: bold; font-size: 13px;color:#000">&larr; Go Back</a>{% endif %}{% endfor %}</h2>
+            <table class="order_lst">
+                <tbody>
+                    <tr>
+                        <th style="width: 35%;">
+                        	<span>Item Details</span>
+						</th>
+                        <th style="width: 12%; text-align:center"><span>Ad Type</span></th>
+                        <th style="width: 18%; text-align:center"><span>Duration</span></th>
+                        <th style="width:18%;text-align: right;"><span>Total</span></th>
+                    </tr>
+                 
+                    <tr>
+                        <td>
+                            <div class="item group alt">
+                                <div class="detail">
+                                    <a class="pic" href="javascript:void(0);">
+                                    	<img alt="{{ pay_obj.get_payment_title }}" src="{% if pay_obj.get_payment_photo %}{% thumbnail pay_obj.get_payment_photo 110x0 %}{% else %}{{STATIC_URL}}themes/green/images/global/nophoto_90.jpg{% endif %}" height="80" width="80">
+                                    </a>
+                                    <h4 class="title">
+                                    	<a href="javascript:void(0);" style="">{{ pay_obj.get_payment_title }}</a>
+                                    </h4>
+                                    <div class="summary">
+                                    	{{pay_obj.get_payment_description|truncate_chars:106 }}
+                                    </div>
+                                </div> 
+                                <div class="footer"></div>    
+                            </div>                                                
+                        </td>
+                        <td style="text-align: center;">
+                        	<span class="hgltf">
+                        		{% if level %}
+								{{level.level_label|title}}
+								{% else %}
+                        		{{pay_obj.get_payment_listing_type|title}}
+								{% endif %}
+                        	</span>
+                        </td>
+                        <td style="text-align: center;">
+                        	<h3 class="duration">
+                        		{% if listing_period %}
+									{% if listing_period == 'M' %}
+									Month(s)
+									{% else %}
+									{% if listing_period == 'Y' %}
+									Year(s)
+									{% else %}
+										{{ listing_period }}
+									{% endif %}
+									{% endif %}
+								{% else %}
+                        		{{ pay_obj.get_payment_listing_duration }}
+                        		<span class="days"> 
+								{% if pay_obj.get_payment_duration_type %}
+                        			{{pay_obj.get_payment_duration_type}} (s)
+								{% else %}---
+								{% endif %}
+                        		</span>
+								{% endif %}
+                        	</h3>
+                            <span style="font-size:11px; color:#999;">
+							{% if listing_start or listing_end %}
+								{{listing_start|date:'M j Y'}}--{{listing_end|date:'M j Y'}}
+							{% else %}
+                            	{% if pay_obj.get_payment_listing_start_date %}
+                            	{{pay_obj.get_payment_listing_start_date|date:'M j Y'}}
+                            	{% endif %} 
+                            	{% if pay_obj.get_payment_listing_end_date %}
+                            	- {{pay_obj.get_payment_listing_end_date|date:'M j Y'}}
+                            	{% endif %}
+							{% endif %}
+                            </span>
+                        </td>
+                        <td style="text-align: right;" class="total" id="id_total">
+							<h3 class="item_total">
+								<span class="currency">{{ currency.currency_symbol }}</span>
+								{% if listing_price %}
+									{{listing_price}} (s)
+								{% else %}
+									{{ pay_obj.get_payment_listing_price }}
+								{% endif %}
+							</h3>                                                
+                        </td>
+                    </tr>
+                    <tr class="ftr">
+                        <td class="total_you_pay" colspan="5">
+                        	<p style="display:block;float:left;text-align:left;padding:10px 10px 10px 0; width:340px;font-size:11px;font-weight:normal;color:#777;">
+								<span class="cform-checkbox-container"><input type="checkbox" value="1" id="terms" name="terms"/ style="float:left; margin:0 5px 0 0"><span class="cform-checkbox-element"></span></span>
+							 	I have read and agreed to the <a target="_blank" href="/terms-of-use.html">Terms of Use</a> and <a target="_blank" href="/privacy-policy.html">Privacy Policy</a>.
+							</p>
+							<span class="total_price_wraper"><span class="total_price_lrg"><span class="currency">{{ currency.currency_symbol }}</span>
+								{% if listing_price %}
+									{{listing_price}} (s)
+								{% else %}
+									{{ pay_obj.get_payment_listing_price }}
+								{% endif %}
+							</span><span class="you_pay_label">You pay: &nbsp;</span> </span>
+						</td>
+					</tr>                                
+                </tbody>                            
+            </table>
+            <div class="sbmt_wraper" style="padding-right:10px;"> 
+			{{ form.sandbox }}
+            </div>
+			<div class="sbmt_wraper" style="padding-right:10px;"> 
+				<form target="_blank" action="{{gc_obj.service_url}}" method="post">
+				  <input type="hidden" name="cart" value="{{gc_payment_option}}" />
+				  <input type="hidden" name="signature" value="{{gc_obj.signature}}" />
+				  <input type="hidden" name="checkout-flow-support.merchant-checkout-flow-support.continue-shopping-url" value="http://127.0.0.1:8000"/> 
+				  <input type="image" id="Google_Checkout" name="Google Checkout" alt="Fast checkout through Google" src="{{gc_obj.button_image_url}}" />
+			   </form>
+			</div>
+        </div>
+    </div>   
+    <div class="col_3 mr_0">
+        <div class="tips_block" style="margin-top:20px;">
+            <h3>Payment</h3>  
+            <div class="tips_inner">
+                <p>The order summary shows the details and validity of the order. At any point of time if you wish to modify your order you can click on the back button.</p><br/>
+				<p>Clicking on Buy Now will confirm the order and will proceed to payment gateway (PayPal)</p><br/>
+				<p>Once you confirm the order and make payment. An invoice is automatically generated and emailed to you.</p>
+            </div>
+            <br>
+            <h3>Contact Us</h3>  
+            <div class="tips_inner">
+                <p>
+                	<strong>
+                		{{ globalsettings.phone }} 
+                	</strong><br> 
+                	<a href="mailto:{{ globalsettings.info_email }}">{{ globalsettings.info_email }}</a>
+                </p>
+            </div>
+        </div>                                            
+    </div>
+</div>                
+<div class="clear"></div>
+			
+{% endblock %} 			

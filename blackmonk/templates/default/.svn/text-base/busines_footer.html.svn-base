@@ -1,0 +1,110 @@
+				<div id="ftr_biz_dir">
+                	<div class="bar">
+                    	<div class="cap">&nbsp;</div>
+                    	<h2>Business directory</h2>
+	 					<form action="/business/" method="get" class="biz_search" name="f_footersearch">{% csrf_token %}
+	 						<input type="hidden" name="search" value="1" />
+                            <label for="biz_keyword">Search for</label>
+                            <input name="q" id="biz_keyword" class="field" value="" type="text" >
+							<label for="biz_locality">Near</label>
+                            <input name="location" id="biz_locality" class="field" type="text" value="">                            
+                           	<a id="" class="btn_blue" href="#ftr_biz_dir" onclick="window.document.f_footersearch.submit();"><span>Search</span></a>
+                        </form><!--/biz_search-->
+                    </div>
+                    <div class="bar boot"></div><!--/bar-->
+                	<div id="ftr_biz_dir_nav">
+                        <div class="col_114 first">
+                            <h3>Shopping</h3>
+                            <ul>
+                            	<li><a href="/business/apparels/">Apparels</a></li>
+                                <li><a href="/business/accessories/">Accessories</a></li>
+                                <li><a href="/business/consumer-electronics/">Consumer Electronics</a></li>
+                                <li><a href="/business/supermarket/">Supermarket</a></li>
+                                <li><a href="/business/music-books/">Music & Books</a></li>
+                                <li><a href="/business/shopping-others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114-->
+                        <div class="col_114">
+                            <h3>Food & Drinks</h3>
+                            <ul>
+                                <li><a href="/business/restaurant/">Restaurants</a></li>
+                                <li><a href="/business/pubs-lounges/">Pubs & Lounges</a></li>
+                                <li><a href="/business/coffee-shops/">Coffee Shops</a></li>
+                                <li><a href="/business/ice-cream-parlors/">Ice-cream Parlors</a></li>
+                                <li><a href="/business/wine-shops/">Wine Shops</a></li>
+								<li><a href="/business/food-drink-others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114-->
+                        <div class="col_114">
+                            <h3>Entertainment & Arts</h3>
+                            <ul>
+                                <li><a href="/business/theatres-multiplexes/">Theatres & Multiplexes</a></li>
+                                <li><a href="/business/amusement-parks/">Amusement Parks</a></li>
+                                <li><a href="/business/game-parlors/">Game Parlors</a></li>
+                                <li><a href="/business/art-galleries/">Art Galleries</a></li>
+                                <li><a href="/business/arts-institutes/">Arts institutes</a></li>
+								<li><a href="/business/arts-others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114-->
+                        <div class="col_114 first">
+                            <h3>RealEstate</h3>
+                            <ul>
+                            	<li><a href="/business/real-estate-agents/">RealEstate Agents</a></li>
+                                <li><a href="/business/real-estate-builders/">RealEstate Builders</a></li>
+                                <li><a href="/business/interior-designers/">Interior Designers</a></li>
+                                <li><a href="/business/construction-materials/">Construction Materials</a></li>
+                                <li><a href="/business/realestate-others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114-->
+                        <div class="col_114">
+                            <h3>Home & Garden</h3>
+                            <ul>
+                                <li><a href="/business/household-products/">Household Products</a></li>
+                                <li><a href="/business/household-services/">Household Services</a></li>
+                                <li><a href="/business/home-appliances/">Home Appliances</a></li>
+                                <li><a href="/business/repairs-services/">Repairs & Services</a></li>
+                                <li><a href="/business/furniture-interiors/">Furniture & Interiors</a></li>
+                                <li><a href="/business/home-garden-others/">Others</a></li> 
+                            </ul>
+                        </div><!--/col_114-->
+                        <div class="col_114">
+                            <h3>Automotives</h3>
+                            <ul>
+                                <li><a href="/business/new-vehicle-dealers/">New Vehicle Dealers</a></li>
+                                <li><a href="/business/used-vehicle-dealers/">Used Vehicle Dealers</a></li>
+                                <li><a href="/business/spares-accessories/">Spares & Accessories</a></li>
+                                <li><a href="/business/driving-schools/">Driving Schools</a></li>
+                                <li><a href="/business/service-station/">Service Station</a></li>
+                                <li><a href="/business/automotive-others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114-->                                                
+                        <div class="col_114">
+                            <h3>Accommodation</h3>
+                            <ul>
+                                <li><a href="/business/hotels/">Hotels</a></li>
+                                <li><a href="/business/service-apartments/">Service Apartments</a></li>
+                                <li><a href="/business/resorts/">Resorts</a></li>
+                                <li><a href="/business/hostels/">Hostels</a></li>
+                                <li><a href="/business/pg-accommodation/">PG Accommodation</a></li>
+                                <li><a href="/business/others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114--> 
+                        <div class="col_114 last">
+                            <h3>Health Care</h3>
+                            <ul>
+                                <li><a href="/business/beauty-products/">Beauty Products</a></li>
+                                <li><a href="/business/medical-shops/">Medical Shops</a></li>
+                                <li><a href="/business/meditation-centers/">Meditation Centers</a></li>
+                                <li><a href="/business/spas-saloons/">Spas & Saloons</a></li>
+                                <li><a href="/business/fitness-centers/">Fitness Centers</a></li>
+                                <li><a href="/business/health-care-others/">Others</a></li>
+                            </ul>
+                        </div><!--/col_114-->
+                        <ul class="text_link lst_group">
+                            <li><a href="/business/" class="text_link first">Browse all categories</a></li>
+                            <li><a href="/company/?view=addbusiness" class="text_link">List your business</a></li>
+                        </ul>
+                       <!--<a href="#" class="btn_green"><span>List your business</span></a>-->
+                       <div class="clear"></div>
+                    </div><!--/ftr_biz_dir_nav-->
+            	</div><!--/ftr_biz_dir-->

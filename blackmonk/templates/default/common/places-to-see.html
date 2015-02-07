@@ -1,0 +1,38 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% load modulotag %}
+{% load comparison %}
+{% load truncate_filter %}
+{% block pagetitle %}{{seo.seo_title}}{% endblock %}
+{% block meta %}
+    <meta name="Description" content="{{seo.seo_description}}">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "things-to-do" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+   <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span8">
+                <div class="sCn">                
+                    <iframe scrolling="no" frameborder="0" id="bm_thingstodo_frame" name="bm_thingstodo_frame" noresize="noresize" src="{% get_misc_attribute 'VIATOR_URL' %}" style="width:100%;border-radius:10px; height:1700px; margin-top:-3px;text-align:center"></iframe>
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div class="mSnRy">
+                    <section class="sCn bNr-aD hide" id="banner_placement_right"></section> 
+                </div>
+                <div class="mSnRy">
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+   </div>                
+{% endblock %}

@@ -1,0 +1,84 @@
+{% load currency %} 
+{% load thumbnail %}
+
+	{% if cart.cart_items %}
+    <div class="parrow"><span class="arrow_border"></span><span class="arrow_fill"></span></div>
+    <div class="checkout_mini_cart scroll_pane">
+       
+       {% for cart_item in cart.cart_items %}
+        <div class="summary_product group">
+            <a href="{{ cart_item.product.get_absolute_url }}" class="product">
+                {% if cart_item.product.get_cover_image_user %}
+            <div class="image">
+                <img title="{{ cart_item.product.get_manufacturer }}" alt="{{ cart_item.product.get_manufacturer }} {{ cart_item.product.name }}" src="{% thumbnail cart_item.product.get_cover_image_user 60x60 %}">
+            </div>
+				{% else %}
+			         <div class="image">
+                        No image
+                      </div>
+			     {% endif %}<!-- /image -->
+                <div class="text">
+                    <div class="description">
+                        <h3 class="name">{{ cart_item.product.name }}</h3>
+                        <!-- /name -->
+                        <div class="attributes group">
+                            <span class="quick_view_qty">Quantity - {{ cart_item.quantity }}</span>
+                            <div class="attribute">
+                                &nbsp; 
+                                {% for property in cart_item.obj.get_properties %}
+				                    <span class="color">
+				                            <span class="cart_item">
+				                         {{ property.name }} - {{ property.value }},
+				                     </span>
+				                        </span>
+				                {% endfor %}
+                            </div>
+                        </div><!-- /attributes -->
+                    </div>
+                    <div class="pricing">
+                        <span class="price">{{globalsettings.currency}}{{ cart_item.obj.get_product_total_price|floatformat:2}}</span>
+                    </div><!-- /pricing -->
+                </div>
+            </a>
+        </div><!-- /summary_product -->
+   {% endfor %}
+    </div><!-- /checkout_mini_cart -->
+		<div class="mini_cart_totals group">
+        <a title="View Bag" href="{% url 'bmshop_product_cart' %}" class="button mb uc black">Checkout</a>
+        <div class="order_totals">
+            <table summary="Order Totals Table" class="ordertotalstable">
+                <tbody>
+                    <tr class="order_shipping">
+                        <td>
+                            <span class="label">Shipping</span>
+                        </td>
+                        <td>
+                            <span class="value">$0.00 </span>
+                        </td>
+                    </tr>
+                    <tr class="order_sales_tax">
+                        <td>
+                            <span class="label">Est. Tax:</span>
+                        </td>
+                        <td>
+                            <span class="value">$0.00</span>
+                        </td>
+                    </tr>
+                    <tr class="order_total">
+                        <td>
+                            <span class="label">
+                            <strong>Subtotal:</strong>
+                            </span>
+                        </td>
+                        <td id="order-total">
+                            <span class="value">{% if cart.cart_items %}{{globalsettings.currency}}{{ cart.cart_price|floatformat:2 }}{% else %}£0{% endif %}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div><!-- /order_totals -->
+    </div><!-- /mini_cart_totals -->
+  {% else %}
+  	<div class="no_cart_item"> {{ cart.Msg }}</div>
+  {% endif %}
+  

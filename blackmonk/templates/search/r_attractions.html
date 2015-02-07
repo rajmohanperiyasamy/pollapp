@@ -1,0 +1,31 @@
+{% load i18n %}	
+{% load thumbnail %}
+{% load truncate_filter %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> 
+            <a class="bUi-tMb-wPr tMb-75 fLxiMgW bUi-tMb-aRtCl" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> 
+                            	<img class="mDa-oT" src="{% if object.get_attraction_photos.all.0.photo %}{% thumbnail object.attraction_photo.all.0.photo 260x0 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{object}}">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a>
+        </div>
+        <div class="mDa-bDy pD0 mRt10">
+            <span class="cLr-lTbLu fS12 mRb0 tRnCt">{% for cat in object.category.all %}{{cat.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+            <h4 class="mDa-hD tRnCt0 fW200 mR50 rLvE h44 " title="{{object.name}}"><a href="{{object.get_absolute_url}}">{{object.name}}</a></h4>
+            <p class="fS12 cLr-gRy pDt5 hD-gD">{% autoescape off %}{{object.description|truncatechars:255}}{% endautoescape %}</p>
+			 {% with object.venue as venue %}
+	            <div class="mDa-dTa mRt4 cLrFx">
+    	           <span class="fS12 cLr-lTgRy pLlT"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i> {{venue.venue}}, {{venue.address1}}, {{venue.city}}{% if venue.state %}, {{venue.state}}{% endif %}</span>
+            	</div>
+			{% endwith %}                                            
+        </div>
+    </div>
+</li>      

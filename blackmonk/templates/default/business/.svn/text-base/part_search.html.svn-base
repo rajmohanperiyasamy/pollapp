@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load tabs %}
+<!-- Module Search -->
+<div class="pD2015 bM-bX sRcHbR">
+    <div class="row-fluid">
+        <div class="span9 fRm">
+            <form class="form-search mRb0" id='sform' method="get" action="{% url 'business_home' %}">
+                <input type="hidden" name="search" value="true" />
+                <div class="mDl">
+                    <h3 class="mDl-nM">
+                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-16"></i>
+                        <span class="ib">{% trans 'Business' %}
+                            <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+                        </span>
+                    </h3>
+                </div>
+                <div class="span5">
+                    <input type="text"  id="id_find" autocomplete="off" class="" name="q" value="{{q}}" placeholder="{% trans 'Search for restaurants, hotels and more' %}">
+                </div>
+                <div class="span3">
+                    <input type="text" autocomplete="off" name="location" value="{{ location }}" class="" id="id_location" placeholder="{% trans 'Location' %}">
+                </div>
+                <div class="ib sUb-bTn mRl12 mRl0mP">
+                    <button type="submit" class="btn btn-primary">
+                    <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+		{% block searchblock %}
+		{% activetab 'addbutton' 'business' %}
+       	{% include "default/add_object_search.html" %}
+		{% endblock %}
+    </div>
+</div>
+<!-- Module Search -->
+
+<script>
+$(function () {
+    $('#id_find').typeahead({
+        ajax: { url: '{% url 'auto_suggest_business' %}',type: "GET",
+                triggerLength: 1 },
+		itemSelected:function(){
+				$('#sform').submit();
+		}
+    });
+    $('#id_location').typeahead({
+        ajax: { url: '{% url 'auto_suggest_business_address' %}',type: "GET",
+                triggerLength: 1 }
+    });           
+
+});
+/*
+function pre_fill_location(){
+    $.ajax({
+        type:"get",
+        url:"{% url 'auto_suggest_geolocation' %}",
+        success:function(data){
+            $('#id_location').val(data);
+            if($('#id_location').val()!=''){$('#bus_loc_tips').css('display','none');}
+        }
+    });
+}
+{% if not location %}pre_fill_location(){% endif %}
+*/
+</script>

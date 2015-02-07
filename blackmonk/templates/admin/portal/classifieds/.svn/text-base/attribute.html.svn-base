@@ -1,0 +1,212 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Classifieds Attribute' %} {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{STATIC_URL}}ui/css/colorbox.css" type="text/css" />
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#master-check').click(function(){
+		if($("#master-check").is(':checked')){$(".check-overflow").attr('checked',true);}
+		else{$(".check-overflow").attr('checked',false);}
+	});
+});
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+function show_attr(id){
+	var dataString='id='+id;
+	$('#ajax_content_atr').hide();
+	$('#ajax_content_loading_atr').show();
+	$.ajax({
+	type: "POST",
+	url: "{% url 'admin_portal_classifieds_attributes_load' %}",
+	data: dataString,
+	success: function(data){
+			$('#ajax_content_loading_atr').hide();
+			$('#ajax_content_atr').empty().html(data);
+			$('#ajax_content_atr').show();
+			$('#append_'+id).show();
+			$(".bm-add-gadget").colorbox({width: "560",initialWidth: "560", top:"5%", initialHeight: "200",title:function(){return getLBTitle($(this));}});
+		}
+	});
+}
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+function save_attr(option){
+	var flag = $('#mform').validate().form();
+	var values=[];
+	if(flag){
+		var dataString='name='+encodeURIComponent($('#id_name').val());
+		dataString+='&cid='+encodeURIComponent($('#id_category').val());
+		dataString+='&type='+encodeURIComponent($('#id_type').val());
+		$('input[name=default_values]').each(function(){
+			values.push($(this).val());
+		});
+		dataString+='&default_values='+values;
+		try{
+			dataString+='&id='+$('#id_id').val();
+			id=$('#id_id').val();
+		}catch(ex){}
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		dataType:'JSON',
+		url: "{% url 'admin_portal_classifieds_attribute_update' %}",
+		data: dataString,
+		success: function(data){
+				$('#atr_'+id).remove();
+				$('#append_'+data.parent).append(data.append_html);
+				$('.edit_link').colorbox({width: "560",initialWidth: "560", top:"0", initialHeight: "200"});
+				$('#ajax_content_loading').html(data.msg);
+				$('#ajax_content').empty();
+				if(data.status){
+					if(option==0){
+						show_msg(data.msg,data.mtype);
+						$.colorbox.close();
+					}
+				}
+				$.colorbox({html:data.lightbox_html,width: "560",initialWidth: "560", top:"5%", initialHeight: "200",title:'Add New Attribute'});
+				//$('#ajax_content').html(data.lightbox_html);
+				$('.modal-form .select-menu').chosen({disable_search_threshold:10});
+	  			$('.field-group [title]').tipsy({trigger: 'focus', gravity: 'w',ftip:true});
+				setTimeout(function(){
+					$('#ajax_content_loading').hide();
+				    $('#ajax_content').fadeIn(2000);
+					$.colorbox.resize();
+				},1000);
+			}
+		});
+	}
+}
+function delete_attr(ids){
+	if(ids==0){
+		var ids=[];
+		$('.check-overflow').each(function(){
+			if($(this).is(':checked')){
+				ids.push($(this).val());
+			}
+		});
+	}
+	if(ids=='' || ids==null){
+		alert(gettext('Please select Attributes(s).'))
+	}
+	else{
+		if(confirm(gettext('Are you sure want to delete seleced Attributes(s) ?'))){
+			$.ajax({
+			type: "GET",
+			url: "{% url 'admin_portal_classifieds_attribute_delete' %}",
+			data: 'id='+ids,
+			dataType:'JSON',
+			success: function(data){
+					if(data.status==1){
+						try{
+							$('#atr_'+ids).remove();
+						}catch(ex){}
+						for(i=0;i<ids.length;i++){
+							$('#atr_'+ids[i]).remove();
+						}
+					}
+					show_msg(data.msg,data.mtype);
+				}
+			});
+		}
+	}
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_portal_classifieds' %}" style="z-index:8">{% trans 'Classifieds' %}</a></li>
+                    <li><a href="{% url 'admin_portal_classifieds_attribute' %}" style="z-index:7">{% trans 'Attribute' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+        		{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'classifieds' %}
+					{% activetab 'leftnavsub' 'cls_atr' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Attribute' %}</h2>
+							<p class="ltxt80">{% trans 'An attribute name which pertains to the brand or product.For example: make, color or price.' %}</p>
+						</div>
+                        <div id="article-categories" class="cat-list group">
+                        	<section class="toolbars">
+                            	<div class="group">
+                                	<ul class="toolbar left">
+                                    	<li class="mas-check"><span class="checkbox-wrap tttxt-n" title="{% trans 'Select' %}">
+										<span class="cform-checkbox-container"><input type="checkbox" id="master-check" name="master-check" class="master-check"><span class="cform-checkbox-element"></span></span>
+										</span></li>  
+                                        <li class="mas-delete"><a href="javascript:delete_attr(0)" title="{% trans 'Delete' %}" class="tttxt-n inactive"><span class="icon icon-delete"></span></a></li>
+										<!--li class="mas-toggle">
+                                          <a href="#" class="expand-view tttxt-n" title="Expand All">Expand All</a>
+                                          <a href="#" class="collapse-view tttxt-n" title="Expand All">Collapse All</a>
+                                    	</li-->
+									</ul>
+									<span style="float:right">
+					                	<select class="select-menu" data-placeholder="{% trans 'Select a Category '%}" style="width:250px;" onchange="show_attr($(this).val())">
+					                		<option value=""></option>
+											{% for cat in categoryall %}
+												<option class="parent" value="{{cat.id}}">{{cat}}</option>
+												{% for subcat in cat.get_category %}
+													<option class="child" value="{{subcat.id}}">{{subcat}}</option>
+												{% endfor %}
+											{% endfor %}  
+					                	</select>
+									</span>
+                                    <!--span style="float:right">
+                                    	<a href="{% url 'admin_portal_classifieds_attribute_update' %}" title="{% trans 'Add New Attribute' %}" class="btn-txt-inline-prime bm-add-gadget"><span class="btn-txt">{% trans 'Add New Attribute' %}</span></a>
+									</span-->
+								</div>
+							</section>
+							<div id="ajax_content_loading_atr" style="display:none;padding-top:150px;text-align:center;">
+								<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Loading Attributes' %}</p>
+							</div>
+							<div id="ajax_content_atr">
+								{% include 'admin/portal/classifieds/include_attribute.html' %}
+							</div>
+                    	</div>
+                	</div>
+            	</div>                       
+            </div>                            
+			{% include 'admin/portal/classifieds/atr-faq.html' %}                           
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

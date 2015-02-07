@@ -1,0 +1,131 @@
+{% load thumbnail %}
+{% load i18n ds_utils bm_restaurant_tags %}
+{% load mptt_comments_tags %}
+{% load social_share %}
+{% load_socialshare_obj %}
+<div class="fTrD-bL bNr mDa-20 aDpTv tXt-oTsD">
+    <div class="fTrD-bL-iN">
+        <div class="fTrD-iTmS">
+            <div class="fTrD-iTm">
+                <figure class="fTrD-mDa bDrRtLtR oFl">
+                    <div class="fTrD-mDa-hVr sDw">
+                        <div class="tR"></div>
+                        <div class="fTrD-mDa-hVr-tXt pD15">
+                            <h2 class="fTrD-hD bSnS-lGo-lT mRl0mX767 mRl95mX480">{{restaurant.name}}</h2>
+                        </div>
+                    </div>
+                    <span class="bUi-tMb-wPr fLxiMgW" href="#">
+                        <span class="bUi-tMb">
+                            <span class="bUi-tMb-pRpL">
+                                <span class="bUi-tMb-cLp">
+                                    <span class="bUi-tMb-cLp-iN">
+                                        {% with restaurant.restaurant_address.all.0 as address %}
+                                            <img class="mDa-oT" src="{% if restaurant.restaurant_images.all %}{% thumbnail restaurant.restaurant_images.all.0.photo 1205x0 %}{% else %}http://maps.googleapis.com/maps/api/staticmap?center={{address.pointer_lat}},{{address.pointer_lng}}&zoom=13&size=1200x250&maptype=roadmap&markers={{address.pointer_lat}},{{address.pointer_lng}}&sensor=false&scale=2{% endif %}" alt="{{restaurant.name}}">
+                                        {% endwith %}    
+                                        <span class="vRtL-aLn">
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                    
+                    {% with restaurant as object %}
+                    <div class="pStN-rB sHr">
+                        {% include 'default/social-share-links.html' %}
+                    </div>
+                    {% endwith %}
+                    
+                </figure>
+                <!-- /.TrD-mDa -->
+                <div class="fTrD-tXt">
+                    <div class="fTrD-tXt-iN pD0">
+                        <div class="row-fluid">
+                            <div class="span12 pD15 clearfix">
+                                <div class="tMb pRfL-pC bSnS mRt-35mX768 mRt0mX767">
+                                    <div class="bUi-tMb-wPr tMb-100 fLxiMgH" href="#">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL"> 
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="{% if restaurant.logo.logo %}{% thumbnail restaurant.logo.logo 0x141 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{restaurant.name}}">
+                                                        <span class="vRtL-aLn">
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                {% with restaurant.restaurant_address.all.0 as address %}
+                                <ul class="iCnC-lSt iCn10 iN-bLk mRb0 sMrY cLr-lT pDl0 span6 pDb15mX768 sP7mX768">
+                                    <li class="iCnC-lSt-iTm cLr-dRk fS12"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i><span class=""><a href="#" class="cLr-dRk">{{address.address1}}{% if address.address2 %}, {{address.address2}}{% endif %}{% if address.city %}, {{address.city}}{% endif %}{% if address.pin %} - {{address.pin }}{% endif %}</a></span></li>
+                                    {% if address.telephone or address.mobile_no %}<li class="iCnC-lSt-iTm cLr-dRk fS12"><i class="bUi-iCn-cAl-12"></i><span class="fS12">{% if address.telephone %}{{address.telephone}}{% elif address.mobile_no %}{{address.mobile_no}}{% endif %}</span></li>{% endif %}
+                                    {% if address.website %}<li class="iCnC-lSt-iTm cLr-dRk fS12"><i aria-hidden="true" class="bUi-iCn-gLb-12"></i><span class="fS12"><a href="{{address.website}}"  class="cLr-dRk">{{address.website}}</a></span></li>{% endif %}
+                                    <li class="iCnC-lSt-iTm cLr-dRk fS12"><i aria-hidden="true" class="bUi-iCn-tAg-12"></i><span><a href="{% url 'restaurants_restaurants_listing' restaurant.cuisines.all.0.slug %}" class="cLr-dRk">{{restaurant.cuisines.all.0.name}}</a></span></li>
+                                    {% if restaurant.operating_hours and restaurant.workinghours %}<li class="iCnC-lSt-iTm cLr-dRk fS12"><i aria-hidden="true" class="bUi-iCn-oPn-12"></i><span><a href="javascript:void(0)"  class="cLr-dRk oPn-tMs" data-toggle="popover">Today {{restaurant.workinghours|get_business_todays_working_hour}}</a></span></li>{% endif %}
+                                    <li class="iCnC-lSt-iTm cLr-dRk fS12"><span>{{restaurant.price_range|get_price_range_fmt}}</span></li>
+                                </ul>
+                                {% endwith %}
+                                <div class="span3 pLlTtB pDl0mX768 sP6mX768">
+                                    <div class="sTr-rT mRb0 oVrL-sCr pLlTtB">
+                                        <span class="cLr-gRy fS9 uC">{% trans 'overall score' %}</span><br>
+                                        <span class="rT-oVrL-sCr ib cLr-dRk">{{restaurant.ratings}}</span>
+                                        <div class="ib"><span id="id_rating_{{restaurant.id}}" class="sTr-wPr sTr-rT-rD rEd iCn16 mRt-4"></span><a href="#" class="cLr-gRy fS12 sPrTr">{% get_mptt_comment_count for restaurant as comment_count %}{{comment_count}} {% trans 'reviews' %}</a> <a href="#" class="cLr-gRy hide" ><i aria-hidden="true" class="bUi-iCn-eDt-16 fS12"></i></a></div>
+                                    </div>
+                                </div>
+                                 {% if restaurant.operating_hours and restaurant.workinghours %}
+                                 <div class="oPn-tMs-lSt hide">
+                                    <ul class="unstyled fS12 oPn-tMs-dTa mRb0">
+                                        {% with wh=restaurant.workinghours %}
+                                        <li {% if today|date:"l" == 'Sunday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Sunday' %}</span>
+                                            {% if wh.sun_start %}
+                                                <span class="tMs"> {{wh.sun_start|lower}} - {{ wh.sun_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        <li {% if today|date:"l" == 'Monday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Monday' %}</span>
+                                            {% if wh.mon_start %}
+                                                <span class="tMs"> {{ wh.mon_start|lower }} - {{ wh.mon_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        <li {% if today|date:"l" == 'Tuesday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Tuesday' %}</span>
+                                            {% if wh.tue_start %}
+                                                <span class="tMs"> {{ wh.tue_start|lower }} - {{ wh.tue_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        <li {% if today|date:"l" == 'Wednesday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Wednesday' %}</span>
+                                            {% if wh.wed_start %}
+                                                <span class="tMs"> {{ wh.wed_start|lower }} - {{ wh.wed_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        <li {% if today|date:"l" == 'Thursday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Thursday' %}</span>
+                                            {% if wh.thu_start %}
+                                                <span class="tMs"> {{ wh.thu_start|lower }} - {{ wh.thu_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        <li {% if today|date:"l" == 'Friday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Friday' %}</span>
+                                            {% if wh.fri_start %}
+                                                <span class="tMs"> {{ wh.fri_start|lower }} - {{ wh.fri_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        <li {% if today|date:"l" == 'Saturday' %}class="tDy"{% endif %}><span class="dY">{% trans 'Saturday' %}</span>
+                                            {% if wh.sat_start %}
+                                                <span class="tMs">{{ wh.sat_start|lower }} - {{ wh.sat_end|lower }}</span>
+                                            {% else %}<span class="tMs">{% trans 'Closed' %}</span>{% endif %}
+                                        </li>
+                                        {% endwith %}
+                                    </ul>
+                                 </div>
+                                 {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.TrD-tXt -->                                       
+            </div>
+        </div>
+        <!-- /.fTrD-iTms --> 
+    </div>
+    <!-- /.fTrD-bL-iN --> 
+</div>
+<!-- /.fTrD-bL -->

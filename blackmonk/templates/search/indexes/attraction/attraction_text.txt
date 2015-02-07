@@ -1,0 +1,17 @@
+{{ object.name }}
+{{ object.alias }}
+{% autoescape off %}{{ object.description }}{% endautoescape %}
+{% for cat in objects.category.all %}
+	{{ cat.name}}
+{% endfor %}
+{% for tag in objects.tags.all %}
+	{{tag.tag}}
+{% endfor %}
+{{ object.venue.venue }}
+{{ object.venue.type.title }}
+{{ object.venue.address1 }}
+{{ object.venue.address2 }}
+{{ object.venue.city }}
+{{ object.venue.state }}
+{{ object.venue.country }}
+{% autoescape off %}{{ object.venue.description }}{% endautoescape %}

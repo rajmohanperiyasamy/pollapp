@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load tabs %}
+{% load ds_utils %}
+{% load menubuilder %}
+<div class="navbar">
+    <div id="primary-nav" class="navbar-inner">
+        <div class="container-fluid">
+            <!-- Global Search -->
+            <form class="site-search" method="GET" action="/search/">
+                <div class="input-append">
+                    <input id="hdr-search-box" type="text" class="search-query"  name="q" value="{{query}}" placeholder="Search">
+                    <button type="submit" class="btn"><i aria-hidden="true" class="bUi-iCn-sRh-16"></i></button>
+                </div>
+            </form>
+            <!-- Global Search -->
+				<div id="guest_nav_1" class="container-fluid rEsNaV">
+           		</div>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    {% menu header %}
+                    <li id="parent_menu_0"><div class="rLvE"><a  href="/">{% trans 'Home' %}</a></div></li>
+                    {% for item in menuitems %}
+                    {% with submenus=item.children.all %}
+                    <li class="{% if submenus %}dropdown{% endif %}" id="parent_menu_{{item.id}}">
+                        <div class="rLvE">
+                            <a {% if submenus %}data-toggle="dropdown" class="dropdown-toggle"{% endif %} href="{{item.base_url}}">{{item.name}}{% if submenus %}<b class="caret"></b>{% endif %}</a>
+                            {% if submenus %}
+                                <ul class="dropdown-menu">
+                                    {% for sm in submenus %}<li><a href="{{sm.base_url}}">{{sm.name}}</a></li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endwith %}
+                    {% endfor %}
+                </ul>
+                <!-- /.nav -->
+            </div>
+        </div>
+    </div>
+    <!-- /#primary-nav -->
+    <div id="secondary-nav" class="navbar-inner">
+        <div class="container-fluid">
+            {% menu exp %}
+            <ul class="nav">
+                {% with menuitems as submenus %}
+                {% for item in submenus %}
+                    <li><a href="{{item.base_url}}" title="{{item.name}}">{{item.name}}</a></li>
+                {% endfor %}
+                {% endwith %}
+            </ul>
+            <!-- /.nav -->
+            <ul class="nav social-navs pLrT clearfix">
+                {% if globalsettings.facebook_page_url %}<li><a href="{{globalsettings.facebook_page_url}}" target="_blank"><i class="bUi-iCn-fB-16" aria-hidden="true"></i></a></li>{% endif %}
+                {% if globalsettings.twitter_url %}<li><a href="{{ globalsettings.twitter_url }}" target="_blank"><i class="bUi-iCn-tWr-16" aria-hidden="true"></i></a></li>{% endif %}
+                {% if globalsettings.googleplus_url %}<li><a href="{{globalsettings.googleplus_url}}" target="_blank"><i class="bUi-iCn-gOo-pLs-16" aria-hidden="true"></i></a></li>{% endif %}
+				<li><a href="{% url 'ajax_newsletter_url' %}" data-toggle="modal" data-target="#newsletter"><i aria-hidden="true" class="bUi-iCn-eNv-16"></i></a></li>
+                <!--li><a href="#"> <i class="bUi-iCn-eNv-16" aria-hidden="true"></i></a></li-->
+                <li><a href="/rss/"><i class="bUi-iCn-bLoG-16" aria-hidden="true"></i></a></li>
+            </ul>
+            <!-- /#ocial-profile -->
+        </div>
+    </div>
+    <!-- /#secondary-nav -->
+</div>
+<!-- /.navbar -->

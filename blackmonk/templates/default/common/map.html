@@ -1,0 +1,89 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{{ globalsettings.city }} {% trans 'Map' %}, {% trans 'Map of' %} {{ globalsettings.city }} - {% trans 'Maps' %}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{% trans 'View a map of' %} {{ globalsettings.city }}, {{ globalsettings.domain }}! {% trans 'Find local attractions, hotels, restaurants, shopping centre, airports and entertainment venues on our interactive map.' %}" />
+	<meta name="keywords" content="{{ globalsettings.city }}, {{ globalsettings.city }} {% trans 'map' %}, {% trans 'map' %} of {{ globalsettings.city }}, {% trans 'maps' %}, {% trans 'map' %}" />
+{% endblock %}
+{% block head %}
+	<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=places{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+	<script>
+		var lat = "{{ globalsettings.google_map_lat }}";
+		var lng = "{{ globalsettings.google_map_lon }}";
+	</script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/general/map.js"></script> 
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "map" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+        <div class="fit_width">
+            <div class="group">
+                <div class="col_11">
+					<input type="hidden" id="gmap_travel_mode" value="DRIVING">
+                	<div id="map-outer" style="padding: 10px; height: 500px; position: relative; border: 1px solid #e6e6e6; background-color: #F1F1F1; border-radius: 3px 3px 3px 3px;">
+                    	<ul class="map-nearby group" id="bm_places_option">
+                        	<li><span><input type="checkbox" value="park" onclick="find_places();"><label>{% trans 'Amusement Park' %}</label></span></li>
+                            <li><span><input type="checkbox" value="cafe" onclick="find_places();"><label>{% trans 'Cafe' %}</label></span></li>
+                            <li><span><input type="checkbox" value="food" onclick="find_places();"><label>{% trans 'Hotels' %}</label></span></li>
+                            <li><span><input type="checkbox" value="restaurant" onclick="find_places();"><label>{% trans 'Restaurants' %}</label></span></li>
+                            <li><span><input type="checkbox" value="night_club" onclick="find_places();"><label>{% trans 'Nightlife' %}</label></span></li>
+							<li><span><input type="checkbox" value="shopping_mall" onclick="find_places();"><label>{% trans 'Shopping' %}</label></span></li>
+                        </ul>
+                    	<div class="map-inner" id="map" style="margin-top:10px; height:442px; border:1px solid #e6e6e6;"></div>
+                    </div>
+                </div>
+                <div class="secondary">
+					<div class="getdirections">
+                        	<h3>Get Directions</h3>
+                            <div class="travel-modes group">
+                            	<ul id="id_travel_mode_ul">
+                                	<li>
+                                        <a href="javascript:void(0);" name= "DRIVING" title="{% trans 'Driving' %}"  class="travel-by-car active first">
+                                            <span>{% trans 'Driving' %}</span>
+                                        </a>
+                                        <a href="javascript:void(0);" name= "WALKING" title="{% trans 'Walking' %}"  class="travel-by-walking">
+                                            <span>{% trans 'Walking' %}</span>
+                                        </a>
+                                        <a href="javascript:void(0);" name= "BICYCLING" title="{% trans 'Bicycling' %}" class="travel-by-bicycling last">
+                                            <span>{% trans 'Bicycling' %}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        	<span class="location">
+                            	<span style="margin-right: 6px;">
+                                	<label>A</label>
+                                </span>
+                                <span>
+                                	<input type="text" id="id_from_text" placeholder="{% trans 'Start Address' %}">
+                                </span>
+                            </span>
+                            <span class="location">
+                            	<span style="margin-right: 6px;">
+                                	<label>B</label>
+                                </span>
+                                <span>
+                                	<input type="text" id="id_to_text" placeholder="{% trans 'End Address' %}">
+                                </span>
+                            </span>
+                            <span class="getdirections-btn">
+                            	<button type="submit" id="search_id" onclick="calcRoute();" class="super small blue button">
+                        			<span style="padding:4px 12px 5px;">{% trans 'Get Directions' %}</span>
+                                </button>
+                            </span>
+                            <span id="directions-panel" class="directions-result">
+                            </span>
+                        </div>
+				</div> <!-- /secondary -->
+			</div>
+		</div>
+	<script>
+		initialize();
+	</script>
+
+{% endblock %}			

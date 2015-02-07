@@ -1,0 +1,47 @@
+{% load i18n thumbnail ds_utils %}
+{% if recent_reviews %}
+<section class="sCn mDa-lT-mNi">
+    <div class="sCn-tTl sCn-tTl-bR">
+        <h3><span>{% trans 'Recent Reviews' %}</span></h3>
+    </div>
+    <ol class="cMnTs aVtR-cRcL rWrT mNi">
+        {% for review in recent_reviews %}
+        <li class="cMnT">
+            <div class="cMnT-iN">
+                <div class="vCrD pLlT">
+                    <span class="bBl-aRw">
+                        <span class="aRw a1"></span>
+                        <span class="aRw a2"></span>
+                    </span>
+                    <a href="{% if review.user.username %}{% url 'user_profile' review.user.profile_slug %}{% else %}javascript:void(0);{% endif %}">
+                        <img class="aVtR mNi" src="{% if review.user.image %}{% thumbnail review.user.image 48x48 %}{% else %}/static/themes/img/cmnts-default-avatar.jpg{% endif %}">
+                    </a>
+                </div>
+                <div class="cMnT-bDy">
+                    <div class="cMnT-bDy-iN">
+                        <header class="cMnT-hD mRb0">
+                            <h5 class="mR0 fW-bLd"><a href="{{ review.content_object.get_absolute_url }}" class="cLr-dRk">{{ review.content_object|title }}</a></h5>
+                            <span class="pBlSr fS11 fW-nRmL">{% trans 'by' %} <a href="{% if review.user.profile_slug %}{% url 'user_profile' review.user.profile_slug %}{% else %}javascript:void(0);{% endif %}" class="cLr-lTbLu">{{ review.user.get_full_name }}</a></span><span class="tM sPrTr" title="{{ review.submit_date }}">{{ review.submit_date|timesince|time_up_to:',' }} {% trans 'ago' %}</span>
+                        </header>
+                        {% if review.rating %}
+                        <div class="sTr-rT ib mRb0 mNi"><span class="sTr-wPr sTr-rT-mNi iCn16 oRg fV-sTr bM-dV-rTnG" data-rating="{{ review.rating }}"></span></div>
+                        {% endif %}
+                        <div class="cMnT-tXt fS11-125">
+                            <p>{{ review.comment|linebreaksbr }}</p>                               
+                        </div>
+                    </div>
+                </div><!-- /.cMnT-bDy -->
+            </div> <!-- /.cMnT-iN -->
+        </li> <!-- /.cMnT -->
+        {% if not forloop.last %}<hr class="oTsT-hRz">{% endif %}
+        {% endfor %}
+    </ol>
+</section>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.bM-dV-rTnG').each(function(){
+      $(this).raty({number: 5, readOnly: true, score: $(this).attr('data-rating'), size: 12})                             
+  });
+});
+</script>
+{% endif %}

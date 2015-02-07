@@ -1,0 +1,4 @@
+{{ object.name  }}
+{% autoescape off %}{{ object.description }}{% endautoescape %}
+{{ object.sweepstakes_id  }}
+{{ object.contest_id  }}

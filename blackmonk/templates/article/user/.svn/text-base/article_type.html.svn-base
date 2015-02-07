@@ -1,0 +1,47 @@
+{% load i18n %}
+<div class="row-fluid">
+    <form action="{% url 'article_select_type' %}" name="mform" id="mform" method="post" class="form-horizontal uSr-aCnT">{% csrf_token %}
+        <h3 class="mR0 mRb15">Non-Commercial</h3>
+		<p>
+            <span class="w200 ib">Submit Your Own Article - {% if pricing.ownstory_is_paid %}({{ globalsettings.currency }}{{ pricing.ownstory_price|floatformat }}){% else %}{% trans 'Free' %}{% endif %}</span>
+            <input type="radio" name="article_type" checked="checked" value="FR" onchange="show_payment({% if pricing.ownstory_is_paid %}1{% else %}0{% endif %})">
+        </p>
+        <p></p>
+        <h3 class="mRt30 mRb15">Commercial</h3>
+        <p>
+            <span class="w200 ib">{% trans 'Press Release' %} - {% if pricing.pressrelease_is_paid %}({{ globalsettings.currency }}{{ pricing.pressrelease_price|floatformat }}){% else %}{% trans 'Free' %}{% endif %}</span>
+            <input type="radio" onchange="show_payment({% if pricing.pressrelease_is_paid %}1{% else %}0{% endif %})" name="article_type" value="PR" >
+        </p>
+        <p>
+            <span class="w200 ib">{% trans 'Advertorial' %} - {% if pricing.advertorial_is_paid %}({{ globalsettings.currency }}{{ pricing.advertorial_price|floatformat }}){% else %}{% trans 'Free' %}{% endif %}</span>
+            <input type="radio" onchange="show_payment({% if pricing.advertorial_is_paid %}1{% else %}0{% endif %})" name="article_type" value="A">
+        </p>
+        <p>
+            <span class="w200 ib">{% trans 'Review Request' %} - {% if pricing.requestreview_is_paid %}({{ globalsettings.currency }}{{ pricing.requestreview_price|floatformat }}){% else %}{% trans 'Free' %}{% endif %}</span>
+            <input type="radio" onchange="show_payment({% if pricing.requestreview_is_paid %}1{% else %}0{% endif %})" name="article_type" value="RR">
+        </p>
+		<div class="form-horizontal uSr-aCnT {% if not pricing.ownstory_is_paid %} hide {% endif %}" id="payment">
+			<hr>
+			<h3 class="mR0 mRb15">{% trans 'Payment Mode' %}</h3>
+			{% if payment_settings.invoice_payment %}
+				<p>
+	            	<span class="w200 ib">{% trans 'Offline' %}</span>
+					<input type="radio" name="payment_mode" value="offline"/>
+				</p> 
+			{% endif  %}
+			{% if payment_settings.online_payment %}
+				<p>
+					<span class="w200 ib">{% trans 'Online' %}</span>
+					<input type="radio" name="payment_mode" value="online" checked="checked" />
+				</p>
+			{% endif  %}
+		</div>
+    </form>
+</div>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+<script type="text/javascript">
+function show_payment(flag){
+	if(flag==1){$('#payment').removeClass('hide');}
+	else{$('#payment').addClass('hide');}
+}
+</script>

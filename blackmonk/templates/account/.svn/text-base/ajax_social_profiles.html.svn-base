@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load ds_utils %}
+<ul class="edit-item profile-links" id="id_show_profile">
+	{% for prof in profile.get_social_profile %}
+	<li class="group class_update_li" id="id_update_li_{{prof.id}}" style="display:block"><img alt="" class="favicon" src="{% get_social_fav_icon prof.media_url %}"><span style="float:left;" class="profile-url">{% if prof.label %}{{ prof.label }}{% else %}{{ prof.media_url }}{% endif %}</span><a style="float:left; margin-right:3px" href="javascript:void(0)" onclick="edit_url({{prof.id}},{{ profile.user.id }});" class="icon-edit inline-block o3"></a><a style="float:left;" href="javascript:void(0)" onclick="remove_url({{prof.id}},{{ profile.user.id }});" class="icon-delete inline-block o3"></a></li>
+	<div class="inline-block class_dispaly_update" id="id_display_update_div_{{prof.id}}" style="display:none">
+		<input type="text" style="width:110px;" placeholder="{% trans 'Label' %}" value="{{ prof.label }}" name="social_label" id="id_social_label_{{ prof.id }}" class="inline-block">
+		<input type="text" style="width:220px;" placeholder="{% trans 'Profile URL' %}" value="{{ prof.media_url }}" name="social_url" id="id_social_url_{{ prof.id }}" class="inline-block">
+		<li><div class="inline-block" style="margin-right:5px;"><button role="button" class="btn-txt-blue small" onclick="update_url({{ prof.id }},{{profile.user.id}})" type="button"><span class="btn-txt">{% trans 'Save' %}</span></button></div><div class="inline-block"><button role="button" class="btn-txt-blue small" onclick="$('.class_dispaly_update').hide(),$('.class_update_li').show();" type="button"><span class="btn-txt">Cancel</span></button></div></li>
+	</div>   
+	{% endfor %}
+	<li><a href="javascript:void(0)" id="id_add_social_url" onclick="add_url();" class="call-edit txt-button" style="margin-left:0">{% trans 'Add new profile link' %}</a></li>
+</ul>

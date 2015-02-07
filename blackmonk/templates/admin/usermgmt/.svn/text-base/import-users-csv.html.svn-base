@@ -1,0 +1,117 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'user' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Users - Import Users CSV' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+        <div id="admin_wrapper">
+                <div id="admin-platform" class="group">
+                
+                    <div class="header-bar">
+                    <!--h2>{% trans 'Events' %}</h2-->
+                    </div>
+                    
+                    <div id="core-wraper" class="group">
+                        <div class="admin-main col_12">
+                            <div class="page-wrap">
+                                <div class="page-head br_0">
+                                    <h2>{% trans 'Importing Users' %}</h2>
+                                    <p class="ltxt80">{% trans 'Upload a CSV file to add multiple users at a time.You can delete any user from the list or create a new user account. ' %}</p>   
+                                </div>
+                                <div id="member-account-list" class="cat-list group">
+                                    
+                                    <div id="id_users_csv">                                
+                                        <form id="mform" name="mform" onsubmit="return validate()" action="{% url 'admin_import_users_csv' %}" enctype="multipart/form-data" method="post">{% csrf_token %}
+                                        <div class="fields hform">
+                                            <div class="field-group">              
+                                                <div class="field select-field">
+                                                    <div class="label"><label for="">{% trans 'Upload CSV File' %}<span class="required-field">*</span></label></div>
+                                                    <div class="value">
+                                                        <input type="file" name="userscsv" id="userscsv" accept="*.csv">
+                                                        <span class="tip" id="cat_span">{% trans 'Upload a CSV file to add mulitple users.' %}</span>
+                                                    </div>
+                                                </div>                                                                                                        
+                                            </div> <!--/field-group--> 
+                                        </div> <!--/fields-->
+                                        <div class="form-submit right group trp-bg">
+                                           <button class="cform-button" roll="button" type="button" onclick="window.location.replace('{% url 'admin_display_users' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+                                           <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'SAVE' %}</span></button>
+                                        </div>                                                
+                                        </form>
+										<!--/Table Fomat I-->
+										<button class="cform-button ftrt" onclick="$('#quickhelp').toggle();$('.hlpbtn').toggle();" roll="button" type="button" "><span class="hlpbtn">Show</span><span class="hlpbtn" style="display: none;">Hide</span> <span class="cform-button-text">{% trans 'help' %}</span></button> 
+                                    </div>  
+                                </div>
+                            </div>                                                       
+										<div class="qKhP" id="quickhelp" style="display: none;">
+											<h2>Quick Help</h2>
+											<h3>Required Fields</h3>
+												<table class="bdr tbwt">
+													<tr class="header">
+														<th class="qTr">Fields</th>
+															<th class="qTr">Type</th>
+														<th class="qTr">Description</th>
+															<th class="qTr">Example</th>
+													</tr>
+													<tr class="brda">
+														<td class="qTr">FIRST_NAME</td>
+															<td class="qTr">Character<br/>Limit: 25 characters</td>
+														<td class="qTr">Enter the First name</td>
+															<td class="qTr">Eg: Mike</td>
+													</tr>
+													<tr class="brda">
+														<td class="qTr tbl">EMAIL</td>
+															<td class="qTr">Email</td>
+														<td class="qTr tbl">Enter the Email address</td>
+															<td class="qTr ">Eg: mike@example.com</td>
+													</tr>
+													<tr class="brda">
+														<td class="qTr tbl">PASSWORD</td>
+															<td class="qTr">Character</td>
+														<td class="qTr tbl">Enter the Password</td>
+															<td class="qTr">Eg: password</td>
+													</tr>
+												</table>
+				                 		</div>
+									<!--/Table Fomat I ends here--> 
+                        </div>
+                        <div id="aside" class="side-bar col_4">
+                             {% include 'admin/usermgmt/admin-users-csv-faq.html' %}
+                        </div>
+                    </div>                                                    
+                </div>
+            </div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#mform").validate({
+        ignore: "",
+        highlight: function(element, errorClass){add_error_class(element)},
+        unhighlight: function(element, errorClass){remove_error_class(element)},
+        errorPlacement: function(error, element){},
+           rules:{
+            userscsv: "required",
+           }
+    });
+});
+
+
+function validate(){
+    if($('#userscsv').val().toLowerCase().lastIndexOf(".csv")==-1) 
+     {
+        alert("Please upload only .csv extention file");
+        $('#userscsv').focus(); 
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+</script>
+{% endblock %}    

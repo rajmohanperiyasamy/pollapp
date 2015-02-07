@@ -1,0 +1,271 @@
+div.datepicker {
+	position: relative;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	width: 196px;
+	height: 147px;
+	position: absolute;
+	cursor: default;
+	top: 0;
+	left: 0;
+	display: none;
+}
+.datepickerContainer {
+	background: #FFF;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+.datepickerBorderT,
+.datepickerBorderB,
+.datepickerBorderL,
+.datepickerBorderR,
+.datepickerBorderTL,
+.datepickerBorderTR,
+.datepickerBorderBL,
+.datepickerBorderBR {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 10px;
+	height: 10px;
+	background:transparent;
+}
+.datepickerHidden {
+	display: none;
+}
+div.datepicker table {
+	border-collapse:collapse;
+}
+div.datepicker a {
+	color: #333;
+	text-decoration: none;
+	cursor: default;
+	outline: none;
+}
+div.datepicker table td {
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}
+div.datepicker th {
+	text-align: center;
+	color: #9A9A9A;
+	font-weight: normal;
+}
+div.datepicker tbody th {
+	text-align: center;
+}
+div.datepicker tbody th span{}
+div.datepicker tbody a {
+	display: block;
+}
+.datepickerDays{border:1px solid #EEE;}
+.datepickerDays a {
+	width: 20px;
+	line-height: 16px;
+	height: 16px;
+	border-right:1px solid #EEE;
+	border-bottom:1px solid #EEE;
+}
+.datepickerDays td:last-child a{border-right:none}
+.datepickerDays tr:last-child a{border-bottom:none}
+.datepickerYears a,
+.datepickerMonths a{
+	width: 44px;
+	line-height: 36px;
+	height: 36px;
+	text-align: center;
+}
+td.datepickerNotInMonth a {
+	color: #FFF;
+}
+td.datepickerNotInMonth a:hover{
+	background-color:#FFF !important;
+	color:#FFF
+	}
+tbody.datepickerDays td.datepickerSelected{
+	background: #333;
+}
+tbody.datepickerDays td.datepickerSelected a{color:#FFF}
+tbody.datepickerDays td.datepickerNotInMonth.datepickerSelected {
+	background: #FFF;
+}
+tbody.datepickerYears td.datepickerSelected,
+tbody.datepickerMonths td.datepickerSelected{
+	background: #17384d;
+}
+.datepickerDays a:hover,
+.datepickerDays a:hover {
+	color: #FFF;
+	background-color:#4586e7
+}
+#calendar-sets .datepicker a:hover{
+	color: #FFF;
+}
+div.datepicker td.datepickerNotInMonth a:hover {
+	color: #FFF;
+}
+.datepickerSpace div {
+	width: 10px;
+}
+.datepickerGoNext a,
+.datepickerGoPrev a {
+    background: -moz-linear-gradient(center top , #FEFEFE, #F7F7F7) repeat scroll 0 0 #F9F9F9;
+    border-color: #D7D7D7 #DDDDDD #D0D0D0;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    position: absolute;
+    width: 26px;
+}
+.datepickerGoNext a {
+    border-radius: 0 0 0 3px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.07);
+    right: -11px;
+    top: -11px;	
+}
+.datepickerGoPrev a {
+    border-radius: 0 0 3px 0;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.07);
+    left: -11px;
+    top: -11px;
+}
+
+.datepickerGoPrev a span {
+    background: url("../images/global/prev.png") no-repeat scroll 50% transparent;
+}
+.datepickerGoNext a span {
+    background: url("../images/global/next.png") no-repeat scroll 50% transparent;
+}
+.datepickerGoPrev a span, .datepickerGoNext a span {
+    display: inline-block;
+    height: 26px;
+    opacity: 0.75;
+    text-indent: -99em;
+    width: 26px;
+}
+.datepickerMonth{}
+.datepickerMonth a {
+    color: #333333 !important;
+    margin-top: -5px;
+    padding-bottom: 5px;
+    text-align: center;	
+	}
+table.datepickerViewDays tbody.datepickerMonths,
+table.datepickerViewDays tbody.datepickerYears {
+	display: none;
+}
+table.datepickerViewMonths tbody.datepickerDays,
+table.datepickerViewMonths tbody.datepickerYears,
+table.datepickerViewMonths tr.datepickerDoW {
+	display: none;
+}
+table.datepickerViewYears tbody.datepickerDays,
+table.datepickerViewYears tbody.datepickerMonths,
+table.datepickerViewYears tr.datepickerDoW {
+	display: none;
+}
+
+table.datepickerDays tr th.datepickerWeek{
+	display:none
+}
+
+td.datepickerDisabled a,
+td.datepickerDisabled.datepickerNotInMonth a{
+	color: #FFF;
+}
+td.datepickerDisabled a:hover {
+	background-color:#000 !important;
+	color: #FFF;
+}
+td.datepickerDisabled:hover {
+	background-color: #000;
+	opacity:0.3;
+}
+td.datepickerSpecial a {
+	background: #700;
+}
+td.datepickerSpecial.datepickerSelected a {
+	background: #a00;
+}
+
+		#report-date-control {
+			position: relative;
+			float:right
+		}
+		#date-field {
+		
+			background:url(../images/ie-fix/fetof7.png);
+			background-color: #FAFAFA;
+			background-image: -webkit-gradient(linear, left top, left bottom, from(#FDFDFD), to(#FAFAFA));
+			background-image: -webkit-linear-gradient(top, #FDFDFD, #FAFAFA);
+			background-image: -moz-linear-gradient(top, #FDFDFD, #FAFAFA);
+			background-image: -ms-linear-gradient(top, #FDFDFD, #FAFAFA);
+			background-image: -o-linear-gradient(top, #FDFDFD, #FAFAFA);
+			background-image: linear-gradient(top, #FDFDFD, #FAFAFA);
+			border-color: #D7D7D7 #D2D2D2 #D0D0D0 #DDDDDD;
+			border-radius: 3px 3px 3px 3px;
+			border-style: solid;
+			border-width: 1px;
+			-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07);
+			-webkit-box-shadow: 01px 1px rgba(0, 0, 0, 0.07);
+			-o-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07);
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07);	
+			display: inline-block;
+			height: 26px;
+			line-height: 24px;
+			overflow: hidden;
+			padding: 2px 34px 2px 10px;
+			position: relative;
+			cursor:pointer					
+		}
+		#date-field span.arw 	{
+			background:url(../images/global/arrow-down.png) no-repeat 50% rgba(0,0,0,0.02);
+			display:inline-block;
+			position: absolute;
+			width: 24px;
+			height: 30px;
+			top: 0;
+			right: 0;
+			text-decoration: none;
+			text-indent: -3000px;
+			border-radius:0 3px 3px 0;
+		}
+		#date-field span.date-range	{
+			display:inline-block;			
+			font-size: 12px;
+			font-weight: bold;
+			color: #333;
+			height: 26px;
+			line-height: 26px;
+			text-align: center;
+			cursor:pointer
+		}
+		#calendar-sets {
+			position: absolute;
+			top: 30px;
+			right: 0;
+			height: 0px;
+			overflow: hidden;
+			width: 478px;
+			background: #FFF;
+			border-width:0px;
+			border-style: solid;
+			border-color: #DDD;
+			border-radius:5px 0 5px 5px;
+			z-index:100;
+			/* box-shadow:0px 0px 2px 1px rgba(0,0,0,0.08)*/
+		}
+		#calendar-sets .datepicker {
+			position: absolute;
+			bottom: 0;
+			top: auto;
+		}
+		div.datepicker tbody tr td:first-child th.datepickerGoNext a,
+		div.datepicker tbody tr td:last-child th.datepickerGoPrev a,
+		div.datepicker tbody tr td:nth-child(3n+3) th.datepickerGoNext a,
+		div.datepicker tbody tr td:nth-child(3n+3) th.datepickerGoPrev a {display:none !important;}

@@ -1,0 +1,123 @@
+{% load thumbnail %}
+{% load i18n %}
+{% load template_loop %}
+{% if classifieds %}
+<input type="hidden" value="{{view_type}}" name="view_type" id="id_hid_view_type">
+<div class="pD20 pDt0 cLrfX">                                                                                     
+ 	<div class="row-fluid">
+     	<div class="tLbR mRb10">
+            <div class="tLbR-iR">
+				<p class="ib mRb0 mRt4 cLr-lTgRy fS12">{{object_count}} classifieds</p>  
+                <div class="btn-toolbar pLrT hP">
+                    <div id="media-toggle" class="btn-group" data-toggle="buttons-radio">	                                        
+                        <button type="button" class="btn btn-link c-gD {% if view_type == 'grid' %}active{% endif %}" onclick="$('#id_hid_view_type').val('grid');"><i aria-hidden="true" class="bUi-iCn-tH-lR-aLt-16"></i></button>
+                        <button type="button" class="btn btn-link c-lT mRl5 {% if view_type == 'list' %}active{% endif %}" onclick="$('#id_hid_view_type').val('list');"><i aria-hidden="true" class="bUi-iCn-rE-oDr-aLt-16"></i></button>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        <ul class="modulesBrowseData fOcL {% if view_type == 'grid' %}mDa-gD pDfX nObG{% else %}nObG mDa-lT mDa-oT-lT{% endif %}">
+			{% for c in classifieds %}
+        	<li class="mDa">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                    	<a class="bUi-tMb-wPr tMb-75 fLxiMgW bUi-tMb-cLsFd" href="/classifieds/{{c.slug}}.html">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if c.album.get_cover_image %}{% thumbnail c.album.get_cover_image 220x0 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{ c.title }}">
+                                            <span class="vRtL-aLn"> </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="mDa-bDy pD0 pDt5">
+                        <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{ c.title }}"><a href="/classifieds/{{c.slug}}.html">{{ c.title }}</a></h5>
+                        <div class="fS12 cLr-gRy hD-gD">{% autoescape off %}{{ c.description|truncatechars:110 }}{% endautoescape %}</div>
+                        <div class="mDa-dTa mRt4">
+                           <span class="fS11 cLr-lTgRy">{{c.created_on|timesince}} {% trans "ago" %}</span>
+                        </div>                                            
+                        <!--div class="mDa-hVr"><a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="#"><i class="BUI-icon-63"></i>Share</a></div-->
+                    </div>
+                </div>
+            </li>
+			{% endfor %}
+		</ul>
+		{% include 'usercp_pagination.html' %}
+	</div>
+</div>  
+{% else %}
+<div class="pD20 pDt0 cLrfX">                                                                                     
+	<div class="hT600 rLvE">
+ 		<div class="tBl-bLk pDt0">
+			<div class="tBl-cEl">
+				<span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-cLfD-24 fS42-1 cLr-lTgRy ib"></i></span>
+				<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You haven't posted any classified ads yet.</p>
+				{% ifequal request.user profile.user %}
+				<p class="mRt15"><a href="{% url 'user_add_classified' %}" class="btn btn-danger fS12 fW-bLd">Post Free Ad</a></p>
+				{% endifequal %}
+			</div>
+		</div>
+	</div>
+</div> 
+{% endif %} 
+<script>
+$(document).ready(function(){
+	var views = $('#media-toggle');
+    var figureItems = $('.main').find('.modulesBrowseData');
+    var thumbnaiItem = $('.modulesBrowseData').find('.mDa-oT');
+    
+    
+    function setGridColumn(){        
+        $('.mDa-gD').each(function(index, element) {
+            if(!$(this).hasClass('dSgDwDt')){
+                var gridColumnWidth = $(this).find('.mDa').width();
+                $(this).find('.mDa .mDa-oT').css({'width':''+gridColumnWidth+'','height':'auto'}); 
+            }
+        });    
+    }
+    
+    views.on('click', '.c-lT', function() {
+        views.find('.btn').removeClass('active');
+        $(this).addClass('active');
+        figureItems.removeClass('mDa-gD mDa-oT-tP').addClass('mDa-lT mDa-oT-lT');
+        if(figureItems.children('li').hasClass('mDa-gRp')){
+            figureItems.find('.mDa-gRp > ul').removeClass('pDfX')
+        }
+        else{
+                figureItems.removeClass('pDfX');    
+            }
+        thumbnaiItem.css('width','auto');
+        $('.fLxiMgH').setrSpVHeight('mDa-lT');
+        $('.fLxiMgW').setrSpVWidth(0);
+        $('.fLxiMgW30').setrSpVWidth(30);
+    });
+    views.on('click', '.c-gD', function() {
+        views.find('.btn').removeClass('active');
+        $(this).addClass('active');
+        figureItems.removeClass('mDa-lT mDa-oT-lT').addClass('mDa-gD mDa-oT-tP');
+        if(figureItems.children('li').hasClass('mDa-gRp')){
+            figureItems.find('.mDa-gRp > ul').addClass('pDfX')
+        }
+        else{
+                figureItems.addClass('pDfX');    
+            }
+        $('.fLxiMgH').setrSpVHeight('mDa-lT');
+        $('.fLxiMgW').setrSpVWidth(0);
+        $('.fLxiMgW30').setrSpVWidth(30);
+        setGridColumn();
+    });
+    setGridColumn();
+    
+    
+    $(window).bind("resize orientationchange", (function () {
+        setGridColumn();            
+    }))    
+    
+    setTimeout(function(){setGridColumn()});
+    
+    $('.fLxiMgH').setrSpVHeight('mDa-lT');
+});
+</script>					                

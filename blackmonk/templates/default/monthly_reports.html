@@ -1,0 +1,19 @@
+{% load i18n %}
+<table class="banner_mnthly_info"> 
+        <tbody id="ajax_content_cls">
+        <tr class="header">
+            <th><span>Date #</span></th>
+            <th><span>Impressions</span></th>
+            <th><span>Click Thru</span></th>
+        </tr>
+        {% for dates , value in month_list.items %}
+        <tr>
+            <td><span class="text"><a title="{% if element.name %}{{ element.name }}{% else %}{{element.title}}{% endif %}" href="{% url 'get_traffic_sources' id modules year dates 'impression' %}">{% for date,value in month_names.items %}{% if dates == date %}{{ value }} {{year}}{% endif %}{% endfor %}</a></span></td>
+			{% for impress,click in value.items %}
+            <td><span class="text">{{impress}}</span></td>
+            <td><span class="text">{{click}}</span></td>
+			{% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>                            
+</table>

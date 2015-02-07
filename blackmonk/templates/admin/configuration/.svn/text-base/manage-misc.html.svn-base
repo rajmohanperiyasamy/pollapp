@@ -1,0 +1,86 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% block navigation %}
+	{% activetab 'topnav' 'prog' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Attributes' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+		<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_api_flower_configuration' %}" style="z-index:9"><span class="icon"></span>{% trans 'Affiliate' %}</a></li>
+                	<li><a href="{% url 'admin_config_manage_misc' %}" style="z-index:8">{% trans 'Misc' %}</a></li>
+              	</ul>
+			</div>
+		</div>
+        <div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+				{% block leftnavigation %}
+					{% activetab 'topnav' 'prog' %}
+					{% activetab 'leftnav' 'misc' %}
+					{{ block.super }}
+				{% endblock %}
+				<div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">        
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Manage Attribute' %}</h2>
+                            <p class="ltxt80">{#% trans '' %#}</p>   
+                        </div>
+                        <div class="cat-list group" id="email-configuration-list">
+                        	<section class="toolbars">
+                            	<div class="group">
+                                    <span style="float:right">
+                                    	<a href="{% url 'admin_add_misc' %}" title="{% trans 'Add Attribute' %}" class="btn-txt-inline-prime"><span class="btn-txt">{% trans 'Add Attribute' %}</span></a>
+									</span>
+								</div>
+							</section>
+                            <ul class="cat-list-container" id="staffs">
+                                <li class="cat-list-row hdr-rw">
+                                    <div class="cat-list-row-inner group">
+                                        <div class="cat-list-column email-name" style="width:180px;">
+                                            {% trans 'App Name' %}                                               
+                                        </div>
+										<div class="cat-list-column email-last-update" style="width:220px;">
+                                            {% trans 'Attribute Key' %}  
+                                        </div>
+                                        <div class="email-options" style="padding-right:25px;">
+                                        	{% trans 'Action' %}  
+                                        </div>
+                                    </div>
+                                </li> 
+								{% for misc in miscs %}                                    
+                                <li class="cat-list-row">
+                                    <div class="cat-list-row-inner group">
+                                        <div class="cat-list-column email-name" style="margin:10px; width:180px;">
+                                        	<h4 class="name">{{ misc.attr_name }}</h4>
+                                        </div>
+                                         <div class="cat-list-column email-status" style="width:220px;">
+                                        	{{ misc.attr_key }}
+                                        </div>
+										<div class="cat-list-column email-status action-buttons" style="float:right;padding-right:10px;width:56px;">
+											<div class="relative-block">
+                                                 <a href="{% url 'admin_update_misc' misc.id %}" title="{% trans 'Update Misc' %}" class="tttxt-n "><span class="icon icon-edit"></span></a>
+                                                <a title="{% trans 'Delete' %}" class="tttxt-n" onclick="if(!confirm('Are you sure you want to delete the selected misc?')){return false;}" href="{% url 'admin_delete_misc' misc.id %}"><span class="icon icon-delete"></span></a>
+                                            </div> 
+										</div>
+                                    </div>
+                                </li> 
+								{% endfor %}   
+                     	 	</ul>
+                        </div>
+                    </div>                       
+                </div>
+			</div>                                                                
+             {% include 'admin/configuration/misc-faq.html' %}                         
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}

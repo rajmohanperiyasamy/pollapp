@@ -1,0 +1,36 @@
+{% load i18n %}
+{% load truncate_filter %}
+{% load comparison %}
+
+<div class="col_11 bm_dev_hotel_content" id="hotel_rooms_content" style="display:none;">
+	<div class="group">
+    	<div id="hotel_details" >
+    		<div class="description" id="as_desc">
+                <!--<div class="rooms-detail"><strong>{{hotel.name|title}}</strong><br/>
+				 {% if hotel.details.room_information %}{% autoescape off %}{{hotel.details.room_information}}{% endautoescape %}{% endif %} 
+                </div> -->
+			</div>
+		</div>
+		<div class="group">
+		{% if hotel.hotel_rooms.all %}
+		<h2 style="font-size: 12px; font-weight: bold;">Room Types and Other Details</h2>
+		{% for room in hotel.hotel_rooms.all %}
+        <div class="hotel-rooms group">
+        	<h3>{{room.type|title}}</h3>
+			<div class="description">{% autoescape off %}{{room.description}}{% endautoescape %}</div>
+			{% if room.amenities.all %}
+			<div style="height: 24px; border-bottom: 1px dashed rgb(188, 197, 237); margin-bottom: 6px; margin-top: 6px;" class="group"><a href="javascript:void(0);" id="id_amenity_expand{{room.id}}" onclick="show_room_amenities({{room.id}})" style="font-size: 13px;">{% trans '[+] Room Amenities' %}</a></div>
+            <ul style="margin-top:10px;display:none;" class="group" id="id_amenity_list{{room.id}}">
+            	{% for amenity in room.amenities.all %}
+				<li>{{amenity.name|title}}</li>
+				{% endfor %}
+            </u>
+			{% endif %}
+        </div>
+	   {% endfor %}
+	   {% else %}
+	   <p class="global_message" style="padding:10px;">{% trans 'Room details not available.' %}</p>		
+	   {% endif %}		
+	  </div>
+	</div>                
+</div>

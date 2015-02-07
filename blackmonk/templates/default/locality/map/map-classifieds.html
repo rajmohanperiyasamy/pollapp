@@ -1,0 +1,144 @@
+{% extends 'default/locality/map/base.html' %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load mptt_comments_tags %}
+{% load comparison %}
+{% load i18n %}
+{% load tabs %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% block pagetitle %}{{seo.seo_title}} | {{ globalsettings.domain }} {% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+    
+{% endblock %}
+{% block navigation %}
+    {% activetab "modulenav" "classifieds" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div id="site">
+        <div class="row-fluid">
+            <div id="site" >
+                <div class="expolre">
+                    <div class="gGl-mP-cNvS">
+                        <div id="map-canvas"></div>
+                    </div>
+                    <div class="result-container" id="id_result_div"> 
+                        <!--<div class="sCn">
+                            <ul class="nav nav-tabs mRb0 pD015 getdirection">
+                                <li class="devider"><a href="#"><span class="icon"></span></a></li>
+                                <li><a href="#" class="drive"><span class="icon"></span></a></li>
+                                <li><a class="transit" href="#"><span class="icon"></span></a></li>
+                                <li><a class="walk" href="#"><span class="icon"></span></a></li>
+                                <li><a class="bicycle" href="#"><span class="icon"></span></a></li>
+                                <li><a class="fly" href="#"><span class="icon"></span></a></li>
+                            </ul>
+                            <form class="form-search rLvE mRb0" style="margin-top: 20px; margin-left: 15px;">
+                                <div class="control-group" style="margin-bottom: 20px;">
+                                    <div class="controls"> <img src="static/img/icons/a-small.png" class="direction-a" />
+                                        <input id="directionFrom" type="text" style="height: 35px; width: 290px;" class="" value="30 S El Camino Real, San Mateo" autofocus>
+                                    </div>
+                                </div>
+                                <div class="control-group cLrFx mRb20" style="">
+                                    <div class="controls"> <img src="static/img/icons/b-small.png" class="direction-b" />
+                                        <address style="display: inline-block; width: 290px;" class="pLlT mRb0">
+                                        <strong style="margin-bottom: 5px; display: block;"><a href="#">Magnolia Bakery</a></strong> <span style="font-size: 12px; color: rgb(102, 102, 102); line-height: 1.2;">795 Folsom Ave, Suite 600,  San Francisco, CA 94107</span>
+                                        </address>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 15px;" class="control-group">
+                                    <div class="controls"> <a href="javascript:void(0)" id="getDir" class="btn btn-primary fS12 fW-bLd " style="margin-left: 30px;">Get Direction</a> </div>
+                                </div>
+                            </form>
+                            <div id="directions-panel"></div>
+                        </div>-->
+                        <div class="sCn">
+                            <div class="" style="padding: 15px; margin-bottom: 11px; background-color: rgb(245, 245, 245); border-bottom: 1px solid rgb(221, 221, 221);">
+                                <form class="form-search rLvE mRb0" method="GET" action="{% url 'locality_map_classifieds' %}">
+                                    <input type="hidden" name="search" value="true">
+                                    <input type="text" id="id_q" name="q" value="{% if q %}{{ q }}{% endif %}" placeholder="Nearby classifieds" class="search-query iSp9 fS14 h35" style="width: 100% ! important; border-color: rgb(221, 221, 221);">
+                                    <button type="submit" class="btn btn-primary fS12 fW-bLd lH1 aBsLt rGt0 t0 " style="border-radius: 0px 2px 2px 0px; padding: 8px 12px; background-color: transparent; color: rgb(187, 187, 187);"> <i aria-hidden="true" class="bUi-iCn-sRh-16 "></i></button>
+                                </form>
+                            </div>
+                            <input type="hidden" id="load_more_url" value="{% url 'locality_map_ajax_filter_classifieds' %}">
+                            <input type="hidden" id="id_search_status" value="{{search}}">
+                            <input type="hidden" id="page_number" value="{{next}}">
+                            <input type="hidden" id="id_fl_counter" value="{{fl_counter}}">
+                            <ul class="modulesBrowseData mDa-lT mDa-oT-lT iNsT-10 mRl15" id="id_content_ul">
+                                {% include 'default/locality/map/ajax-classifieds-list.html' %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #site-wrapper --> 
+<script type="text/javascript" src="{{STATIC_URL}}js/locality/global-map-location.js"></script> 
+<script type="text/javascript">
+var markers=[];
+var icon_lrg = "{{STATIC_URL}}themes/img/icons/map-pointer.png";
+var icon_sml = "{{STATIC_URL}}themes/img/icons/a-small.png";
+
+$(document).ready(function(){
+                             
+    {% for classified in classifieds %}
+            {% with classified.address as addr %}
+                var marker = new Object();
+                marker["lat"] = {{addr.lat}};
+                marker["lng"] = {{addr.lon}};
+                marker["zoom"] = {{addr.zoom}};
+                marker["icon"] = icon_lrg;
+                 
+                var contentString = '<ul id="map-view'+{{classified.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+                contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ classified.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+                contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp">{% with classified.get_first_classified_photo as classified_image %} <span class="bUi-tMb-cLp-iN">';
+                contentString+='{% if classified_image %}<img src="{% thumbnail classified_image 220x0 %}" alt="{{ classified.title }}" class="mDa-oT">{% else %}<span class="iCn-bRdR50 oP25" title="{{ classified.title }}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 cLr-gRy ib"></i></span>{% endif %}<span class="vRtL-aLn"> </span> </span>{% endwith %} </span> </span> </span> </a> </div>';
+                contentString+='<div class="mDa-bDy pDt0"><h4 title="{{ classified.title }}" class="mDa-hD"><a href="{{ classified.get_absolute_url }}" class="tRnCt cLr-gRy-dRk fS14">{{ classified.title }}</a></h4>';
+                contentString+='<div class="mDa-dTa">';
+                contentString+='<p class="fS12 cLr-gRy mXh35">{% autoescape on %}{{classified.description|striptags|truncatewords:30}}{% endautoescape %}</p>';
+                contentString+='</div>';
+                contentString+='<div class="mDa-dTa mRt4"><span class="fS11 cLr-lTgRy">{{classified.created_on|timesince|time_up_to:','}} {% trans "ago" %}</span></div>';
+                contentString+='<a href="{% url "locality_map_map_get_direction" %}?aid={{addr.id}}&objid={{classified.id}}&src=classifieds" title="{% trans "Directions" %}" class="aBsLt bR10"><i aria-hidden="true" class="bUi-iCn-dRt-20 fS12 "></i></a></div>';
+                contentString+='</li></ul>';
+                
+                marker['content_info'] = contentString;
+                markers.push(marker);
+            {% endwith %}
+    {% endfor %}
+    
+    {% if other_classifieds %}
+        {% for classified in other_classifieds %}
+                {% with classified.address as addr %}
+                    var marker = new Object();
+                    marker["lat"] = {{addr.lat}};
+                    marker["lng"] = {{addr.lon}};
+                    marker["zoom"] = {{addr.zoom}};
+                    marker["icon"] = icon_sml;
+                    
+                    var contentString = '<ul id="map-view'+{{classified.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+                    contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ classified.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+                    contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp">{% with classified.get_first_classified_photo as classified_image %} <span class="bUi-tMb-cLp-iN">';
+                    contentString+='{% if classified_image %}<img src="{% thumbnail classified_image 220x0 %}" alt="{{ classified.title }}" class="mDa-oT">{% else %}<span class="iCn-bRdR50 oP25" title="{{ classified.title }}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 cLr-gRy ib"></i></span>{% endif %}<span class="vRtL-aLn"> </span> </span>{% endwith %} </span> </span> </span> </a> </div>';
+                    contentString+='<div class="mDa-bDy pDt0"><h4 title="{{ classified.title }}" class="mDa-hD"><a href="{{ classified.get_absolute_url }}" class="tRnCt cLr-gRy-dRk fS14">{{ classified.title }}</a></h4>';
+                    contentString+='<div class="mDa-dTa">';
+                    contentString+='<p class="fS12 cLr-gRy mXh35">{% autoescape on %}{{classified.description|striptags|truncatewords:30}}{% endautoescape %}</p>';
+                    contentString+='</div>';
+                    contentString+='<div class="mDa-dTa mRt4"><span class="fS11 cLr-lTgRy">{{classified.created_on|timesince|time_up_to:','}} {% trans "ago" %}</span></div>';
+                    contentString+='<a href="{% url "locality_map_map_get_direction" %}?aid={{addr.id}}&objid={{classified.id}}&src=classifieds" title="{% trans "Directions" %}" class="aBsLt bR10"><i aria-hidden="true" class="bUi-iCn-dRt-20 fS12 "></i></a></div>';
+                    contentString+='</li></ul>';
+                    
+                    marker['content_info'] = contentString;
+                    markers.push(marker);
+                {% endwith %}
+        {% endfor %}
+     {% endif %}   
+    
+    setTimeout(function(){load_global_map('map-canvas',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }}, markers, false)},500);
+});
+
+</script>
+{% endblock %} 

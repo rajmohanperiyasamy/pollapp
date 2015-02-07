@@ -1,0 +1,17 @@
+{% load i18n %}
+<div id="aside" style="display:{% if advertisement.adoption == 'O' %}block;{% else %}none;{% endif %}" class="side-bar col_4  O_faq ads_faq">
+    <div class="section">
+        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.99zhc5ycet3u" target="_blank"><span class="icon">?</span>Quick help</a>
+        <hr>
+        <h5>{% trans 'OpenX' %}</h5>
+        <h6>{% trans 'SignUp with OpenX(OnRamp) for publishers.' %}?</h6>
+        <p><a href="http://www.openx.com/sign-openx-onramp" target="_blank">{% trans 'OpenX SignUp' %}</a></p>
+        <p>Once you signup with OpenX(OnRamp) you will receive the login credentials which you have to use in the below link.</p>
+        <p><a href="https://adserver.openx.org/advertiser-index.php" target="_blank">https://adserver.openx.org/advertiser-index.php</a></p>
+        <hr>
+        <h6>{% trans 'Steps to get the Invocation banner code(Header section) from OpenX' %}</h6>
+        <p>{% trans 'Step1: Click on Zones which you find on the left links.' %}</p>
+        <p>{% trans 'Step2: Click on Invocation code tab' %}</p>
+        <p>{% trans 'Step3: Copy and paste the banner code in the text box provided in the Admin CP.' %}</p>
+    </div>
+</div>

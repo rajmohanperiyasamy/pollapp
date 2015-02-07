@@ -1,0 +1,183 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Settings' %}</p>
+</div>
+<div id="ajax_content" class="group">
+    <form action="{% url 'admin_config_update_comment_settings' %}" name="mform" id="mform" method="post">{% csrf_token %}
+        <div class="fields vform no_head comments">
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                    <h3 class="section-title">{% trans 'Enable and Disable Comments/Reviews' %}</h3>
+                    <p class="ltxt80">{% trans "Comments are enabled on all modules by default. This setting allows you to enable/disable comments on all modules." %}</p>
+                </div>
+				{% for a in apps %}
+					<div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                        <span class="cform-checkbox-container">
+	                            <input type="checkbox" name="{{a.id}}" class="cform-checkbox" {% if a.comment == 'A' %}checked="checked"{% endif %} id="id_{{a.id}}">
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                    	<label>{{a.name|title}}</label>
+	                    	{%if a.name  == 'Business'%}
+	                    	 <p class="ltxt80">{% trans "Allow users to post reviews on "%}{{a.slug}}.</p>
+	                    	{%else%}
+	                        <p class="ltxt80">{% trans "Allow users to post comments on "%}{{a.slug}}.</p>
+	                        {%endif%}
+	                    </div>	
+	                </div>
+				{% endfor %}
+            </div>
+        </div>
+        <div class="fields vform no_head">
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                	<span class="cform-radio-container">
+                        <input type="radio" {% if settings.discuss_comment %}checked="checked"{% endif %} name="discuss_comment" id="id_discuss_comment" class="discuss-click">
+                        <span class="cform-radio-element"></span>
+                    </span>
+                    <h3>{% trans "Disqus Shortname" %}</h3>
+                    <p class="ltxt80" >
+						{% trans "Entering your shortname on Disqus will replace default commenting system with Disqus throughout your site" %}.
+					</p>
+                </div>
+                <div class="field text-field" id="div_discuss" {% if not settings.discuss_comment %}style="display:none;"{% endif %}>	
+                    <div class="value">
+						<input type="text" class="fl" value="{% if settings.discuss_comment %}{{settings.discuss_shortcut}}{% endif %}" id="id_discuss_shortcut" placeholder="XXXXXXXXXXX" maxlength="300" name="discuss_shortcut" autocomplete="off">
+                    </div>	
+                </div>
+            </div>
+        </div>
+        <div class="fields vform no_head">
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+					<span class="cform-radio-container">
+                        <input type="radio" {% if not settings.discuss_comment %}checked="checked"{% endif %} name="own_comment" id="id_own_comment" class="own-click">
+                        <span class="cform-radio-element"></span>
+                    </span>
+                    <h3>{% trans "Comments/Reviews" %}</h3>
+                    <p class="ltxt80" >
+						{% trans "Settings allows you to change the overall settings related to commenting on your site" %}.
+					</p>
+                </div>
+				<div id="div_owncomment" {% if settings.discuss_comment %}style="display:none;"{% endif %}>
+	                <div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                    	<span class="cform-checkbox-container">
+	                            <input type="checkbox"  id="id_like_dislike" name="like_dislike" class="cform-checkbox" {% if settings.like_dislike %}checked="checked"{% endif %}>
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                        <label>{% trans "Comment Likes Allowed" %}</label>
+	                        <p class="ltxt80">{% trans "Allow users to like other users' comments" %}.</p>
+	                    </div>	
+	                </div>
+	                <div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                    	<span class="cform-checkbox-container">
+	                            <input type="checkbox"  id="id_flag" name="flag" class="cform-checkbox" {% if settings.flag %}checked="checked"{% endif %}>
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                        <label>{% trans "Comment Flags Allowed" %}</label>
+	                        <p class="ltxt80">{% trans "Allow users to flag other users' comments" %}.</p>
+	                    </div>	
+	                </div>
+	                <div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                    	<span class="cform-checkbox-container">
+	                            <input type="checkbox"  id="id_approval" name="approval" class="cform-checkbox" {% if settings.approval %}checked="checked"{% endif %}>
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                        <label>{% trans "Approval Required" %}</label>
+	                        <p class="ltxt80">{% trans "Require moderator approval before showing a comment" %}.</p>
+	                    </div>	
+	                </div>
+	                <div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                    	<span class="cform-checkbox-container">
+	                            <input type="checkbox"  id="id_threaded" name="threaded" class="cform-checkbox" {% if settings.threaded %}checked="checked"{% endif %}>
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                        <label>{% trans "Threaded (nested) Comments" %}</label>
+	                        <p class="ltxt80">{% trans "Allow commenters to respond to other comments" %}.</p>
+	                    </div>	
+	                </div>
+	                <div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                    	<span class="cform-checkbox-container">
+	                            <input type="checkbox"  id="id_avatar" name="avatar" class="cform-checkbox" {% if settings.avatar %}checked="checked"{% endif %}>
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                        <label>{% trans "Avatars Visible" %}</label>
+	                        <p class="ltxt80">{% trans "Show avatars on comments" %}.</p>
+	                    </div>	
+	                </div>
+					<div class="field text-field relative-block has_check">
+	                    <div class="label info pdb_0">
+	                    	<span class="cform-checkbox-container">
+	                            <input type="checkbox"  id="id_rating" name="rating" class="cform-checkbox" {% if settings.rating %}checked="checked"{% endif %}>
+	                            <span class="cform-checkbox-element"></span>
+	                        </span>
+	                        <label>{% trans "Allow Rating" %}</label>
+	                        <p class="ltxt80">{% trans "Allow commenters to rate" %}.</p>
+	                    </div>	
+	                </div>
+				</div>
+            </div>
+        </div>
+        <!--div class="fields vform no_head">
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                    <h3>Default Comment Sort Order</h3>
+                    <p class="ltxt80">Defines the default sorting order for comments on your site.</p>
+                </div>
+                <div class="field text-field">	
+                    <div class="value">
+                        <select class="select-menu fl">
+                            <option>-- Select Venue Type --</option>
+                            <option>Arena/Stadium</option>
+                            <option>Bar/Club</option>
+                        </select>
+                    </div>	
+                </div>
+            </div>
+        </div-->
+        <div class="modal-base form-submit group trp-bg">
+            <button role="button" class="cform-button prime right" type="button" onclick="save_approval()"><span class="cform-button-text">Save Changes</span></button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.own-click').live('change',function(){
+		if($(this).is(':checked')){
+			$('#div_discuss').hide();
+			$('#div_owncomment').show();
+			$('.discuss-click').attr('checked',false);
+		}else{
+			$('#div_discuss').show();
+			$('#div_owncomment').hide();
+			$('.discuss-click').attr('checked',true);
+		}		
+	});
+	$('.discuss-click').live('change',function(){
+		if($(this).is(':checked')){
+			$('#div_discuss').show();
+			$('#div_owncomment').hide();
+			$('.own-click').attr('checked',false);
+		}else{
+			$('#div_discuss').hide();
+			$('#div_owncomment').show();
+			$('.own-click').attr('checked',true);
+		}
+	});
+	$("#mform").validate({
+		highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass('error');},
+		unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass('error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	discuss_shortcut: {
+				required:{depends:function(element) {return $("#id_discuss_comment").is(':checked')}}
+			}
+	   	}
+	});
+});
+</script>

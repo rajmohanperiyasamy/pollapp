@@ -1,0 +1,120 @@
+{% load thumbnail %}
+<div style="width: 600px; background: #fdebeb; border: 2px solid #c70005; margin: 10px;">
+	<div style="height: 30px; background-color: #fbc1c1;">
+		<h3 style="margin:0px;display:block;padding:5px;font-weight:normal;float:left">Deal Voucher</h3>
+		<h5 style="margin: 0px; display: block; margin: 5px 0 0; padding: 5px; font-weight: normal; float: right;">Expires On : {{ deal.voucher_valid }}</h5>
+	</div>
+	<div style="min-height: 100px; margin: 0px 50px; min-width: 500px;">
+		<div style="height: 66px; width: 295px; float: left; margin-left: 5px; max-width: 200px;">
+			<h1>
+				<a style="color: #000000; text-decoration: none;" href="{{globalsettings.website_url}}" title="{{globalsettings.domain}}">
+					<img alt="{{globalsettings.domain}}" data-cke-saved-src="{{globalsettings.website_url}}{% if globalsettings.logo %}{% thumbnail globalsettings.logo 243x66 %}{% endif %}" src="{{globalsettings.website_url}}{% if globalsettings.logo %}{%thumbnail globalsettings.logo 243x66 %}{% endif %}" title="{{globalsettings.domain}}" width="243" />
+				</a>
+			</h1>
+		</div>
+		{% with deal.address.all.0 as address %}
+		<div style="float: right; margin-top: 10px; color: #600000; padding-left: 20px; max-width: 200px;">
+			<h1 style="font-size: 14px; font-weight: bold; display: block; margin: 0px; padding: 5px 0;">Business Address</h1>
+			<div>
+				<h1 style="float: left; font-size: 14px; font-weight: normal; margin: 0px; padding: 1px 5px 1px 0;">{{ address.address1 }}</h1>
+				{% if address.address2 %}<h1 style="float: left; font-size: 14px; font-weight: normal; margin: 0px; padding: 1px 5px 1px 0;">{{ address.address2 }}</h1>{% endif %}
+			</div>
+			<div style="clear: both"></div>
+			<div>
+				{% if address.city %}<h1 style="float: left; font-size: 14px; font-weight: normal; margin: 0px; padding: 1px 5px 1px 0;">{{ address.city }},</h1>{% endif %}
+				{% if address.state %}<h1 style="float: left; font-size: 14px; font-weight: normal; margin: 0px; padding: 1px 5px 1px 0;">{{ address.state }},</h1>{% endif %}
+				{% if address.zip %}<h1 style="float: left; font-size: 14px; font-weight: normal; margin: 0px; padding: 1px 5px 1px 0;">{{ address.zip }}</h1>{% endif %}
+			</div>
+			<div style="clear: both"></div>
+			{% if address.telephone1 or address.mobile %}<h1 style="font-size: 14px; font-weight: normal; margin: 0px; padding: 1px 5px 1px 0;">{% if address.telephone1 %}{{ address.telephone1 }}{% if address.mobile %}, {% endif %}{% endif %}{% if address.mobile %}{{ address.mobile }}{% endif %}</h1>{% endif %}
+		</div>
+		{% endwith %}
+	</div>
+	<!--/lo_bu-->
+	<div style="clear: both"></div>
+	<div style="margin: 5px 50px; border-top: 1px dotted #c70005; color: #600000; padding-top: 10px;">
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-weight: bold; font-size: 14px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">{{payment.name}}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">Voucher Code</p>
+			</div>
+			<div style="width: 50px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">:</p>
+			</div>
+			<div style="width: 280px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 0 0 5px; line-height: 19px;">{{ payment.dealkey }}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">Item
+				</p>
+			</div>
+			<div style="width: 50px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">:</p>
+			</div>
+			<div style="width: 280px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; line-height: 19px;">{{ deal.title }}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">Quantity</p>
+			</div>
+			<div style="width: 50px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">:</p>
+			</div>
+			<div style="width: 280px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; line-height: 19px;">{{ payment.quantity }}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">Total Price</p>
+			</div>
+			<div style="width: 50px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">:</p>
+			</div>
+			<div style="width: 280px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; line-height: 19px;">{{globalsettings.currency}}{{ payment.total_price|floatformat:2 }}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">Order Number</p>
+			</div>
+			<div style="width: 50px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">:</p>
+			</div>
+			<div style="width: 280px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 0 0 5px; line-height: 19px;">{{ payment.transaction_no }}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div style="padding: 3px 5px; min-height: 20px;">
+			<div style="width: 150px; float: left; padding-right: 5px;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">Expires On</p>
+			</div>
+			<div style="width: 50px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; width: 100px; line-height: 19px;">:</p>
+			</div>
+			<div style="width: 280px; float: left;">
+				<p style="font-size: 13px; margin: 0px; padding: 0 5px; line-height: 19px;">{{ deal.voucher_valid }}</p>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+	</div>
+	<div class="how_to" style="color: #333; font-size: 12px; padding: 5px; background-color: #fbc1c1;">
+		<h5 style="margin: 0 0 5px 0;">How to Use This</h5>
+		1. Print This Email. 2. Go to Business , get services 3. Present coupon at the time of payment. 4. Enjoy!
+	</div>
+</div>

@@ -1,0 +1,13 @@
+{% load i18n %}
+{% if banners %} 
+    {% for banner in banners %}
+        <div>
+            <input type="hidden" value="{{banner.id}}" class="ds_banner_ids">
+            {% if banner.is_script %}
+                {% autoescape off %}{{banner.banner_script}}{% endautoescape %}
+            {% else %}
+                <a href="{% if banner.destination_url %}{{banner.destination_url}}{% else %}javascript:void(0);{% endif %}" onclick="update_banner_clicks('{{banner.id}}');" {% if banner.is_new_tab and banner.destination_url %}target="_blank"{% endif %}><img src="{{banner.image.url}}" alt="{{banner.caption}}"></a>    
+            {% endif %}    
+        </div>
+    {% endfor %}      
+{% endif %}

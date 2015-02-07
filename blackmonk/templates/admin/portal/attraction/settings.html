@@ -1,0 +1,102 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Attraction Settings' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#mform").validate({
+		highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass('error');},
+		unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass('error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			meta_title:"required",
+			meta_description:"required",
+	   	}
+	});
+	
+});
+function save_settings(){
+	var flag = $('#mform').validate().form()
+	if(flag){
+		
+		var dataString='&meta_title='+encodeURIComponent($('#id_meta_title').val());
+		dataString+='&meta_description='+encodeURIComponent($('#id_meta_description').val());
+		var height = $('#ajax_content').parent('.page-wrap').height();
+		$('#ajax_content').parent('.page-wrap').css('height',height)
+		$('#ajax_content').fadeOut('fast', function() {
+			$('#ajax_content_loading').show();
+	    });
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_portal_attraction_settings' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				setTimeout( function() {
+					show_msg(data.msg,data.mtype);
+					$('#ajax_content_loading').fadeOut('fast', function() {
+						$('#ajax_content').html(data.html);
+						$('#ajax_content').fadeIn();
+						$('#ajax_content').parent('.page-wrap').removeAttr('style');
+				    });
+				}, 500 );
+			}
+		});
+	}
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_portal_attraction' %}" style="z-index:8">{% trans 'Attraction' %}</a></li>
+					<li><a href="{% url 'admin_portal_attraction_settings' %}" style="z-index:7">{% trans 'Settings' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'attraction' %}
+					{% activetab 'leftnavsub' 'attraction_overview' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Attraction Settings' %}</h2>
+                            <p class="ltxt80">{% trans "Specify the settings which pertain to the attraction module." %}</p>
+						</div>
+                        {% include 'admin/portal/attraction/include_settings.html' %}
+                  	</div>
+              	</div>                       
+      		</div>                            
+            {% include 'admin/portal/attraction/faq.html' %}                        
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

@@ -1,0 +1,167 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{{ globalsettings.domain }} Movies - {{ globalsettings.city }} theatres | Multiplex | showtimes | Address | Phone Number{% endblock %}
+{% block meta %}
+    <meta name="description" content="Find the {{ globalsettings.city }} Theater listings.Get the showtimes of theatres at {{ globalsettings.domain }} Movie section" />
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "movies" %}
+    {{ block.super }}
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script src="{{STATIC_URL}}themes/js/jquery.calendarPicker.js"></script> 
+    <script src="{{STATIC_URL}}themes/js/bm-date-format.js"></script>   
+    <script>
+        $(document).ready(function(e) {
+            // Calendar 
+            var calendarPicker1 = $("#dTpKr").calendarPicker({
+                monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                years:0,
+                reYe:true,
+                months:0,
+                days:4,
+                showDayArrows:false,
+                disablePrvDate:true,
+                //useWheel:true,
+                colWidth: 37,
+                onSelect:function(d){
+                   window.location.href='{% url 'movies_theater_showtimes' %}?date='+d.format("yyyy-mm-dd");            
+                }
+            }); 
+            calendarPicker1.changeDate(new Date("{{selected_date|date:'Y-m-d'}}"));
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <ul class="bRdCrB" itemscope itemtype="http://schema.org/WebPage">
+            <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb">
+                <a itemprop="url" href="{% url 'movies_home_page' %}"><span itemprop="title">Movies</span></a>
+                <span class="sPrTr"></span>
+            </li>
+            <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb" class="aCtV"><span itemprop="title">{% trans 'Showtimes' %}</span></li>
+        </ul>
+        <div class="row-fluid">
+            <div class="main span8 mRb0mX769">
+                <section class="sCn pD15">
+                    <div class="row-fluid">
+                        <div class="pG-hD mRb0 rLvE">
+                            <h3 class="pLlT iM">Showtimes </h3>
+                            <div class="pStN-rT mRt10 span4 hMp">
+                                <div id="dTpKr" class="cLnDr-hR x-mNi mNt0 pLrT mRt-20"></div>
+                            </div>
+                            <div class="pLrT iM w50P vOp">
+                                <select class="bUiSlCtbtn-light pLrT fS12 tXt-rT" onchange="location.href='{% url 'movies_theater_showtimes' %}?date='+$(this).val();">
+									{% for dt in dateList %}
+                                    <option value="{{ dt|date:'Y-m-d' }}"{% ifequal selected_date|date:'Y-m-d' dt|date:'Y-m-d' %} selected="selected"{% endifequal %}>{{ dt|date:'l, M j' }}</option>
+									{% endfor %}
+								</select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <ul class="nav nav-tabs tB-cStM pLlT pD015">
+                            <li><a href="{% url 'movies_movie_showtimes' %}">{% trans 'Movies' %}</a></li>
+                            <li class="active"><a href="{% url 'movies_theater_showtimes' %}">{% trans 'Theaters' %}</a></li>
+                            <li>
+                                <div class="sRcH-bLK-hDn">
+                                    <label class="sHw-sRcH pD50 mRb0 cLr-lTgRy" for="movies-search-field">
+                                        <i aria-hidden="true" class="bUi-iCn-sRh-16 ib mRt4"></i>
+                                    </label>
+                                    <form class="form-search mRb0" action="#">
+                                        <div class="input-append iNsD">
+                                            <input class="search-query fS12 pD510" name="" onkeydown="if (event.keyCode == 13) document.getElementById('btnSearch').click();" id="movies-search-field" type="text" placeholder="Search for Theaters" maxlength="100">
+                                            <button type="button" onclick="if($('#movies-search-field').val()!=''){location.replace('{{url}}?key='+$('#movies-search-field').val()+'{% if search %}&search=true&q={{kw}}{% endif %}&date={{selected_date|date:'Y-m-d'}}');}" id="btnSearch" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <hr class="oTsT-hRz mRb10 mRt0">
+                    {% if theatres %}
+                    <div class="tLbR mRb10 hP">
+                        <div class="tLbR-iR">
+                            <div class="pLlT fS11 mRt4">
+                                <span class="uC cLr-lTgRy">{% if today == selected_date %}{% trans 'Today' %}, {% now "F j" %}{% else %}{{selected_date|date:"l, F d"}}{% endif %}</span><span class="cLr-lTgRy sPrTr">{{theatres.count}} {% trans 'theaters with showtimes near you' %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="modulesBrowseData mDa-lT mDa-oT-lT">
+                        {% for theater in theatres %}
+                        <li class="mDa">
+                            <div class="mDa-iN">                                        
+                                <div class="mDa-bDy pD0">
+                                    <div class="pLlT iM">
+                                        <span class="pD15 bLk pDr10mP pDl0mP"><i aria-hidden="true" class="bUi-iCn-mP-mKr-16 cLr-rEd fS24"></i></span>
+                                    </div>
+                                    <div class="cLr-lT">
+                                        <h5 class="mDa-hD tRnC mRt10 mRb5 w85P rLvE" title=""><a href="{{theater.get_absolute_url}}" class="fW-bLd">{{theater.name}}</a></h5>
+                                        <div class="mDa-dTa fS12 cLr-gRy">
+                                            <span>{{theater.address.address1}}{% if theater.address.address2 %}, {{theater.address.address2}}{% endif %}{% if theater.address.city %}, {{theater.address.city}}{% endif %}{% if theater.address.zip %} {{theater.address.zip}}{% endif %}</span>{% if theater.address.phone %}<span class="sPrTr">{{theater.phone}}</span>{% endif %}
+                                        </div> 
+                                        <a href="{{theater.get_absolute_url}}" class="btn btn-primary fS11 pD612 cLr-wHt pStN-rT mRt10mX480 StCmP" >{% trans 'Showtimes' %}</a>
+                                    </div> 
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if is_paginated %}
+                        <div class="pGn pGn-cTr">
+                            <ul>
+                                {% if has_previous %}
+                                        <li><a href="{{url}}?page={{ prev }}{% if search %}&q={{kw}}{% endif %}{% if sort %}&sort={{sort}}{% endif %}&date={{selected_date|date:'Y-m-d'}}&view={{view_type}}" class="bm_pgntn_anchr" id="{{ prev }}"><i class="bUi-iCn-aRw-l-16 fS12"></i></a></li>
+                                {% endif %}
+                                {% if not in_leading_range %}
+                                    {% for num in pages_outside_trailing_range %}
+                                        {% ifequal num current_page %}
+                                             <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                                        {% else %}
+                                             <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}{% if sort %}&sort={{sort}}{% endif %}&date={{selected_date|date:'Y-m-d'}}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }} </a></li>
+                                        {% endifequal %}
+                                    {% endfor %}
+                                    <li><span>...</span></li>
+                                {% endif %} 
+                                {% for num in page_numbers %}
+                                    {% ifequal num current_page %}
+                                         <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                                    {% else %}
+                                        <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}{% if sort %}&sort={{sort}}{% endif %}&date={{selected_date|date:'Y-m-d'}}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+                                    {% endifequal %}
+                                {% endfor %}
+                                {% if not in_trailing_range %}
+                                    <li><span>...</span></li>
+                                    {% for num in pages_outside_leading_range reversed %}
+                                        {% ifequal num current_page %}
+                                             <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                                        {% else %}
+                                            <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}{% if sort %}&sort={{sort}}{% endif %}&date={{selected_date|date:'Y-m-d'}}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+                                        {% endifequal %}
+                                    {% endfor %}
+                                {% endif %}
+                                {% if has_next %}
+                                    <li><a  href="{{url}}?page={{ next }}{% if search %}&q={{kw}}{% endif %}{% if sort %}&sort={{sort}}{% endif %}&date={{selected_date|date:'Y-m-d'}}&view={{view_type}}" id="{{next}}" class="bm_pgntn_anchr"><i class="bUi-iCn-aRw-r-16"></i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+            <aside class="sD-bR span4 oF3mN768 sP9mN768">
+                <div>
+                    <section class="tXt-cTr pD15 bNr-aD" id="banner_placement_right"></section> 
+                </div>
+                <div>
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+        
+{% endblock %}        

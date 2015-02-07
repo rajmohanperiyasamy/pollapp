@@ -1,0 +1,110 @@
+.lightbox_background{
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	z-index:8001;
+
+	/*
+	background-color: rgb(0, 0, 0); 
+	opacity: 0.5;*/
+/* Use this to set color to the whole lightbox background 
+	background-color: rgb(241, 241, 241); */	
+	-moz-opacity: 0.3;
+	opacity:.30;
+	filter: alpha(opacity=30); 	
+}
+ 
+.lightbox_content_holder {
+	position:fixed;
+	display: none;
+	top: 50%;
+	left: 50%;	
+	padding: 16px;	
+	border: 5px solid black;
+	-moz-border-radius: 1em;
+	-webkit-border-radius:1em;
+	border-radius: 1em;
+	background-color: white;
+	z-index:9002;
+	
+	/* IE 6 Postion fixed Fix */
+	_position:absolute;
+	_top: expression( ( 300 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	/* Use this to make the light box to a fixed width and height and to make it scroll */
+	/*overflow: auto;*/
+}
+
+.lightbox_content{
+	/*text-align:justify;
+	width:500px;
+	height:300px;*/
+}
+
+a.lb_close{
+	display:block;
+	background: url(../../themes/green/images/btn/closebox.png) no-repeat;
+	height:30px;
+	width:30px;
+	right:-15px;
+	position:absolute;
+	top:-11px;
+	z-index:9888;
+	
+}
+
+a.lb_close35 {
+background:transparent url(../../themes/green/images/btn/closebox.png) no-repeat scroll 0 0;
+display:block;
+height:35px;
+position:absolute;
+right:-19px;
+top:-14px;
+width:35px;
+z-index:9888;
+}
+
+.lightbox_outer{
+	width:100%;
+	height:100%;
+	visibility:hidden;	
+}
+
+/* lb gallery */
+
+.as_image_gallery img{
+}
+
+.lb_nav .pr15{padding-right:15px}
+
+.lb_nav .left {display:none;}
+
+.lb_nav .right {}
+
+.lb_nav img{cursor:pointer }
+
+.lb_caption{padding:8px 0;font-size:12px;line-height:15px;color:#666;}
+
+.lb_caption_wrapper{display:none}
+
+.lb_pic_count{font-size:11px;color:#2a2a2a}
+
+.lb_next_img{visibility:hidden;position:absolute;display:block}
+
+#as_image_gallery{position:relative}
+.lb_caption_black_loader{background-color:black;
+border:3px double #EFEFEF;
+color:white;
+font-size:10px;
+font-weight:bold;
+height:12px;
+left:50%;
+margin-left:-25px;
+margin-top:-6px;
+opacity:0.8;
+padding:3px;
+position:absolute;
+top:50%;
+width:50px;
+z-index:1000;
+}

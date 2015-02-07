@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "community.Topic", "fields": {"seo_title": "Sports", "seo_description": "Sports", "name": "Sport", "slug": "sport"}}, {"pk": 2, "model": "community.Topic", "fields": {"seo_title": "Fashions", "seo_description": "Fashions", "name": "Fashion", "slug": "fashion"}}]

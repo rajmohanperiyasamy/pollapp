@@ -1,0 +1,217 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+
+{% endblock %}
+{% block pagetitle %}{% trans 'Your Account' %} {% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+{% endblock %}
+{% block content %}
+	<div id="fb-root"></div>
+	<div class="span8 sP6mN980 sP8mN768 sP10p sP12mX640 cTr-bLk pL0">
+		<section class="sCn pD30 mRb30">
+			<div class="mRb30">
+    			<h2 class="fW-bLd mR0">Invite Friends</h2>
+    			<h3 class="cLr-lTgRy fS18 mRt4">Invite your friends to {{globalsettings.domain}}</h3>
+			</div>
+			<hr class="oTsT-hRz30">
+			<div class="row-fluid">
+    			<h3 class="fS22 mRb0">Social network</h3>
+    			<p class="cLr-lTgRy fS13">Invite friends from your social networks</p>
+    			<ul class="dSpLy-tBl tHcL tXt-lT mR0 mRb10 mRt20">
+
+					<li class="pD0 ib">
+						<a href="javascript:void(0)" onclick="FacebookInviteFriends();" class="btn btn-large btn-block cLr-dRk fW-bLd btn-light pD15"><i aria-hidden="true" class="bUi-iCn-fB-16 cLr-fB"></i><span class="hMx479 mRl10">Facebook</span></a>
+					</li>
+					<!-- li>
+						<a href="javascript:void(0)" class="btn btn-large btn-block cLr-dRk fW-bLd btn-light pD15"><i aria-hidden="true" class="bUi-iCn-tWr-16 cLr-tWr"></i><span class="hMx479 mRl10">Twitter</span></a>
+					</li>
+					<li class="pD0">
+						<a href="javascript:void(0)" onclick="location.href='https://accounts.google.com/o/oauth2/auth?client_id={{clientid}}&redirect_uri={{globalsettings.website_url}}/account/profile/invite/&scope=https://www.google.com/m8/feeds/&response_type=code'" class="btn btn-large btn-block cLr-dRk fW-bLd btn-light pD15"><i aria-hidden="true" class="bUi-iCn-gOo-pLs-16 cLr-gGl"></i><span class="hMx479 mRl10">Google</span></a>
+					</li -->
+				</ul>
+				<p class="cLr-lTgRy fS13">We won't share your contacts with anybody or email anyone without your consent.</p>
+			</div>
+			<hr>
+
+			<div class="row-fluid tXt-lT " style="{% if contacts %}display:none;{% endif %}" id="own_invite">
+				<h3 class="fS22 mRb0">Invite via email</h3>
+    			<p class="cLr-lTgRy fS13">Invite your friends via email.</p>
+				<fieldset class="mRt30">
+                    <div class="control-group">
+                        <div class="controls">
+                            <textarea name="email_fld" id="id_email_fld" class="iSp6" rows="4"></textarea>
+                        </div>
+						<p class="cLr-lTgRy fS13">Use ',' to add multiple email address</p>
+                    </div>
+				</fieldset>
+				<div class="form-actions pD0 mRb10">
+				  <button role="button" onclick="sendinvite(1)" type="button" class="btn btn-primary fS12 fW-bLd ">Send Invites</button>
+				</div>
+			</div>
+
+			<div style="{% if not contacts %}display:none;{% endif %}" id="imported_contacts" class="preview-item description google_mail">
+					<div class="value">
+					<div class="edit-field" id="id_edit_bio" style="display:block">
+						<table style="width:100%;" id="google_contact_table">
+							<tr>	
+								<th><input class="all_mail_checkbox" type="checkbox"/></th>
+								<th>{% trans "Name" %}</th>
+								<th>{% trans "Email" %}</th>
+							</tr>
+							{% for c in contacts %}
+							<tr>	
+								<td><input class="mail_checkbox" value="{{c.email}}" type="checkbox"/></td>
+								<td class="tips">{{c.name}}</td>
+								<td class="tips">{{c.email}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+						<a id="load_more" href="javascript:load_more_google_contact()">
+							{% trans "Load More..." %}
+							<div style="text-align: center; padding: 10px; margin: 10px;display:none;" class="loading-stats" id="load_more_ajax_loading"><img align="..." src="/static/ui/images/global/loading-s.gif"></div>
+						</a>
+					</div>
+					<button role="button" onclick="sendinvite(2)" class="btn btn-primary fS12 fW-bLd " type="button">Send Invites</button>
+				</div>
+            </div>
+		</section>
+	</div>
+
+{% endblock %}			
+
+{% block footerarea %}
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script type="text/javascript">
+{#% if signup.facebook %#}
+FB.init({ 
+	appId:'{{signup.facebook_app_id}}', 
+    cookie:true, 
+   	status:true, 
+    xfbml:true 
+});
+function FacebookInviteFriends(){
+    FB.ui({
+      method: 'send',
+      link: '{{globalsettings.website_url}}',
+    });
+}
+    /*
+	FB.ui({ method: 'apprequests', 
+      message: '{{request.user.display_name|title}} has sent you invtitation from {{globalsettings.domain}}'});
+    FB.ui({
+        method: 'fbml.dialog', 
+        fbml: ( '<fb:request-form action="http://demo.blackmonk.com/" method="post" invite="true" type="Blackmonk Demo" ' + 'content="Next Generation Web Publishing Platform! <fb:req-choice url=\'http://demo.blackmonk.com/account/signup/\' label=\'Accept\' />" >' 
+                    + "{% csrf_token %}"
+                    + '<fb:multi-friend-selector showborder="false" bypass="cancel" actiontext="Invite your friends to join {{ globalsettings.domain }}" /> '
+                    + '</fb:request-form>'
+              ),
+        size: { width:640, height:480}, width:640, height:480
+    });
+    */
+{#% endif %#}
+$(document).ready(function(){
+	$('.all_mail_checkbox').live('change',function(){
+		if($(this).is(":checked")){
+			$('.mail_checkbox').each(function(){
+				$(this).attr('checked',true)
+			});		
+		}else{
+			$('.mail_checkbox').each(function(){
+				$(this).attr('checked',false)
+			});		
+		}
+	});
+	$('.mail_checkbox').live('change',function(){
+		var falg=true;
+		$('.mail_checkbox').each(function(){
+			if($(this).is(":checked")){}
+			else{falg=false}
+		});
+		if(falg){$('.all_mail_checkbox').attr('checked',true)}
+		else{$('.all_mail_checkbox').attr('checked',false)}
+	});
+
+});
+function showhide(div1,div2){
+	$('.'+div1).show();
+	$('.'+div2).hide();
+}
+function sendinvite(id){
+	var flag=false;
+	if(id==1){
+		if($('#id_email_fld').val()!=""){
+			var dataString="mails="+$('#id_email_fld').val();
+			$('#id_email_fld').removeClass('error');
+			$('#id_email_fld').parent().removeClass('field-error');
+			flag=true;
+		}else{
+			alert('Please enter email-ids');
+			$('#id_email_fld').addClass('error');
+			$('#id_email_fld').parent().addClass('field-error');
+		}
+	}
+	else{
+		flag=true;
+		var mail='';
+		$('.mail_checkbox').each(function(){
+			if($(this).is(":checked")){
+				mail+=$(this).val()+",";
+			}
+		});
+		mail=mail.substring(0,mail.length - 1);
+		dataString="mails="+mail;
+	}
+	if(flag){
+		$('#ajax_loading').show();
+		$('#imported_contacts').hide();
+		$.ajax({
+			type:"post",
+			url:"{% url 'usermgmt_user_invite_mail' %}",
+			data:dataString,
+			success:function(data){
+				//alert(data);
+				$('#ajax_loading').hide();
+				$('#imported_contacts').show();
+				if(data=='1'){
+					if(id==1){$('#id_email_fld').val('');}
+					$('#imported_contacts').empty();
+					show_msg('Your invitation has beed sent successfully','alert-success')
+				}
+				else if(data=='0')
+				{
+					alert("Oops!!! Not able to process your request.")
+				}
+				else{
+					if(id==1){$('#id_email_fld').val('');}
+					$('#imported_contacts').empty();
+					show_msg('Your invitation has been sent only to '+data+' valid email-ids.','alert-success')
+				}
+			}
+		});
+	}
+}
+var count=200;
+function load_more_google_contact(){
+	$('#load_more_ajax_loading').show();
+	$.ajax({
+		type:"post",
+		url:"{% url 'usermgmt_user_invite_google_more' %}?count="+count,
+		dataType:"json",
+		success:function(data){
+			$('#load_more_ajax_loading').hide();
+			if(data.status=='1'){
+				$('#google_contact_table').append(data.html);
+				var listlength=parseInt(data.length);
+				count=data.count
+				if(listlength<1){$('#load_more').remove()};
+			}else{alert("Oops!!! Not able to process your request.")}
+		}
+	});
+}
+</script>
+{% endblock %}	
+

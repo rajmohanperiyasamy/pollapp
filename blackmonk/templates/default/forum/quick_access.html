@@ -1,0 +1,32 @@
+{% load ds_utils %}
+{% load i18n %}
+{% load truncate_filter %}
+<div>
+                    	<div class="gray_tabs_container mb_0">
+                            <ul class="tabs_nav group mb_0">
+                                <li class="on" id="tab1"><a href="#tab1" class="click_pvnt"><span>{% trans 'Latest Topic' %}</span></a></li>
+                                <li id="tab2"><a href="#tab2" class="click_pvnt"><span>{% trans 'Popular Topic' %}</span></a></li>
+                            </ul>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="forums right_col place_list" id="tab1_content">
+                        {% for topic in quick.last_topics %}
+                            <dl class="forum extra  group {% cycle '' 'alt' %}">
+                                <dt>
+                                    <span><dfn>{% trans 'Latest Topic' %}</dfn><a href="{{topic.get_absolute_url }}" title="{{topic}}" class="topic_title">{{topic.name|truncate_chars:50}}</a><br>by {% ds_link topic.user.profile 'auth_name'%}<br>on <span class="time">{% ds_time topic.created%}</span></span>
+                                </dt> 
+                                <dd><span class="post_count">{% trans 'Post' %}: {{topic.post_count}}</span><span class="views_count">{% trans 'Views' %}: {{ topic.views }}</span></dd>
+                            </dl> 
+                           {%endfor%}                                                      
+                        </div>      
+                         <div class="forums right_col place_list" id="tab2_content">
+                         {% for topic in quick.popular_topics %}
+                             <dl class="forum extra  group {% cycle '' 'alt' %}">
+                                <dt>
+                                    <span><dfn>{% trans 'Popular Topic' %}</dfn><a href="{{topic.get_absolute_url }}" title="{{topic}}" class="topic_title">{{topic.name|truncate_chars:50}}</a><br>by {% ds_link topic.user.profile 'auth_name'%}<br>on <span class="time">{% ds_time topic.created%}</span></span>
+                                </dt> 
+                                <dd><span class="post_count">{% trans 'Post' %}: {{topic.post_count}}</span><span class="views_count">{% trans 'Views' %}: {{ topic.views }}</span></dd>
+                            </dl> 
+                         	{%endfor%}                                                     
+                        </div>                    
+                    </div> 

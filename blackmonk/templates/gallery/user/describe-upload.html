@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load upload_tags %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Photos' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Photos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+
+{% endblock %}
+{% block navigation %}
+	{% activetab "leftnav" "photos" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	            	<div class="span10 sP9mX979 sP12mX767">
+		                <div class="row-fluid">
+							<div class="main span9">
+								<section class="sCn pD0">
+									<div class="cLrFx pD20">
+										<h3 class="mR0 tRnCt">Add Photos</h3>
+									</div>
+                                    <hr class="mRb20 mRt0 oTsT-hRz15 vOp">
+									<div class="dSpLy-tBl tHcL bRdR pD0 mRb20 sTpS-hRz hMp">
+										<div>
+											<h3><em class="sTp-cNt">1</em> Create gallery</h3>
+										</div>
+										<div>
+											<h3><em class="sTp-cNt">2</em> Upload photos</h3>
+										</div>
+										<div class="aCtV">
+											<h3><em class="sTp-cNt">3</em> Add title &amp; description</h3>
+										</div>
+									</div>
+									<div class="pD10 pDt0">                                                                                     
+	                                	<div class="row-fluid mRt20">
+	                                	<form class="uSr-aCnT mRb0 cLrFx" method="post" id="descmform" name="descmform" action="{% url 'user_add_gallery_add_photo_details' gallery.id %}">
+                                         {% if photos %}
+	                                    	<ul class="modulesBrowseData tWcL-lT mDa-lT mDa-oT-tP bRdR0 pDfX dSrS480 gTtR010 cLrFx">
+                                             {% for photo in photos %}
+	                                    		<li class="mDa">
+	                                                <div class="mDa-iN">
+	                                                    <div class="mDa-wPr mRb20"> 
+	                                                        <span class="bUi-tMb-wPr tMb-60 fLxiMgW">
+	                                                            <span class="bUi-tMb">
+	                                                                <span class="bUi-tMb-pRpL">
+	                                                                    <span class="bUi-tMb-cLp">
+	                                                                        <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if photo.photo %}{{MEDIA_URL}}{{photo.photo}}{% else %}{{photo.photo_url}}{% endif %}" alt="{{photo.id}}">
+	                                                                            <span class="vRtL-aLn"> </span>
+	                                                                        </span>
+	                                                                    </span>
+	                                                                </span>
+	                                                            </span>
+	                                                        </span>
+	                                                    </div>
+	                                                    <div class="mDa-bDy">
+	                                                        <fieldset>
+								                                <div class="control-group mRb0">
+								                                	<label class="control-label">Caption</label>
+								                                    <div class="controls">
+								                                        <textarea rows="4" class="fS12"  id="description_{{photo.id}}" name="description_{{photo.id}}">{% if photo.caption %}{{photo.caption}}{% endif %}</textarea>
+								                                    </div>
+								                                </div>
+															</fieldset>
+	                                                    </div>
+	                                                </div>
+	                                            </li>
+                                               {% endfor %}
+	                                        </ul>
+                                          {% endif %}
+										<hr class="oTsT-hRz20 mRb0 mRt0">
+										<div class="row-fluid">
+											<div class="form-actions pD0 pLrT">
+												<button type="submit" class="btn btn-light fS12 fW-bLd ">Cancel</button>
+												<button class="btn btn-primary fS12 fW-bLd mRl5" type="submit">Done</button>
+											</div>
+										</div>
+									</form>
+									</div>
+								</section>
+							</div> <!-- /.main -->
+							<aside class="sD-bR span3">
+								<div>
+									<section class="tXt-cTr pD0 bNr-aD"> 
+			                           
+			                        </section>
+								</div>
+							</aside>
+						</div>  <!-- /.row-fluid -->
+					</div>  <!-- /.span10 -->
+
+{% endblock %}
+
+{% block footerarea %}
+<!-- TAGS -->
+    <script src="{{ STATIC_URL }}themes/js/bootstrap-transition.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/bootstrap-select.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/bootstrap-collapse.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/fxslider.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/jquery.justifiedgallery.js"></script>
+	
+
+{% upload_js %}
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+
+{% endblock %}

@@ -1,0 +1,896 @@
+@charset "utf-8";
+/* CSS Document */
+
+.switch_tab {position:absolute; top:12px; left:38%;}
+.switch_tab li{display:inline}
+.switch_tab li a{
+	font-size:11px; 
+	text-transform:uppercase; 
+	color:#444; 
+	text-align:center;
+	font-weight:bold; 
+	line-height:23px;
+	height:23px;
+	width:120px; 
+	padding:0;
+	float:left;
+	text-shadow: rgba(0,0,0,.20) 0 1px 0;
+}
+.switch_tab .left_cap {background:url(../images/btn/btn_switch_left.png) no-repeat bottom left; }
+.switch_tab .right_cap {background:url(../images/btn/btn_switch_right.png) no-repeat bottom right;}
+
+.switch_tab .on .left_cap {color:#FFF;background-position:top left;cursor:default}
+.switch_tab .on .right_cap {color:#FFF; background-position:top right;cursor:default}
+.slider_ctrls a{position:absolute;top:43%; z-index:2;width:25px; height:24px; text-indent:-9999px; }
+.prev_btn{left:20px;background:url(../images/btn/slide-prev.png) no-repeat center -24px}
+.next_btn{right:20px;background:url(../images/btn/slide-next.png) no-repeat center -24px}
+.prev_btn:hover, .next_btn:hover {background-position:bottom center}
+.slider_ctrls .inactive{background-position:top center; cursor:default}
+
+/*.movie_slider {
+	position:relative;
+	padding:50px 51px 10px 61px;
+	border:1px solid #e6e6e6; 
+	background-color:#f6f6f6;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	margin-bottom:16px;
+	}
+*/	
+
+
+.movie_poster_114 {}
+.poster_114 {
+    float:left;
+    width:114px;
+	margin:0 5px;
+	display:block;
+}
+.poster_114_image {
+    display: block;
+    width: 114px;
+	border:1px solid #444;
+	height:164px;
+	margin-bottom:4px;
+}
+*html .poster_114_image img{float:left;}
+.poster_114_summary {
+    width:114px;
+    overflow:hidden;
+}
+.poster_114_summary_inner {
+    position:relative;
+    overflow:hidden;
+}
+/*.f_sub_story_summary h5 a:link,
+.f_sub_story_summary h5 a:visited {
+    color:#000;
+}
+.f_sub_story_summary a:hover,
+.f_sub_story_summary h5 a:hover {
+    color:#003c52;
+}
+*/
+.poster_114_summary h5 {
+	font-weight:bold;
+    font-size:11px;
+	line-height:12px;
+    margin:3px 0 2px 0;
+}
+.poster_114_summary p {
+    font-size:11px;
+	line-height:14px;
+    margin:4px 0 8px 0;
+    color: #000;
+}
+
+a.poster_caption {
+	display:block;
+	text-align:center;
+	padding:6px 0 2px;
+	line-height:12px;
+}
+a.poster_caption .movie_title{
+	font-size:12px;
+	font-weight:bold;
+	line-height:12px;
+	/*color:#090*/
+}
+a.poster_caption .movie_title:hover{
+	color:#000
+	}
+a.poster_caption .movie_lang{
+	font-size:11px;
+	line-height:14px;
+	color:#808080;
+	display:block;
+}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Featured Story [Movie] */
+
+.f_story_slide {
+    float:left;
+    width:362px;
+	background:#000;
+}
+.f_story_summary {
+    height:32px;
+    overflow:hidden;
+}
+.f_story_summary a:link,
+.f_story_summary a:visited {
+    color:#FFF;
+}
+.f_story_summary h3 a:link,
+.f_story_summary h3 a:visited {
+    color:#FFF;
+}
+.f_story_summary a:hover,
+.f_story_summary h3 a:hover {
+    color:#2ea3ca;
+}
+.f_story_summary h3 {
+	font-weight:bold;
+    font-size:16px;
+	line-height:22px;
+    margin:0 0 0 0;
+	text-shadow: rgba(0,0,0,1) 0 1px 0;
+}
+.f_story_summary p {
+    font-size:11px;
+	line-height:14px;
+    margin:4px 0 8px 0;
+    color: #FFF;
+	text-shadow: rgba(0,0,0,1) 0 1px 0;
+}
+.f_story_summary_inner {
+    padding:4px 8px;
+}
+.f_story_slide_inner {
+    position:relative;
+    overflow:hidden;
+    width: 362px;
+}
+.f_story_slide_inner .f_story_summary {
+    position:absolute;
+    top:190px;
+    left:0;
+    z-index:1;
+ 	background-color: rgba(0,0,0,.88);
+	background-color:#000 !important;
+    filter:alpha(opacity=70);
+    -moz-opacity:.88;
+    opacity:.88;
+    width:362px;
+}
+.f_story_slide_inner .f_story_summary:hover {
+ 	background-color: rgba(0,0,0,1);
+    filter:alpha(opacity=1);
+    -moz-opacity:1;
+    opacity:1;	
+	}
+.f_story_slide_inner .f_story_summary a.full_story:hover{
+	color:#1788c2; 
+	}	
+.f_story_slide_image {
+    display: block;
+    width: 362px;
+    _width:360px;
+    height: 246px;
+	background-color:#000;
+}
+.f_story_slide_nav {
+	position:absolute;
+	top:222px;
+	width:100%;
+}
+.f_story_slide_nav .prev, .f_story_slide_nav .next {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent url(../images/btn/black_arrow_left_24.gif) no-repeat 0 0;
+	cursor:pointer;
+	display:block;
+	float:left;
+	height:24px;
+	margin:0;
+	width:24px;
+	text-indent:-9999px;
+}
+.f_story_slide_nav .next {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent url(../images/btn/black_arrow_right_24.gif) no-repeat 0 0;
+	float:right;
+}
+.f_story_slide_nav .prev:hover, .f_story_slide_nav .next:hover {
+	background-position:0 -24px; 
+	}
+.f_story_slide_nav .pages{
+	float:left;
+	height:22px;
+	width:312px;
+	display:block;
+	padding:0;
+	margin:0;
+	border:1px solid #1a1a1a;
+	}
+.f_story_slide_nav .pages li{
+	display:inline;
+	}
+.f_story_slide_nav .pages li a{
+	display:block;
+	float:left;
+	border-right:1px solid #1a1a1a;
+	width:24px;
+	height:22px;
+	text-align:center;
+	font-size:12px;
+	line-height:22px;
+	font-weight:bold;
+	color:#FFF;
+	}	
+.f_story_slide_nav .pages li a:hover{
+	background-color:#4c4c4c;
+	}
+.f_story_slide_nav .pages li.active a{
+	background-color:#090;
+	}
+
+/* Slider */
+
+.m_slider_page_nav { 
+	position:absolute; 
+	top:20px; 
+	right:60px; 
+	height:8px; 
+	padding:0; 
+	margin:0 auto; 
+	text-align:center;
+	width:60px; 
+	z-index:9999; 
+	}
+*html .m_m_slider_page_nav {	
+	width:38px;
+	left:314px;
+	}
+.m_slider_page_nav li { 
+	display:inline; 
+}
+.m_slider_page_nav li a { 
+	display:block; 
+	float:left; 
+	width:4px; 
+	height:4px; 
+	padding:2px; 
+	margin:0 2px; 
+	cursor:pointer; 
+	text-indent:-9999px; 
+	background:url(../images/global/slider_dot.png) center top no-repeat; 
+	/*_background-image:url(../images/global/slider_dot.gif);*/ 
+	overflow:hidden; 
+}
+.black .m_slider_page_nav li a { 
+	background-image:url(../images/global/slider_dot_black.png); 
+	/*_background-image:url(../images/global/slider_dot_black.gif);*/ 
+	}
+.m_slider_page_nav li a:hover { 
+	background-position:center -8px; 
+	}
+.m_slider_page_nav li a.active { 
+	background-position:center -16px; 
+	cursor:default; 
+	}
+*html .m_slider_page_nav li a.active:hover {
+	background-position:center -16px;
+	}
+
+
+
+
+.mod_theaters { margin-bottom:20px;height:600px; overflow:scroll;  border-left:4px solid #e6e6e6;  border-bottom:2px solid #e6e6e6; border-top:2px solid #e6e6e6; background-color:#fcfcfc}
+.mod_theaters .theatre_list { margin:0px;padding:0px;list-style:none; }
+.mod_theaters .theatre_list .phone{color:#4e9bda;font-weight:bold;padding-left:5px; font-size:11px; line-height:12px;}
+.mod_theaters .theatre_list .address{font-size:11px;color:#666;font-weight:normal}
+.mod_theaters .theatre_list li {display:block;padding:8px; position:relative;/*-moz-border-radius:4px;-webkit-border-radius:4px;*/}
+.mod_theaters .theatre_list li.alt { background-color:#f2f2f2;} 
+.mod_theaters .theatre_list li a {}
+*html .mod_theaters .theatre_list li a{padding-top:0px;}
+.mod_theaters .theatre_list li a:hover {/*border-color:#ccc;*/}
+.mod_theaters .theatre_list li h4{font:bold 16px/18px arial, Helvetica, Utkal, sans-serif;margin-top:2px;*margin-top:4px;clear:both; margin-bottom:0px;}
+.mod_theaters .theatre_list li h4 a{}
+.mod_theaters .theatre_list li h4 a:hover {color:#000}
+.mod_theaters .theatre_list li.last {margin-bottom:6px;}
+.mod_theaters .theatre_list li .showtime{position:absolute;right:10px; top:13px;font-weight:normal !important}
+.mod_theaters .theatre_list li:hover .showtime{ display:block;}
+.mod_theaters .theatre_list li:hover {background-color:#FFC}
+
+
+.theater_locality {
+	/*border-top:1px solid #e6e6e6;*/
+	background-color:#f6f6f6; min-height:604px;
+	margin-bottom:20px !important;
+	}
+.theater_locality .locality_list{
+	padding:6px 10px}
+.theater_locality li{
+	padding:2px 0px 3px 0;
+	border-bottom:#e6e6e6 solid 1px;
+	/*-moz-border-radius:4px;*/
+	font-size:11px;
+	font-weight:bold;
+}
+.theater_locality li.selected{
+	font-weight:bold;
+	font-size:11px;
+	/*background:url(../images/ico/next_arrow.gif) no-repeat right center;*/
+	}
+.theater_locality li a:hover{
+
+	}
+.theater_locality li.last {
+	border-bottom:none;
+	margin-top:12px;
+	}
+	
+
+.movie_contest {padding-top:5px;}
+.movie_contest .movie_contest_trail {padding:0 0 8px 0;margin-bottom:8px;background:transparent url(../images/global/gre_divider_bg.gif) no-repeat left bottom; }
+.movie_contest_trail .thumb {float:left;display:block;width:50px;padding:4px;background-color:#f6f6f6;border:1px solid #e6e6e6;-moz-border-radius:4px;}
+.movie_contest_trail .thumb img {float:left;width:50px; height:50px;}
+.movie_contest_trail .contest_detail {float:left;width:224px;padding:0 8px 5px 8px;color:#444}
+.movie_contest_trail .contest_detail h4{font-size:14px;font-weight:bold;line-height:16px; margin:4px 0 0 0;}
+.movie_contest_trail .contest_detail h4 a {color:#09C}
+.movie_contest_trail .contest_detail .date {display:block; padding:2px 0 2px 0;}
+.movie_contest_trail .contest_detail .theater {display:block;}
+.movie_contest_trail .contest_detail strong {color:#444;}
+.movie_contest_trail .contest_detail p {font-size:11px; padding:0; margin:0; line-height:14px; color:#444}
+.movie_contest_trail .contest_detail p a {font-weight:bold}
+.movie_contest_trail .contest_detail p a:hover {text-decoration:underline}
+
+
+
+
+.review_list li {
+	padding:0 0 8px 0;
+	margin-bottom:8px;
+	/*border-bottom:1px solid #e6e6e6;*/
+	background:transparent url(../images/global/gre_divider_bg.gif) no-repeat left bottom; 
+	}
+.review_list li .user {
+	float:left;
+	width:60px;
+	margin-right:10px;
+}
+.review_list li .user a.author, .review_list li .user a.author:hover {
+	display:block;
+	margin:0;
+	padding:4px;
+	background-color:#f6f6f6;
+	border:1px solid #e6e6e6;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	text-align:left;
+	text-decoration:none;
+}
+.review_list li .user a.author strong {
+	color:#333333;
+	font-size:10px;
+	line-height:12px;
+	display:block;
+	font-weight:bold;
+	padding:2px 0 0 0;
+	margin:0; 
+	text-align:center;
+}
+.review_list li .review {
+	border-bottom:medium none;
+	float:right;
+	margin:0;
+	padding:0;
+	width:230px;
+}
+.review_list li h5.title {
+	font-size:12px;
+	padding:0 10px 0px 0;
+	line-height:12px;
+
+}
+.review_list li .title a, .review_list li .title a:hover {
+	color:#069;
+	font-weight:bold;
+	text-decoration:none;
+}
+.review_list li .description {
+	font-size:11px;
+	line-height:13px;
+	padding:4px 5px 0 0;
+	clear:left;
+	margin-bottom:4px;
+	
+}
+.review_list li .report {
+	font-size:11px;
+	font-weight:bold;
+	color:#999
+}
+.right_mns{
+	border:1px solid #e6e6e6;
+	-moz-border-radius:6px;
+	-webclip-border-radius:6px;
+	-khtml-border-radius:6px;
+	padding:0 !important;
+	background-color:#f6f6f6;
+	margin-bottom:10px;
+	}
+.right_mns h2{
+	padding:3px 10px;
+	border-bottom:1px solid #e6e6e6;
+	margin:0;
+	}
+.place_list {
+	padding:0px 0 30px 0;
+	}
+.place_list .item {
+	border-bottom:1px solid #EEEEEE;
+	background-color:#FCFCFC;
+	padding:12px 10px 12px 10px;
+	position:relative;
+	/*min-height:80px;*/
+}
+.place_list .right_item{
+	min-height:20px  !important;
+	padding:6px 0 6px 10px;
+	}
+
+.place_list .item:hover {background-color:#FFC}
+.place_list .alt {
+	background-color:#FFF;
+	}
+.place_list .item .movie_pic {
+	float:left;
+	font-size:14px;
+	font-weight:normal;
+	margin:0 10px 0 0;
+	width:66px;
+	position:relative;
+}
+.place_list .item .detail {
+	margin:0 10px 0 78px;
+	color:#4c4c4c;
+	display:block;
+}
+.place_list .item h4 {
+	font-size:16px;
+	font-weight:bold;
+	float:left;
+	line-height:18px;
+}
+.place_list .right_item h4{
+	font-size:12px;
+	line-height:16px;
+	display:block;
+	}
+.place_list .right_item h4.theater_title{
+	font-size:14px;
+	}
+.place_list .item h4 a{
+	/*color:#069*/
+	
+	}
+.place_list .item .lang {
+	color:#999;
+	display:inline-block;
+	font-weight:normal;
+	padding-left:6px;
+	font-size:11px;
+	padding-top:1px;
+}
+
+.place_list .right_item .npm_lst{clear:left;font-size:11px;}
+.place_list .right_item .npm_lst li{display:inline;margin-right:4px;padding-right:6px;border-right:1px solid #e6e6e6;}
+.place_list .right_item .npm_lst li.label_playing{color:#393;font-size:10px; font-weight:bold;padding:0; border:0;}
+.place_list .right_item .npm_lst li a{color:#808080;display:inline; white-space:nowrap}
+.place_list .right_item .npm_lst li a:hover{color:#3d3d3d; text-decoration:underline;}
+
+.place_list .item .release_date {font-size:11px;color:#3d3d3d;line-height:14px; padding-top:2px;}
+.place_list .item .duration {font-size:11px;color:#4c4c4c;line-height:14px;}
+.place_list .item .cast {font-size:11px;color:#4c4c4c;line-height:14px;}
+.place_list .item .movie_summary {
+	color:#3d3d3d;
+	display:block;
+	margin:4px 0 8px 0;
+	font-size:12px;
+	line-height:16px;
+}
+.place_list .item .right_action, .place_list .item .right_action_114{float:left; width:150px;text-align:center;padding:40px 0 10px 0}
+.place_list .item .right_action_114{width:140px;}
+.place_list .item .right_action .trailor{line-height:14px;padding-bottom:3px;}
+.place_list .item .footer {
+	clear:both;
+}
+place_list .item .movie_nav {
+	clear:left;
+	font-size:12px;
+}
+.place_list .item .movie_nav a {
+	color:#68A1C6;
+	margin-right:10px;
+}
+.place_list .item .movie_nav a:hover {
+	color:#069;
+	}
+.place_list .item .movie_nav p {
+	margin-top:2px !important;
+	}
+	
+.place_list .item .sms_showtime{position:absolute;right:10px; top:10px;display:none}
+.place_list .item:hover .sms_showtime{display:block}	
+	
+.list_actions {
+	border-bottom:2px solid #EEE;
+	margin:0;
+	font-size:11px;
+	padding:20px 10px 8px 10px;
+}
+.list_actions label{
+	font-weight:bold;
+	color:#3d3d3d;
+	}
+.list_actions select {
+    font-size:11px;
+    width:96px;
+    margin-left:4px;
+    color:#666
+    }
+.list_actions .sort {
+    width:180px;
+}
+.list_actions .filter {
+    text-align:right;
+}
+.list_actions .industry {
+    text-align:right;
+    }
+.list_actions .industry a{
+    -moz-border-radius:2px;
+    color:#3d3d3d;
+    margin:0 -2px;
+    padding:2px 8px;
+    font-weight:bold;
+}
+.list_actions .industry a:hover{
+    background-color:#e6e6e6;
+    color:#000;    
+    }
+.list_actions .industry a.on {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:#444 none repeat scroll 0 0;
+    color:#FFF;
+    font-weight:bold;
+}    
+    
+.alphabet {
+    clear:left;
+    float:left;
+    width:652px;
+    font-size:11px;
+    margin:20px 0 0 0;
+    padding:0 0 0 2px;
+}
+.alphabet a {
+    -moz-border-radius:2px;
+    color:#999999;
+    margin:0 -2px;
+    padding:2px 8px;
+    font-weight:normal;
+    }
+.alphabet a:hover {
+    background-color:#e6e6e6;
+    color:#000;
+    }
+.alphabet a.on {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:#444 none repeat scroll 0 0;
+    color:#FFF;
+    font-weight:bold;
+}
+	
+	
+	
+#thick_pagination {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	-moz-border-radius-bottomleft:0.4em;
+	-moz-border-radius-bottomright:0.4em;	
+	background:#efefef;
+	height:40px;
+	border-top:1px solid #e6e6e6;
+}	
+.pagination_nav li {
+	border-right:1px solid #d7d7d7;
+	color:#999;
+	float:left;
+	font-size:16px;
+	font-weight:bold;
+	text-align:center;
+	vertical-align:middle;
+	width:46px;
+	height:40px;
+	line-height:40px
+}
+.pagination_nav li:hover{
+	background-color:#e4e4e4;
+	}
+ul.pagination_nav li.selected_page a {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:#FFF;
+	color:#999999;
+	cursor:default;
+	padding:1px 19px 0px 18px;
+	display:block;
+	margin-top:-1px;
+	height:40px
+}
+ul.pagination_nav li.selected_page a.first{
+	-moz-border-radius-bottomleft:0.4em;
+}
+ul.pagination_nav li.prev, ul.pagination_nav li.next {
+	width:80px;
+}
+ul.pagination_nav li.prev {
+	-moz-border-radius-bottomleft:0.4em;
+}
+ul.pagination_nav li.prev strong, ul.pagination_nav li.next strong{
+	font-weight:normal;
+	font-size:18px;
+	line-height:normal
+	}
+
+
+#location_map .map {height:220px;}
+
+.movie_details .movie_poster {
+	border:1px solid #444;
+	height:162px;
+	}
+.theater_details .thumb {
+	border:1px solid #444;
+	width:112px;
+	height:112px;
+	}	
+.movie_details .quick_trailor{padding:10px 0 0 0;text-align:center}
+.movie_details .quick_trailor .trailor{padding:4px 12px 5px !important;}
+
+#movie_all , #theater_all{padding:10px;margin-bottom:12px;-moz-border-radius-topleft:.6em;-moz-border-radius-topright:.6em;}
+#movie_all .movie_description, #theater_all .movie_description{
+	padding:0px 0px 20px 0;
+	font-size:12px;
+	line-height:16px;
+	}
+
+#movie_all .movie_description p{
+	overflow:hidden !important;
+	}
+
+#movie_all .toggle, #theater_all .toggle {font-size:11px;}
+
+#movie_all ul.info, #theater_all ul.info{ 
+	margin-top:8px; 
+
+	}
+#movie_all ul.info strong, #theater_all ul.info strong {
+	float:left; 
+	display:block; 
+	width:52px; 
+	color:#3d3d3d;
+	margin-right:10px;
+	}
+#movie_all ul.info span, #theater_all ul.info span { 
+	display:block; 
+	width:454px; 
+	float:left; 
+	color:#3d3d3d; 
+	}
+
+.details {margin-bottom:20px;}
+.details .title {font-size:12px; font-weight:bold; margin-bottom:2px; color:#999}
+.details .sub_title {font-size:14px; font-weight:bold}
+.details .sub_title a {color:#C00}
+.details .date_time span {color:#808080}
+.details .ticket{padding-top:12px;}
+.details .ticket .cost{padding-bottom:4px; display:block;}
+.details .ticket .ticket_btn{padding:3px 8px 3px !important;}
+
+.accordian9 .acdn_row .bar_title{font-size:14px;font-weight:bold;color:#3d3d3d; text-transform:uppercase;padding:4px 6px;display:block}
+.accordian9 .acdn_row .bar_title:hover {background-color:#f4f4f4; -moz-border-radius:4px;}
+.accordian9 .acdn_row .open{color:#C00}
+.accordian9 .acdn_row .close{color:#3d3d3d;background:url(../images/ico/next_arrow.gif) no-repeat 490px center;}
+.accordian9 .acdn_row {display:block;border:1px solid #e6e6e6;-moz-border-radius:4px;-webkit-border-radius:4px;margin-bottom:6px; background-color:#FAFAFA;}
+.accordian9 .acdn_content {border-top:1px solid #e6e6e6;}
+
+
+.title_bar {padding-bottom:4px;margin-bottom:10px; position:relative; border-bottom:1px solid #e6e6e6;}
+.title_bar .ns {display:block;position:absolute;top:10px;right:0px;width:120px; letter-spacing:.02em;height:22px;background-color:#000; color:#FFF;font-size:14px; text-transform:uppercase; font-weight:normal; line-height:22px; text-align:left; padding:0}
+.title_bar .ns .red{background-color:#C30; color:#fff;padding:3px 5px;}
+.title_bar .title{font-size:28px;line-height:30px;font-weight:normal; color:#3d3d3d}
+.title_bar .sub_title {font-size:11px; color:#999; font-weight:bold;}
+.title_bar .sub_title .release_date{padding-right:6px;border-right:1px solid #d7d7d7;margin-right:6px;}
+							
+#showtimes {}
+#showtimes .theatres { margin:0px;padding:0;list-style:none;}
+#showtimes .theatres .phone{color:#4e9bda;font-weight:bold;padding-left:5px; font-size:11px; line-height:12px;}
+#showtimes .theatres .address{font-size:11px;color:#666;font-weight:normal}
+#showtimes .theatres li {display:block;padding:8px; position:relative;_ position:static;border-bottom:1px solid #EEEEEE; background-color:#FCFCFC}
+#showtimes .theatres li.alt { background-color:#FFF;} 
+#showtimes .theatres li a {}
+*html #showtimes .theatres li a{padding-top:0px;}
+#showtimes .theatres li a:hover {/*border-color:#ccc;*/}
+#showtimes .theatres li h4{font:bold 12px/15px arial, Helvetica, Utkal, sans-serif;margin-top:2px;*margin-top:4px;clear:both; margin-bottom:0px;}
+#showtimes .theatres li h4 a{}
+#showtimes .theatres li h4 a:hover {color:#000}
+#showtimes .theatres li.last {margin-bottom:6px;}
+#showtimes .theatres li .tickets{position:absolute;right:10px; top:18px;}
+#showtimes .theatres li .tickets span{padding:3px 8px 5px 8px;font-size:10px;}
+#showtimes .theatres li:hover {background-color:#F2F7FD}
+.showtimes_list {clear:both;color:#666;padding:4px 0px 0px; text-transform:uppercase; font-size:11px; font-weight:normal}
+.showtimes_list span{display:inline;margin-right:8px;}
+.showtimes_list span a{/*color:#C00*/}
+.showtimes_list span a:hover{}
+#showtimes .theatres .sms_showtime{position:absolute;right:30px; top:46px;display:none}
+#showtimes .theatres li:hover .sms_showtime{display:block}
+
+#movie_photos .photos{padding:10px 9px 7px 6px; background-color:#FFF;border-bottom:1px solid #e6e6e6;}
+#movie_photos .photos li{float:left}
+#movie_photos .photos img{margin:0 0 3px 3px;display:block;width:80px; height:80px; background-color:#ccc/*padding:1px;border:4px solid #EFEFEF; background-color:#CDCDCD;-moz-border-radius:0px;*/}
+
+#critic-reviews .display_ct_review {padding:24px 10px 14px;font-size:13px;line-height:16px;background-color:#FFF;border-bottom:1px solid #e6e6e6}
+#critic-reviews .display_ct_review p{padding:4px 0 8px 0;}
+.display_ct_review .ct_title{font-size:18px; font-weight:bold; margin-bottom:10px;text-indent:-9999px;display:block; height:30px;padding:0}
+/*.display_ct_review #nytimes{background:url(../images/samples/nytlogo153x23.gif) no-repeat 0 center;}
+.display_ct_review #rediff{background: url(../images/samples/reddiff.gif) no-repeat 0 center;}	
+*/
+.display_ct_review .sub_title{font-size:11px;color:#666; padding-bottom:6px;}
+.display_ct_review .ct_foot{padding:6px 0;}
+.display_ct_review .ct_foot .ct_rights{color:#808080}
+
+#slider99 {
+	margin-bottom:18px;
+	}
+
+/*
+#slider99 {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	border:1px solid #e6e6e6; 
+	background-color:#f6f6f6;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	height:200px;
+	margin-bottom:18px;
+	position:relative;
+	width:980px;
+	padding:50px 0 16px 0
+}
+#slider99 .slider99_mask {
+	display:block;
+	height:200px;
+	margin:0 52px;
+	width:870px;
+	overflow:hidden;
+	position:relative;
+}	
+#slider99 .slider99_mask ul {
+	display:block;
+	height:200px;
+	margin:0;
+	padding:0;
+	top:0;
+	width:auto;
+	position:absolute;
+}
+#slider99 .slider99_mask ul li {
+	display:block;
+	float:left;
+	height:200px;
+	margin:0;
+	padding:0;
+	width:870px;
+}
+#slider99 .slider99_mask ul.page {
+	display:block;
+	float:left;
+	height:166px;
+	position:static;
+	width:870px;
+	margin:0;
+	padding:0;
+	top:0;
+}
+#slider99 .slider99_mask ul.page li {
+	display:inline;
+	float:none;
+}
+#slider99 .slider99_mask ul li .movie_pic {
+	color:#888888;
+	font-size:11px;
+	height:166px;
+	padding-top:18px;
+	position:relative;
+	text-decoration:none;
+	width:116px;
+	text-align:center;
+	margin:0 3px;
+} */
+
+/* Ashin */
+
+#movie_status{_width:654px!important;}
+.as_theatre_ie_fix{_width:600px!important;}
+.all_lang_hide{_float:left;}
+.as_theatre_button_ie_fix{_margin-left:10px;}
+.theater_search{_padding:3px 6px !important;}
+#as_showtimedays li{_padding:5px}
+.more_on_this_movie{_padding-top:5px}
+.acdn_content .photos{_width:auto;_padding:0px}
+.accordian9 , .more_des , .as_genre ,#synopsis{_width:510px}
+#movie_photos{_width:auto!important}
+
+.movies_listing .place_list .item{_width:645px!important}
+.movies_listing #movie_directory #movie_status{_width:666px!important}
+.movies_listing #movie_directory .list_actions{_padding-bottom:0px;_height:53px}
+.movies_listing .movie_pic{_position:_relative}
+.movies_listing #tab_in_theatres,.movies_listing #tab_coming_soon{_width:215px}
+.movies_listing #tab_all_movies{_width:236px}
+.theatre_detail .movie_pic,.theatre_detail .item , .theatre_detail .sms_showtime{_position:static !important}
+.theatre_detail .sms_showtime{_display:block  !important}
+.thick_box_core{_width:650px}
+.thick_box_core{_width:655px}
+*:first-child+html #tab_theatres_st{width:328px}
+*:first-child+html .as_theatre_ie_fix{width:637px}
+*:first-child+html .find_theatres input{margin-right:5px}
+*:first-child+html .find_theatres button{margin-bottom:2px}
+*:first-child+html .theatre_showtimes #tab_theatres_st{width:333px!important}
+*:first-child+html .movie_description {width:516px}
+*:first-child+html .as_no_showtimes{width:500px}
+*:first-child+html .theatre_detail ul.accordian9{width:512px}
+
+#showtime_list .list_actions .sort{
+	width:250px;
+}
+#showtime_list .list_actions .sort input{
+	float:left;
+	margin-right:3px;
+}
+#showtime_list .list_actions .sort button{
+	float:left;
+}

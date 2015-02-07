@@ -1,0 +1,4 @@
+{% load i18n %}	
+         <li class="active-state" ><strong >{{ published }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Active' %}</a></li>
+     	 <li class="inactive-state" ><strong>{{ pending}}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Inactive' %}</a></li>
+	     <li class="sum"><strong>{{ total }}</strong> {% trans 'Total Movies posted.' %}</li>

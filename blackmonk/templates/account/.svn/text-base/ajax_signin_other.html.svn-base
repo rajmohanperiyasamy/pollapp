@@ -1,0 +1,77 @@
+{% load i18n %}
+{% load get_signup %}
+{% if auth_compleated %}
+<html>
+<head>
+	<title>{{ globalsettings.domain }}{% trans "Loging In" %}</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+</head>
+<body>
+<input type="hidden" id="login_compleated" value='0'/>
+<div style="padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Loading' %}...</p>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	window.opener.compleate_login_process()
+});
+</script>
+</body>
+</html>
+{% else %}
+{% load_signup_obj %}
+<form class="signup-other">
+	<h2 class="title">{% trans 'Use another service' %}</h2>
+	<h4 class="disc">{% trans 'Get started faster with your favourite account, Please click below icons.' %}</h4>
+	{%if signup_settings.facebook %}<a class="connect-button facebook-button" id="FacebookBtn"></a>{% endif %}
+    {%if signup_settings.twitter %}<a class="connect-button twitter-button" id="TwitterBtn"></a>{% endif %}
+	{%if signup_settings.linkedin %}<a class="connect-button linkedin-button" id="LinkedinBtn"></a>{% endif %}
+    {%if signup_settings.openid %}<a class="connect-button google-button" id="GoogleBtn"></a>{% endif %}
+</form>
+<script src="{{STATIC_URL}}js/jquery_cookies.js"></script>
+<script>
+var signinWin;
+$('#FacebookBtn').click(function () {
+    signinWin = window.open("/fbconnect/authenticate/?next={% url 'ajax_auth_close_popup' %}", "SignIn", "width=780,height=410,toolbar=0,scrollbars=1,status=0,resizable=1,location=0,menuBar=0");
+});
+$('#TwitterBtn').click(function () {
+    signinWin = window.open("/twitter/oauth/authorize/?next={% url 'ajax_auth_close_popup' %}", "SignIn", "width=780,height=410,toolbar=0,scrollbars=1,status=0,resizable=1,location=0,menuBar=0");
+});
+$('#GoogleBtn').click(function () {
+    signinWin = window.open("/openid/openid/?openid_url=https://www.google.com/accounts/o8/id&next={% url 'ajax_auth_close_popup' %}", "SignIn", "width=780,height=410,toolbar=0,scrollbars=1,status=0,resizable=1,location=0,menuBar=0");
+});
+$('#LinkedinBtn').click(function () {
+    signinWin = window.open("/linkedin/login/?next={% url 'ajax_auth_close_popup' %}", "SignIn", "width=780,height=410,toolbar=0,scrollbars=1,status=0,resizable=1,location=0,menuBar=0");
+});
+function compleate_login_process() {
+	signinWin.close();
+    user_status_checklogin();
+	$.colorbox.close();
+	$('.fav_login').hide();
+	$('.fav_add').show();
+	$('.sub_add').show();
+	{% if type == 'sub' %}
+		$('div.tool_bar a.sub_add').click();
+	{% elif type == "cmmt" and val  %}
+		save_replay_comment({{ val }});
+		$('.ajax_login_comment_save_button').hide();
+		$('.comment_save_button').show();
+		$('.reply_save_button').click()
+	{% elif type == "cmmt" %}
+		$('.ajax_login_comment_save_button').hide();
+		$('.comment_save_button').show();
+		save_comment()
+	{% elif type == "review" %}
+		$('.ajax_login_review_button').hide();
+		$('#write_review').show();
+		$('#write_review').click()
+	{% else %}
+		{% if type == 'anscmt' %}
+			show_cnt();
+		{% else %}
+			$('div.tool_bar a.fav_add').click();
+		{% endif %}
+	{% endif %}
+}
+</script>
+{% endif %}

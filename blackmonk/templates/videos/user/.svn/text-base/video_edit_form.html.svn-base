@@ -1,0 +1,63 @@
+{% load i18n %}
+<form id="mform" class="form-horizontal uSr-aCnT mRb0">{% csrf_token %}
+    <input type="hidden" id="yt_videos_id" value="{% if not video.is_vimeo %}http://www.youtube.com/watch?v={% else %}http://vimeo.com/{% endif %}{{video.video_id}}">
+    <input type="hidden" id="videoid" value="{{video.id}}">
+    <input type="hidden" id="videocode" value="{{video.video_id}}">
+    <input type="hidden" id="videostatus" value="{{video.status}}">
+    <div class="control-group">    
+        <div class="mDa-wPr mRb20 controls"> 
+            <span class="bUi-tMb-wPr tMb-60 fLxiMgH">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> <img id="vimeo_{% if video.is_vimeo %}{{video.video_id}}{% endif %}" class="mDa-oT" src="{% if not video.is_vimeo %}{{video.get_hq_thumb}}{% else %}{{ video.vimeo_image }}{% endif %}" alt="">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" >{% trans 'Title' %}<em class="cLr-rEd">*</em></label>
+        <div class="controls">
+            {{form.title}}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{% trans 'Category' %}<em class="cLr-rEd">*</em></label>
+        <div class="controls">
+            {{form.category}}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{% trans 'Description' %}<em class="cLr-rEd">*</em></label>
+        <div class="controls">
+            {{form.description}}
+        </div>
+    </div>
+</form>
+<script type>
+$(document).ready(function(){
+	$("#mform").validate({
+		ignore:'',
+		highlight: function(element, errorClass){
+			$(element).parent('div').parent('div').addClass('error');
+			$(element).parent('div').addClass('error');
+			$(element).addClass('error');
+		},
+		unhighlight: function(element, errorClass){
+			$(element).parent('div').parent('div').removeClass('error');
+			$(element).parent('div').removeClass('error');
+			$(element).removeClass('error');
+		},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	title: "required",
+	    	category: "required",
+	    	description: "required",
+	   	}
+	});
+});
+</script>

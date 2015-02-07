@@ -1,0 +1,21 @@
+{% load i18n %}	
+{% with object.address as address %}
+<li class="mDa">
+    <div class="mDa-iN">                                        
+        <div class="mDa-bDy pD0">
+    		<div class="pLlT iM">
+    			<span class="pD15 bLk pDr10mP pDl0mP"><i class="bUi-iCn-mP-mKr-16 cLr-rEd fS24" aria-hidden="true"></i></span>
+    		</div>
+    		<div class="cLr-lT">
+                <h5 title="" class="mDa-hD tRnC mRt10 mRb5 w85P rLvE"><a class="fW-bLd" href="{{object.get_absolute_url}}">Rialto Theatre Spanish Springs Town Square</a></h5>
+                <div class="mDa-dTa fS12 cLr-gRy">
+                	<span>{{address.address1}}{% if address.address2 %}, {{address.address2}}{% endif %}{% if address.city %}, {{address.city}}{% endif %}{% if address.state %}, {{address.state}}{% endif %}{% if address.zip %} - {{address.zip }}{% endif %}</span>
+					{% if address.telephone1 or address.mobile %}<span class="sPrTr">{% if address.telephone1 %}{{address.telephone1}}{% else %}{{address.mobile}}{% endif %}</span>{% endif %}
+                </div> 
+                <a class="btn btn-primary fS11 pD612 cLr-wHt pStN-rT mRt10mX480 StCmP" href="{{object.get_absolute_url}}">{% trans "Showtimes" %}</a>
+    		</div> 
+        </div>
+    </div>
+</li>
+
+{% endwith %}

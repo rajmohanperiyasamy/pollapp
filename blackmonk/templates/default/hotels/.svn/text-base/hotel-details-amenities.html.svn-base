@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<div class="col_11 bm_dev_hotel_content" id="hotel_amenities_content" style="display:none;">
+<div class="group">
+	<div class="amenities group">
+    	<h3>{% trans 'Property Information' %}</h3>
+        <ul class="group hotel-property-info">
+        	{% if hotel.details.checkin_time %}<li style="width:110px;">Check-in Time</li><li style="width:100px;">: &nbsp &nbsp{{hotel.details.checkin_time}}</li>{% endif %}
+            {% if hotel.details.checkout_time %}<li style="width:110px;">Check-out Time</li><li style="width:100px;">: &nbsp &nbsp{{hotel.details.checkout_time}}</li>{% endif %}
+			{% if hotel.details.number_of_rooms %}<li style="width:110px;"> Number of Rooms</li><li style="width:100px;">: &nbsp &nbsp{{hotel.details.number_of_rooms}}</li>{% endif %}
+			{% if hotel.details.number_of_floors %}<li style="width:110px;">Number of Floors</li><li style="width:100px;">: &nbsp &nbsp{{hotel.details.number_of_floors}}</li>{% endif %}
+        </ul>
+    </div>
+	{% if hotel.details.checkin_instructions %}<div class="description">{% autoescape off %}{{hotel.details.checkin_instructions}}{% endautoescape %}</div>{% endif %}
+    {% if hotel.amenities.all %}
+	<div class="amenities group">
+    	<h3>{% trans 'Amenities' %}</h3>
+        <ul class="group">
+			{% for hotel_amenity in hotel.amenities.all %}
+				<li>{{hotel_amenity.name|title}}</li>
+			{% endfor %}
+        </ul>
+    </div>
+	{% endif %}
+</div>                
+</div>

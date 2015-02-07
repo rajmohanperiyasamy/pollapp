@@ -1,0 +1,86 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load bm_channeltags %}
+{% get_channel_page_movies as movie_pack %}
+{% if movie_pack %}
+<section class="sCn">
+	<!-- Module Search -->
+    <div class="sRcHbR pD150 clearfix mRb20">
+        <form class="form-search mRb0" action="{% url 'movies_movie_showtimes' %}">
+			<input type="hidden" name="search" value="true">
+			<input type="hidden" name="sfh" value="true">
+            <div class="mDl">
+                <h3 class="mDl-nM">
+                    <i aria-hidden="true" class="bUi-iCn-mOv-24 fS16"></i>
+                    <span class="ib">{% trans 'Movies' %}
+                        <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+                    </span>
+                </h3>
+            </div>
+            <div class="span5">
+                <select class=" bUiSlCt-wHt fS13 pLlTp sP4p w100mP" name="q">
+		            {% with movie_pack.released_movies as released_movies %}
+		            <option value="">{% trans 'Select Movie' %}</option>
+		            {% for movie in released_movies %}
+		                <option value="{{ movie.title }}"> {{ movie.title }} </option>
+		            {% endfor %}    
+		            {% endwith %}
+		        </select>
+			</div>
+            <div class="span3">
+                <select class="bUiSlCt-wHt fS13" name="date">
+					{% with movie_pack.datelist as date_list %}
+                    {% for dt in date_list %}
+		                <option value="{{dt|date:'Y-m-d'}}">{{dt|date:'l, M d'}}</option>
+		            {% endfor %}
+					{% endwith %}
+                </select>
+            </div>
+            <div class="ib sUb-bTn mRl12">
+                <button type="submit" class="btn btn-primary pDlR18mN980mX199">
+                <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- Module Search -->
+	{% with movie_pack.released_movies as released_movies %}
+    <div class="fTrD-bL cRsL mDa-150 tXt-oTsD aDpTv cTrL-tR mRb0">
+        <div class="fTrD-bL-iN">
+            <ul class="fTrD-iTmS {% if released_movies.count > 5 %}fTrD-cRsL{% else %}pDfX fVcL{% endif %}">
+				{% for movie in released_movies %}
+                <li class="fTrD-iTm bDrR0">
+                    <figure class="fTrD-mDa">
+                        <span class="bUi-tMb-wPr fLxiMgW" href="{{ movie.get_absolute_url }}">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% thumbnail movie.image 0x219 %}" alt="{{ movie.title }}">
+                                            <span class="vRtL-aLn"></span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </figure>
+                    <!-- /.TrD-mDa -->
+                    <div class="fTrD-tXt">
+                        <div class="vAlGn">
+                            <div class="fTrD-tXt-iN pD10-0-0">
+                                <h5 class="fTrD-hD"><a class="tXt-oVrF"  href="{{ movie.get_absolute_url }}">{{ movie.title }}</a></h5>
+                                <div class="fTrD-mTa fS11 pDt5">
+                                    <span class="bDg bRdR-gRy">{{ movie.certification|default:"NR" }}</span>
+									<span class="fS11 cLr-lTgRy">{{ movie.release_date|date:"F j" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.TrD-tXt -->
+                </li>
+				{% endfor %}
+            </ul>
+        </div>
+    </div>
+	{% endwith %}
+</section> 
+{% endif %}

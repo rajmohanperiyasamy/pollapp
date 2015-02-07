@@ -1,0 +1,137 @@
+{% extends base %}
+{% load i18n %}
+{% load tabs %}
+{% load comparison %}
+{% load ds_utils %}
+{% block pagetitle %}{% if load_home_page %}{% if seo %}{{ seo.seo_title }}{% endif %}{% else %}{{seo_title }}{% endif %}{% endblock %}
+{% block meta %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="{% if load_home_page %}{% if seo %}{{ seo.seo_description }}{% endif %}{% else %}{{seo_description}}{% endif %}" />
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/buzz.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/extra-twt.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/buzz/c_buzz.js"></script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "buzz" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+			<div id="buzz" class="thick_box">
+				<div class="thick_box_core mod_buzz group">
+                	<div class="title_bar">
+                    	<div class="left_block"><h1 class="page_title">{% trans "Buzz" %}</h1></div>
+                    </div>
+                    <div id="buzz_body">
+	                    <div id="buzz_sections">
+	                        <ul>
+	                        	<li {% if load_home_page %} class="selected" {% endif %}><a href="{% url 'buzz_home' %}" name="home" >{{ globalsettings.city }} {% trans "Buzz" %}</a></li>
+	                        	{% for category in categories_dir %}
+	                            <li {% ifequal buzz_nav category.name %} class="selected" {% endifequal %} id="{{ buzz_nav }}" class="{{ category.slug }}" ><a href="/buzz/{{category.slug}}">{{ category.name }}</a></li>
+								{% endfor %}
+	                        </ul>
+							<div class="clear"></div>
+	                    </div>
+						<div id="buzz_list">
+						<ol class="tweets" id="tweets_wrapper">
+						{% if tweets_home_twitter %}
+						
+						{% for tweet in tweets %}	
+                    	<li class="tweet">
+                        	<div class="tweet_body">
+								<span class="author_thumb"><a href="http://twitter.com/{{ tweet.user.screen_name }}" target="_blank""><img src="{{ tweet.user.profile_image_url }}" alt="{{ tweet.user.screen_name  }}"></a></span>
+								
+                            	<a href="http://twitter.com/{{ tweet.user.screen_name}}" target="_blank"" class="author_name">{{ tweet.user.name }} </a><span class="twt_txt">{% autoescape off %} {{ tweet.text|twitter_add_link_username|twitter_add_link_trends|urlize }} {% endautoescape %}</span> 
+                                <p class="twt_meta"> {{ tweet.created_at|twitter_time_lists }}<span class="source">{% trans "from" %} {% autoescape off %}{{ tweet.source }}{% endautoescape %}</span></p>
+                                <ul class="twt_actions">
+                                    <!--li class="reply"><a href="#" title="Reply">Reply</a></li>
+                                    <li class="retweet"><a title="Retweet" href="#">Retweet</a></li-->
+                                </ul>
+							</div>                                                                       
+                        </li>
+						{% endfor %}
+						
+						{% else %}{% if tweets_from_backup %}
+						{% for tweet in tweets %}
+						<li class="tweet">
+                        	<div class="tweet_body">
+								<span class="author_thumb"><a href="http://twitter.com/{{ tweet.screen_name }}" target="_blank""><img src="{{ tweet.image_url }}" alt="{{ tweet.user_name }}"></a></span>
+                            	
+								<a href="http://twitter.com/{{ tweet.screen_name }}" target="_blank"" class="author_name">{{ tweet.user_name }} </a><span class="twt_txt"> {% autoescape off %} {{ tweet.tweet_text|twitter_add_link_username|twitter_add_link_trends|urlize }}{% endautoescape %}</span> 
+                                <p class="twt_meta">
+                                	{% if list_time %}
+									
+									{{ tweet.tweeted_time|twitter_time_lists }}
+									
+									{% else %}
+									
+									{{ tweet.tweeted_time|twitter_time_search }}
+									
+									{% endif %}
+									
+									<span class="source">from {% autoescape off %}{{ tweet.tweeted_source }}{% endautoescape %}</span></p>
+                                <ul class="twt_actions">
+                                    <!--li class="reply"><a href="#" title="Reply">Reply</a></li>
+                                    <li class="retweet"><a title="Retweet" href="#">Retweet</a></li-->
+                                </ul> 
+							</div>                                                                       
+                        </li>
+						{% endfor %}
+						
+						{% else %}
+						{% for tweet in tweets %}	
+                    	<li class="tweet" >
+                        	<div class="tweet_body"  >
+								<span class="author_thumb" ><a href="http://twitter.com/{{ tweet.user.screen_name }}" target="_blank"><img src="{{ tweet.user.profile_image_url }}" alt="{{ tweet.user.name }}"></a></span>
+								<a href="http://twitter.com/{{ tweet.user.screen_name }}" class="author_name" target="_blank">{{ tweet.user.name }} </a><span class="twt_txt">{% autoescape off %}{{ tweet.text|twitter_add_link_username|twitter_add_link_trends|urlize }}{% endautoescape %}</span>
+                                <p class="twt_meta">{{ tweet.created_at|twitter_time_lists }} <span class="source">{% trans "from" %} <a rel="nofollow" href="#">{%autoescape off%}{{ tweet.source }}{%endautoescape%}</a></span></p>
+                                <ul class="twt_actions">
+                                    <!--li class="reply"><a href="#" title="Reply">Reply</a></li>
+                                    <li class="retweet"><a title="Retweet" href="#">Retweet</a></li-->
+                                </ul>
+							</div>                                                                       
+                        </li>
+						{% endfor %}
+						
+						{% endif %}
+						{% endif %}
+						</ol>
+						{% ifequal hide_more 'show' %}
+						<div id="more_tweets"><a href="{% if q %}{% url 'ajax_retrieve_buzz_search' %}?q={{ q_url }}&page={{next_page}}{% else %}/buzz/ajax/{% if load_home_page %}home{% else %}{{ category }}{% endif %}/?page={{next_page}}{% endif %}" style="background-color:#F1F1F1;" class="button super white click_pvnt" id="more_twitts"><span id="more_loader_span" style="color:black;" class="more_twitts">{% trans "more" %}</span></a></div>
+						{% else %}{% if_greater tweets.count 0 %}
+						<div id="more_tweets" class="no_more_tweets"><a href="#" class="super white click_pvnt more_twittes_loading" class="more_twitts"><span id="more_loader_span">{% trans "No more tweets" %}</span></a></div>
+						{% else %}
+						<div id="more_tweets" class="no_more_tweets"><a href="#" class="super white click_pvnt more_twittes_loading" class="more_twitts"><span id="more_loader_span">{% trans "No tweets found" %}</span></a></div>
+						{% endif_greater %}
+						{% endifequal %}						
+						</div>
+					</div><!-- /buzz_body -->
+					 
+					<div id="buzz_extras" class="">
+                        <div id="bizz_filters">
+                        	<!--div id="buzz_search">
+                            	<h4>{% blocktrans %}See what's happening in <strong>{{ globalsettings.city }}{% endblocktrans %}</strong>.</h4>
+								<form id="search_submit" class="quick_search" method="get" action = "{% url 'buzz_home' %}" >{% csrf_token %}
+                                	<div class="search_wrapper {% if q %}close{% else %}empty{% endif %}">
+                                        <span class="left"></span>
+                                        <input type="search" accesskey="s" class="input_text" id="sp-searchtext" name="q" autocomplete="off" value="{{ q }}" class="fix_ie6png" ></label>
+                                        <div class="reset"></div>
+									</div>                                        
+								</form>
+							</div-->
+                            
+						</div>  
+                        <div class="col_3 mr_0">
+                    			<!--div class="display_ad"><center>
+                    			<a href="/classifieds" >
+								<img src="http://adbob.com/openx/www/images/0dc8bef9d8678e5d91f916c1419af0aa.gif" />
+								</a>
+								</center></div-->
+                        </div>
+                                                                                     
+                    </div><!-- /buzz_extras-->
+					<div class="clear"></div>     
+                </div>
+            </div>
+{% endblock %}

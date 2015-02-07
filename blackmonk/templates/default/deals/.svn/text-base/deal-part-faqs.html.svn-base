@@ -1,0 +1,36 @@
+{% load i18n bm_dealtags truncate_filter %}
+ 
+{% get_deals_faqs as faqs %}
+{% if faqs %}
+<div>
+    <section class="sCn mDa-lT-mNi cMpCt">
+        <div class="sCn-tTl sCn-tTl-bR">
+            <h3>
+                <span>{% trans 'Payment FAQs' %}</span>
+            </h3>
+        </div>
+        <ul class="mDa-lT">
+            {% for faq in faqs %}
+            <li class="mDa">
+                <div class="mDa-iN">
+                    <div class="mDa-bDy">
+                        <h6 class="mDa-hD fW-bLd" title="{{faq.question}}">
+                            <a href="javascript:void(0)" class="pLlT" data-toggle-icon="bUi-iCn-mNs-12" data-target="#faq_desc_{{faq.id}}" data-toggle="collapse">
+                                <i class="bUi-iCn-pLs-12 mRr5" aria-hidden="true"></i>
+                                {{faq.question}}
+                            </a> 
+                        </h6>
+                        <div id="faq_desc_{{faq.id}}" class="collapse">
+                            <div class="mDa-dTa mRt10">
+                                <p class="fS11 cLr-gRy">{{faq.answer|truncate_chars:332}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    
+</div>
+{% endif %}

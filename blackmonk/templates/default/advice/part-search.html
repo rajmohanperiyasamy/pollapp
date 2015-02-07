@@ -1,0 +1,35 @@
+{% load i18n %}
+
+<!-- Module Search -->
+<div class="pD2015 bM-bX sRcHbR">
+    <div class="row-fluid">
+        <div class="span9 fRm">
+            <form class="form-search mRb0" method="get" action="{% url 'advice_search' %}">
+                <input type="hidden" name="src" value="true">
+                <div class="mDl">
+                    <h3 class="mDl-nM">
+                        <i aria-hidden="true" class="bUi-iCn-qAn-24"></i>
+                        <a class="ib" href="{% url 'advice_list' %}">Answers
+                            <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+                        </a>
+                    </h3>
+                </div>
+                <div class="span7">
+                    <input type="text" class="" name="kw" value="{% if kw %}{{kw}}{% endif %}" placeholder="{% trans 'Search for answers' %}">
+                </div>
+                <div class="ib sUb-bTn mRl12">
+                    <button type="submit" class="btn btn-primary">
+                        <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="AD-bTn">
+            <div class="btn-group pLrT mRr10 pLlTSmP" data-toggle="buttons-radio">
+                <!--button type="button" class="btn btn-light active fS12 fW-bLd">Q&amp;A Community</button-->
+                <a href="{% url 'user_manage_advice' %}" class="btn btn-light fS12 fW-bLd">{% trans 'My Q&amp;A' %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Module Search -->

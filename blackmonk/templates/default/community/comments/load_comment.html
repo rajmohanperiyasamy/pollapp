@@ -1,0 +1,105 @@
+{% with entry as object %}
+{% load comment_config %}
+{% load_comment_config_obj object %}
+{% load i18n %}
+{% load ds_utils %}
+{% load thumbnail %}
+{% load mptt_comments_tags %}
+{% load markup i18n mptt_tags mptt_comments_tags comparison %}
+{% get_mptt_comment_list_community for object as comments %}
+<ol class="cMnTs aVtR-cRcL rWrT mRb30" id="comment_remaining_div_{{object.id}}">
+{% if comments %}
+{% for comment, tree in comments|tree_info %}
+<br>
+	<ol class="pRnT comment_holder_ol" id="comment_holder_ol_{{comment.id}}">
+		<li class="cMnT dev-cMnT">
+			<div class="cMnT-iN">
+		        <div class="vCrD pLlT">
+					{% if cc_avatar %}
+		            	<a href="{% url 'user_profile' comment.user.username %}"><img class="aVtR" src="{% if comment.user.image %}{% thumbnail comment.user.image 48x48 %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}"></a>
+					{% else %}
+		            	<a href="{% url 'user_profile' comment.user.username %}"><img class="aVtR" src="{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg"></a>
+					{% endif %}
+				</div>
+				<div class="cMnT-bDy dev-cParent">
+					<div class="cMnT-bDy-iN">
+    					<header class="cMnT-hD">
+        					<span class="pBlSr"><a href="{% url 'user_profile' comment.user.username %}">{{comment.user.get_full_name }}</a></span>
+        					{%if cc_rating %}
+							{% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+							{% if comment.rating or comment.rating == '0.00'%}
+        						<div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4 dev-uraty" data-score="{{comment.rating}}"></span></div>
+        					{% endif %}
+							{% endif %}
+							{% endif %}
+        					<span class="tM sPrTr" title="{{comment.submit_date}}">{{ comment.submit_date|get_readable_time_format }} {% trans 'ago' %}</span>
+    					</header>
+    					<div class="cMnT-tXt"><p>{{ comment.comment|linebreaksbr }}</p></div>
+    					<footer class="cMnT-fTr">
+      						{% if cc_like_dislike %}
+								<span class="cMnT-rTg-pStV" title="{{comment.like}} up, {{comment.dislike}} down" id="cmnt_up_dwn_count_{{comment.id}}">{{ comment.like|subtract:comment.dislike }}</span>
+        						<span class="cMnT-vTnG ">
+           							<span class="cMnT-vTnG ">
+                           				<a href="javascript:void(0);" class="cMnT-rTg-uP" onclick="like_dislike({{ comment.id }},{{comment.like}},'1')"><i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i></a>
+                           				<a href="javascript:void(0);" class="cMnT-rTg-dWn" onclick="like_dislike({{ comment.id }},{{comment.like}},'0')"><i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i></a>
+                        			</span>
+    							</span>
+    						{% endif %}
+					        <input type="hidden" name="cid" value="{{comment.id}}">
+							{% if appname != 'business' and appname != 'restaurants' and appname != 'movies' %}
+	    						{% if user.is_authenticated %}
+									{% if cc_threaded %}<span class="rPlY sPrTr " onclick="load_recomment_form($(this))"><a href="javascript:void(0)">Reply</a></span>{% endif %}
+								{% else %}
+									{% if cc_threaded %}
+										<span style="display:none;" id="replay_{{comment.id}}" class="rPlY sPrTr replay_btn" onclick="load_recomment_form($(this))"><a href="javascript:void(0)">Reply</a></span>
+										<span  id="replay_signup_{{comment.id}}" class="rPlY sPrTr replay_signup_btn"><a onclick="$('#comment_save_id').val('{{comment.id}}');login_box('comm_cmmt_reply',{{comment.id}});" href="javascript:void(0);">Reply</a></span>
+									{% endif %}
+								{% endif %}
+	    						{% if comment.parent.lft != 1 %}
+	    							<span class="fS11 sPrTr">
+										<i aria-hidden="true" class="bUi-iCn-rPl-rT-12 ib" title="in reply to"></i> 
+	    								<a href="{% url 'user_profile' comment.user.username %}" class="pRnT-lNk cLr-lTbLu">{{comment.parent.user.get_full_name }}</a> <a href="javascript:void(0)" onclick="load_parent_comment($(this))" parent_id="{{comment.parent.pk}}" class="sHw-pRnT cLr-lTbLu" data-action="show-parent">(Show the comment)</a>
+	    							</span>
+	    						{% endif %}
+							{% endif %}
+						</footer>
+						<div class="cMnT-oPtN btn-group">
+    						<a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="javascript:void(0)"><span class="caret"></span></a>
+    						<ul class="dropdown-menu pLrT mNi">
+        						<!--li><a href="javascript:void(0)" class="btn-comment-share">Share Comment</a></li>
+        						<li><a href="javascript:void(0)" class="comment-link">Direct link</a></li>
+        						<li><a href="javascript:void(0)" class="btn-translate">Translate Comment</a></li>
+        						<li><a href="javascript:void(0)" class="btn-mention_user">Mention user</a></li-->
+        						<li><a href="javascript:flag({{comment.id}})" class="btn-mention_user">Flag for Spam</a></li>
+    						</ul>
+						</div>
+					</div> <!-- /.cMnT-bDy-iN -->
+				</div><!-- /.cMnT-bDy -->
+			</div> <!-- /.cMnT-iN -->
+		</li> <!-- /.cMnT -->
+	</ol>
+{% endfor %}
+{% endif %}
+</ol> <!-- /.cMnTs -->
+{% if comments_remaining %}
+<div class="cMnTs-pNl-lDnG tXt-cTr" id="comment_remaining_div_more_loading_{{object.id}}" style="display:none;">
+	<a class="btn btn-light btn-large btn-block fS13" href="javascript:void(0);">
+		<span class="">
+			<i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i>
+			<span class="bUi-sPnR-mSg cLr-gRy fS13">Loading...</span>
+		</span>
+	</a>
+</div>
+<div class="cMnTs-pNl-lDnG tXt-cTr" id="comment_remaining_comm_p_{{object.id}}">
+	<a class="btn btn-light btn-large btn-block fS13" href="javascript:load_community_more({{object.id}})">
+		<span class="fW-bLd cLr-bLu ">More</span>
+	</a>
+</div>
+{% endif %}
+{% endwith %}
+<script type="text/javascript">
+function reply_thread(id){
+	$('#replay_signup_'+id).hide();
+	$('#replay_'+id).show();
+}
+</script>

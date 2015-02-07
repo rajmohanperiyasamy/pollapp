@@ -1,0 +1,145 @@
+10
+
+dir
+58422
+svn://192.168.1.20:9999/trunk/projects/ensurebranding/blackmonk/static/js/ckeditor/plugins
+svn://192.168.1.20:9999
+
+
+
+2005-08-01T23:22:19.126620Z
+56026
+shahanar
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+45915bcb-ab87-0410-9405-c33c6b8929c5
+
+a11yhelp
+dir
+
+about
+dir
+
+adobeair
+dir
+
+ajax
+dir
+
+autogrow
+dir
+
+bbcode
+dir
+
+clipboard
+dir
+
+colordialog
+dir
+
+devtools
+dir
+
+dialog
+dir
+
+div
+dir
+
+docprops
+dir
+
+find
+dir
+
+flash
+dir
+
+forms
+dir
+
+iframe
+dir
+
+iframedialog
+dir
+
+image
+dir
+
+link
+dir
+
+liststyle
+dir
+
+pagebreak
+dir
+
+pastefromword
+dir
+
+pastetext
+dir
+
+placeholder
+dir
+
+scayt
+dir
+
+showblocks
+dir
+
+smiley
+dir
+
+specialchar
+dir
+
+styles
+dir
+
+stylesheetparser
+dir
+
+table
+dir
+
+tableresize
+dir
+
+tabletools
+dir
+
+templates
+dir
+
+uicolor
+dir
+
+vimeo
+dir
+
+wsc
+dir
+
+xml
+dir
+
+youtube
+dir
+

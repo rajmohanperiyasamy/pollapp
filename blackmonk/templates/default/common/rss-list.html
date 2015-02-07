@@ -1,0 +1,81 @@
+{% extends base %}
+{% load i18n %}
+{% block pagetitle %}
+	{% trans 'RSS List' %} | {{ globalsettings.domain }} 
+{% endblock %}
+
+{% block meta %}
+	<meta name="keywords" content="{% trans 'rss articles, events, classifieds, business, movies' %}" />
+	<meta name="description" content="{{ globalsettings.domain }} RSS" />
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div id="content-container">
+    <div class="container-fluid">
+        <div class="row-fluid">
+			<div class="span12 sCn pDl30 pDr30">
+			   <div class="clearfix">
+				   <div class="pLlT">
+				       <h2 class="mR0 fS24">RSS</h2>
+				   </div>
+			   </div>
+			   <hr>
+	           <div id="mSnRy">
+					<ul class="sItMaP rss js-masonry fOcL unstyled pDfX">
+					    <li class="mSnRyIt">
+					        <h3><a href="/rss/articles/all.xml" class="cLr-dRk">Article</a></h3>
+					        <ul>
+								{% for category in article_categories %}
+					            <li><a href="/rss/articles/{{category.id}}.xml"><img src="{{STATIC_URL}}images/rss/small.png" class="ib"><span class="ib mRl10">{{category.name|title}}</span></a></li>
+								{% endfor %}
+					        </ul>
+					    </li>
+						<li class="mSnRyIt">
+					        <h3><a href="/rss/business/all.xml" class="cLr-dRk">Yellow Pages</a></h3>
+					        <ul>
+								{% for category in business_categories %}
+					            <li><a href="/rss/business/{{category.id}}.xml"><img src="{{STATIC_URL}}images/rss/small.png" class="ib"><span class="ib mRl10">{{category.name|title}}</span></a></li>
+								{% endfor %}
+					        </ul>
+					    </li>
+						<li class="mSnRyIt">
+					        <h3><a href="/rss/classifieds/all.xml" class="cLr-dRk">Classifieds</a></h3>
+					        <ul>
+								{% for category in classified_categories %}
+					            <li><a href="/rss/classifieds/{{category.id}}.xml"><img src="{{STATIC_URL}}images/rss/small.png" class="ib"><span class="ib mRl10">{{category.name|title}}</span></a></li>
+								{% endfor %}
+					        </ul>
+					    </li>
+						<li class="mSnRyIt">
+					        <h3><a href="/rss/events/all.xml" class="cLr-dRk">Events</a></h3>
+					        <ul>
+								{% for category in event_categories %}
+					            <li><a href="/rss/events/{{category.id}}.xml"><img src="{{STATIC_URL}}images/rss/small.png" class="ib"><span class="ib mRl10">{{category.name|title}}</span></a></li>
+								{% endfor %}
+					        </ul>
+					    </li>
+						<li class="mSnRyIt">
+					        <h3><a href="/rss/movies/all.xml" class="cLr-dRk">Movies</a></h3>
+					        <ul>
+					            <li><a href="/rss/movies/all.xml"><img src="{{STATIC_URL}}images/rss/small.png" class="ib"><span class="ib mRl10">{% trans 'Movies' %}</span></a></li>
+					        </ul>
+					    </li>
+				  	</ul>
+	           </div><!--/.Masonry-->
+			</div>
+        </div><!-- /.row-fluid --> 
+    </div><!-- /.container-fluid --> 
+</div>
+<script src="{{STATIC_URL}}themes/js/masonry.js"></script>
+<script type="text/javascript">
+	var container = document.querySelector('#mSnRy');
+	var msnry = new Masonry( container, {
+	  // options
+	  itemSelector: '.mSnRyIt',
+	  //columnWidth: 200
+	});
+</script>
+{% endblock %}

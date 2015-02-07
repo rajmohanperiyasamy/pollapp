@@ -1,0 +1,57 @@
+{% load tabs %}
+{% load i18n %}
+{% load available_apps %}
+{% load_availableapps_obj%}
+<div class="span2 sP3mX979 sP12mX767">
+	<section class="sCn pD15p">
+		<ul class="nav nav-list bRdb bDrR0 oTsT-hRz fS12 hP">
+			<li><a href="{% url 'user_profile' request.user.profile_slug %}"><span class="fW-bLd">{{user.display_name}}</span></a></li>
+			<li {% ifactivetab 'leftnav' 'dashboard' %}class="active"{% endifactivetab %}><a href="/user/"><i aria-hidden="true" class="bUi-iCn-cTn-sQ-16 ib cLr-gRy"></i> <span class="fW-bLd">Dashboard</span></a></li>
+			<li class="nav-header">Content Manager</li>
+			{% if aa_community.status == 'A' %}		<li {% ifactivetab 'leftnav' 'advice' %}class="active"{% endifactivetab %}>			<a href="{% url 'user_manage_advice' %}"><i aria-hidden="true" class="bUi-iCn-cMnT-aLt-24 fS16 cLr-gRy"></i> <span>Community</span></a></li>{% endif %}
+			{% if aa_articles.status == 'A' %}		<li {% ifactivetab 'leftnav' 'article' %}class="active"{% endifactivetab %}>		<a href="{% url 'article_dash_board' %}"><i aria-hidden="true" class="bUi-iCn-aRtL-24 fS16 cLr-gRy"></i> <span>Articles</span></a></li>{% endif %}
+			{% if aa_events.status == 'A' %}		<li {% ifactivetab 'leftnav' 'events' %}class="active"{% endifactivetab %}>			<a href="{% url 'events_dash_board' %}"><i aria-hidden="true" class="bUi-iCn-eVnT-24 fS16 cLr-gRy"></i> <span>Events</span></a></li>{% endif %}
+			{% if aa_bookmarks.status == 'A' %}		<li {% ifactivetab 'leftnav' 'bookmark' %}class="active"{% endifactivetab %}>		<a href="{% url 'bookmark_dash_board' %}"><i aria-hidden="true" class="bUi-iCn-pOl-24 fS16 cLr-gRy"></i> <span>Bookmarks</span></a></li>{% endif %}
+			{% if aa_photos.status == 'A' %}		<li {% ifactivetab 'leftnav' 'photos' %}class="active"{% endifactivetab %}>			<a href="{% url 'user_manage_gallery' %}"><i aria-hidden="true" class="bUi-iCn-pHoT-24 fS16 cLr-gRy"></i> <span>Photos</span></a></li>{% endif %}
+			{% if aa_videos.status == 'A' %}		<li {% ifactivetab 'leftnav' 'videos' %}class="active"{% endifactivetab %}>			<a href="{% url 'user_video_home_listingboard' %}"><i aria-hidden="true" class="bUi-iCn-vDeO-aLt-24 fS16 cLr-gRy"></i> <span>Videos</span></a></li>{% endif %}
+			{% if aa_business.status == 'A' %}		<li {% ifactivetab 'leftnav' 'business' %}class="active"{% endifactivetab %}>		<a href="{% url 'user_manage_business' %}"><i aria-hidden="true" class="bUi-iCn-bSn--24 fS16 cLr-gRy"></i> <span>Business</span></a></li>{% endif %}
+			{% if aa_classifieds.status == 'A' %}	<li {% ifactivetab 'leftnav' 'classifieds' %}class="active"{% endifactivetab %}>	<a href="{% url 'user_classified_home' %}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 fS16 cLr-gRy"></i> <span>Classifieds</span></a></li>{% endif %}
+			{% if aa_banners.status == 'A' %}		<li {% ifactivetab 'leftnav' 'banners' %}class="active"{% endifactivetab %}>	<a href="{% url 'user_banners_manage_banners' %}"><i aria-hidden="true" class="bUi-iCn-bNr-24 fS16 cLr-gRy"></i> <span>Banners</span></a></li>{% endif %}
+			<!-- 
+			{% if aa_deals.status == 'A' %}			<li {% ifactivetab 'leftnav' 'deals' %}class="active"{% endifactivetab %}>	<a href="{#% url 'deal_order_list' %#}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 fS16 cLr-gRy"></i> <span>Deals</span></a></li>{% endif %}
+			 -->
+			{% if aa_deals.status == 'A' %}
+			<li {% ifactivetab 'leftnav' 'deals' %}class="active"{% endifactivetab %}>
+				<a href="{% url 'deal_voucher_list' 'purchased' %}" data-toggle="collapse"  {% ifactivetab 'leftnav' 'deals' %}class="collapsed"{% endifactivetab %}>
+					<i aria-hidden="true" class="bUi-iCn-dEaL-24 fS16 cLr-gRy"></i>
+					<span style="position: relative;">Deals
+						<b style="position: absolute; right: -12px; top: 6px; border-top-color: rgba(0, 0, 0, 0.45);" class="caret"></b>
+					</span>
+				</a>
+				<ul id="l-subnav" class="nav-list bRdb bDrR0 unstyled collapse {% ifactivetab 'leftnav' 'deals' %}in{% endifactivetab %}">
+				    <li> <a {% if active == 'purchased' %}class="fW-bLd"{% endif %} href="{% url 'deal_voucher_list' 'purchased' %}"> Deals I purchased </a> </li>
+				    <li style="border-bottom: 0px none;"> <a {% if active == 'vouchers' %}class="fW-bLd"{% endif %} href="{% url 'deal_voucher_list' 'vouchers' %}"> Voucher Management </a> </li>
+				</ul>
+			</li>
+			{% endif %}
+			{% if aa_shop.status == 'A' %}	<li {% ifactivetab 'leftnav' 'shop' %}class="active"{% endifactivetab %}>	<a href="{% url 'bmshop_user_my_orders' %}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 fS16 cLr-gRy"></i> <span>Shop</span></a></li>{% endif %}
+		</ul>
+        <a class="pLlT im pDt10 vP" href="{% url 'user_profile' request.user.profile_slug %}"><span class="fW-bLd cLr-dRk">{{user.display_name}}</span></a>
+        <select data-link="true" class="discussion fS13 pLrT im">
+		    <option data-icon="bUi-iCn-dSbB-16 fS14 ib cLr-gRy mRr5" data-location="/user/" {% ifactivetab 'leftnav' 'dashboard' %}selected="selected"{% endifactivetab %}>Dashboard</option>
+		    <optgroup label="Content Manager">
+			    {% if aa_community.status == 'A' %}		<option data-icon="bUi-iCn-cMnT-aLt-24 fS14 ib cLr-gRy mRr5" 	data-location="{% url 'user_manage_advice' %}"				{% ifactivetab 'leftnav' 'advice' %}selected="selected"{% endifactivetab %}>Community</option>{% endif %}
+			    {% if aa_articles.status == 'A' %}		<option data-icon="bUi-iCn-aRtL-24 fS14 ib cLr-gRy mRr5"		data-location="{% url 'article_dash_board' %}"				{% ifactivetab 'leftnav' 'article' %}selected="selected"{% endifactivetab %}>Articles</option>{% endif %}
+			    {% if aa_events.status == 'A' %}		<option data-icon="bUi-iCn-eVnT-24 fS14 ib cLr-gRy mRr5"		data-location="{% url 'events_dash_board' %}"				{% ifactivetab 'leftnav' 'events' %}selected="selected"{% endifactivetab %}>Events</option>{% endif %}
+			    {% if aa_photos.status == 'A' %}		<option data-icon="bUi-iCn-pHoT-24 fS14 ib cLr-gRy mRr5"		data-location="{% url 'user_manage_gallery' %}"				{% ifactivetab 'leftnav' 'photos' %}selected="selected"{% endifactivetab %}>Photos</a></option>{% endif %}
+			    {% if aa_videos.status == 'A' %}		<option data-icon="bUi-iCn-vDeO-aLt-24 fS14 ib cLr-gRy mRr5" 	data-location="{% url 'user_video_home_listingboard' %}"	{% ifactivetab 'leftnav' 'videos' %}selected="selected"{% endifactivetab %}>Videos</option>{% endif %}
+			    {% if aa_business.status == 'A' %}		<option data-icon="bUi-iCn-bSn--24 fS14 ib cLr-gRy mRr5"		data-location="{% url 'user_manage_business' %}"			{% ifactivetab 'leftnav' 'business' %}selected="selected"{% endifactivetab %}>Business</option>{% endif %}
+			    {% if aa_classifieds.status == 'A' %}	<option data-icon="bUi-iCn-cLfD-24 fS14 ib cLr-gRy mRr5"		data-location="{% url 'user_classified_home' %}"			{% ifactivetab 'leftnav' 'classifieds' %}selected="selected"{% endifactivetab %}>Classifieds</option>{% endif %}
+				{% if aa_banners.status == 'A' %}		<option data-icon="bUi-iCn-cLfD-24 fS14 ib cLr-gRy mRr5"		data-location="{% url 'user_banners_manage_banners' %}"			{% ifactivetab 'leftnav' 'banners' %}selected="selected"{% endifactivetab %}>Banners</option>{% endif %}
+				<!-- 
+				{% if aa_deals.status == 'A' %}			<option data-icon="bUi-iCn-cLfD-24 fS14 ib cLr-gRy mRr5"		data-location="{#% url 'deal_order_list' %}"			{% ifactivetab 'leftnav' 'banners' %}selected="selected"{% endifactivetab %}>Deals</option>{% endif %}			
+				 -->
+		    </optgroup>
+		</select>
+	</section>
+</div>  <!-- /.span2 -->

@@ -1,0 +1,450 @@
+{% extends base %}
+{% load comparison %}
+{% load truncate_filter %}
+{% load tabs %}
+{% load tz %}
+{% load i18n %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% load bm_eventstags %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Events' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Events' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+	<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script type="text/javascript" src="/static/js/jquery/jquery.ui.datepicker.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+		<script type="text/javascript">
+	    $(document).ready(function(){
+         
+		 $('.eids').each(function(){
+				bids.push($(this).val());
+			});
+	        module_listing(bids,category);
+		});
+		
+		</script>  
+	<script type="text/javascript">
+	
+	$(function(){
+       $('#sL6').bUiSlider({
+		   pager:false,
+		   adaptiveHeight: true,
+		   speed:600,
+		   auto:true,
+		   onSliderLoad:function(){
+		   	   $('.fTrD-bL').setfTrDtXtHeight();
+		   	   $('.fLxiMgW').setrSpVWidth(0);
+		   }
+		  });
+		  var sL1 = $('#slider_content');
+		  sL1 = sL1.bUiSlider({
+			   mode: 'fade',
+			   pager:false,
+			   speed:600,
+			   onSliderLoad:function(){
+			   	   $('.fTrD-bL').setfTrDtXtHeight();
+			   },
+			   onSlideNext:function(){
+			   	   $('#slider_image').parent().parent().find('.bUi-next').trigger('click');
+			   },
+			   onSlidePrev:function(){	
+			       $('#slider_image').parent().parent().find('.bUi-prev').trigger('click');
+			   }
+		   });
+		   var sL2 = $('#slider_image');
+		   sL2 = sL2.bUiSlider({
+			   pager:false,
+			   speed:600,
+			   onSliderLoad:function(){
+			   	   $('.fTrD-bL').setfTrDtXtHeight();
+				   $('.fLxiMgW').setrSpVWidth(0);
+			   },
+			   onSlideNext:function(){
+					   $('#slider_content').parent().parent().find('.bUi-next').trigger('click');
+			   },
+			   onSlidePrev:function(){
+					   $('#slider_content').parent().parent().find('.bUi-prev').trigger('click');
+			   }
+		   });
+	});
+	</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "events" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+		<div class="pD2015 bM-bX sRcHbR">
+                    <div class="row-fluid">
+                        <div class="span9 fRm">
+                            <form class="form-search mRb0" action="{% url 'events_search_event' %}">
+                                <div class="mDl">
+                                    <h3 class="mDl-nM">
+                                        <i class="bUi-iCn-eVnT-24 fS16" aria-hidden="true"></i>
+                                        <span class="ib">Events
+                                            <i class="bUi-iCn-aNg-rT-12 cLr-lTgRy hMp" aria-hidden="true"></i>
+                                        </span>
+                                    </h3>
+                                </div>
+                                <div class="span5">
+                                    <input type="text" placeholder="Search for Event" id="keyword" name="keyword" class="">
+                                </div>
+                                <div class="span3">
+                                    <select class="bUiSlCt-wHt w100DrD" id="category" name="category">
+                                        <option>All Categories</option>
+										{% for cat in categories %}
+										<option>{{cat.name}}</option>
+										{% endfor %}
+                                    </select>
+                                </div>
+                                <div class="ib sUb-bTn mRl12 mRl0mP">
+                                    <button class="btn btn-primary" type="submit">
+                                    <i class="bUi-iCn-sRh-16" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+					    {% block searchblock %}
+						{% activetab 'addbutton' 'events' %}
+                       	{% include "default/add_object_search.html" %}
+						{% endblock %}
+                    </div>
+                </div>
+        <div class="row-fluid">
+            <div class="main span8">
+                <div class="fTrD-bL fTrd-lRg aDpTv tXt-tR cTrL-bR mRb30">
+                    <div class="fTrD-gR">
+                        <div class="fTrD-bL-iN">
+                        	{% with featured_events=featured %}
+							{% if featured_events %}
+                            <ul id="slider_content" class="fTrD-iTmS" style="width:10000px">
+                                {% for event in featured_events %}
+	                                <li class="fTrD-iTm" style="float:left">
+	                                	<input type="hidden" id="fbids" name="fbids" class="eids" value="{{event.id}}">
+	                                    <div class="fTrD-tXt sTrP">
+	                                        <div class="vAlGn">
+	                                            <div class="fTrD-tXt-iN">
+	                                                <span class="fTrD-cAt firm">{{event.category.all.0.name}}</span>
+	                                                <h1 class="fTrD-hD"><a href="{{event.get_absolute_url}}">{{event.title|truncatechars:30}}</a></h1>
+	                                                <div class="fTrD-mTa">
+	                                                    <ul class="iCnC-lSt iCn12 iCn-wHt">
+	                                                        <li class="iCnC-lSt-iTm"><i class="bUi-iCn-tMe-12"></i>{{event.start_date|ds_site_dateformat}}{% if event.start_time %}, {{event.start_time|ds_site_timeformat}}{% endif %} {% if event.end_time %} - {{event.end_time|ds_site_timeformat}}{% endif %}</li>
+	                                                        <li class="iCnC-lSt-iTm"><i class="bUi-iCn-mP-mKr-12"></i><a href="{% url 'events_view_venue_event' event.venue.slug %}">{{event.venue}}</a></li>
+	                                                    </ul>
+	                                                </div>
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- /.fTrD-iTms -->
+                            <ul id="slider_image" class="fTrD-iTmS" style="width:1000px;">
+                                {% for event in featured_events %}
+	                                <li class="fTrD-iTm" style="float:left">
+										<input type="hidden" id="fbids" name="fbids" class="eids" value="{{event.id}}">
+	                                    <figure class="fTrD-mDa">
+	                                        <span class="bUi-tMb-wPr fLxiMgW" href="{{event.get_absolute_url}}">
+	                                            <span class="bUi-tMb">
+	                                                <span class="bUi-tMb-pRpL">
+	                                                    <span class="bUi-tMb-cLp">
+	                                                    	{% with event.get_first_event_photo as event_img %}
+															{% if event_img %}
+		                                                        <span class="bUi-tMb-cLp-iN"><img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% thumbnail event_img 800x0 %}" alt="{{event.title}}"><span class="vRtL-aLn"></span></span>
+															{% else %}
+																<span class="iCn-bRdR50 oP25" title="{{event.title}}"><i aria-hidden="true" class="bUi-iCn-eVnT-24 cLr-gRy ib"></i></span>
+																<div class="vRtL-aLn"></div>
+															{% endif %}
+															{% endwith %}
+														</span>
+	                                                </span>
+	                                            </span>
+	                                        </span>
+	                                    </figure>
+	                                </li>
+                                {% endfor %}
+                            </ul>
+							{% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                <div class="pG-hD mRb10">
+				    <h3>{% if keyword%}Search Result for {{keyword}}{% else %}{% trans 'Events' %}{% endif %}</h3>
+				</div>            
+                <div class="tLbR hP" id="events_list_scroll_div">
+                    <div class="tLbR-iR">
+						{% if not keyword %}
+                        {% include 'default/events/top-events-day-types.html' %}
+						{% endif %}
+                        <div class="btn-toolbar pLrT">
+                            <div id="media-toggle" class="btn-group" data-toggle="buttons-radio">
+                            	<a class="btn btn-link c-lT mRr5" type="button" title='{% trans "Map View" %}' href="{% url 'locality_map_events' %}"><i aria-hidden="true" class="bUi-iCn-mP-vEw-aLt-16"></i></a>
+                                <button type="button" title='List View' class="btn btn-link c-lT {% if view_type == 'list' %}active{% endif %}" onclick="change_url_parm('list');"><i class="bUi-iCn-rE-oDr-aLt-16 " aria-hidden="true"></i></button>
+                                <button type="button" title='Grid View' class="btn btn-link mRl5 c-gD {% if view_type == 'grid' %}active{% endif %}" onclick="change_url_parm('grid');"><i class="bUi-iCn-tH-lR-aLt-16" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        <div class="pLrT mRr10">
+                            <select data-link="true" class="bUiSlCtbtn-link tXt-sMl">
+                                <option {% if not category %}selected="selected"{% endif %} data-location="{% url 'events_home_event' %}">{% trans 'All Events' %}</option>
+                                {% for cat in categories %}		
+                                <option {% if category.id == cat.id %}selected="selected"{% endif %} data-location="{% url 'events_attribute_search' cat.slug %}">{{cat.name}}</option>	
+					   			{% endfor %}
+                            </select>
+                        </div> 
+                    </div>
+                </div>
+                <ul class="modulesBrowseData tHcL {% if view_type == 'list' %}mDa-lT mDa-oT-lT{% else %}mDa-gD mDa-oT-tP{% endif %}"  >
+                    <li class="mDa-gRp"><!--gb li start -->
+                        <!--h3 class="mDa-gRp-tTl"><a href="#">Today</a> <small>{{event.start_date}}May 29, 2013</small></h3-->
+                    	<ul {% if view_type == 'grid' %}class="pDfX"{% endif %}>
+	                        {% for event in event_all %}
+	                            <li class="mDa" itemscope itemtype="http://schema.org/Event">
+									<input type="hidden" id="fbids" name="fbids" class="eids" value="{{event.id}}">
+	                                <div class="mDa-iN">
+	                                    <div class="mDa-wPr"> <a class="bUi-tMb-wPr tMb-60 bUi-tMb-210 fLxiMgH" href="{{event.get_absolute_url}}">
+	                                            <span class="bUi-tMb">
+	                                                <span class="bUi-tMb-pRpL">
+	                                                    <span class="bUi-tMb-cLp">
+	                                                        <span class="bUi-tMb-cLp-iN" itemscope itemtype="http://schema.org/ImageObject">
+															{% with event.get_first_event_photo as event_img %}
+																{% if event_img %}
+		                                                            <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% thumbnail event_img 400x0 crop %}" alt="{{event.title}}" title="{{event.title}}" itemprop="image">
+																{% else %}
+																	<span class="iCn-bRdR50 oP25" title="{{event.title}}"><i aria-hidden="true" class="bUi-iCn-eVnT-24 cLr-gRy ib"></i></span>
+																{% endif %}
+		                                                    {% endwith %}
+																<span class="vRtL-aLn">
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </span>
+	                                        </a> </div>
+	                                    <div class="mDa-bDy">
+                                        <span class="fS11 uC cLr-lTbLu hMp tXt-oVrF">
+										{% for cat in event.category.all %}
+	                                    	<a href="{{cat.get_absolute_url}}" itemprop="url"><span itemprop="name">{{cat.name}}</span>
+											{% if not forloop.last %},{% endif %}		
+											</a>
+										{% endfor %}
+                                        </span>
+                                            <div class="mDa-hVr aBsLt tR10">
+                                                <div class="pLrT iM cRsR-pNtR cLr-gRy">
+                                                    <i class="bUi-iCn-pPiE-24 ib" aria-hidden="true"></i>
+                                                    <span class="ib">{{event.get_rsvp_going_count}}</span>
+                                                </div>     
+                                            </div>
+	                                        <h3 class="mDa-hD mR50 fS14" title="{{event.title}}" itemprop="name"><a href="{{event.get_absolute_url}}" itemprop="url">{{event.title}}</a></h3>
+	                                        <div class="mDa-dTa">
+	                                            <ul class="iCnC-lSt iCn12 iCn-gRy">
+	                                                <li class="iCnC-lSt-iTm">
+													<time itemprop="startDate" datetime="{{ event.event_iso_start_datetime }}">{% if event.is_reoccuring %}{{event.get_current_date|ds_site_dateformat}}{% else %}{{event.start_date|ds_site_dateformat}} to {{event.end_date|ds_site_dateformat}}{% endif %}</time><time itemprop="endDate" datetime="{{event.event_iso_end_datetime}}"> {% if event.start_time %}, {{event.start_time|ds_site_timeformat}}{% endif %} {% if event.end_time %} - {{event.end_time|ds_site_timeformat}}{% endif %}</time>
+	                                                </li>
+	                                                <li class="iCnC-lSt-iTm">
+	                                                    <span itemprop="location">
+															<i class="bUi-iCn-mP-mKr-12"></i><a href="{% url 'events_view_venue_event' event.venue.slug %}" itemprop="url">{{event.venue}}</a>
+															<span  itemscope itemtype="http://schema.org/Place">
+																<span itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
+													              <meta itemprop="latitude" content="{{ event.venue.lat }}">
+													              <meta itemprop="longitude" content="{{ event.venue.lon }}">
+													            </span>
+															</span>
+														</span>
+	                                                </li>
+	                                            </ul>
+	                                        </div>
+	                                        <!--div class="mDa-hVr"> <a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="#"><i class="BUI-icon-63"></i> Share</a> </div-->
+	                                    </div>
+	                                </div>
+	                            </li>
+						{% empty %}
+							<div class="hT600 rLvE sCn">
+	                            <div class="tBl-bLk pDt0">
+	                                <div class="tBl-cEl">
+	                                    <span class="iCn-bRdR80 oP25"><i class="bUi-iCn-eVnT-24 fS42-1 cLr-gRy ib" aria-hidden="true"></i></span>
+	                                    <p class="bLk mRt20 fS16 cLr-lTgRy oP75">{{message}}</p>
+	                                </div>
+	                            </div>
+	                        </div>
+						{% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+                
+                {% if is_paginated %}
+                <div class="pGn pDb20 pGn-cTr">
+                    <ul>
+                    	{% if has_previous %}
+								<li><a href="{{url}}?page={{ prev }}{% if evdate %}&evdate={{evdate}}{% endif %}{% if search %}&keyword={{keyword}}&category={{category}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr" id="{{ prev }}"><i class="bUi-iCn-aNg-lT-12"></i></a></li>
+			            {% endif %}
+                        {% if not in_leading_range %}
+							{% for num in pages_outside_trailing_range %}
+								{% ifequal num current_page %}
+									 <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+								{% else %}
+									 <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if evdate %}&evdate={{evdate}}{% endif %}{% if search %}&keyword={{keyword}}&category={{category}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }} </a></li>
+								{% endifequal %}
+							{% endfor %}
+							<li><span>...</span></li>
+					    {% endif %} 
+                        {% for num in page_numbers %}
+							{% ifequal num current_page %}
+								 <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+							{% else %}
+								<li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if evdate %}&evdate={{evdate}}{% endif %}{% if search %}&keyword={{keyword}}&category={{category}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+							{% endifequal %}
+						{% endfor %}
+                        {% if not in_trailing_range %}
+							<li><span>...</span></li>
+							{% for num in pages_outside_leading_range reversed %}
+								{% ifequal num current_page %}
+									 <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+								{% else %}
+									<li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if evdate %}&evdate={{evdate}}{% endif %}{% if search %}&keyword={{keyword}}&category={{category}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+								{% endifequal %}
+							{% endfor %}
+						{% endif %}
+                        {% if has_next %}
+							<li><a  href="{{url}}?page={{ next }}{% if evdate %}&evdate={{evdate}}{% endif %}{% if search %}&keyword={{keyword}}&category={{category}}{% endif %}&view={{view_type}}" id="{{next}}" class="bm_pgntn_anchr"><i class="bUi-iCn-aNg-rT-12"></i></a></li>
+						{% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            
+            <aside class="sD-bR span4">
+            	<div>
+	                <section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right"></section>
+	            </div>
+				<div>
+	                <section class="sCn">
+	                    <div class="sCn-tTl">
+	                        <h3>
+	                            <span>
+	                                Events Gallery <!--a href="{% url 'gallery_listing' 'events' %}" class="tXt-lNk rGhT">View all</a-->
+	                            </span>
+	                        </h3>
+	                    </div>
+	                    <div class="fTrD-bL aDpTv fTrd-lRg tXt-cTr cTrL-dFt">
+	                        <div class="fTrD-bL-iN">
+	                            <ul id="sL6" class="fTrD-iTmS" style="width:10000px;">
+	                                {% for event in event_all %}
+									{% with event.album as gallery %}
+									{% if gallery %}
+	                                <li class="fTrD-iTm" style="float:left;">
+	                                    <div class="fTrD-tXt fAd">
+	                                        <div class="vAlGn">
+	                                            <div class="fTrD-tXt-iN">
+	                                                <h4 class="fTrD-hD uC"><a href="{{event.get_absolute_url }}">{{event.title|truncatechars:35}}</a></h4>
+	                                                <!-- div class="fTrD-mTa">
+	                                                    <ul class="iCnC-lSt iCn12 iN-bLk iCn-wHt">
+															<li class="iCnC-lSt-iTm"><i class="bUi-iCn-cLdR-12"></i>{{gallery.album_photos.all.count}}</li>
+															<li class="iCnC-lSt-iTm"><i class="bUi-iCn-uSr-12"></i>{{gallery.most_viewed}}</li>
+															<li class="iCnC-lSt-iTm"><i class="bUi-iCn-rPl-rT-12"></i><a href="#"></a></li>
+														</ul>
+	                                                </div -->
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                    <figure class="fTrD-mDa">
+	                                        <span class="bUi-tMb-wPr fLxiMgW" href="#">
+	                                            <span class="bUi-tMb">
+	                                                <span class="bUi-tMb-pRpL">
+	                                                    <span class="bUi-tMb-cLp">
+	                                                        <span class="bUi-tMb-cLp-iN">
+																{% with gallery.get_cover_image as event_img %}
+	                                                            <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if event_img %}{% thumbnail event_img 400x0 crop %}{% else %}{{STATIC_URL}}themes/img/no-event.png{% endif %}" alt="{{event.title}}">
+	                                                            {% endwith %}
+																<span class="vRtL-aLn">
+	                                                            </span>
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </span>
+	                                        </span>
+	                                    </figure>
+	                                </li>
+									{% endif %}
+									{% endwith %}
+	                                {% endfor %}
+	                                
+	                            </ul>
+	                        </div>
+	                        <!-- /.fTrD-bL-iN --> 
+	                    </div>
+	                    <!-- /.fTrD-bL --> 
+	                </section>
+	            </div>
+				<div id="populr-venue">
+				
+				</div>
+                <div>
+	                {% include 'default/likebox.html' %}
+	            </div>
+				<div >
+	            	{% show_today_tickets %}
+				</div>
+				<div >
+	            	{% show_recent_events_review %}
+				</div>
+            </aside>
+        </div>
+    </div>
+    <script type="text/javascript">
+	{% if day != 'all' or scroll == 'True' %}
+	$(document).ready(function(){
+		var scrollTop = $('#events_list_scroll_div').offset().top;
+		$('html,body').animate({ scrollTop: scrollTop }, 'slow');						
+	});	
+	{% endif %}
+    function change_url_parm(value){
+	    $(".bm_pgntn_anchr").each(function(){
+			$(this).attr("href", function(i,origValue){
+	            return origValue.replace(/(view=)[a-z]+/ig,'view='+value); 
+	        });
+		});
+	}
+	{% if page > 1 %}
+    	$(document).ready(function(){
+			var scrollTop = $('#events_list_scroll_div').offset().top;
+			$('html,body').animate({ scrollTop: scrollTop }, 'slow');					
+		});	
+    {% endif %}
+    </script> 
+	<script>
+	ajax_popular_venue_url = "{% url 'ajax_popular_venue' %}";
+	$(document).ready(function(){
+        if($("#event_date").length){
+            $("#event_date").datepicker({
+                zI: false,
+                dateFormat: "dd/mm/yy",
+                minDate: new Date(),
+                onSelect: function(){
+                    evdate = $(this).val();
+                    location.assign("{% url 'events_home_event' %}?evdate="+evdate);
+                }
+            });
+        }
+		$.ajax({  
+			type: "GET",  
+			url: ajax_popular_venue_url,  
+			dataType:'JSON',
+			success : function(data){
+						$('#populr-venue').empty().html(data.popvenues_html).fadeIn();
+
+			},
+			
+
+		});
+					
+	});
+	</script>
+           
+{% endblock %}    

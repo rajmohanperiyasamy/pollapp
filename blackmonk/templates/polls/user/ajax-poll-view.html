@@ -1,0 +1,66 @@
+{% load comparison %}
+{% load i18n %}
+{% if poll %}
+    {% if poll.expiry > 0 %}										
+	<div id="quick_vote" class="content group">
+		<h4 class="v_title">v<br>o<br>t<br>e</h4>							
+	    <form action="#" type="POST" name="poll_form" id="poll_form">
+			<input type="hidden" name="mode" id="mode" value="{%ifequal poll.type 'is_single'%}single{%else%}multi{%endifequal%}"/>
+			<input type="hidden" name="pid" id="pid" value="{{poll.id}}"/>
+			<input type="hidden" name="status" id="status" value="{% if status == 'voted' %}voted{% else %}NotVoted{% endif %}"/>
+	        <div class="qv_topic">
+	            <h5>{{ poll.title }}</h5>
+	        </div>
+			{% if poll.status == 'voted'%}
+		        <div class="quick_vote4" id="quick_vote">
+					<div id="poll_container" class="result">
+						<ul class="poll_results group">
+							{% for c in results %}
+								<li class="poll_result_group">
+								 	<label for="poll_result_01" class="poll_result_label">
+								 		<span class="poll_result_text">{{c.choice}}</span>
+									</label>
+								 	<div id="poll_result_01" class="poll_result_feedback">
+								 		<div style="width: {{ c.perc }}%;" class="poll_result_feedback_bar"></div>
+									</div>
+						 			<span class="poll_result_votes">({{c.votes}})</span>
+						 			<span class="poll_result_per">{{ c.perc }}%</span>
+						 			<div class="clear"></div>
+								</li>
+							{% endfor %}
+						</ul>
+						<p class="poll_total_votes">Total Votes: {{poll.total_votes}}</p>  
+					</div>                                		
+				</div>
+			{% else %}
+				<div class="quick_vote4">
+                	<ul id="poll_ul">
+					{% for c in choice %}
+	                    <li>
+						{% if poll.is_single %}
+							<span class="cform-radio-container"><input type="radio" class="poll_input" value="{{ c.choice }}" name="vote" id="reg_lvote{{c.choice}}" autocomplete="off" /><span class="cform-radio-element"></span></span>
+						{% else %}
+							<span class="cform-checkbox-container"><input type="checkbox" class="poll_input" value="{{ c.choice }}" name="vote" id="reg_lvote{{c.choice}}" autocomplete="off" /><span class="cform-checkbox-element"></span></span>
+						{% endif %}
+							<label for="reg_lvote{{c.choice}}" id="Poll_Q1L{{ forloop.counter }}" for="PollA{{ forloop.counter }}"> {{ c.choice }} </label>
+						</li>
+					{% endfor %}
+					</ul>
+					{% if total_votes > 0 %}
+						<div class="quick_vote_result">
+							<div id="poll_loading"></div> 
+							<a href="javascript:void(0)" onclick="poll_view_result()" id="view_results">{% trans "view results" %}</a>
+						</div>
+					{% endif %}
+				</div>
+				<div class="quick_vote_submit group">
+                    <div class="quick_vote_btn">
+						<a class="btn_blue poll_ajax click_pvnt" onclick="poll_voting($(this))" href="javascript:void(0)" id="poll_vote"><span><strong>{% trans "VOTE NOW" %}</strong></span></a>
+					</div>
+				</div>
+			{% endif %}
+		</form>
+	    <div class="clear"></div>
+	</div>
+	{% endif %}
+{% endif %}

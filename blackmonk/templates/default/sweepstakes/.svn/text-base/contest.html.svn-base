@@ -1,0 +1,91 @@
+{% load i18n %}
+{% if c_exist or uc_exist %}
+<div class="add_cat clearfix" id="replace_stake" style="padding:10px 20px;"> 
+	<fieldset style="margin:0; padding:0;margin-bottom:10px;">
+		<div class="title" style="padding-bottom:6px;">
+			<h2 style="font:bold 15px/16px Arial, Helvetica, sans-serif">
+				{{user_msg}}
+			</h2>
+		</div>
+		<dl class="vertical">                     
+			<dt>&nbsp;</dt>
+			<dt></dt>
+			<dd>
+    			<div style="text-align:center; padding-top:10px;">
+    				{% if uc_exist %}
+						<button type="button" class="button prime" onclick="$.colorbox.close()">{% trans "Close" %}</button>
+					{% else %}
+						<button type="button" class="button prime" onclick="show_from()">{% trans "Continue" %}</button>
+					{% endif %}
+				</div>									
+			</dd>
+		</dl>
+	</fieldset>    
+</div>
+{% endif %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#id_cont_reg_form").validate({
+		highlight: function(element, errorClass){$(element).css('border','1px solid #FF0000').css('border-radius','4px');},
+		unhighlight: function(element, errorClass){$(element).css('border','2px solid #000').css('border-radius','4px');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	first_name: "required",
+			last_name: "required",
+			address: "required",
+			city: "required",
+			zip: "required",
+			phone: "required",
+			termbox:"required"	
+	   	}
+	});
+});
+</script>
+{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+{% if form.errors %}
+	<div class="messageerror" >
+		<strong>{% trans 'There is a problem with your submission' %}</strong>
+        <ul style="list-style:square;margin-left:20px;">
+       		{% for field in form %}
+       			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+      	 	{% endfor %}
+		</ul>
+ 	</div>
+{% endif %}
+<div class="add_cat clearfix" id="formContainer" style="{% if c_exist %}display:none;{% endif %}padding:10px 20px;"> 
+     <form action="/sweepstakes/saveuser/?cid={{contest.id}}" method="post" name="cont_reg_form" id="id_cont_reg_form" class="clearfix coloumn">
+		<fieldset style="margin:0; padding:0;">
+    		<div class="title" style="padding-bottom:6px; border-bottom:1px solid #e6e6e6; margin-bottom:10px;">
+				<h2 style="font:bold 15px/16px Arial, Helvetica, sans-serif">{% trans "Register Now" %}</h2>
+			</div>
+			<dl class="horizontal">
+	            <dt><label for="id_first_name">First name</label></dt>
+    			<dd>{{form.first_name}}</dd>
+    			<dt><label for="id_last_name">Last name</label></dt>
+    			<dd>{{form.last_name}}</dd>
+        		<dt><label for="id_address">Street address</label></dt>
+    			<dd>{{form.address}}</dd>
+				<dt><label for="id_city">City</label></dt>
+    			<dd>{{form.city}}</dd>
+				<dt><label for="id_zip">Zip code</label></dt>
+    			<dd>{{form.zip}}</dd>
+				<dt><label for="id_phone">Phone</label></dt>
+    			<dd>{{form.phone}}</dd>
+			</dl>
+			<dl class="vertical">                     
+				<dt>&nbsp;</dt>
+				<dd>
+					<input id="agreeterms" checked="checked" value="on" name="termbox" type="checkbox"> 
+					<label for="agreeterms">I have read and agree to the <a href="javascript:void(0)" {% if sweepstakes.static_page %}onclick="javascript:window.open('{% url 'contest_rules' sweepstakes.static_page.id %}', 'f','left='+((window.screenX||window.screenLeft)+10)+',top='+((window.screenY||window.screenTop)+10)+',height=530px,width=670px,resizable=false,scrollbars=1')";return false;{% endif %}>Official Rules</a>.</label></dd> 
+				<dt><div class="divider"></div></dt>
+				<dt></dt>
+				<dd>
+        			<div style="text-align:center; padding-top:10px;">
+        				<input name="" value="Submit" class="button" type="button" onclick="register_user({{sweepstakes.id}});" style="padding:3px 10px;font-weight:bold;background:url({{STATIC_URL}}themes/green/images/btn/enter_btn_green.png) no-repeat 0 0 transparent;text-indent:-99999px;padding:0px; height:37px; width:128px;border:none !important;" />
+					</div>									
+				</dd>
+			</dl>
+		</fieldset>    
+	</form>
+</div>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>

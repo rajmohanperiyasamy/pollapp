@@ -1,0 +1,16 @@
+{% extends 'default/base.html' %}
+{% load i18n %}
+{% block pagetitle %}{% trans 'Deals - Unsubscribe' %} {% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/forum.css">
+<div style="margin: 20px 0">
+	<h1 style="font:18px arial, sans-serif;font-weight:bold;color:#990000">
+		{% trans "Are you sure you want to unsubscribe form Deals" %} ?
+	</h1><hr/>
+	<form action="{% url 'deal_unsubscribe' id %}" method="post">{% csrf_token %}
+    	<p><input type="submit" value="{% trans "Yes, I am sure." %}" />
+    	&nbsp;<input type="button" onClick="javascript:window.location.replace('/deals/');" value="{% trans "Cancel" %}" /></p>
+	</form>
+</div>
+{% endblock %}
+ 

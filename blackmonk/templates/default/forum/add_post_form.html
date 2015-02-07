@@ -1,0 +1,20 @@
+ {% load i18n %}
+ <div id="respond" style="margin:30px 0 20px 20%; padding-left:0;">
+ {% if forum %}
+ <h3>{% trans 'Add your Topic' %}</h3>
+ {% else %}
+ <h3>{% trans 'Add your Reply' %}</h3>
+ {% endif%}
+        <form method="post" class="post-form"  id="post-form"   action="{{ form_url }}" >{% csrf_token %}
+       <div class="preview-box" style="display:none">
+       	 <div class="header" ><h3>{% trans 'Preview' %}</h3></div>
+       	 <div class="content"></div>
+    	</div>
+        <input type="hidden" name="markup" id="id_markup" value="bbcode"/>
+        <label for="postSubject">{% trans 'Subject' %}:</label>
+        <p><input type="text" size="30" name="name" id="postSubject" class="input_text large"  {% if not forum %} value="Re:{{topic.name}}" readonly="readonly" {% endif %}></p>
+        <label for="postMessage">{% trans 'Post' %}:</label>
+        <p style="width:553px;"><textarea rows="7" name="body" id="bbcode"  class="large">{{quote}}</textarea></p>
+<div class="form_footer"> <button type="button" id="preview-button" name="preview"  class="button super green large"><span>{% trans 'Preview' %}</span></button> <button type="submit" class="button super red large"><span>{%if forum%}{% trans 'Post Topic' %}{%else%}{% trans 'Post Reply' %}{%endif%}</span></button></div>
+</form>                                            
+                        </div> <!-- /respond --> 

@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="section">
+    <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.o16l80gpsk7h" target="_blank"><span class="icon">?</span>Quick help</a>
+    <hr>
+    <h5>{% trans 'Export Users' %}</h5>
+    <p>{% trans 'The exporting of users will save in an Excel sheet CSV format.' %}</p>
+    <p>{% trans 'Order ID(ASC): Ascending Order, Order ID(DSC): Descending Order, Name(Alpahbetical Order)' %}</p>
+    <hr/>
+    <p><a href="{% url 'admin_display_users' %}"> + Manage User</a></p>
+    <hr/>
+</div>

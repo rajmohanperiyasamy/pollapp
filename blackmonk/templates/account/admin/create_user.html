@@ -1,0 +1,133 @@
+{% extends "admin_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "users" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Admin | Manage Users{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+{% endblock %}
+{% block content %}
+	<div class="container group">
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="{%url 'admin_users' %}" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Users</a></li>                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Add User</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Add Users</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="{%url 'admin_users' %}" class="side_menu">Manage Users</a></li>  
+                        <li><a href="{%url 'admin_createuser' %}" class="side_menu on">Add User</a></li>  
+                        <li><a href="{%url 'admin_searchuser' %}" class="side_menu">Search User</a></li>
+                        <li><a href="{%url 'admin_add_seo' %}" class="side_menu">Manage SEO</a></li>                       
+                    </ul>
+                </div> 	
+ <div class="main_col">
+
+                
+					<div id="formContainer" class="clearfix" style="border:none;padding:0px;"> 
+        	  	  		<form action="{%url 'admin_createuser' %}" name="mform" id="mform" method="post" class="c-13 form_left clearfix coloumn" style="background:none;border:none;">{% csrf_token %}
+        	  	  		
+                          <fieldset id="basic_info" style="padding:0; margin:0;">
+                  <div class="title"><h2>Account Information</h2></div>
+{% if form.errors %}
+                	 <div  class="container  errors" style="display: block;">
+                	   <span>There is a problem with your submission</span>
+                       <ul>
+               			 {% for field in form %}
+               			 {% if  field.errors%}
+               	            <li>{%for error in field.errors%}
+               	            	{{error}}
+               	            {%endfor%}</li>
+           	            {% endif %}
+              	 		 {% endfor %}
+             		 		  </ul>
+             		 		 </div> 
+                 		  {% endif %}
+                 		 
+ 					<dl class="horizontal">
+           			  <dt>
+                       	<label for="first_name">First Name</label>
+           			  </dt>
+                      			<dd>
+                   				  {{form.firstname}}
+           			  </dd>
+           			  <dt>
+
+                       	<label for="last_name">Last Name</label>
+           			  </dt>
+                      			<dd>
+                      			 {{form.lastname}}
+                   				 
+           			   <dt>
+
+                       	<label for="email">Email</label>
+           			  </dt>
+                      			<dd>
+                   				  <input name="email" id="email" type="text" class="textField normal" value=""/>
+           			  </dd>
+           			
+                      			
+                      			<dt>
+       				  <label for="city">Locality</label></dt>
+
+                      			<dd>
+                   				   {{form.locality}}
+                                  
+                          </dd> 
+                         
+						<dt>&nbsp;</dt>
+                            			<dd><div class="divider" style="">&nbsp;</div></dd>                            
+           			  <dt>
+                       	<label for="user_name">User Name</label>
+           			  </dt>
+                      			<dd>
+                   				  {{form.username}}
+           			  </dd>
+           			  <dt>
+                       	<label for="password">Password</label>
+           			  </dt>
+                      			<dd>
+                   				  {{form.password1}}
+           			  </dd>
+           			  <dt>
+                       	<label for="verify_password">Verify password</label>
+           			  </dt>
+                      			<dd>
+                   				 {{form.password2}}
+           			  </dd> 
+                         
+						<dt>&nbsp;</dt>
+                            			<dd><div class="divider" style="">&nbsp;</div></dd>                                                                    
+           			               		
+                         
+						
+                         
+						                                                                      
+                     
+
+					    		<dt></dt>
+                      			<dd><br />
+                                    <input name="goback" value="Submit" class="inputsubmit on" type="submit"/>
+                                <input name="continue" value="Cancel" class="inputsubmit off" type="button" onclick="javascript:history.back();" />
+
+                                    
+                      			</dd>
+							</dl>                                                        
+                    </fieldset>                    			      
+						</form>
+					</div>
+                </div> 
+			 <hr />
+            </div>
+        </div>
+ {%endblock%}

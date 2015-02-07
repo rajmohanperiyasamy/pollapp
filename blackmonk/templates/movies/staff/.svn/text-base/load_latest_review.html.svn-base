@@ -1,0 +1,52 @@
+{% load ds_utils %}
+{% load i18n %}
+{% load upload_tags %}
+<div class="preview-group">
+	{% if movie_preview.get_critic_reviews  %}
+	<div class="preview-items-head group">
+		
+		<div class="right-item"><div class="cform-button prime add-review-lightbox critic-review-lightbox" href="{% url 'movie_ajax_add_critics' %}?movie_id={{movie_preview.id}}" title="{% trans 'Add Critic Review' %}"><span>{% trans 'Add Critic Review' %}</span></div></div>
+		<h3>{% trans 'Critic Reviews' %}</h3>
+    </div>
+	<ol class="data-table-inset">
+	 {% for mp in movie_preview.get_critic_reviews %}
+    	<li class="table-list-row manage-items" id="delete_after_{{mp.id}}">
+         
+		    <div class="table-list-row-inner group" id="review_id_{{mp.id}}">
+				<div class="review-head">
+                	<h3><strong class="label">{% trans 'Source:' %}</strong>{{mp.source.source_title}}</h3>
+					<h3><strong class="label">{% trans 'Title:' %}</strong>{{mp.title}}</h3>
+                    <p class="sub-head">
+                        <span><strong class="label">{% trans 'Rating:'%}</strong>{{mp.rating}}/5</span>
+                        <span><strong class="label">{% trans 'Reviewer'%}</strong>{{mp.reviewed_by}}</span>
+                        <span><strong class="label">{% trans 'Published:'%}</strong>{{mp.published_on}}</span>
+                    </p>
+                </div>
+                <div class="review-details">
+                	<p>{% autoescape off %}{{mp.review}} {% endautoescape %}</p>
+                </div>
+               	<div class="action-buttons">
+                    <div>
+                        <a href="{% url 'staff_movie_edit_critic' %}?id={{mp.id}}&mid={{movie_preview.id}}" class="tttxt-w review-edit" title="{% trans 'Edit Critic Review' %}"><span class="action-icon icon-edit"></span></a>
+                        <a href="javascript:void(0)" class="tttxt-w" onclick="if(gettext(confirm('Are you sure you want delete this review ?'))){delete_review({{mp.id}});}" original-title="Delete"><span class="action-icon icon-delete"></span></a>
+					</div>                                                            
+              	</div>
+            </div>
+			
+		</li>
+		{% endfor %}
+    </ol> <!-- end table --> 
+	{% else %}
+	<div class="preview-items-head group">
+       <h3>{% trans 'Critic Reviews' %}</h3>
+    </div>
+     <div class="no-data">
+    	<p>{% trans 'No Review found for this movie.'%}</p>
+        {% if perms.movies.add_movies %}
+		<div class="button-insde">
+        	<span class="btn-txt-inline-prime critic-review-lightbox" href="{% url 'movie_ajax_add_critics' %}?movie_id={{movie_preview.id}}" title="Add Critic Review"><span class="btn-txt">{% trans 'Add Review' %}</span></span>
+        </div>
+		{% endif %}
+     </div>
+	{% endif %}
+</div>

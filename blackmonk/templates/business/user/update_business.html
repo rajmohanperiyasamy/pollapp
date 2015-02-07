@@ -1,0 +1,669 @@
+{% extends "user_base.html" %}
+{% load i18n %}
+{% load upload_tags %}
+{% load tabs %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/cropper.css">
+	<style>
+		.cropper-preview img{
+			max-width:none;
+		}
+	</style>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor4/ckeditor.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "leftnav" "business" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+    	<div class="span10 sP9mX979 sP12mX767">
+            <div class="row-fluid">
+				<div class="main span9">
+					<section class="sCn pD0">
+						<div class="cLrFx pD20">
+							<div class="pLlT">
+								<h3 class="mR0 tRnCt">{% if not business %}Submit{% else %}Update{% endif %} Business</h3>
+							</div>
+						</div>
+						<!--hr class="mRb12 mRt0"-->
+						<div class="row-fluid">
+                        	<ul class="nav nav-tabs tB-cStM pLlT pD020 mR0">
+                                <li class="active"><a href="{% url 'user_update_business' business.id %}">Edit Business</a></li>
+                            	<li><a href="{% url 'user_business_images' business.id %}">Images</a></li>
+                        		<li><a href="{% url 'user_business_product' business.id %}">Product</a></li>
+                    			<li><a href="{% url 'user_business_coupon' business.id %}">Coupons</a></li>
+                            </ul>	
+                        </div>
+						<hr class="mRb12 mRt0">
+						<div class="pD20">
+                           {% if form.errors or wform.errors or aform.errors  %}
+							<div class="messageerror" >
+								<span style="font-size:1.2em;font-weight:250;"><strong>There is a problem with your submission</strong></span>
+						        {% if form.errors %}
+								<ul>{% for field in form %}
+								 	{% if field.errors%}<li>{%for error in field.errors%}{%endfor%}</li>{% endif %}
+						 		 {% endfor %}</ul>
+								{% endif %}
+								{% if wform.errors %}
+								<ul>{% for field in wform %}
+								 	{% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						 		 {% endfor %}</ul>
+								{% endif %}
+								{% if aform.errors %}
+								<ul>{% for field in aform %}
+								 	{% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						 		 {% endfor %}</ul>
+								{% endif %}
+							</div>
+						{% endif %}
+							<form class="form-horizontal uSr-aCnT mRb0" id="mform" name="mform" action="{% url 'user_update_business' business.id %}" method="post">{% csrf_token %}
+                                <div class="control-group">
+                                    <label class="control-label" >Business Name<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+										{{form.name}}
+									<input style="" type="hidden" onkeyup="fillslug_add(this.value);" name="slug" value="{% if slug %}{{ slug }}{% endif %}" id="id_slug" class="default-url slug_input">
+                                    </div>
+                                </div>
+								<div class="control-group">
+									<input type="hidden" id="logo_height" name="logo_height">
+									<input type="hidden" id="logo_width" name="logo_width">
+									<input type="hidden" id="logo_x1" name="logo_x1">
+									<input type="hidden" id="logo_x2" name="logo_x2">
+									<input type="hidden" id="logo_y1" name="logo_y1">
+									<input type="hidden" id="logo_y2" name="logo_y2">
+                                  <label class="control-label"></label>
+								  <div class="controls">
+                                      <div id="fileupload">
+									 		<div class="fileupload-content">
+									    		<ul class="files bm-uploader-list mR0">
+									    		</ul>
+											</div>
+							            	<div class="upload-button-wrapper" id="upload-button-wrapper">
+							                	<a href="javascript:void(0)" class="btn btn-primary fS12 fW-bLd ">{% trans 'Attach Logo' %}</a>
+							                    <div class="fileinput-button">
+							                    	<input type="file" size="1" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+												</div>
+							                </div>
+										</div>
+									</div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Parent Category<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        <select  title='Choose one of the following...' id="id_category" name="category" class="iSp8 bM-sLt" onchange="loadsubcategory()">
+                                           	<option value=""></option>
+											{% for cat in category %}
+                                            <option {% if cat.id == parent_cat.id %}selected="selected"{% endif %} value="{{cat.id}}">{{cat}}</option>
+											{% endfor %}
+                                        </select>
+                                        <span class="help-block">Click and select multiple categories related to the business.</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Sub Category<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        <select multiple="multiple" title='Choose one of the following...' name="sub_category" id="id_sub_category" class="iSp8 bM-sLt">
+                                          {% for ccat in parent_cat.getChildCategory %}
+												<option {% for bcat in business.categories.all %}{% if bcat.id == ccat.id %}selected="selected"{% endif %}{% endfor %} value="{{ccat.id}}">{{ccat}}</option>
+											{% endfor %}
+                                        </select>
+                                        <span class="help-block">Click and select multiple categories.</span>
+                                    </div>
+									<div id="attributes_loading" style="position: absolute; right: 198px; top: 7px; display: none;">
+										<img src="{{STATIC_URL}}ui/images/global/loading-s.gif" alt="....">
+									</div>
+                                </div>
+								<div id="attributes" class="cr_wmr">
+                        			{% include 'business/user/update_attribute.html' %}
+                   				</div>
+                                <hr class="oTsT-hRz20">
+                                <div class="control-group mRb5">
+                                    <label class="control-label pDt0">We Accept </label>
+                                    <div class="controls">
+                                        <label class="radio inline fW-nRmL">
+                                            <input type="radio" name="we_accept" {% if not business %}checked="checked"{% else %}{% if not business.paymentoptions.all %}checked="checked"{% endif %}{% endif %} class="checkbox" value="0" > I prefer not to specify the modes of payment options. 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <label class="radio inline fW-nRmL">
+                                            <input type="radio" name="we_accept" {% if business %}{% if business.paymentoptions.all %}checked="checked"{% endif %}{% endif %} class="checkbox" value="1" > Let me specify the modes of payment options. 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group mRt-20" id="we_acpt" {% if not business.paymentoptions.all %} style="display:none;" {% endif %}>
+                                    <div class="controls clearfix">
+                                        <div class="iSp8">
+                                            <div class="span6 pLlTmP mRt10 pD0 sP6mP">
+                                                <label class="checkbox inline fW-nRmL">
+                                                    {{form.paymentoptions}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group mRb5">
+                                    <label class="control-label pDt0">Working Hours</label>
+                                    <div class="controls">
+                                        <label class="radio inline fW-nRmL">
+                                            <input type="radio" name="operating_hours" {% if not business %}checked="checked"{% else %}{% if not business.operating_hours %}checked="checked"{% endif %}{% endif %} class="checkbox" value="0" > I prefer not to specify operating hours. 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <label class="radio inline fW-nRmL">
+                                            <input type="radio" name="operating_hours" {% if not business %}checked="checked"{% else %}{% if business.operating_hours %} checked="checked"{% endif %}{% endif %} class="checkbox" value="1"> My operating hours are 
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                {% include 'business/user/update_working_hours.html' %}
+                                <hr class="oTsT-hRz20">
+                                <div class="control-group mRb0">
+                                    <label class="control-label pDt0">Networks</label>
+                                    <div class="controls mRb20">
+                                        <label class="fW-nRmL">Facebook</label>
+                                        {{form.fb_url}}
+                                    </div>
+                                    <div class="controls mRb20">
+                                        <label class="fW-nRmL">Google Plus</label>
+                                        {{form.gooleplus_url}}
+                                    </div>
+									<div class="controls mRb20">
+                                        <label class="fW-nRmL">Twitter</label>
+                                        {{form.twitter_url}}
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                  <label class="control-label">Attach Files</label>
+								  <div class="controls">
+                                      <div id="fileuploaddoc">
+									 		<div class="fileupload-content">
+									    		<ul class="files bm-uploader-list">
+									    		</ul>
+											</div>
+							            	<div class="upload-button-wrapper">
+							                	<a href="javascript:void(0)" class="btn btn-primary fS12 fW-bLd ">{% trans 'Attach Files' %}</a>
+							                    <div class="fileinput-button">
+							                    	<input type="file" size="1" name="file" id="id_file" multiple=""  accept="*" tabindex="-1">
+												</div>
+												<span class="help-block iSp10">Attach a Brochure/Menu of the business.(Attachment can be PDF/Word format)</span>
+							                </div>
+										</div>
+									</div>
+                                </div>
+                                <hr class="oTsT-hRz20">
+                                <div class="control-group mRb10">
+                                    <label class="control-label" >Address<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.address1}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{aform.address2}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Zip/Postal Code<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.zip}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >State<!--em class="cLr-rEd">*</em--></label>
+                                    <div class="controls">
+                                        {{aform.state}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >City/Town<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.city}}
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <div class="controls mR0">
+                                    	<div id="map-canvas" style="height:220px"></div>
+										<input type="hidden" name="lat_lng" id="lat_lng" value=""/>
+										<input type="hidden" name="zoom" id="zoom" value=""/>
+                                    </div>
+                                </div>
+                                <hr class="oTsT-hRz20">
+                                <div class="control-group">
+                                    <div class="controls">
+                                    	<div class="span4 sP6mP pLlTmP">
+                                        	<label >Main Phone</label>
+                                        	{{aform.telephone1}}
+                                        </div>
+                                        <div class="span4 sP6mP pLlTmP pDl6mP">
+                                        	<label >Mobile</label>
+                                        	{{aform.mobile}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Fax</label>
+                                    <div class="controls">
+                                        {{aform.fax}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Email address</label>
+                                    <div class="controls">
+                                        {{aform.email}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Website</label>
+                                    <div class="controls">
+                                        {{aform.website}}
+                                    </div>
+                                </div>
+                                 <div class="control-group">
+                                    <label class="control-label" >Description<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{form.description}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">Tags</label>
+                                    <div class="controls">
+                                       <!--input id='tags' type="hidden" class='tags' name="tags"  value=""-->
+                                        <input name="tags" id='tags' type="text" value="{% for tag in business_tags %}{{tag}}{% if not forloop.last %},{% endif %}{% endfor %}" class="iSp8 tagsinput" placeholder="tags">
+                                    </div>
+                                </div>
+                                <hr class="oTsT-hRz20 mRb0">
+                                <div class="row-fluid">
+                                    <div class="form-actions pD0 pLrT">
+                                    <!-- 
+                                        <button class="btn btn-light fS12 fW-bLd " type="button" onclick="window.location.replace('{% url 'user_manage_business' %}')">Cancel</button>
+                                        <button class="btn btn-danger fS12 fW-bLd id_business_submit" type="submit">update</button>
+                                     -->
+                                        <button class="btn btn-light fS12 fW-bLd " type="button" onclick="window.location.replace('{% url 'user_manage_business' %}')">Cancel</button>
+                                        <button class="btn btn-danger fS12 fW-bLd " type="submit">{% if business.is_paid and business.sp_cost %}Update{% else %}Next{% endif %}</button>
+                                    </div>
+                                </div>
+                            </form>
+						</div>
+					</section>
+				</div> <!-- /.main -->
+				<aside class="sD-bR span3">
+					<div>
+						<section class="tXt-cTr pD0 bNr-aD"> 
+                           
+                        </section>
+					</div>
+				</aside>
+			</div>  <!-- /.row-fluid -->
+		</div>  <!-- /.span10 -->
+{% endblock %}
+
+{% block footerarea %}
+<!-- TAGS -->
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+<!-- TAGS -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/cropper.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/business/staff.js"></script>
+<script src="{{ STATIC_URL }}js/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script>
+function getLogoDimension(){
+	var dim = $("#logo_img").cropper('getData')
+	$('#logo_height').val(dim.height);
+	$('#logo_width').val(dim.width);
+	$('#logo_x1').val(dim.x1);
+	$('#logo_x2').val(dim.x2);
+	$('#logo_y1').val(dim.y1);
+	$('#logo_y2').val(dim.y2);
+}
+function logo_upload(url,limit) {
+    'use strict';
+    // Initialize the jQuery File Upload widget:
+    $('#fileupload').fileupload({
+ 	   dropZone:$("#bm-dropzone"),
+ 	   sequentialUploads:true,
+	   maxNumberOfFiles:limit,
+	   autoUpload:true,
+	   downloadTemplate:$('#logo-download-template'),
+	   url:url,
+	   acceptFileTypes:/(\.|\/)(gif|jpe?g|png)$/i,
+	   complete: function () {
+		    setTimeout(function(){
+				$(".cropper").cropper({
+				    aspectRatio: 100/70,
+				    preview: ".cropper-preview",
+				});
+	        },1000);
+	   },
+ 	   drop:function (e, data) {
+ 	   	  	$("#bm-dropzone_area").hide();
+ 	   }
+ 	  
+    });
+	$(document).bind('dragover', function (e) {
+		$("#bm-dropzone_area").show();
+    	e.preventDefault();
+	});
+	$(document).bind('drop', function (e) {
+		$("#bm-dropzone_area").hide();
+		e.preventDefault();
+    	
+	});
+ // Load existing files:
+    get_images(url);
+    setTimeout(function(){
+    	$('.cropper_controls').hide();
+	},500);
+    // Open download dialogs via iframes,
+    // to prevent aborting current uploads:
+    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+        e.preventDefault();
+        $('<iframe style="display:none;"></iframe>')
+            .prop('src', this.href)
+            .appendTo('body');
+        setTimeout(function(){
+        	inline_text()
+        },1000);
+    });
+   //inline_text()
+}
+</script>
+<script type="text/javascript">
+var edt;
+function updateTextArea(edt){
+    CKEDITOR.tools.setTimeout( function(){ 
+        $('#id_description').val(edt.getData());
+        $("#id_description").trigger('keyup');
+    }, 0);  
+}
+$(document).ready(function(){
+	try{
+		var instance = CKEDITOR.instances['id_description'];
+		CKEDITOR.remove(instance);
+	}
+	catch(e){}
+	/*
+	CKEDITOR.on( 'instanceCreated', function( e ){
+		   e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+   	});
+	*/
+	var edt=CKEDITOR.replace( 'id_description',{					
+		customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+		toolbar : 'Basic'
+	});
+	edt.on('key', function(event) {updateTextArea(edt);});
+
+	$('#id_category').change(function(){$('#id_category').valid();})
+	$('#id_sub_category').change(function(){$('#id_sub_category').valid();})
+	$('#id_description').keyup(function(){$('#id_description').valid();})
+
+	$('#id_website').focusin(function(){
+		if($('#id_website').val()==""){
+				$('#id_website').val('http://www.');
+		}
+		  
+	});
+	$('#id_website').focusout(function(){
+	if($('#id_website').val()=='http://www.'){
+				$('#id_website').val('');
+			$(this).parent('div').parent('div').removeClass('field-error');$('#id_website').removeClass("error");	
+			}
+	});
+	
+	$('input[name=operating_hours]').change(function(){
+		if($('input[name=operating_hours]:checked').val()==1){$('#opt_hour').show();}
+		else{$('#opt_hour').hide();}
+	});
+	$('input[name=we_accept]').change(function(){
+		if($('input[name=we_accept]:checked').val()==1){$('#we_acpt').show();}
+		else{$('#we_acpt').hide();}
+	});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+$.validator.addMethod("time", function(value, element) {  
+    return this.optional(element) || /^(([0]?[1-9])|([1][0-2])):([0-5]?[0-9])(:([0-5]?[0-9]))?\s([AP][M])$/i.test(value);},gettext("Please enter a valid time."));
+$("#mform").validate({
+            ignore:'',
+			highlight: function(element, errorClass){
+				$(element).parent('div').parent('div').addClass('error');
+				$(element).addClass('error');
+			},
+			unhighlight: function(element, errorClass){
+				$(element).parent('div').parent('div').removeClass('error');
+				$(element).removeClass('error');
+			},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	name: "required",
+				slug: "required",
+				category:"required",
+                description:"required",
+				sub_category:"required",
+				mon_start:{required:false,time:true},
+			    mon_end:{required:false,time:true},
+			    tue_start:{required:false,time:true},
+			    tue_end:{required:false,time:true},
+			    wed_start:{required:false,time:true},
+			    wed_end:{required:false,time:true},
+			    thu_start:{required:false,time:true},
+			    thu_end:{required:false,time:true},
+			    fri_start:{required:false,time:true},
+			    fri_end:{required:false,time:true},
+			    sat_start:{required:false,time:true},
+			    sat_end:{required:false,time:true},
+			    sun_start:{required:false,time:true},
+			    sun_end:{required:false,time:true},
+				address1:"required",
+				city:"required",
+				zip:"required",
+				email:{required:false,email:true},
+				website:{required:false,url:true},
+				
+	   	},
+		
+		submitHandler:function(){
+			getLogoDimension();
+			get_lat_lang();
+			$('.id_business_submit').attr('disabled','disabled');
+			$('#mform').submit();
+		}
+	});
+
+	$( ".id_business_submit" ).click(function(event){
+		setTimeout(function(){
+			$('.id_business_submit').removeAttr('disabled'),event.preventDefault();
+		},3000);
+	});
+
+	$('#id_category').change(function(){$('#id_category').valid();})
+	$('#id_sub_category').change(function(){$('#id_sub_category').valid();})
+	$('#id_sub_category').change(function(){
+		var cat_ids=[];
+		$('#id_sub_category :selected').each(function(i, selected){
+			cat_ids[i] = $(selected).val();
+		});
+		if(cat_ids!=''){
+			dataString='cat_id='+cat_ids+'&parent_cat_id='+$('#id_category').val()+'&bid={{business.id}}';
+			$('#attributes').hide();
+			$('#attributes_loading').show();
+			$.ajax({
+			type: "GET",
+			url: "{% url 'user_business_ajax_load_attribute' %}",
+			data: dataString,
+			dataType:'JSON',
+			success: function(data){
+					$('#attributes_loading').hide();
+					$('#attributes').html(data.html);
+					$('#attributes').show();
+					$('.append_attr').chosen({disable_search_threshold:10}); 
+				}
+			});
+		}else{
+			$('#attributes').hide();
+		}
+	});
+});
+</script>
+<script type="text/javascript">
+	var var_editslug=1;
+	function fillslug(data){
+		data = slugify(data)
+		if(var_editslug==1){
+			window.document.getElementById('id_slug').value=data;
+		}
+	}
+
+	function slugify(text) {
+       text=text.toLowerCase();	
+       text = text.replace(/[^-a-zA-Z0-9,&\s]+/ig, '');
+       text = text.replace(/-/gi, "_");
+       text = text.replace(/\s/gi, "-");
+       return text;
+	}
+	function fillslug_add(data){
+		data = data.replace(/ /g, "-");
+		if (var_editslug == 1) {
+			window.document.getElementById('id_slug').value = data;
+		}
+	}
+function loadsubcategory(){
+	var categories = document.getElementById('id_category').value;
+	var select = document.getElementById('id_sub_category');
+	while(select.hasChildNodes()){
+			select.removeChild(select.firstChild);
+		}
+	$('#attributes').hide();
+	$('#listing_business').hide();
+	{% for cat in category %}
+		if (categories == {{ cat.id }}){
+			{% for subcat in cat.getChildCategory %}
+				var option = document.createElement("option");
+	            option.setAttribute("value", "{{subcat.id}}");
+	            option.innerHTML = "{{ subcat.name }}";
+	            select.appendChild(option);
+			{% endfor %}
+			 $("#id_sub_category").bUiSlCt("refresh");
+		}
+	{% endfor %}
+}
+	
+if($("#id_lend_date").length){
+		$("#id_lend_date").datepicker({ dateFormat: "yy-mm-dd",minDate: new Date() });
+	}
+	if($("#id_lstart_date").length){
+		$("#id_lstart_date").datepicker({ dateFormat: "yy-mm-dd",minDate: new Date()});
+	}
+	
+	try{logo_upload('{% url 'business_ajax_upload_logo' %}?id={{business.id}}',1);}
+	catch(e){}
+	$('#fileupload').bind('fileuploadstart', function (e, data) {$('#upload-button-wrapper').hide();});
+	$('#fileupload').bind('fileuploaddestroy', function (e, data) {
+		setTimeout(function(){
+			$('#upload-button-wrapper').show();
+			$('#upload-button').html(gettext('Attach Logo'));
+		},700);
+		setTimeout(function(){$('#upload-button').html(gettext('Attach Logo'));},1050);
+	});
+	
+	try{file_upload_buz('{% url 'business_ajax_upload_files' %}?id={{business.id}}',5,'template-upload-1','template-download-1');}
+	catch(e){}
+	
+	{% if not business %}
+	{% if new_pic %}
+		try{get_images('{% url 'business_ajax_upload_logo' %}?ids={% for np in new_pic %}{{np}}{% if not forloop.last %},{% endif %}{% endfor %}')}
+		catch(e){}
+	{% endif %}
+	{% endif %}
+
+</script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript">
+	{% if address %}
+		load_for_add('map-canvas',{{ address.lat }}, {{ address.lon }}, {{ address.zoom }},'{{ address.city }}','{{ globalsettings.city }} - {{address.zip}}');
+	{% else %}
+		load_for_add('map-canvas',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},'{{ globalsettings.city }}','{{ globalsettings.city }}');
+	{% endif %}
+	function string_to_slug(str) {
+	  str = str.replace(/^\s+|\s+$/g, ''); 
+	  str = str.toLowerCase();
+	  str = str.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'); 
+	  $('#id_slug').val(str);
+	}	
+
+	$( "#id_zip" ).autocomplete({
+			source: '{% url 'auto_suggest_pin' %}',
+		   	select: function(event, ui) {
+     			$("#id_zip").val(ui.item.id);
+     	 	}
+	});
+	function get_lat_lang(){
+		var lat_lng = marker.getPosition();
+		var zoom = map.getZoom();
+		$('#lat_lng').val(lat_lng);
+		$('#zoom').val(zoom);
+	}
+    function show(id){
+		$('#'+id).slideDown();
+		$('#i_'+id).fadeOut('fast');
+	}
+function hide(id){
+		$('#'+id).slideUp();
+		$('#'+id).find('input[type=text]').val('');
+		$('#i_'+id).find('input[type=checkbox]').attr('CHECKED',false);
+		$('#i_'+id).fadeIn('fast');
+}
+function showhttp(vl){
+	if(vl=='f'){if($('#id_fb_url').val()==""){$('#id_fb_url').val('http://www.facebook.com/');}}
+	else if(vl=='g'){if($('#id_gooleplus_url').val()==""){$('#id_gooleplus_url').val('http://plus.google.com/');}}
+	else if(vl=='tw'){if($('#id_twitter_url').val()==""){$('#id_twitter_url').val('http://www.twitter.com/');}}
+}
+function hidehttp(vl){
+	if(vl=='f'){
+		if($('#id_fb_url').val()=='http://www.facebook.com/'){
+			$('#id_fb_url').val('');
+			var element=$('#id_fb_url');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+		}
+	}
+	else if(vl=='g'){
+		if($('#id_gooleplus_url').val()=='http://plus.google.com/'){
+			$('#id_gooleplus_url').val('');
+			var element=$('#id_gooleplus_url');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+		}
+	}
+	else if(vl=='tw'){
+		if($('#id_twitter_url').val()=='http://www.twitter.com/'){
+			$('#id_twitter_url').val('');
+			var element=$('#id_twitter_url');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+		}
+	}
+}
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#id_city').live("keyup",function(){
+		getPin(getaddress(),$('#id_zip').val());
+	});
+});
+function getaddress(){return $('#id_address1').val()+" "+$('#id_address2').val()+" "+$('#id_city').val();}
+</script>
+
+{% endblock %}

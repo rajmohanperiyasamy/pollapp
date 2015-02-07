@@ -1,0 +1,18 @@
+{% load i18n %}
+{% if restaurant_obj.restaurant_videos.all %}
+<div class="drop-box-header-bar">
+    <div class="inline-block">
+        <div class="drop-box-title"><span id="id_videos_count_span">{{restaurant_obj.restaurant_videos.all.count}}</span> {% trans 'Video(s)' %}</div>
+    </div>
+</div>
+<div class="drop-box-items" style="width:750px;">
+       <ul id="id_video_slider">
+       {% for video in restaurant_obj.restaurant_videos.all %}
+            <li id="id_li_{{video.id}}" class="videos-selectable inline-block"><div class="video-selectable-area"><div class="thumb-wrap inline-block"><div><span class="video-thumb"><span class="clip"><img src="{{video.get_hq_thumb}}" alt="Thumbnail"></span></span><!--span class="video-duration">10:40</span--></div><span onclick="play_video('{{video.video_url}}','{{video.is_vimeo}}')" title="{{video.title|title}}" class="play-icon"></span></div><div class="result-video-content"><h3>{{video.title}}</h3></div><span title="Remove this video" onclick="if(confirm('Are you sure you want to delete this video?')){remove_video('{{video.id}}');}else{return false;}" class="icon-remove inline-block"></span></div></li>
+       {% endfor %}    
+       </ul> 
+    <div class="hang-items" id="id_sel_hangitems" style="display:block">
+        <span style="display:none"><img src="{{ STATIC_URL }}ui/images/global/loading-s.gif" /></span>
+    </div>                     
+</div> 
+{% endif %}

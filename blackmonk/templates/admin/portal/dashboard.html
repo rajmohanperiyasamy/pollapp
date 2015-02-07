@@ -1,0 +1,156 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'DashBoard' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="admin-platform" class="group">
+	<div class="admin-main col_12">
+    	<div class="site-modules box group">
+        	<div class="section-header">
+            	<h2>{% trans 'Modules' %}</h2>
+            	<div class="quick-actions-toolbar group">
+                	<ul class="action_sets left group">
+                    	<li><span class="command tttxt" title="Manage Categories, SEOs here..">{% trans 'Manage' %} &rsaquo;</span></li>
+                    	<li>
+                        	<a class="dropdown-tab" href="#">{% trans 'Categories' %} <span class="arrow"></span></a>
+                            <ul class="dropdown-list">
+                            	<li><strong>{% trans 'Select a Module' %}</strong></li>
+								{% for app in apps %}
+								{% if app.type == 'O' and app.slug != 'polls' and  app.slug != 'banners' and app.slug != 'channel' %}
+									<li><a href="/admin/portal/{% if app.slug == 'buzz' %}apis/buzz/categories{% else %}{{app.slug}}{% if app.slug == 'movies' %}/genre{% else %}/category{% endif %}{% endif %}">{{app.name}}</a></li>
+								{% endif %}
+								{% endfor %}
+							</ul>                                            
+						</li>
+                        <li>
+                        	<a class="dropdown-tab" href="#">{% trans 'Pricing' %}<span class="arrow"></span></a>
+                            <ul class="dropdown-list">
+                            	<li><strong>{% trans 'Select a Module' %}</strong></li>
+								{% for app in apps %}
+								{% if app.slug == 'articles' or app.slug == 'business' or app.slug == 'classifieds' or app.slug == 'events' %}
+									<li><a href="/admin/portal/{{app.slug}}/pricing">{{app.name}}</a></li>
+								{% endif %}
+								{% endfor %}
+							</ul>                                            
+						</li>
+					</ul>
+				</div>
+            </div>	                            
+            <div id="modules" class="icon-list group">
+                <ul>
+                	{% for app in apps %}
+						{% if app.type == 'O' and app.slug != 'channel' %}
+							<li  class="{% if app.status == 'I' %}not-used{% endif %}" id="module-{{app.slug}}">
+							{% if app.slug != 'banners' %}
+	                            <a {% if app.status == 'I' %}title="Inactive! please activate from AvailableApps in Settings" href="javascript: void(0);"{% else %}href="/admin/portal/{{app.slug}}"{% endif %}>
+							{% elif app.slug == 'banners' %}
+	                            <a {% if app.status == 'I' %}title="Inactive! please activate from AvailableApps in Settings" href="javascript: void(0);"{% else %}href="/admin/config/{{app.slug}}"{% endif %}>
+							{% endif %}
+	                                <span class="icon"></span>
+	                                <span class="title">{{app.name}}</span>
+	                            </a>
+	                        </li>
+						{% endif %} 
+					{% endfor %}
+                </ul>
+            </div>                                    
+        </div>
+		{% if affiliates %}
+		<div class="site-modules box group">
+        	<div class="section-header">
+            	<h2>{% trans 'API/Affiliate Programs' %}</h2>
+            </div>	                            
+            <div id="modules" class="icon-list group">
+                <ul>
+                	{% for app in apps %}{% if app.type == 'A' %}
+						<li class="{% if app.status == 'I' %}not-used{% endif %}" id="module-{{app.slug}}">
+                            <a {% if app.status == 'I' %}title="Inactive! please activate from AvailableApps in Settings" href="javascript: void(0);"{% else %}href="/admin/portal/{{app.slug}}"{% endif %}>
+                                <span class="icon"></span>
+                                <span class="title">{{app.name}}</span>
+                            </a>
+                        </li>  
+					{% endif %}{% endfor %}
+                </ul>
+            </div>                                    
+        </div>
+        {% endif %}
+	    <div class="site-modules box group">
+            <div class="section-header">
+            	<h2>{% trans 'Custom Pages' %}</h2>
+			</div>	                            
+            <div id="static-pages" class="icon-list group">
+                <ul>
+                	{% for channel in pages %}
+                    <li id="{{page.slug}}">
+                        <a href="{% url 'edit_resources' channel.id %}">
+                            <span class="icon"></span>
+                            <span class="title">{{channel.name}}</span>
+                        </a>
+                    </li>                
+					{% endfor %}                     
+                    <li id="page-custom">
+                        <a href="{% url 'admin_custom_page' %}" style="opacity: 0.8;">
+                            <span class="icon" style="background-position: inherit;"></span>
+                            <span class="title">{% trans 'Custom' %}</span>
+                        </a>
+                    </li>                                                                                                
+                </ul>
+            </div>         
+		</div>         
+  	</div>    
+  	{% include 'admin/portal/dashboard-faq.html' %}
+</div>  
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+function save_seo(){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag==true){
+		var dataString='meta_title='+encodeURIComponent($('#id_meta_title').val());
+		dataString+='&meta_description='+encodeURIComponent($('#id_meta_description').val());
+		dataString+='&meta_keywords='+encodeURIComponent($('#id_meta_keywords').val());
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_portal_home_seo_update' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#ajax_content_loading').html(data.msg);
+				$('#ajax_content').empty();
+				if(data.status){
+					show_msg(data.msg,data.mtype);
+					$.colorbox.close();
+				}
+				$('#ajax_content').html(data.lightbox_html);
+				setTimeout(function(){
+					$('#ajax_content_loading').hide();
+				    $('#ajax_content').fadeIn(2000);
+					$.colorbox.resize();
+				},1000);
+				
+			}
+		});
+	}
+}
+</script>  
+{% endblock %}
+
+				

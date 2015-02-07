@@ -1,0 +1,28 @@
+{% load i18n %}
+{% if discussion %}
+<div id="formContainer" class="group"> 
+    <form id="favorite_list" class="group content_list">
+        <table cellspacing="0" width="100%" class="listing qa">
+            <tr class="title_bar">
+                <th width="14%" class="added_on">&nbsp;</th>
+                <th style="text-align:right"><span style="color:#777;padding-right:10px;">{{object_count}} Forum posted by {{profile.user|capfirst}}</span></th>
+            </tr>	
+			{% for post in discussion %}
+				 <tr class="{% cycle '' 'alt' %}"> 
+	                <td class="added_on"><small>{{post.created|date:"N d,Y"}}</small></td>
+	                <td class="q"><a href="{{post.get_absolute_url }}"><b>{% ifequal post.topic.head.id post.id %}{{ post.topic }} {% else%} <strong class="re">Re:</strong>{{post.topic}} {%endifequal%}</b></a></td>
+	            </tr>
+    		{% endfor %}         
+        </table>                              
+		<input type="hidden" id="url" value="{% url 'ajax_profile_module_deatils' profile.user 'discussion' %}">                           
+    </form>
+	{% include 'account/profile/pagenation.html' %}
+</div>   
+{% else %}
+<div id="formContainer" class="group profile_display"> 
+	<form id="favorite_list" class="group content_list">
+		<p class="global_message" style="padding-left:20px;"  align="center">{% trans 'No Post Found.' %} </p>  
+	</form>
+</div> 
+{% endif %} 
+                         

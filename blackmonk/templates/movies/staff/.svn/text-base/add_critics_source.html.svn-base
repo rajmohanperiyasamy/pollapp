@@ -1,0 +1,109 @@
+{% extends "staff_base.html" %}
+{% load get_filename %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "movies" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Add Critics Source{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="/staff/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff Home</a></li>
+                        <li><a href="/staff/movies/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Movies</a></li>
+						<li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Add Critic Source</li>                        
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="float:left; display:block;width:300px; margin:0; padding-left:10px; line-height:normal">Add Critics Source</h2>           
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="/staff/movies/" class="side_menu">Manage Movies</a></li>
+						<li><a href="{% url 'staff_movie_manage_theatre' %}" class="side_menu">Manage Theatres</a></li>
+						<li><a href="/staff/movies/manage-critics-reviews/" class="side_menu">Manage Critics Reviews</a></li>
+							<ul class="sub">
+                            	<li><a href="/staff/movies/add-critics-source/" class="side_menu on">Add Critics Source</a></li>
+                            </ul>
+						
+						
+                    </ul>
+                </div> 	
+            	<div class="main_col">
+            		{% if form.errors %}
+									<div class="messageerror" style="background:lightyellow;padding:10px;color:red">
+										<strong>There is a problem with your submission</strong>
+				                        <ul style="list-style:square;margin-left:20px;">
+				               			 {% for field in form %}
+				               			 	{% if  field.errors%}
+				               	            	<li>
+				               	            	{%for error in field.errors%}
+				               	            		{{error}}
+					               	            {%endfor%}
+												</li>
+				           	             {% endif %}
+				              	 		 {% endfor %}
+										</ul>
+             		 		 		 </div>
+								{% endif %}
+            	     {% if message %}
+					<div class="message" id ="m">{{message}}</div>
+					<script type="text/javascript">
+						setTimeout('hideMessage()',5 * 1000); //5 sec
+						hideMessage = function(){
+							$("#m").fadeOut();
+						}
+						</script>
+				{% endif %}
+					<div id="formContainer" class="add_cat clearfix"> 
+        	  	  		<form action="/staff/movies/add-critics-source-submit/" enctype="multipart/form-data" name="f_addnew" id="f_addnew" method="post" class="add_category" onsubmit="return validate();">{% csrf_token %}
+ 							<fieldset>
+                	    		<div class="title"><h2>Add Critics Source</h2></div>
+								 <span style="color:red; margin-left: 16px;">(*)</span>Are required fields
+                   					<dl class="vertical">
+                          				<dt><label for="id_source_title"><b>Source Title:</b></label>
+											<label for="by" style="color:red;">*</label>
+										</dt>
+                                            <dd>
+                                            	<input name="source_title" id="id_source_title" value="{{form.source_title.data}}" class="textField long" maxlength="90" type="text" style="padding:3px;">
+                                                <em></em>
+                                            </dd>
+                                        
+                                        
+                                        
+                          				<dt><label for="id_url"><b>Source Domain: </b></label>
+											<label for="by" style="color:red;">*</label>
+										</dt>
+                                            <dd><input name="url" id="id_url" class="textField normal" type="text" value="{{form.url.data}}"> 
+                                            </dd>
+                                        
+										<dt><label for="id_logo"><b>Source Picture: </b></label></dt>
+				    
+				    					<dd><input name="logo" id="id_logo" class="textField file_normal" size="25" type="file" value="{{form.logo.data}}">
+			        					</dd> 
+										
+										<dt><label for="id_copyright"><b>Copyright: </b></label>
+											<label for="by" style="color:red;">*</label>
+										</dt>
+                                            <dd><input name="copyright" id="id_copyright" class="textField normal" type="text" value="{{form.copyright.data}}" maxlength="45">
+											<span class="tip">Example:http://www.cnn.com/entertainment</span>  
+                                            </dd>
+
+                                                <dd><div class="buttons" style="padding-top: 10px;"><input class="inputsubmit on" value="Submit" type="submit"> <input class="inputsubmit off" value="Cancel" type="button" onclick="location.replace('/staff/movies/manage-critics-source/')"></div>
+                                                </dd> 
+                                                </dl>                                           
+                   			 </fieldset>                              
+						</form>
+                	</div>
+
+                </div> 
+ <hr >
+</div>                
+{% endblock %}

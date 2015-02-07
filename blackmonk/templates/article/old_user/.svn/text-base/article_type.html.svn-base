@@ -1,0 +1,60 @@
+{% load i18n %}
+<div id="add_venue_overall">
+	<div id="add_venue" class="modal-form">
+		{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	     <form action="{% url 'article_select_type' %}" name="mform" id="mform" method="post" class="add_venue">{% csrf_token %}
+	    	<div class="fields hform">
+	            <div class="field-group">              
+	                <div class="group">
+	            		<div class="fields-left col400">                    
+		        			<div class="group">
+				               <div style="padding:10px 20px;border-bottom:2px solid #e6e6e6; margin-bottom:10px;">
+				                    <h3 style="color:#999;font-size:22px; font-weight:normal;line-height:1; margin:0px 0 10px;">{% trans 'Non-Commercial' %}</h3>
+				                    <ul><li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Submit Your Own Article' %} ({% if pricing.ownstory_is_paid %}{{ globalsettings.currency }}{{ pricing.ownstory_price|floatformat }}{% else %}{% trans 'Free' %}{% endif %})</span><span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.ownstory_is_paid %}1{% else %}0{% endif %})" name="article_type" checked="checked" value="FR" /><span class="cform-radio-element"></span></span></span></h4></li></ul>
+								</div>
+								<div style="padding:10px 20px;">
+									<h3 style="color:#999;font-size:22px; font-weight:normal;line-height:1; margin:0px 0 10px;">{% trans 'Commercial' %}</h3>
+									<ul>
+										<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Press Release' %} {% if pricing.pressrelease_is_paid %}({{ globalsettings.currency }}{{ pricing.pressrelease_price|floatformat }}){% else %}{% trans 'Free' %}{% endif %}</span> <span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.pressrelease_price %}1{% else %}0{% endif %})" name="article_type" value="PR" /><span class="cform-radio-element"></span></span></span></h4></li>
+										<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Advertorial' %} {% if pricing.advertorial_is_paid %}({{ globalsettings.currency }}{{ pricing.advertorial_price|floatformat }}){% else %}{% trans 'Free' %}{% endif %}</span> <span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.advertorial_price %}1{% else %}0{% endif %})" name="article_type" value="A" /><span class="cform-radio-element"></span></span></span></h4></li>
+										<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Review Request' %} {% if pricing.requestreview_is_paid %}({{ globalsettings.currency }}{{ pricing.requestreview_price|floatformat }}){% else %}{% trans 'Free' %}){% endif %}</span> <span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.requestreview_price %}1{% else %}0{% endif %})" name="article_type" value="RR" /><span class="cform-radio-element"></span></span></span></h4></li>
+				                    </ul>
+		                		</div>
+								<div style="padding:10px 20px;display:none;" id="payment">
+									<h3 style="color:#999;font-size:22px; font-weight:normal;line-height:1; margin:0px 0 10px;">{% trans 'Payment Mode' %}</h3>
+									<ul>
+										<li class="group article-payment-mode" style="display:block;padding:0; border-top:1px solid #e6e6e6;">
+											<h4 style="font-size:14px;line-height:1.8;font-weight:normal;">
+												{% if payment_settings.invoice_payment %}
+													<span style="display:block;padding:10px 0;width:140px;float:left;">
+														<span class="cform-radio-container"><input type="radio" name="payment_mode" value="offline" checked="checked" /><span class="cform-radio-element"></span></span>{% trans 'Offline' %}
+													</span> 
+												{% endif  %}
+												{% if payment_settings.online_payment %}
+													<span style="float:left;display:block;width:65px;margin:10px; letter-spacing:-.05em;">
+														<span class="cform-radio-container"><input type="radio" name="payment_mode" value="online" checked="checked" /><span class="cform-radio-element"></span></span>{% trans 'Online' %}
+													</span>
+												{% endif  %}
+											</h4>
+										</li>
+				                    </ul>
+		                		</div>
+		       		 		</div>
+						</div> <!--/--> 
+	            	</div>            
+	            </div>                        
+			</div>    
+	        <div class="modal-base form-submit group">
+	           <button role="button" class="cform-button prime right"  type="submit"><span class="cform-button-text">{% trans 'Next' %}</span></button>
+	        </div>           
+	    </form>
+	    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+	</div>
+</div>
+<script type="text/javascript">
+function show_payment(flag){
+	if(flag==1){$('#payment').show();}
+	else{$('#payment').hide();}
+	$.colorbox.resize();
+}
+</script>

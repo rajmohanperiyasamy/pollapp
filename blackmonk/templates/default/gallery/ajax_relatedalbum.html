@@ -1,0 +1,12 @@
+{% load thumbnail %}
+<!-- related_gallery --> 
+<ul class="lst group">
+	{% for ra in relatedalbum_photos %}
+<input type="hidden"  name="fbids" class="bids" value="{{photo.id}}">
+    <li class="gallery_rule">
+        <a href="{{ ra.get_absolute_url }}"><img src="{% if ra.photo %}{% thumbnail ra.photo 75x0 %}{% else %}{{ ra.get_small_image }}{% endif %}" alt="{{ ra.title }}"  height="46" width="75" class="thumb"> </a>
+        <p class="cat"><a href="javascript:void(0)">{{ ra.album.category.name }}</a></p>
+        <h4><a class="url" href="{{ ra.album.get_absolute_url }}">{{ ra.album.title }}</a></h4>
+    </li>
+	{% endfor %}
+</ul>                                    

@@ -1,0 +1,6 @@
+{{ object.title }}
+{{ object.category.name }}
+{% autoescape off %}{{object.description}}{% endautoescape %}
+{% for keyword in keywords %}
+	{{keyword.keyword}}
+{% endfor %}  

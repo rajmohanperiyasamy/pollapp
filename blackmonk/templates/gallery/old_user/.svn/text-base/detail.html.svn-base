@@ -1,0 +1,372 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% load truncate_filter %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "photos" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Gallery - Details' %} {% endblock %}
+{% block head %}
+<!-- TAGS -->
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css" />
+<!-- TAGS -->
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+  	<div class="header-bar has-preview-head">
+  		<h2 onclick="window.location.replace('{% url 'user_manage_gallery' %}')" style="cursor:pointer;">{% trans 'Photos' %}</h2>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+            	{% if gallery.is_featured %}
+                <span class="list-type featured-item">
+                	<a href="#" class="tttxt" original-title="Item listed as featured">Featured</a>
+				</span>
+				{% endif %}
+                <div class="item-title">
+                    <h1>{{gallery}}</h1>
+                    <p class="ltxt80">{% trans 'By' %} <a href="#">{{gallery.created_by.profile.get_full_name}}</a> <span class="divider12">|</span> {{gallery.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+                <ul class="status-tabs group">
+                    <li>{{gallery.most_viewed}}<span class="meta">views</span></li>
+                    <!--li><a href="#">4<span class="meta">comments</span> </a></li-->
+                </ul>                                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap">
+                <div id="photo-gallery" class="preview-center group">
+                	<div class="preview-items">
+                        <div class="preview-group">
+                        	<div class="preview-items-head">
+                                <div class="right-item"><div title="{% trans 'Update Gallery Details' %}" href="{% url 'user_gallery_update' gallery.id %}" class="cform-button bm-update-gallery"><span>{% trans 'Edit' %}</span></div></div>
+                            	<h3>{% trans 'Gallery Details Details' %}</h3>
+                            </div>
+							<div id="gallery_content">
+	                            {% include 'gallery/user/gallery_detail_content.html' %}
+							</div>                                           
+						</div>
+                        <div class="preview-group">
+                        	<div class="preview-items-head" id="add_head" style="{% if not photos %}display:none;{% endif %}">
+                                <div class="right-item"><div class="cform-button prime add-photo-gallery"  href="{% url 'user_add_gallery_add_photos' gallery.id %}" title="{% trans 'Add Photos' %}"><span>{% trans 'Add new Photos' %}</span></div></div>
+                            	<h3>{% trans 'Photos' %}</h3>
+                            </div>    
+                            <ol id="photo-grid" class="data-table-inset">
+                            	{% for photo in photos %}
+                                <li class="table-list-row manage-items gallery_list_count" id="li_{{photo.id}}">
+                                    <div class="table-list-row-inner group">
+                                        <div class="thumb-wrap">
+                                            <span class="inline-block">
+                                            	<img alt="{{photo}}" src="{% if photo.photo_url %}{{photo.photo_url}}{% else %}{% thumbnail photo.photo 213x0 %}{% endif %}">
+											</span>
+                                        </div>   
+                                        <div class="item-detail">
+                                            <h4>{{photo.caption|truncate_chars:20}}</h4>
+                                            <!--div class="description"><p>{{photo.summary|truncatewords:10}}</p></div-->
+                                            <p class="ltxtAA txt11"><span>{% trans 'Updated on' %}:  {{photo.modified_on|date:'M d Y'}}</span></p>
+                                        </div>
+                                        <div class="action-buttons">
+                                            <div>
+                                                <a href="javascript:delete_photo({{photo.id}})" class="tttxt" original-title="Delete"><span class="action-icon icon-delete"></span></a>
+                                                <a href="{% url 'user_gallery_photo_detail' photo.id %}" class="tttxt bm-add-photo-details"  original-title="{% trans 'Edit Photo Details' %}"><span class="action-icon icon-edit"></span></a>
+                                            </div>                                                            
+                                        </div>
+                                    </div>
+                                </li>
+								{% cycle '' '' '<li class="clear"></li>'%}
+								{% endfor %}
+                            </ol> <!-- end table --> 
+                            <div class="no-data" style="{% if photos %}display:none;{% endif %}">
+                                <p>{% trans 'No photos found for this gallery. '%}</p>
+                                <div class="button-insde">
+                                    <span class="btn-txt-inline-prime add-photo-gallery"  href="{% url 'user_add_gallery_add_photos' gallery.id %}" title="{% trans 'Add Photos' %}"><span class="btn-txt">{% trans 'Add Photos' %}</span></span>
+                                </div>
+                            </div>
+                        </div>
+					</div>                                        
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+            {#% include 'business/staff/faq.html' %#}     
+        </div>                            
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+<!-- TAGS -->
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+<!-- TAGS -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+<script type="text/javascript">
+var selected_video_ids=[];
+function save_description(){
+	var dataString='';
+	$('input[name=ids]').each(function(){
+		id=$(this).val();
+		//dataString+='&title_'+id+'='+encodeURIComponent($('#title_'+id).val());
+		dataString+='&description_'+id+'='+encodeURIComponent($('#description_'+id).val());
+	});
+	dataString+='&detail=True';
+	$('#ajax_content_gallery').hide();
+	$('#ajax_content_loading_gallery').show();
+	$.ajax({
+	type: "POST",
+	url: $('#descmform').attr('action'),
+	data: dataString,
+	dataType:'JSON',
+	success: function(data){
+			$('#photo-grid').prepend(data.html);
+			$(".bm-add-photo-details").colorbox({width:"700",initialWidth: "700", top:"5%", initialHeight: "200",title:function(){return getLBTitle($(this));}});
+			show_hide();
+			$.colorbox.close();
+			show_msg(data.msg,data.mtype);
+		}
+	});
+}
+function show_hide(){
+	if($('#photo-grid').find('li').length>=1){
+		try{$('.no-data').hide();$('#add_head').show();}
+		catch(e){}
+	}else{
+		try{$('.no-data').show();$('#add_head').hide();}
+		catch(e){}
+	}
+}
+function save_photo(){
+	var dataString='&selected_id='+selected_video_ids;
+	$('#ajax_content_gallery_photo').hide();
+	$('#ajax_content_loading_gallery_photo').show();
+	$.ajax({
+	type: "POST",
+	url: $('#photomform').attr('action'),
+	data: dataString,
+	success: function(data){
+				selected_video_ids=[];
+				try{
+					$('#ajax_content_loading_gallery').hide();
+					$('#ajax_content_gallery').show();
+				}
+				catch(e){}
+				$('#ajax_content_loading_gallery_photo').hide();
+				$('#ajax_content_gallery_photo').empty().html(data);//lightbox_html
+				$('#ajax_content_gallery_photo').show();
+				$.colorbox.resize({width: "880", height:"auto", top:"5%"});
+				$.colorbox.resize();
+		}
+	});
+}
+	
+function save_updated_album(){
+	var flag=$('#galleryeditform').validate().form();
+	if(flag){
+		var dataString='title='+encodeURIComponent($('#id_title').val());
+		dataString+='&summary='+encodeURIComponent($('#id_summary').val());
+		dataString+='&category='+$('#id_category').val();
+		dataString+='&tags='+encodeURIComponent($('input[name=tags]').val());
+		dataString+='&detail=True';	
+		$('#ajax_content_gallery_update').hide();
+		$('#ajax_content_loading_update_gallery').show();
+		$.ajax({
+		type: "POST",
+		url: $('#galleryeditform').attr('action'),
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+			show_msg(data.msg,data.mtype);
+			if(data.status){
+				$('#gallery_content').empty().html(data.html);
+				$.colorbox.close();
+			}else{
+				$('#ajax_content_loading_update_gallery').hide();
+				$('#ajax_content_gallery_update').empty().html(data.html);
+				$('#ajax_content_gallery_update').show();
+				$.colorbox.resize();
+			}
+			}
+		});
+	}
+}
+function save_detail(id){
+	var flag = $('#mform').validate().form()
+	if(flag==true){
+		//var dataString='&title='+encodeURIComponent($('#id_title').val());
+		//dataString+='&summary='+encodeURIComponent($('#id_summary').val());
+		var dataString='&summary='+encodeURIComponent($('#id_summary').val());
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: $("#mform").attr("action"),
+		data: dataString,
+		dataType:'JSON',
+		success: function(responseData){
+				$('#ajax_content_loading').html(responseData.msg);
+				$('#li_'+id).remove();
+				$('#ajax_content_loading').hide();
+				$('#photo-grid').prepend(responseData.html);
+				$(".bm-add-photo-details").colorbox({width:"700",initialWidth: "700", top:"5%", initialHeight: "200",title:function(){return getLBTitle($(this));}});
+				show_msg(responseData.msg,responseData.mtype);
+				$.colorbox.close();
+			}
+		});
+	}
+}
+function delete_photo(id){
+	if(confirm(gettext('Are you sure want to delete this photo ?'))){
+		$.ajax({
+			type: "GET",
+			url: '{% url 'user_gallery_photo_delete' %}',
+			data: 'id='+id,
+			dataType:'JSON',
+			success: function(responseData){
+				if(responseData.status){
+					$('#li_'+id).remove();
+				}
+				show_hide();
+				show_msg(responseData.msg,responseData.mtype);
+			}
+		});
+	}
+}
+function search_filter(sort){
+	$('.strong_disp').hide();
+	$('.a_link').show();
+	$('#a_'+sort).hide();
+	$('#s_'+sort).show();
+	SORT=sort;
+	PAGE=1;
+	$("#images").html('');
+	getPhotos();
+}
+function load_more(){
+	PAGE=PAGE+1;
+	var text = document.getElementById("id_title").value;
+	strRE = new RegExp( );
+	strRE.compile( '^[\s ]*$', 'gi' );
+	if(strRE.test(text)==true){alert("Please enter photo title?");}
+	else{
+	$('#default_text').hide();
+	$("#ajax_content_loading_flicker_search").show();
+	var url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ gallery_settings.flickr_api_key }}";
+	url += "&safe_search=1";
+	url += "&per_page=30"
+	url += "&page="+PAGE;
+	url += "&sort="+SORT;
+	url += "&text="+text;
+	$.getJSON(url + "&format=json&jsoncallback=?", function(data){
+	$("#ajax_content_loading_flicker_search_page").hide();
+		if(data.photos.photo==null || data.photos.photo=='')
+		{ 
+		$("#mform").hide();
+		alert("No search result found try another keyword.");
+		}
+		else{ 
+		    $.each(data.photos.photo, function(i,item){
+			    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+				var l_img = src + ".jpg";
+				var s_img = src + "_s.jpg";
+				src += "_t.jpg";
+				var html ="<li onclick='select_photo(\""+item.id+"\")' class='photos-selectable inline-block' id='image_"+item.id+"'>";
+	            html +="<div class='photos-selectable-area inline-block'><input type='hidden' id='src_s_"+item.id+"' value='"+s_img+"'><input type='hidden' id='src_l_"+item.id+"' value='"+l_img+"'>";
+	            html += "<div class='photos-selectable-preview'><img src='"+src+"'><a href='#' title='Large preview' class='icon-view'></a></div>";
+				html += "</div>";                              
+				html += "<p class='photos-selectable-meta'>"+item.title+"</p>";    
+				html += "</li>";
+				
+				$("#images").append(html);
+		    });
+		}
+	});
+	}
+}
+var flag=false;
+function getPhotos(){
+	flag=true;
+	$('#ajax_content_loading_flicker_search_page').hide();
+	var text = document.getElementById("id_title").value;
+	strRE = new RegExp( );
+	strRE.compile( '^[\s ]*$', 'gi' );
+	if(strRE.test(text)==true){alert("Please enter photo title?");}
+	else{
+	$("#images").html('');
+	$('#default_text').show();
+	$('#default_text').find('.tip').hide();
+	$("#ajax_content_loading_flicker_search").show();
+	var url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ gallery_settings.flickr_api_key }}";
+	url += "&safe_search=1";
+	url += "&per_page=30"
+	url += "&page="+PAGE;
+	url += "&sort="+SORT;
+	url += "&text="+text;
+	$.getJSON(url + "&format=json&jsoncallback=?", function(data){
+	$("#ajax_content_loading_flicker_search").hide();
+		if(data.photos.photo==null || data.photos.photo=='')
+		{ 
+		$("#mform").hide();
+		alert("No search result found try another keyword.");
+		}
+		else{ 
+		    $.each(data.photos.photo, function(i,item){
+			    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+				var l_img = src + ".jpg";
+				var s_img = src + "_s.jpg";
+				src += "_t.jpg";
+				var html ="<li onclick='select_photo(\""+item.id+"\")' class='photos-selectable inline-block' id='image_"+item.id+"'>";
+	            html +="<div class='photos-selectable-area inline-block'><input type='hidden' id='src_s_"+item.id+"' value='"+s_img+"'><input type='hidden' id='src_l_"+item.id+"' value='"+l_img+"'>";
+	            html += "<div class='photos-selectable-preview'><img src='"+src+"'><a href='#' onclick='view_large_image(event,\""+l_img+"\")' title='Large preview' class='icon-view preview-item''></a></div>";
+				html += "</div>";                              
+				html += "<p class='photos-selectable-meta'>"+item.title+"</p>";    
+				html += "</li>";
+				$("#images").append(html);
+				if(jQuery.inArray(item.id,selected_video_ids)>=0){$('#image_'+item.id).addClass('checked');}
+		    });
+		}
+	});
+	}
+}
+function view_large_image(ev,src){
+	ev.stopPropagation();
+	$('#large_image').attr('src',src);
+	$(".item-preview-wrapper").show();
+}
+var load_url="{{STATIC_URL}}ui/images/global/loading-s.gif";
+function select_photo(id){
+	if(jQuery.inArray(id,selected_video_ids)<0){
+		$('#selected_default_text').hide();
+		$('#image_'+id).addClass('checked');
+		var src=$('#src_s_'+id).val();
+		var html ="<li class='photos-selectable inline-block' id='simage_"+id+"' style='min-width:75px;min-height:75px;background:url("+load_url+") no-repeat center transparent;'>";
+		html+="<div class='photos-selectable-area inline-block'>";
+		html+="<div class='photos-selectable-preview'><img src='"+src+"'><a class='icon-remove' title='Remove' href='javascript:deselect_photo(\""+id+"\")'></a>";
+		html+="<a href='#' onclick='view_large_image(event,\""+$('#src_l_'+id).val()+"\")' title='Large preview' class='icon-view preview-item''></a></div></div></li>";
+		$('#selected_images').prepend(html);
+		selected_video_ids.push(id);
+		$('#photo_count').html(selected_video_ids.length);
+	}
+}
+function deselect_photo(id){
+	$('#simage_'+id).remove();
+	$('#image_'+id).removeClass('checked');
+	selected_video_ids.splice( $.inArray(id, selected_video_ids), 1 );
+	if(selected_video_ids.length==0){
+		$('#selected_default_text').show();
+	}
+	$('#photo_count').html(selected_video_ids.length);
+}
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+</script>
+{% endblock %}

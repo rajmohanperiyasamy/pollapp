@@ -1,0 +1,554 @@
+{% extends base %}
+{% load modulotag %}
+{% load comparison %}
+{#% load get_word %#}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Events' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Events' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+	{% block meta %}
+	<meta name="description" content="{{seo.seo_description}}" />
+   {% endblock %}
+   
+{% block head %}
+     
+    <!--  For Calendar -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/calendar/yahoo.js"></script> 
+	<script type="text/javascript" src="{{ STATIC_URL }}js/calendar/event.js" ></script> 
+	<script type="text/javascript" src="{{ STATIC_URL }}js/calendar/dom.js" ></script> 
+	<script type="text/javascript" src="{{ STATIC_URL }}js/calendar/calendar.js"></script> 
+	<!--  For Featured Events -->
+	<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+		<script type="text/javascript">
+	    $(document).ready(function(){
+		 $('.bids').each(function(){
+				bids.push($(this).val());
+			});
+	        module_listing(bids,category);
+		});
+		
+		</script>         
+	  
+	<script> 
+		var spchar = '/events/';
+	    
+	</script>   
+  
+      <script type="text/javascript">
+	YAHOO.namespace("example.calendar");
+
+
+	YAHOO.example.calendar.init = function() {
+		//var eLog = YAHOO.util.Dom.get("evtentries");
+		var eCount = 1;
+
+	
+		function mySelectHandler(type,args,obj) {
+			var selected = args[0];
+
+			var selDate = this.toDate(selected[0]);
+			window.location=spchar + selected[0]+'#serEvt';
+			//logEvent("SELECTED: " + dateToLocaleString(selDate, this));
+		};
+
+		YAHOO.example.calendar.cal1 = new YAHOO.widget.Calendar("cal1","cal1Container",{ mindate: new Date()});
+
+
+		YAHOO.example.calendar.cal1.selectEvent.subscribe(mySelectHandler, 
+
+YAHOO.example.calendar.cal1, true);
+		YAHOO.example.calendar.cal1.render();
+	}
+
+	YAHOO.util.Event.onDOMReady(YAHOO.example.calendar.init);
+
+
+</script>
+
+<style>
+.tab_content { position: absolute; left: -9999px; float: left; margin: 0;width: 430px; color: #777168; font-size: 
+
+1.1em; line-height: 1.2;}
+.tab_content a { color: #777168; text-decoration: none;}
+.tab_content a:hover { color: #bb4004;}
+.tab_content img { display: block; margin-bottom: 5px;border:none !important;}
+.tab_content p { margin: 0; padding: 0;}
+.tab_hide { position: absolute; left: -9999px;}
+div.tab_show { position: relative; left: 0;}
+.tabs { list-style: none; float: left; margin: 0; padding: 2px 0 5px 0;width: 430px !important; width /**/: 300px; background-color:#FFF; border-bottom:2px solid #f1f1f1;display:block}
+.tabs li { float: left; margin: 0 5px 0 0; padding: 0; font-size: 11px; line-height: 2;}
+.tabs li a { outline: 0; float: left; margin: 0; padding: 0 5px; line-height:normal;color: #212374;border: 1px solid #d8d8d8; text-decoration: none; background-color: #f9f9f9;}
+.tabs li a:hover { color: #000;border-color: #06A837; text-decoration: none; background-color: #d6fcb5;}
+.tabs li.activefeatured a { color: #000;border-color: #06A837;background-color: #d6fcb5;}
+/*.tertiary .section { float: left; clear: both; padding-top: 20px; width: 300px;}
+.topnav { list-style: none; float: left; margin: 0;	padding: 0;}
+.topnav li { float: left;}
+.topnav li a { overflow: hidden; display: block; height: 30px; text-indent: -9999px; background-image: url(images/topnav_sprite.gif);*/ 
+
+background-position: left top; background-repeat: no-repeat;}
+body:nth-of-type(1) #cal1Container{height:176px;border:1px solid #000}
+
+
+</style>
+<script>
+	function goto_event_list(page){
+		var url = "{{base_url}}/?page="+page;
+		
+		{% if ven %}
+			url += "search/?searchven={{ven}}"
+		{% endif %}
+		{% if seldate %}
+			url += "&seldate={{seldate}}"
+		{% endif %}
+		{% if val %}
+			url = "search/?ts={{val}}&page="+page;
+		{% endif %}
+		{% if id %}
+			url = "/events/search/?searchcat={{id}}&page="+page;
+		{% endif %}
+		window.location.replace(url);
+		}
+
+</script>
+
+<script>
+
+	$(window).load(function() {
+	if ($('#featured_articles').is('div')) {
+		height = 0;
+		$('.tab_content').each(function(i) {
+			height = ($('.tab_content').eq(i).height() > height) ? $('.tab_content').eq(i).height() : height;
+		});
+		$('.tab_content').height( height );
+		
+		$('.tabs a').click(function() {
+			$('.tab_content').removeClass('tab_show');
+			$($(this).attr('href')).addClass('tab_show');
+			$('.tabs li').removeClass('activefeatured');
+			$(this).parent('li').addClass('activefeatured');
+			
+			return false;
+		});
+		
+		rotate = true;
+		if (rotate) {
+			tid = setTimeout('activateNextTab()', 4000);
+		}
+		
+		$('.tabs a, .tab_content').mouseover(function() {
+			clearInterval(tid);
+		});
+		$('.tabs a, .tab_content').mouseout(function() {
+			if (rotate) {
+				tid = setTimeout('activateNextTab()', 500);
+			}
+		});
+		$('.tabs a').mousedown(function() {
+			rotate = false;
+		});
+	}
+});
+
+$(function() {
+	$('.play').click(function() {
+		if ($(this).attr('rel').toLowerCase().indexOf('tra') == 0) {
+			RhapsodyPlayer.playTrack($(this).attr('rel').split('+'));
+		} else if ($(this).attr('rel').toLowerCase().indexOf('mp') == 0) {
+			RhapsodyPlayer.playRhapsody({ id:$(this).attr('rel'), type:'playlist' });
+		}
+		
+		return false;
+	});
+	
+	$('#recent_comments li').click(function() {
+		window.location = $(this).children('a').eq(0).attr('href');
+	});
+	
+	if ($('#comment').is('textarea')) {
+		expandCommentArea();
+		$('#comment').keyup(function() {
+			expandCommentArea();
+		});
+	}
+});
+
+function activateNextTab() {
+	nextTab = $('.activefeatured').next('li');
+	$('.activefeatured').removeClass('activefeatured');
+	$('.tab_content').removeClass('tab_show');
+	
+	if ($(nextTab).html()) {
+		$(nextTab).addClass('activefeatured');
+	} else {
+		nextTab = $('.tabs li').eq(0);
+		$('.tabs li').eq(0).addClass('activefeatured');
+	}
+	$( $(nextTab).children('a').eq(0).attr('href') ).addClass('tab_show');
+	
+	if (rotate) {
+		tid = setTimeout('activateNextTab()', 4000);
+	}
+}
+
+	</script>
+
+
+<script>
+	function validatealert(){
+		var mform=window.document.f_alert;
+		if(mform.email.value=='' && mform.mobile.value==''){
+			alert("Please enter Email address or Mobile no.");
+			mform.email.focus();
+			return false;
+		}
+		if(mform.email.value!=""){
+			if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mform.email.value)){
+				alert("Please enter valid Email address.");
+				mform.email.focus();
+				return false;
+			}
+		}else if(mform.mobile.value!=''){ 
+			if(isNaN(mform.mobile.value) || (mform.mobile.value.length!=10) ){
+				alert("Please enter valid Mobile no.\n eg.9480334997");
+				mform.mobile.focus();
+				return false;
+			}
+		}
+		
+		manyOptions = {};
+		if(mform.email.value!=""){
+			manyOptions["email"]= mform.email.value;
+		}
+		if(mform.mobile.value!=""){
+			manyOptions["mobile"]=mform.mobile.value;
+		}
+		jQuery.post('/alert/events/', manyOptions,	function(data) {
+			mform.reset();
+		    $("div#id_alert_message").show();
+		    if(data=='S'){
+		    	$("div#id_alert_message").css("color","green");
+		    	$("div#id_alert_message").text('You have been added to our subscriber list!');
+		    }else if(data=='A'){
+		    	$("div#id_alert_message").css("color","red");
+		    	$("div#id_alert_message").text('You have been already added in our subscriber list.');
+		    }else{
+		    	$("div#id_alert_message").css("color","red");
+		    	$("div#id_alert_message").text('ERROR in subscriber list.');
+		    }
+			$("div#id_event_alerttop").hide();
+		    $("div#event-alert").hide();
+		    
+		});
+	}
+</script>
+  
+
+ {% endblock %}
+ {% block content %}
+
+<a name="top"></a>
+
+<div id="container" class="clearfix">
+
+
+<!--Nav [Nav bar]-->
+	{% include 'topnavigation.html' %}
+
+{% if message %}
+	<font size=2 color="green"><b>{{message}}</b></font>
+{% endif %}
+    <div class="clear"></div>
+
+<!--[Container]-->
+  <div id="c-16x8" class="clearfix"> 
+<!--[Start Colum / c-16]-->
+    <div id="16-block" class="c-16 column ">
+    
+     <!-- <h1 class="t-effects-09">Talk Of The Town&nbsp; &nbsp; <em style="color: rgb(68, 68, 68); font-size: 0.8em;">Events</em></h1>  -->                     
+<!-- Featured Block -->
+
+<!--Module [Featured Events / c-11]-->  
+<div class="c-16 last end">
+<div class="featured-evnt c-11 module">
+       	<h2 class="t-effects-06" style="border-top:5px solid #8ac21e;background:url({{ STATIC_URL }}images/design/global/dotted.gif) repeat-x left bottom;border-bottom:none;padding:5px 0;line-height:normal;font-weight:bold;color:#000;font-size:13px;">Featured Events</h2>
+<div id="featured_articles"    style="width:430px; float:left;  background:#FFF;">
+	 {% for x in featuredEvents %}
+	{% if forloop.first %}
+ <div class="tab_content tab_show" id="{{forloop.counter}}">
+	{%else%}
+<div class="tab_content" id="{{forloop.counter}}">
+	{%endif%}
+<div>
+	<input type="hidden" id="fbids" name="fbids" class="bids" value="{{x.id}}" />
+	 <a href="{{x.get_absolute_url}}" title="{{x.title}}">
+	<img src="{{ MEDIA_URL }}{{ x.image }}"  class="thumb" alt="{{x.title}}" width="185" height="155" style="float: left; 	
+
+margin:0 10px 10px 0;*padding-bottom:15px;*display:block" /></a>		
+                <h3>
+                <a href="/events/{{x.slug}}.html" title="{{x.title}}">
+                {{x.title|truncatewords:4}} 
+	</a> 
+	</h3>
+	<p style="padding:3px 0 10px 0">
+	<span class="time" style="color:#aaa; font-size:.9em;">{{ x.time }} at <a style="color:#666" href="/events/search/?searchven={{x.venue}}#serEvt" class="place" 	
+
+class="place">{{x.venue|slice:":25"}}</a></span>
+	</p>
+	<p style="color:#222;">{{ x.summary|truncatewords:32 }} 
+               <!-- <span class="continue">
+                <a href="/events/{{x.slug}}.html" title="See more details">
+	more&nbsp;details</a>
+	&nbsp;<em>&#8594;</em></span>-->
+	</p>
+				
+ 				
+</div>	
+</div>
+<div class="clear"></div>
+	{% endfor %}
+	<ul class="tabs">
+	{% for x in featuredEvents %}
+	{% if forloop.first %}
+	<li class="activefeatured"><a href="#{{forloop.counter}}">{{forloop.counter}}</a></li>
+	{%else%}
+     	 <li><a href="#{{forloop.counter}}">{{forloop.counter}}</a></li>
+	{%endif%}
+	{% endfor %}
+	</ul>
+</div>
+</div>
+
+
+<!--Module [Calendar / c-5]-->   
+<div id="calendar" class="c-5 last module"> 
+	<h4 class="t-effects-07" style="background-color:#FFF;border-top:5px solid #607fcf; background:url({{ STATIC_URL }}images/design/global/dotted.gif) repeat-x left bottom;border-bottom:none;padding:5px 0;line-height:normal;font-size:13px;font-family:arial;color:#335dca;font-weight:bold">Pick a Date</h4>
+<div class="clear"></div>
+	<span>
+<div id="cal1Container"></div>
+	</span>				
+</div>
+
+
+</div>
+<div class="clear"></div>
+            <!--Module [Events Searching]--> 
+		<!-- <div id="search" class="">
+			<form class="search-form" action="/events/search#serEvt" id="a">
+  				<label for="event-search">Search</label> 
+                <input style="" name="ts" size="50" id="event-search" class="search text" value="Event Title, Venue" type="text"/> 
+  				<input name="sa" value="Event Search" class="search-btn" type="submit" />
+			</form>
+		</div>-->    
+<!-- End Featured Block -->
+<!--Module [Event-listing]--> 
+           
+           <div class="sort c-16 last">
+           	  	
+           	  	<strong class="c-2"><!--{% if searchCat %}{{ searchCat.category.name }}{% else %}{{ globalsettings.city }}{% endif %} --> Sort by:</strong>
+            	<a name="serEvt" {% ifequal seldate '0' %} class="active up-n-down" href="/events/eventsBetween/?seldate=0&page={{page}}#serEvt" {% else %} href="/events/eventsBetween/?seldate=0&page=1#serEvt"{% endifequal %}> Today</a>
+        		<a {% ifequal seldate '1' %} class="active up-n-down" href="/events/eventsBetween/?seldate=1&page={{page}}#serEvt" {% else %} href="/events/eventsBetween/?seldate=1&page=1#serEvt"{% endifequal %}> Tomorrow</a>
+		        <a {% ifequal seldate '7' %} class="active up-n-down" href="/events/eventsBetween/?seldate=7&page={{page}}#serEvt" {% else %} href="/events/eventsBetween/?seldate=7&page=1#serEvt"{% endifequal %}> Next 7</a>
+		        <a {% ifequal seldate '30' %} class="active up-n-down" href="/events/eventsBetween/?seldate=30&page={{page}}#serEvt" {% else %} href="/events/eventsBetween/?seldate=30&page=1#serEvt"{% endifequal %}> Next 30 Days</a>
+		        
+		   </div>
+      	  <div class="clear"></div>
+           
+            {% if eventsdisplay %}
+            {% for x in eventsdisplay %}
+				{% if forloop.first %}
+					<div class="entry c-16 last entry-first">
+				{% else %}
+					<div class="entry c-16 last">
+				{%endif%}
+			
+
+			<p class="date c-2">
+				{{x.start_date|ds_site_dateformat}}<br>
+				{% ifnotequal x.start_date x.end_date %}
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To<br>
+				{{x.end_date|ds_site_dateformat}}
+				{% endifnotequal %}
+			</p>
+			
+				<h3 class="c-14 last">
+                	<a href="/events/{{x.slug}}.html" title="{{x.title}}" class="place">{{x.title|truncatewords:5 }}</a>
+                	<br/><span class="time">{{x.start_time|slice:":8"|cut:"-"}} at <a href="/events/search/?searchven={{x.venue}}#serEvt" class="place">{{x.venue|slice:":40"}}</a></span>
+				</h3>
+                <div class="clear"></div>
+			  	<div class="p-entry-dsc c-14 last">
+			    	<p>{{ x.summary|truncatewords:30 }} &hellip;
+			
+                       
+<div>                        
+<span class="post-ctgry" style="float:left">Posted in&nbsp;<a href="/events/search/?searchcat={{x.category.id}}#serEvt">{{x.category}}</a></span>
+                        <span class="continue" style="float:right">
+                        <a href="/events/{{x.slug}}.html" title="See more details">more&nbsp;details</a>&nbsp;<em>&#8594;</em></span>	
+<div class="clear"></div>
+</div>
+		  	  </div>
+			</div>
+			
+           {% endfor %}
+           {% else %}
+<div class="msg_block" id="id_topmessage" style="padding:10px;border:1px solid #faeda0;margin-top:20px; background:url({{ STATIC_URL }}images/design/global/y_bg.gif) repeat;">
+    	<p class="info" style="background:url({{ STATIC_URL }}images/design/icons/icon-info.gif) no-repeat left center; padding-left:22px;">{{noEvnt}}</p> 
+    </div>
+    <script type="text/javascript">
+		<!--
+			setTimeout("window.document.getElementById('id_topmessage').style.display='none';",7000);
+		// -->
+	</script>
+
+           {% endif %}
+           
+                     <div class="clear"></div>
+              <!-- Pagination S -->
+           
+
+                {% if events %}
+               	{% ifnotequal pages 1 %}
+                    {% spaceless %}
+		  				 <div class="ar-Pages c-12 last" style="width:520px;">
+						{% if is_paginated %}
+							<div class="Paginator" style="width:520px;">
+							{% if has_previous %}
+								{% ifequal num current_page %}
+										<span class="active">{{ num }} </span>
+								{% else %}
+									<a href="javascript:goto_event_list('{{prev}}');" class="Prev" title="Previous Page">&laquo Prev</a>
+								{% endifequal %}
+							{% endif %}
+						 
+							{% if not in_leading_range %}
+								{% for num in pages_outside_trailing_range %}
+									{% ifequal num current_page %}
+										<span class="active">{{ num }} </span>
+									{% else %}
+										<a href="javascript:goto_event_list('{{ num }}');" >{{ num }}</a>&nbsp;
+									{% endifequal %}
+								{% endfor %}
+								...
+							{% endif %}
+							 
+							{% for num in page_numbers %}
+								  {% ifequal num current_page %}
+								    	<span class="active">{{ num }} </span>
+								  {% else %}
+								  		<a href="javascript:goto_event_list('{{ num }}');" title="Page {{ num }}">{{ num }}</a>&nbsp;
+								  {% endifequal %}
+							{% endfor %}
+							 
+							{% if not in_trailing_range %}
+								...
+								{% for num in pages_outside_leading_range reversed %}
+									{% ifequal num current_page %}
+										<span class="active">{{ num }} </span>
+									{% else %}
+										<a href="javascript:goto_event_list('{{ num }}');" >{{ num }}</a>&nbsp;
+									{% endifequal %}
+								{% endfor %}
+							{% endif %}
+							 
+							{% if has_next %}
+								<a href="javascript:goto_event_list('{{next}}')" class="Next" title="Next Page">Next&nbsp;&raquo</a>
+							{% endif %}
+							<span class="Results">&nbsp;({{count}} events)</span>
+						</div> 
+						{% endif %}
+					 </div>
+					{% endspaceless %}
+					{% endifnotequal %}
+				{% endif %}
+  
+           <div class="clear"></div>
+           
+           <!-- Pagination E -->
+         
+         
+         
+         
+          <!--Listing [Events Category]--> 
+       <h2 class="t-effects-01">Categories</h2>
+        
+          	<div class="category-lst c-16 last module" >
+            {% for nx in category %}            
+                {%ifmodulo forloop.counter 4 1 %}
+                    <ul class="c-4 category_block">
+                {%endifmodulo %}
+               
+                 <li><a href="/events/search/?searchcat={{nx.id}}#serEvt">{{nx.name}}
+                  <em class="count"> (&nbsp;{{nx.get_category_count}}&nbsp;)</em><br />
+                        <span>{{nx.keyword}}</span></a>
+                 </li>
+                     
+                 {%ifmodulo forloop.counter 4 0 %}
+                      </ul>
+                 {%endifmodulo %}
+           {% endfor %} 
+                              
+			</div>
+            <div class="clear"></div>
+         
+        
+	</div>       
+	           		
+ 
+ <!--[End Colum-16 / Start colum-8]-->
+        
+	
+    		<div class="c-8 column last" >
+        
+<!--Module [Upcoming Offers]--> 
+       
+<!--Module [Advertisement]-->
+        <div class="ads">
+			
+		</div>
+				
+		<div class="bg_block">
+					<h2>Get event alerts</h2>
+					<form name="f_alert" action="/alert/events/" method="POST" onsubmit="validatealert();return false;" >{% csrf_token %}
+					<div class="col first" id="id_event_alerttop">
+						<div class="trailtext" style="padding:0; margin:0 0 10px 0;font-size:12px;line-height:16px; color:#333; line-height:1.2em;">
+							Interested in Event Alerts? We'll let you know what's happening.
+						</div>
+					</div>
+					<div id="id_alert_message" style="color:green;display:none;"></div>
+					
+					<div id="event-alert">
+						
+							<input type="hidden" name="slug" value=""/>
+							<fieldset>
+								<label for="email">Email address:</label>
+								<input id="email" name="email" type="text">
+							</fieldset>
+							<fieldset>
+								<label for="mobile">Mobile no:</label>
+								<input id="mobile" name="mobile" type="text">
+							</fieldset>									
+							<fieldset>
+								<input id="submit-alert" name="submit" value="submit" type="button" onclick="validatealert();">
+							</fieldset>											
+						
+					</div> 
+					<div class="clear"></div>
+					</form>
+						<div class="clear"></div>
+					</div>
+		
+		
+        <div class="bg_block">
+			{% include 'getinvolved.html' %}   
+      	</div>
+		</div>
+
+<!--[End Colum-8]--> 
+		</div>
+        <div class="clear"></div>      
+ <!--Final[Footer]-->   
+{% endblock %}
+ <script type="text/javascript">
+<!--
+changedate('return')
+//-->
+</script>        
+

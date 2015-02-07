@@ -1,0 +1,68 @@
+{% load i18n %}		
+{% load thumbnail %}
+<!-- script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script -->	
+{% if attraction %} 
+	{% for atr in attraction %}	
+	{% for ni in new_id %}
+	{% ifequal ni atr.id %}
+    <li class="table-list" id="li_{{atr.id}}">
+		<div class="table-list-container check-item group">
+	 		{% if atr.is_featured %}
+				<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+			{% endif %}
+		 	<span class="checkbox-wrap">
+				<span class="cform-checkbox-container"><input type="checkbox" onclick="fix_action()" status="{{atr.status}}" value="{{atr.id}}" id="id_checkbox_{{atr.id}}" name="artCulture" class="check-overflow cbox check_action"><span class="cform-checkbox-element"></span></span>
+			</span>
+			<div class="item-info relative-block">
+				<h3 class="title"><a href="{% url 'staff_preview_attraction' atr.id %}">{{atr.name}}</a></h3>
+				<p class="ltxt80">
+					{% for cat in atr.category.all %}{{cat}}{% if not forloop.last %},{% endif %}{% endfor %} 
+					<span class="divider12">|</span> {% trans 'By' %} <a href="{% url 'user_profile' atr.created_by.profile_slug %}">{{atr.created_by.display_name}}</a> 
+					<span class="divider12">|</span>{{atr.created_on|date:"M d, Y"}}
+				</p>
+				<ul class="quick-stats group">
+    	            <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{atr.view_count}}</a></li>
+	            	        <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span></a></li-->
+                </ul>
+				<div class="item-status {% if forloop.counter == 1 %}tip tip8{% endif %} {% if not perms.attraction.publish_attraction %}no-options{% endif %} dev_hide_list_status" onclick="display_change_status({{atr.id}},$('#id_estatus_{{atr.id}}').attr('name'));">
+                	<span class="status-inside inline-block" id="id_span_chge_sts_{{atr.id}}">
+					<span title="{{atr.get_status|capfirst}}" name="{{atr.status}}" id="id_estatus_{{atr.id}}" class="inline-block tttxt status-idty icon-{{atr.get_status}}"></span>	 
+                    {% if not perms.attraction.publish_attraction %}</span>{% endif %}
+					{% if perms.attraction.publish_attraction %}
+						<span class="arrow"></span></span>
+						<ul class="dropdown-list" id="change_status_id_{{atr.id}}">
+							<li><strong>{% trans 'Update status to...' %}</strong></li>
+							<ul id="id_dis_status_{{atr.id}}"></ul>
+	                    </ul>
+					{% endif %}
+	            </div>
+		   	</div>
+			{% if perms.attraction.promote_attractions or perms.attraction.change_attractions or perms.attraction.delete_attraction %}
+			<div class="action-buttons {% if forloop.counter == 1 %}tip tip9{% endif %}">
+            	<div class="relative-block">
+                	<span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{atr.id}}" onclick="display_settings({{atr.id}});"><span class="action-icon icon-manage"></span></span>
+                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{atr.id}}" style="display:none">
+						{% if perms.attraction.promote_attractions %}
+							<li><a href="javascript:void(0)" onclick="if(confirm(gettext('Are you sure you want to {% if atr.is_featured %}Non-Feature{% else %}Feature{% endif %} the attraction?'))){$('#id_action').val('{% if atr.is_featured %}False{% else %}True{% endif %}');filter_action({{atr.id}},'#')}">{% if atr.is_featured %}{% trans 'Non-Featured this' %}{% else %}{% trans 'Featured this' %}{% endif %}</a></li>
+							<li><span class="line-break"></span></li>
+						{% endif %}
+						{% if perms.attraction.change_attractions %}
+							<li><a href="{% url 'staff_edit_attraction' atr.id %}">{% trans 'Edit' %}</a></li>
+							<li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'staff_seo_attraction' atr.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+							<li><span class="line-break"></span></li>
+						{% endif %}
+						{% if perms.attraction.delete_attraction %}
+            	        	<li><a onclick="if(confirm(gettext('Are you sure you want to delete the attraction?'))){filter_action({{atr.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+						{% endif %}
+                	</ul>
+				</div>                                                              	                                                         
+        	</div>
+			{% endif %}
+		</div>
+	</li>
+	{% endifequal %}
+ {% endfor %}
+  {% endfor %}
+ {% else %}
+  <div class="no-data"><p>{% trans 'Sorry , No Attraction found !' %}</p></div> 
+ {% endif %}  

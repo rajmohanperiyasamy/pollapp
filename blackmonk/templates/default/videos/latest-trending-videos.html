@@ -1,0 +1,102 @@
+{% load i18n %}
+{% load ds_utils %}
+{% load bm_videostags %}
+<div>
+    <section class="sCn mDa-lT-mNi">
+        <div class="sCn-tTl sCn-tTl-bR pDb0">
+            <h3 class="clearfix oFl">
+                <span class="ib pLlT">{% trans 'Videos' %}</span>
+                <ul class="nav nav-tabs mRb0 pLrT" id="id_tabs_ul">
+                    <li class="active bm-tabs-li">
+                        <a href="javascript:void(0);" id="id_latest">                                            
+                            <i aria-hidden="true" class="bUi-iCn-tMe-aLt-16"></i>
+                            <span>{% trans 'Latest' %}</span>
+                        </a>
+                    </li>
+                    <li class="bm-tabs-li">
+                        <a href="javascript:void(0);" id="id_trending">
+                            <i aria-hidden="true" class="bUi-iCn-dRp-16"></i>
+                            <span>{% trans 'Trending' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </h3>
+        </div>
+        {% get_latest_videos category=video.category videoid=video.id limit=5 as latest_videos %}
+        <ul class="mDa-lT mDa-oT-lT bm-tabs_content" id="id_latest_videos">
+            {% for video in latest_videos %}
+            <li class="mDa">
+                <input type="hidden" id="fbids" name="fbids" class="bids" value="{{video.id}}">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                        <a class="bUi-tMb-wPr bUi-tMb-110 tMb-65 fLxiMgW bS-bRdR" href="{{video.get_absolute_url}}">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="{{video.get_video_hq_image}}" alt="{{video.title}}" title="{{video.title}}">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                        <div class="mDa-hVr cVr tR-hVr"><span class="bR5"><span class="lBl dRk mNi">{{video.duration}}</span></span></div>
+                        <div class="mDa-hVr tR-hVr cVr">
+                            <a class="s-32 cTr" href="{{video.get_absolute_url}}">
+                                <i class="bUi-iCn-pLy-aLt-24 hT-aTo fS32-1 pLy-iCn" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mDa-bDy">
+                        <h5 class="mDa-hD" title="{{video.title}}"><a href="{{video.get_absolute_url}}">{{video.title}}</a></h5>
+                        <div class="mDa-dTa mRt4">
+                               <img class="mRr5 ib mRb0" src="{{STATIC_URL}}themes/img/icons/{% if video.is_vimeo %}vimeo{% else %}youtube{% endif %}.png"><span class="fS11 cLr-lTgRy ib mRb0">{{video.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                               <a class="fS12 cLr-lTgRy pLrT mRt3 iM" title="{{video.video_view}} views"><i class="bUi-iCn-vEw-16 ib lH1" aria-hidden="true"></i> <span class="ib">{{video.video_view}}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% get_trending_videos videoid=video.id limit=5 as trending_videos %}
+        <ul class="mDa-lT mDa-oT-lT bm-tabs_content hide" id="id_trending_videos">
+            {% for video in trending_videos %}
+            <li class="mDa">
+                <input type="hidden" id="fbids" name="fbids" class="bids" value="{{video.id}}">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                        <a class="bUi-tMb-wPr bUi-tMb-110 tMb-65 fLxiMgW bS-bRdR" href="{{video.get_absolute_url}}">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="{{video.get_video_hq_image}}" alt="{{video.title}}" title="{{video.title}}">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                        <div class="mDa-hVr cVr tR-hVr"><span class="bR5"><span class="lBl dRk mNi">{{video.duration}}</span></span></div>
+                        <div class="mDa-hVr tR-hVr cVr">
+                            <a class="s-32 cTr" href="{{video.get_absolute_url}}">
+                                <i class="bUi-iCn-pLy-aLt-24 hT-aTo fS32-1 pLy-iCn" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mDa-bDy">
+                        <h5 class="mDa-hD" title="{{video.title}}"><a href="{{video.get_absolute_url}}">{{video.title}}</a></h5>
+                        <div class="mDa-dTa mRt4">
+                               <img class="mRr5 ib mRb0" src="{{STATIC_URL}}themes/img/icons/{% if video.is_vimeo %}vimeo{% else %}youtube{% endif %}.png"><span class="fS11 cLr-lTgRy ib mRb0">{{video.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                               <a class="fS12 cLr-lTgRy pLrT mRt3 iM" title="{{video.video_view}} views"><i class="bUi-iCn-vEw-16 ib lH1" aria-hidden="true"></i> <span class="ib">{{video.video_view}}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>

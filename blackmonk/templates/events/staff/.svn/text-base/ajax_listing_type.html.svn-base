@@ -1,0 +1,126 @@
+{% load i18n %}
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving listing Details' %}</p>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+		$("#mform4").validate({
+			ignore:'',
+			highlight: function(element, errorClass){$(element).parent('div').addClass('field-error');$(element).addClass("error");},
+			unhighlight: function(element, errorClass){$(element).removeClass("error");},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	listing_start_date: "required",
+		    	listing_end_date: "required",
+		   	},
+			
+		});
+		
+	});
+</script>
+<div class="main_col" id="ajax_content">
+	<div id="add-new-category" class="modal-form" style="width:560px !important;">
+    <form name="mform4" id="mform4" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="fields-head">
+                    <p class="ltxt80">{% trans 'Promote the event either as sponsored or featured.Select the duration to promote the event' %}.</p> 
+                </div>             
+                <div class="field text-field">
+                    <div class="label"><label>{% trans 'Listing Type' %}<span class="required-field">*</span></label></div>
+                    <div class="value">
+                    	<div class="fd-cols mrb0 pd50 group">
+                            {% for event_price in event_price_objects %}
+								<span class="pdr6"><label for="typeFeatured" id="l:typeFeatured"><span class="cform-radio-container"><input type="radio" value="{{event_price.id}}" onclick="payment_option({{event_price.id}})" {% if event.listing_type == 'B' and event_price.level == 'level0' %}CHECKED{% elif event.listing_type == 'S' and event_price.level == 'level1' %}CHECKED{% elif event.listing_type == 'F' and event_price.level == 'level2' %}CHECKED{% endif %} name="listingtype" id="{{event_price.id}}"><span class="cform-radio-element"></span></span>{{event_price.level_label}}</label></span>
+							{% endfor %} 
+						</div> 
+						<div class="fd-cols mrb0 pd50 group" style="float:left;">
+						{% trans 'From' %} 
+							<input type="text" style="width:80px !important;" autocomplete="off" class="cat_price" name="listing_start_date" id="id_listing_start_date" class="tttxt" value="{{event.listing_start|date:'d/m/Y'}}">
+						{% trans 'to' %} 
+							<input type="text" style="width:80px !important;" autocomplete="off" class="cat_price" name="listing_end_date" id="id_listing_end_date" class="tttxt" value="{{event.listing_end|date:'d/m/Y'}}">
+						</div>
+						{% for event_price in event_price_objects %}
+						{% if event_price.level != 'level0' %}
+							<div id="id_{{event_price.id}}" class="payment_div" style="width:260px;padding:15px 0 0 10px;float:left;{% if event.listing_type == 'B' %}display: none;{% elif event.listing_type == 'S' and event_price.level == 'level2' %}display: none;{% elif event.listing_type == 'F' and event_price.level == 'level1' %}display: none;{% endif %}">
+								<h4 class="price_lrg">
+									<span class="rs mdm">{{globalsettings.currency}}</span>
+									<input type="text" style="width:200px !important;" name="price_{{event_price.id}}" id="price_{{event_price.id}}" class="tttxt" value="{% if event.payment.id == event_price.id  %}{{event.listing_price|floatformat:2}}{% else %}{{event_price.price|floatformat:2}}{% endif %}">
+								</h4>
+							</div>
+						{% endif %}
+						{% endfor %}                                                               
+					</div>	
+                </div> 
+            </div>            
+		</div>    
+        <div class="modal-base form-submit group">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="save_listing_type({{event.id}})"><span class="cform-button-text">{% trans 'Update' %}</span></button>
+		</div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+	<script type="text/javascript">
+		function payment_option(id){
+			$('.payment_div').hide();
+			$('#id_'+id).show();
+			$.colorbox.resize();
+		}
+	$(document).ready(function(){
+		var year={{event.end_date|date:"Y"}}
+		var month={{event.end_date|date:"m"}}
+		var day={{event.end_date|date:"d"}}
+		var maxdate=new Date(year+","+month+","+day);
+		if($("#id_listing_start_date").length){
+			$("#id_listing_start_date").datepicker({ dateFormat: "dd/mm/yy",
+                maxDate: maxdate, minDate: new Date(),
+                onSelect: function(){
+                    enddate = $(this).val();
+                    splittedval = enddate.split('/');
+                    var date = new Date(splittedval[2], splittedval[1]-1, splittedval[0]);
+                    //date.setDate(date.getDate() + 1);
+                    $("#id_listing_end_date").datepicker( "option", "minDate", date );
+                }
+            });
+		}
+		if($("#id_listing_end_date").length){
+			$("#id_listing_end_date").datepicker({ dateFormat: "dd/mm/yy",
+                maxDate: maxdate, minDate: new Date()
+            });
+		}
+	});
+
+
+/*
+{% if event_price.level == 'level0' %}
+	BASIC
+{% else %}
+	{% if event_price.level == 'level1' %}
+		SPONSORED
+	{% else %}
+		FEATURED
+	{% endif %}
+{% endif %}
+
+{% if event.payment %}
+{% if event.listing_type == 'B' %}
+	$('#level_level0').remove();
+	$('#payment_level').val('level1');
+{% else %}
+	{% if event.listing_type == 'S' %}
+		$('#level_level0').remove();
+		$('#level_level1').remove();
+		$('#payment_level').val('level2');
+	{% else %}
+		$('#payment_level').val('level2');
+	{% endif %}
+{% endif %}
+{% else %}
+	$('#payment_level').val('level0');
+{% endif %}*/	
+	</script>
+</div>

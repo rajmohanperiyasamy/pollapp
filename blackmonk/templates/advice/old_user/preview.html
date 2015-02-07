@@ -1,0 +1,126 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "advice" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Preview - Advice' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+	<div class="header-bar has-preview-head">
+        <h2 onclick="window.location.replace('{% url 'user_manage_advice' %}')" style="cursor:pointer;">Advice</h2>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+            	{% if advice.is_featured %}
+        		<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+		 		{% endif %}
+                <div class="item-title">
+                    <h1>{{ advice.question }}</h1>
+                    <p class="ltxt80">By <a href="#">{{advice.created_by.profile.get_full_name}}</a> <span class="divider12">|</span> {{advice.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+                <ul class="status-tabs group">
+                	 <li>{{advice.viewed}}<span class="meta">{% trans 'views' %}</span></li>
+                    <li>{{advice.get_answer_count}}<span class="meta">{% trans 'answers' %}</span></li>
+                </ul>                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap">
+                <div id="article-preview" class="preview-center group">
+                    <div class="preview-items">
+                        <div class="preview-group">  
+                        	<div class="preview-items-head">
+                            	<h3 style="vertical-align:top">{% trans 'Advice Details' %}</h3>
+                            </div>            
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Question/Advice' %}</h4></div>
+                                <div class="value">{{ advice.question }}</div>
+                            </div> 
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Category' %}</h4></div>
+                                <div class="value">{{advice.category}}</div>
+                            </div> 
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Allow Comments' %}</h4></div>
+                                <div class="value">{% if advice.allow_comments %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</div>
+                            </div> 
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Mail On Reply' %}</h4></div>
+                                <div class="value">{% if advice.email_on_answer %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</div>
+                            </div> 
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Comments' %}</h4></div>
+                                <div class="value">
+									<ul>
+										{% if advice.get_comments %}
+											{% for cmt in advice.get_comments %}
+											<li><p>{{cmt.comment}}<b style="font-weight:bold;"> ~ {% trans "by "%}{{cmt.created_by}}</b></p></li>
+											{% endfor %}
+										{% else %}
+											<li style="color:#aaa;"><div><p>{% trans 'No Comments found!' %}</p></div></li>
+										{% endif %}
+									</ul>
+								</div>
+                            </div> 	
+							{% if advice.tags.all %}
+                            <div class="preview-item tags">
+                                <div class="label"><h4>{% trans 'Tags' %}</h4></div>
+                                <div class="value">
+                                	<span class="note">{% for tag in advice.tags.all %}<a href="javascript:void(0)">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+								</div>
+                            </div> 
+							{% endif %}
+							<ol class="data-table-inset" id="product_list">
+								<li class="table-list-row" style="text-align:center;padding:10px;display:none;" id="ajax_content_loading_list">
+									<img src="{{STATIC_URL}}ui/images/global/loading-s.gif">
+								</li>
+								{% if advice.get_answers %}
+								<li>
+									<div class="preview-item title">
+		                                <h3>{% trans 'Answers' %}</h3>
+		                            </div> 
+								</li>
+								{% for ans in advice.get_answers %}
+	                        	<li class="table-list-row manage-items" id="li_{{ans.id}}">
+	                                <div class="table-list-row-inner group">
+										<div class="item-detail">
+	                                    	<h4>{% trans "By "%}{{ans.created_by}}<!--em class="price" id="em_{{ans.id}}">&nbsp;{% if ans.status == 'P' %}{% trans "Approved" %}{% else %}{% trans "Pending" %}{% endif %}</em--></h4>
+											<p>{{ans.answer}}</p>
+	                                    </div>
+										<div class="preview-item title"><h3>{% trans "Comments "%}</h3></div>
+										<ul>
+											{% if ans.get_comments %}
+												{% for cmt in ans.get_comments %}
+												<li><p>{{cmt.comment}}<b style="font-weight:bold;"> ~ {% trans "by "%}{{cmt.created_by}}</b></p></li>
+												{% endfor %}
+											{% else %}
+												<li style="color:#aaa;"><div><p>{% trans 'No Comments found!' %}</p></div></li>
+											{% endif %}
+										</ul>
+	                                </div>
+								</li>
+								{% endfor %}
+								{% endif %}
+								<div class="preview-item tags no-data" style="{% if advice.get_all_answers %}display:none;{% endif %}">
+		                            <div class="value"><p>{% trans 'No Answers found!' %}</p></div>
+								</div>
+	                        </ol> <!-- end table -->                                                                                        
+                        </div>   
+                    </div>                                            
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+             {#% include 'advice/user/faq.html' %#}         
+        </div>                            
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% load ds_utils %}
+{% load thumbnail %}
+{% load comment_config %}
+{% load mptt_comments_tags %}
+{% load markup i18n mptt_tags mptt_comments_tags comparison %}
+{% if comment.is_public %}
+<ol class="pRnT" id="comment_holder_ol_{{comment.id}}">
+	<li class="cMnT" itemprop="review" itemscope itemtype="http://schema.org/Review">
+        <div class="cMnT-iN">
+            <div class="vCrD pLlT">
+                <span class="bBl-aRw">
+                    <span class="aRw a1"></span>
+                    <span class="aRw a2"></span>
+                </span>
+                {% if cc_avatar %}
+                    <a href="{% url 'user_profile' comment.user.username %}"><img class="aVtR" src="{% if comment.user.image %}{% thumbnail comment.user.image 48x48 %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}" itemprop="image"></a>
+                {% else %}
+                    <a href="{% url 'user_profile' comment.user.username %}"><img class="aVtR" src="{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg" itemprop="image"></a>
+                {% endif %}
+            </div>
+            <div class="cMnT-bDy dev-cParent">
+                <div class="cMnT-bDy-iN" id="clone_comment_{{ comment.pk }}_div">
+                    {% if comment.parent %}<input type="hidden" name="shaan" value="{{comment.parent.pk}}">{% endif %}
+                    <header class="cMnT-hD">
+                        <span class="pBlSr" itemtype="http://schema.org/Person" itemprop="author"><a href="{% url 'user_profile' comment.user.username %}" itemprop="url"><span itemprop="author">{{comment.user.get_full_name }}</span></a></span>
+                        {% if cc_rating %}
+						{% if comment.content_object|class_name == 'Business' or comment.content_object|class_name == 'Restaurants' or comment.content_object|class_name == 'Movies' %}
+						{% if comment.rating or comment.rating == '0.00'%}
+    						<div class="sTr-rT ib mRb0 sPrTr" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4 dev-uraty" data-score="{{comment.rating}}"></span>
+								<meta itemprop="ratingValue" content="{{comment.rating}}"/>
+	                            <meta itemprop="bestRating" content="5"/>
+							</div>
+    					{% endif %}
+						{% endif %}
+						{% endif %}
+                        <span class="tM sPrTr" title="{{comment.submit_date}}">{{ comment.submit_date|get_readable_time_format }} {% trans 'ago' %}</span>
+						<meta itemprop="datePublished" content="{{ comment.submit_date|get_iso_time_format }}"> 
+                    </header>
+                    <div class="cMnT-tXt">
+                       {% if comment.comment %}<p itemprop="reviewBody">{{ comment.comment|linebreaksbr }}</p>{% endif %}                       
+                    </div>
+                    <footer class="cMnT-fTr">
+                        {% if cc_like_dislike %}
+                            <span class="cMnT-vTnG" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                               <a href="javascript:void(0);" class="cMnT-rTg-uP" onclick="like_dislike({{ comment.id }},{{comment.like}},'1')"><span class="cMnT-rTg-pStV" title="{{comment.like}} up, {{comment.dislike}} down" id="cmnt_up_dwn_count_{{comment.id}}" itemprop="reviewCount"></span><i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i></a>
+                               <a href="javascript:void(0);" class="cMnT-rTg-dWn" onclick="like_dislike({{ comment.id }},{{comment.like}},'0')"><i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i></a>
+                            </span>
+                        {% endif %}
+                    </footer>                                            
+                    <div class="cMnT-oPtN btn-group">
+                        <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu pLrT mNi">
+                            <!--li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                            <li><a href="#" class="comment-link">Direct link</a></li>
+                            <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                            <li><a href="#" class="btn-mention_user">Mention user</a></li-->
+                            <li><a href="javascript:flag({{comment.id}})" class="btn-mention_user">Flag for Spam</a></li>
+                        </ul>
+                    </div>
+                </div> <!-- /.cMnT-bDy-iN -->
+            </div><!-- /.cMnT-bDy -->                                        
+        </div> <!-- /.cMnT-iN -->
+    </li> <!-- /.cMnT -->
+</ol>
+{% if comment.content_object|class_name == 'Business' or comment.content_object|class_name == 'Restaurants' or comment.content_object|class_name == 'Movies' %} 
+<script>
+$(document).ready(function(){
+	$('.dev-uraty').raty({readOnly: true,score: function() {return $(this).attr('data-score');}});
+});
+</script>
+{% endif %}
+{% endif %}

@@ -1,0 +1,40 @@
+{% load ds_utils %}
+{% load i18n %}		
+		<input type="hidden" value="{% url 'staff_bmshop_ajax_group' %}" name="id_listarticle_url" id="id_listarticle_url">
+        <input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+        <input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+        
+		{% if group_objs %}
+		<ol class="data-table table-lists-container" id="ajax_content_list">
+			{% for group_obj in group_objs %}	
+			<li class="table-list" id="li_{{pty_obj.id}}">
+			        <div class="table-list-container group">
+			            <div class="item-info relative-block">
+			                <h3 class="title"><a class="bm-add-gadget light_box" title="{{group_obj.name}}" href="{% url 'staff_bmshop_add_property_group' %}?id={{group_obj.id}}">{{group_obj.name}}</a></h3>
+			                <p class="ltxt80">{% trans 'By' %} <a href="">{{group_obj.created_by.display_name}}</a> <span class="divider12">|</span>{{group_obj.created_on|date:"M d, Y"}}{% if group_obj.get_property_group %}<span class="divider12">|</span>Properties: {%for property_obj in group_obj.get_property_group %}{%if forloop.counter < 5 %}{{property_obj.property.name}} {%if not forloop.last %},{%endif%}{% else %}{%if forloop.last %}...{%endif%}{% endif %}{% endfor%}{% endif %}</p>
+			                                                                      
+			            </div>
+			            <div class="action-buttons">
+			                <div class="relative-block">
+			                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{group_obj.id}}" onclick="display_settings({{group_obj.id}});"><span class="action-icon icon-manage"></span></span>
+			                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{group_obj.id}}" style="display:none">
+										<li><a class="bm-add-gadget light_box" title="{% trans 'Edit Property Group' %}" href="{% url 'staff_bmshop_add_property_group' %}?id={{group_obj.id}}">{% trans 'Edit' %}</a></li>
+										<li><span class="line-break"></span></li>			                       	
+								    	<li><a onclick="if(confirm(gettext('Are you sure you want to delete the selected property group ?'))){filter_content({{group_obj.id}});return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+			                    </ul>
+							</div>                                                              	                                                         
+			            </div>
+			        </div>
+			    </li> 
+			{% endfor %}
+			</ol>
+			{% include 'common/pagination_ajax.html'%}  
+			{% else %}
+				<div class="no-data"> <p>{% trans 'Sorry , No properties found !' %}</p></div>
+         	{% endif %}
+			<script>
+				
+				
+			</script>
+
+				 

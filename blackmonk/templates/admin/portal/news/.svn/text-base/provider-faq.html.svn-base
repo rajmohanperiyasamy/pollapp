@@ -1,0 +1,14 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+		<h5>{% trans 'Highlights' %}</h5>
+        <h6>{% trans 'News Feeds:' %}</h6>
+		<p>{% trans 'Please add the news providers to fetch news feeds in your website. <br>Eg: CNN.com, bbc.co.uk' %}</p>
+		<p>{% trans 'News feeds are pulled real-time from Google News.'%}</p>
+		<hr>
+		<h6>{% trans 'Cronejob:' %}</h6>
+		<p>{% trans 'Run Cronejob on your own to fetch news in your website by clicking the settings icon found right at top.'%}</p>
+	</div>                                    
+</div> 
+
+    

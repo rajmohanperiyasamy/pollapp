@@ -1,0 +1,29 @@
+{% load i18n %}
+<div class="tool_bar br_0 p_0">
+    <!-- Social set begins -->
+	{%include 'default/social.html'%}
+    <!-- Social set ends  -->                                            
+    <div class="right_tools">
+    	<a href="javascript:void(0)" style="{% if not user.is_authenticated %}display:none;{% endif %}" title="{% trans 'Add To Favourite' %}" class="tttxt-n fav_add save_btn click_pvnt" onclick="add_to_fav({{ movie.id }})"><span>{% trans 'Favorite' %}</span></a>
+		<a href="{% url 'ajax_signin' %}" style="{% if user.is_authenticated %}display:none;{% endif %}"  class="tttxt-n fav_login bm-ajax-login email_btn respond_clr"><span>{% trans 'Favorite' %}</span></a>
+        <a href="#" title="Tell Your Friend" class="email_btn click_pvnt respond_clr" onclick="show_content('respond_to_div')"><span>{% trans 'Email' %}</span></a>
+    </div>                                         
+    <div class="clear"></div>    
+</div>
+<script>
+function add_to_fav(id){
+	$('.alert_flash').hide();
+	$.ajax({
+		type:'get',
+		url:'{% url 'movie_add_to_fav' %}',
+		data:'id='+id,
+		success:function(data){
+			if(data=='1'){ $('#flash_alert').show();}
+			else if(data=='2'){$('#flash_alert1').show();}
+			else{alert(gettext('Oops!!! Not able to process your request.'));}
+			
+			}
+		});
+}
+</script>
+<!-- Share icons end -->

@@ -1,0 +1,23 @@
+{% load i18n %}	
+ <div class="label"></div>
+   <div class="value">
+	{% if address %}
+	<div class="group">
+	    <span style="margin-bottom: 10px; display: block;">{% trans 'Address(s)' %}<span class="required-field">*</span></span>
+	</div>
+	{% for add in address %}
+	<div class="group address_block">
+        <div class="action">
+            <span>
+				<span class="cform-checkbox-container"><input type="checkbox" class="checkbox mrl0" value="{{ add.id }}" name="address" id="id_address"><span class="cform-checkbox-element"></span></span> 
+			</span>
+        </div>
+         <div class="address">
+            <p style="padding-top: 10px;">{{ add.address1 }}{% if add.address2 %}, {{ add.address2 }}{% endif %}{% if add.zip %},{{ add.zip }}{% endif %} {% if add.city %},{{ add.city }}{% endif %}</p>
+        </div>
+    </div>
+ 	{% endfor %}
+ 	{% else %}
+		<span> {% trans 'No address(s) found' %}</span>
+	{% endif %}
+</div>	

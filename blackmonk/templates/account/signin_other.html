@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load get_signup %}
+{% load_signup_obj %}
+<div class="row-fluid">
+	<h3 class="fS14 cLr-gRy mRb10">{% trans 'Connect with a social network' %}</h3>
+	<ul class="dSpLy-tBl tHcL tXt-lT mR0">
+		{%if signup_settings.facebook %}
+		<li>
+			<a href="/fbconnect/authenticate/?next={{ next }}" style="white-space: nowrap;" class="btn btn-block pD612 btn-fB"><i aria-hidden="true" class="bUi-iCn-fB-16"></i><span class="hMx479 mRl10">{% trans 'Facebook' %}</span></a>
+		</li>
+		{% endif %}
+		{%if signup_settings.twitter %}
+		<li>
+			<a href="/twitter/oauth/authorize/?next={{ next }}" style="white-space: nowrap;" class="btn btn-block pD612 btn-tW"><i aria-hidden="true" class="bUi-iCn-tWr-16"></i><span class="hMx479 mRl10">{% trans 'Twitter' %}</span></a>
+		</li>
+		{% endif %}
+		{%if signup_settings.openid %}
+		<li>
+			<a href="/openid/openid/?openid_url=https://www.google.com/accounts/o8/id&next={{ next }}" style="white-space: nowrap;" class="btn btn-block pD612 btn-gP"><i aria-hidden="true" class="bUi-iCn-gOo-pLs-16"></i><span class="hMx479 mRl10">{% trans 'Google' %}</span></a>
+		</li>
+		{% endif %}
+		{%if signup_settings.linkedin %}<li><a href="/linkedin/login/" style="white-space: nowrap;" class="btn btn-block pD612 btn-iN"><i aria-hidden="true" class="bUi-iCn-lNkD-16"></i><span class="hMx479 mRl10">LinkedIn</span></a></li>{% endif %}
+	</ul>
+</div>

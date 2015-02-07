@@ -1,0 +1,160 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% load thumbnail %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Business' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Business' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block head %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/common_user.js"></script>
+<!--script type="text/javascript" src="{{ STATIC_URL }}ui/js/application.js"></script-->
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "business" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	            	<div class="span10 sP9mX979 sP12mX767">
+		                <div class="row-fluid">
+							<div class="main span9">
+								<section class="sCn pD0">
+									<div class="cLrFx pD20">
+										<div class="pLlT">
+											<h3 class="mR0 tRnCt">{{business.name}}</h3>
+										</div>
+										<div class="pLrT w100pSmP mRt10SmP"><a href="{% url 'user_manage_business' %}" class="btn btn-small btn-light"><i aria-hidden="true" class="bUi-iCn-aRw-l-16"></i></a></div>
+									</div>
+                                    <div class="row-fluid">
+                                    	<ul class="nav nav-tabs tB-cStM pLlT pD020 mR0">
+                                            <li><a href="{% url 'user_update_business' business.id %}">Edit Business</a></li>
+											<li class="active"><a href="{% url 'user_business_images' business.id %}">Images</a></li>
+											<li><a href="{% url 'user_business_product' business.id %}">Product</a></li>
+											<li><a href="{% url 'user_business_coupon' business.id %}">Coupons</a></li>
+                                        </ul>	
+                                    </div>
+									<hr class="mRb12 mRt0">
+                                    <div class="tLbR mRb12 pD015">
+                                        <span class="help-block">Add images you want your visitors to see, include your logo, photos of your business, a copy of your menu, and other photos you want to share.</span>
+                                    </div>
+									<div class="control-group">
+							           	<div class="controls">
+											<div id="fileupload" >
+												<div class="fileupload-content">
+													<ul class="files bm-uploader-list"></ul>
+												</div><div class="clear"></div>
+												{% csrf_token %}
+												<div class="no-data"  style="padding:9em 0px 3em 0px;{% if business.get_first_photo_gallery %}display:none;{% endif %}">
+							                        <!-- No data -->
+													<div class="hT400 rLvE">
+												 		<div class="tBl-bLk pDt0">
+															<div class="tBl-cEl">
+																<span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-pHoT-24 fS42-1 cLr-lTgRy ib"></i></span>
+																<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You haven't added any images yet.</p>
+															</div>
+														</div>
+													</div>
+													<!-- /No data -->	
+												</div>
+												<div class="upload-button-wrapper" style="margin-left: 20px; position: absolute; top: 0px; right: 16px;">
+													<a class="btn btn-primary fS12 fW-bLd">Add Images</a>
+													<div class="fileinput-button">
+													   <input style="cursor:pointer;" type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+												    </div>
+												</div>
+											</div>
+										</div>
+							        </div>
+								</section>
+							</div> <!-- /.main -->
+							<aside class="sD-bR span3">
+								<div>
+									<section class="tXt-cTr pD0 bNr-aD"> 
+			                           
+			                        </section>
+								</div>
+							</aside>
+						</div>  <!-- /.row-fluid -->
+					</div>  <!-- /.span10 -->
+					<div id="update_caption" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				        <div class="modal-header">
+				            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				            <h4 id="myModalLabel" class="mR50">Update Caption</h4>
+				        </div>
+				        <div class="modal-body">
+							<div style="text-align: center; width: 100%;">
+								<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+							</div>
+				        </div>
+				        <div class="modal-footer">
+				            <button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button>
+				            <button class="btn btn-primary" type="submit" onclick="update_caption();">Done</button>
+				        </div>
+				    </div>
+
+
+<script src="{{ STATIC_URL }}js/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	file_upload("{% url 'business_ajax_upload_photos' %}?id={{business.id}}",20,{% if business.album %}{{business.album.id}}{% else %}0{% endif %});
+	$('#fileupload').bind('fileuploadstart',function(e, data){show_hide()});
+	$('#fileupload').bind('fileuploaddestroy',function(e, data){setTimeout(function(){show_hide();},1000);});
+});
+
+function show_hide(){
+	if($('.bm-uploader-file').length>=1){
+		$('.no-data').hide();
+		$('#head_title').show();
+		$('.upload-button-wrapper').css('margin-left','0px');
+		$('.upload-button-wrapper').css('text-align','left');
+	}
+    else{
+		$('.no-data').show();
+		$('#head_title').hide();
+		$('.upload-button-wrapper').css('margin-left','300px');
+		$('.upload-button-wrapper').css('text-align','left');
+	}
+}
+
+function show_update_caption_lb(url) {
+	target = url+'?user="true"';
+   // load the url and show modal on success
+   $("#update_caption .modal-body").load(target, function() {
+        $("#update_caption").modal("show");
+   });
+}
+
+function update_caption(){
+    $.ajax({
+       type: "POST",
+	   url: $('#id_form_update_caption').attr('action'),
+	   data: 'caption='+encodeURIComponent($('#id_caption').val()),
+	   dataType:'JSON',
+	   success: function(data){
+           if(data.status){
+               $('#update_caption').modal('hide');
+           }
+           else{
+		       $("#update_caption .modal-body").html(data.html);
+           }
+       }
+    });
+}
+</script>
+{% endblock %}

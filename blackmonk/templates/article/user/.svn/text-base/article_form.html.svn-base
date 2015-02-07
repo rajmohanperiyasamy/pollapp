@@ -1,0 +1,272 @@
+{% extends "user_base.html" %}
+{% load i18n %}
+{% load upload_tags %}
+{% load ds_utils %}
+{% load tabs %}
+
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor4/ckeditor.js"></script>
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "article" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+{{form.errors}}
+	<div class="span10 sP9mX979 sP12mX767">
+        <div class="row-fluid">
+			<div class="main span9">
+				<section class="sCn pD0">
+					<div class="cLrFx pD20">
+						<div class="pLlT">
+							<h3 class="mR0 tRnCt">{% if not article %}Submit{% else %}Update{% endif %} Article</h3>
+						</div>
+					</div>
+					<hr class="mRb12 mRt0">
+					<div class="pD20">
+						<form action="{% url 'article_add_article' %}{%if article %}?aid={{article.id}}{%endif%}" name="mform1" id="mform1" method="post" class="form-horizontal uSr-aCnT mRb0">{% csrf_token %}
+							<input type="hidden" value="{% if article.article_type %}{{article.article_type}}{% else %}{{article_type}}{% endif %}" name="a_tpe" id="id_article_type">
+							{% if payment_mode %}<input type="hidden" value="{{payment_mode}}" name="payment_mode" id="id_payment_mode">{% endif %}
+                            <div class="control-group">
+                                <label class="control-label" >Title<em class="cLr-rEd">*</em></label>
+                                <div class="controls">
+                                    {{ form.title }}
+									<input style="" type="hidden" onkeyup="fillslug_add(this.value);" name="slug" value="{% if slug %}{{ slug }}{% endif %}" id="id_slug" class="default-url slug_input">
+									<input type="hidden" value="{% if article.article_type %}{{article.article_type}}{% else %}{{article_type}}{% endif %}" name="article_type" id="id_article_type">
+                                </div>
+                            </div>
+							{% include 'common/coverphoto_form_user.html' %}
+                            <div class="control-group">
+                                <label class="control-label" >Category<em class="cLr-rEd">*</em></label>
+                                <div class="controls">
+                                    {{ form.category }}
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" >Summary<em class="cLr-rEd">*</em></label>
+                                <div class="controls">
+                                    {{ form.summary }}
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" >Content<em class="cLr-rEd">*</em></label>
+                                <div class="controls">
+                                    {{ form.content }}
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Tags</label>
+                                <div class="controls">
+                                    <input type="text" name="tags" value="{% for tag in article_tags %}{{tag}}{% if not forloop.last %},{% endif %}{% endfor %}" class="iSp8 tagsinput" placeholder="tags">
+                                </div>
+                            </div>
+							<div class="control-group">
+                               	<label class="control-label"></label>
+                               	<div class="controls">
+									<div id="fileupload" >
+	 									<div class="fileupload-content">
+	    									<ul class="files bm-uploader-list mR0"></ul>
+										</div><div class="clear"></div>
+										<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+        								{% csrf_token %}<div class="clear"></div>
+       									<div class="upload-button-wrapper mRt10">
+           									 <a class="btn btn-primary fS12 fW-bLd">{% trans 'Add Images' %}</a>
+                							 <div class="fileinput-button">
+                    							 <input title="Add Images" type="file" style="cursor:pointer;" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+                							 </div>
+           								</div>
+									</div>
+                               	</div>
+                           	</div>
+                            <hr class="oTsT-hRz20 mRb0">
+                            <div class="row-fluid">
+                                <div class="form-actions pD0 pLrT">
+                                    <a href="{% url 'article_dash_board' %}" class="btn btn-light fS12 fW-bLd ">Cancel</a>
+									{% if article.status == 'D' or not article %}
+                                    <button name="save_button" value="draft" type="submit" class="btn btn-primary fS12 fW-bLd id_article_submit">Save as Draft</button>
+									{% endif %}
+                                    <button name="save_button" type="submit" id="id_article_submit" value="save" class="btn btn-danger fS12 fW-bLd id_article_submit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+					</div>
+				</section>
+			</div> <!-- /.main -->
+			<aside class="sD-bR span3">
+				<div>
+					<section class="tXt-cTr pD0 bNr-aD"> 
+                       
+                    </section>
+				</div>
+			</aside>
+		</div>  <!-- /.row-fluid -->
+	</div>  <!-- /.span10 -->
+	<div id="update_caption" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 id="myModalLabel" class="mR50">Update Caption</h4>
+        </div>
+        <div class="modal-body">
+			<div style="text-align: center; width: 100%;">
+				<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+			</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="submit" onclick="update_caption();">Done</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footerarea %}
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript">
+	var edt;
+	function resizeEditor() {
+	  	edt.resize('100%',edt.config.height+50);
+	}
+	$(document).ready(function(){
+		file_upload('{% url 'article_ajax_upload_photos' %}{%if article.id%}?id={{article.id}}{%endif%}',5);
+		{% with form.instance|content_type as ctype %}
+		cover_photo_upload("{% url 'common_upload_cover_photo' %}?ctype={{ctype.pk}}&cobj={{form.instance.id}}", 100/70);
+		{% endwith %}
+		{% if not article %}
+			{% if new_pic %}
+				get_images('{% url 'article_ajax_get_default_photos' %}?ids={% for np in new_pic %}{{np}}{% if not forloop.last %},{% endif %}{% endfor %}')
+			{% endif %}
+		{% endif %}
+		$.validator.addMethod("desc_required", function(value, element) {  
+	    	$('#id_content').val(edt.getData());
+			if($('#id_content').val()!=''){return true;}
+			else{return false;}
+		},"Please enter a description.");
+		$("#mform1").validate({
+			ignore:'',
+			highlight: function(element, errorClass){
+				$(element).parent('div').parent('div').addClass('error');
+				$(element).parent('div').addClass('error');
+				$(element).addClass('error');
+			},
+			unhighlight: function(element, errorClass){
+				$(element).parent('div').parent('div').removeClass('error');
+				$(element).parent('div').removeClass('error');
+				$(element).removeClass('error');
+			},
+			errorPlacement: function(error, element){},
+			invalidHandler: function(event, validator) { 
+				var id = $(validator.errorList[0].element).parent('div');
+				$('html,body').animate({ scrollTop: $(id).offset().top }, 'slow');
+			},
+		   	rules:{
+		    	title: "required",
+		    	category: "required",
+		    	summary: "required",
+		    	content: "desc_required"
+		   	},
+			submitHandler: function(form) {
+				$('.id_article_submit').attr('disabled','disabled');
+				form.submit();
+			}
+		});
+		$('.select-menu').bind("change", function(){
+			$("#mform1").validate().element($(this));
+		});
+		/*
+		CKEDITOR.on( 'instanceCreated', function( e ){
+			e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+		});
+		*/
+		edt=CKEDITOR.replace( 'id_content',{
+            customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+           	toolbar : 'Full',
+            width:500,height:400,
+            filebrowserImageUploadUrl : '{%url 'article_upload_from_editor' %}'
+      	});
+		setTimeout(function(){resizeEditor();},1000);
+		edt.on('key', function(event) {updateTextArea();});
+		
+		$( ".id_article_submit" ).click(function(event){
+			setTimeout(function(){
+				$('.id_article_submit').removeAttr('disabled'),event.preventDefault();
+			},3000);
+		});
+	}); 
+
+	function show_update_caption_lb(url) {
+			target = url+'?user="true"';
+		   // load the url and show modal on success
+		   $("#update_caption .modal-body").load(target, function() {
+		        $("#update_caption").modal("show");
+		   });
+		}
+	
+	function updateTextArea(){
+	    CKEDITOR.tools.setTimeout( function(){ 
+	        $('#id_content').val(edt.getData());
+	        $("#id_content").trigger('keyup');
+	    }, 0);  
+	}			
+	function add_ckeditor_id(id){
+		$('#ck_editor_photos').append('<input type="hidden" value="'+id+'" name="ckeditor_img_ids" >')
+	}
+	var var_editslug=1;
+	function fillslug(data){
+		data = slugify(data)
+		if(var_editslug==1){
+			window.document.getElementById('id_slug').value=data;
+		}
+	}
+	function slugify(text) {
+       text=text.toLowerCase();	
+       text = text.replace(/[^-a-zA-Z0-9,&\s]+/ig, '');
+       text = text.replace(/-/gi, "_");
+       text = text.replace(/\s/gi, "-");
+       return text;
+	}
+	function fillslug_add(data){
+		data = data.replace(/ /g, "-");
+		if (var_editslug == 1) {
+			window.document.getElementById('id_slug').value = data;
+		}
+	}
+
+	function update_caption(){
+	  	/*var flag = $('#id_form_update_caption').validate({
+				ignore:'',
+				highlight: function(element, errorClass){
+					$(element).parent('div').parent('div').addClass('error');
+					$(element).addClass('error');
+				},
+				unhighlight: function(element, errorClass){
+					$(element).parent('div').parent('div').removeClass('error');
+					$(element).removeClass('error');
+				},
+				errorPlacement: function(error, element){},
+			   	rules:{
+			    	caption: "required"
+			   	}
+			}).form()
+			if(flag==true){*/
+	  $.ajax({
+	    type: "POST",
+	    url: $('#id_form_update_caption').attr('action'),
+	    data: 'caption='+encodeURIComponent($('#id_caption').val()),
+	    dataType:'JSON',
+	    success: function(data){
+	            if(data.status){
+	               $('#update_caption').modal('hide');
+	            }
+	            else{
+					$("#update_caption .modal-body").html(data.html);
+	            }
+	        }
+	    });
+/*}*/
+	}
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% load i18n %}
+<div id="ajax_content_loading_admin" style="display:none;padding-top:60px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Menu Item' %}</p>
+</div>
+<div class="main_col" id="ajax_content">
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass('error');},
+			unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass('error');},
+			errorPlacement: function(error, element){},
+		   	rules:{
+				name: "required",
+				base_url:"required",			
+		   	}
+		});
+	});
+	</script>
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	{% if form.errors %}
+    	<div class="messageerror" style="background:#FCF4F4;padding:10px;color:#FF9902; box-shadow:0 0 2px rgba(0, 0, 0, 0.1);border-bottom:1px solid #e1e1e1">
+			<strong style="font-weight:bold;">{% trans 'There is a problem with your submission' %}</strong>
+            <ul style="list-style:square;margin-left:20px;">
+           		{% for field in form %}
+           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+          	 	{% endfor %}
+			</ul>
+	 	</div>
+	{% endif %}
+	<div id="add-new-category" class="modal-form">
+    <form action="{% url 'admin_design_update_menu_item' %}{% if menu_obj %}?mid={{menu_obj.id}}{% endif %}" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+	    {% if menu_obj %}
+		<input type="hidden" id="id_menu_li" value="{{menu_obj.id}}">
+		{% endif %}	
+    	<div class="fields hform">
+            <div class="field-group">              
+                <!--div class="fields-head">
+                    <p class="ltxt80">{% trans 'Select a Main Menu to create  Sub Menu or Create Main Menu' %}.</p> 
+                </div-->   
+                <div class="field text-field">
+                    <div class="label"><label>{% trans 'Label' %}<span class="required-field">*</span></label></div>
+                    <div class="value">
+                    	{{ form.name }}
+					</div>
+                </div> 
+				<div class="field text-field">
+                    <div class="label"><label>{% trans 'URL' %}<span class="required-field">*</span></label></div>
+                    <div class="value">
+                    	{{ form.base_url }}
+					</div>
+                </div> 
+            </div>          
+		</div>    
+        <div class="modal-base form-submit group">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="add_menu_item();"><span class="cform-button-text">{% if menu_obj %}{% trans 'UPDATE' %}{% else %}{% trans 'CREATE' %}{% endif %}</span></button>
+		</div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+</div>

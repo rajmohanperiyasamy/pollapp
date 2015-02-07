@@ -1,0 +1,213 @@
+{% extends "admin_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "staff" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Admin | Manage Staff{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/base.js"></script>
+<script>
+	validate = function(){
+		var email = window.document.getElementById('cmp_email');
+		if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(trim(email.value)) && trim(email.value)!=''){
+			alert("Invalid email address! Please re-enter");
+			email.focus();
+        	return false;
+        }
+        return true;
+	}
+</script>
+
+<script type="text/javascript">
+function echeck(email) {
+		str = email.value
+		if(str!=''){
+		var at="@"
+		var dot="."
+		var lat=str.indexOf(at)
+		var lstr=str.length
+		var ldot=str.indexOf(dot)
+		if (str.indexOf(at)==-1){
+		   alert("Invalid E-mail ID")
+		   return false
+		}
+
+		if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr){
+		   alert("Invalid E-mail ID")
+		   return false
+		}
+
+		if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr){
+		    alert("Invalid E-mail ID")
+		    return false
+		}
+
+		 if (str.indexOf(at,(lat+1))!=-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.indexOf(dot,(lat+2))==-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+		
+		 if (str.indexOf(" ")!=-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+ 		 return true					
+	}
+}
+</script>
+<script type="text/javascript">
+function emailVarify(){
+	var email = document.getElementById('cmp_email').value;
+	if(email!=''){
+	$.getJSON("/admin/emailvarify/?email="+email,
+	function(data){
+	   if(data.notfound!='true'){
+		     var info_box = document.getElementById('register_user');
+		     var user_avatar = document.getElementById('user_avatar');
+		     var user_email = document.getElementById('user_email');
+		     var user_name = document.getElementById('user_name');
+		     info_box.style.display = '';
+		     user_email.innerHTML = data.user_email;
+		     user_name.innerHTML = data.user_full;
+		     user_name.href = '/profile/'+data.user_name;
+		     user_name.target = '_blank';
+		     user_avatar.src = data.avatar;
+	     }else{alert('not found');}
+	   }
+	 );
+	 }
+}
+</script>
+{% endblock %}
+{% block content %}
+    	<div class="container group">
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="{% url 'admin_manage_staff' %}" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff</a></li>
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Add Staff</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Add Staff</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="{%url 'admin_manage_staff' %}" class="side_menu">Manage Staff</a></li>  
+                        <li><a href="{%url 'admin_create_fresh_staff' %}" class="side_menu">Add new Staff</a></li>  
+                        <li><a href="{%url 'admin_promote_user' %}" class="side_menu on">Promote an User</a></li>
+                        <li><a href="{%url 'admin_search_staff' %}" class="side_menu">Search Staff</a></li>
+                        <li><a href="{%url 'admin_add_seo' %}" class="side_menu">Manage SEO</a></li>                          
+                    </ul>
+                </div> 	
+ <div class="main_col">
+ {% if message %}
+ <div class="message">{{message}}</div>
+ {% endif %}
+					<div id="formContainer" class="clearfix" style="border:none;padding:0px;">
+                    	<form action="/admin/promoteuser/" name="mform" id="mform" method="post" class="c-13 form_left clearfix coloumn" style="background:none;border:none;" onsubmit="validate();">{% csrf_token %}
+                        
+                        				<fieldset>
+                                        <div class="title"><h2>Add a Staff</h2></div>
+                   					<dl class="horizontal">
+                                 <dt>
+                                    
+                                </dt>
+                                <dd>
+                                <h3 style="font:bold 16px/16px arial, sans-serif; color:#222; margin:0 0 5px 0; padding:0;">Select a User</h3>
+                                <div class="tip" style="font-size:12px; padding-bottom:10px;">
+                                    <p>Please enter email and verify the User.</p>
+                                </div>
+                                </dd>
+                          				<dt><label for="cmp_email"><b>Email: </b></label></dt>
+                          				<dd><input class="textField normal" id="cmp_email" name="cmp_email" onblur="echeck(this);" value="" type="text">
+                          				<input type="button" value="Verify" class="" onclick="emailVarify();"/>
+                                        <span class="tip">Find a registered User...</span>
+                                        </dd>
+ 										<dt></dt>
+                                        <dd>
+<table class="" align="center" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; margin:10px 0 20px 0;font-size:12px;">
+							<colgroup>
+                            	<col width="75">
+								<col width="250">
+							</colgroup>				
+							<tbody>
+								<tr class="row" id="register_user" style="display:none">
+                                	<td class="thumb" style="padding:8px">
+										<img id="user_avatar" src="" />
+									</td>	
+                                	<td class="venue" style="vertical-align:top;padding:8px 0">
+										<div class="venue_details">
+											<h3 style="font:bold 16px/16px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif; margin:10px 0 0 0;"><a href="#" title="See user details" style="font-size:14px; text-decoration:none;" id="user_name"></a></h3>
+											<div class="venue_address" style="color:#666; padding-top:1px;" id="user_email"> 
+											</div>
+										</div>
+									</td>
+									                          
+								</tr>
+                   
+                                
+                                </tbody>
+                                </table>                                        </dd>
+						<dt>&nbsp;</dt>
+                            			<dd><div class="divider" style="">&nbsp;</div></dd>                                
+                                 <dt>
+                                    
+                                </dt>
+                                <dd>
+                                <h3 style="font:bold 16px/16px arial, sans-serif; color:#222; margin:0 0 5px 0; padding:0;">Assign a Role</h3>
+                                <div class="tip" style="font-size:12px; padding-bottom:10px;">
+                                    <p>Please select a Role.</p>
+                                </div>
+                                </dd>                                
+                      			
+                      			<dt>
+       				  <label for="role">Select a Role</label></dt>
+
+                      			<dd>
+                   				   <select name="role" id="role" class="selectField normal">
+                                   <option value="">-- Select a Role --</option>
+                                   	<option value="admin">Administrator</option>
+                                   {% for group in groups %}
+                                   <option value="{{group.id}}">{{ group.name }}</option>
+                                   {% endfor %}
+                                   </select>
+                          		</dd> 
+
+
+					    		<dt></dt>
+                      			<dd><br />
+                                    <input name="submit" value="Submit" class="inputsubmit on" type="submit"/>
+                                <input name="cancel" value="Cancel" class="inputsubmit off" type="button" onclick="location.replace('/admin/managestaff/');" />
+
+                                    
+                      			</dd>
+							</dl>                                                        
+                    </fieldset>                    			      
+						</form>
+					</div>
+
+
+                </div> 
+                <hr />
+            </div>
+        </div>
+        <hr />	  
+{% endblock %}

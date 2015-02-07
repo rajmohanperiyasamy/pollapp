@@ -1,0 +1,91 @@
+<script>
+	$(function() {$('.bM-sLt').bUiSlCt();}) 
+</script>
+<div class="row-fluid">
+	<form class=" uSr-aCnT">
+        <fieldset class="span9 pLrT">
+            <div class="control-group">
+                <label class="control-label" >Your Name</label>
+                <div class="controls">
+                    <input type="text" id="id_to_name" autocomplete="off" name="to_name" class="iSp8" >
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Email Address</label>
+                <div class="controls">
+                    <input type="text" autocomplete="off" class="iSp8" id="to_news_email">
+                    
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" >Email Format</label>
+                <div class="controls">
+                    <label for="gender1" class="radio inline fW-nRmL"><input type="radio" value="html" name="EMAILTYPE" id="mce-EMAILTYPE-0" checked="checked"> HTML</label>               
+                    <label for="gender2" class="radio inline fW-nRmL"><input type="radio" value="text" name="EMAILTYPE" id="mce-EMAILTYPE-1"> Text</label>					                                      
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div id="nl_slert_bx" style="display:none;" class="alert fade mRb0 in alert-success"></div>
+<script type="text/javascript">
+	
+		function send_newsletter(){
+			var success = true; 
+			success = validate_news_letter_email();		
+			if(success){
+				var dataString='email='+encodeURIComponent($('#to_news_email').val());
+				dataString+='&mailtype='+$('input[name=EMAILTYPE]:checked').val()
+				if($('#id_to_name').val()!=''){
+					dataString+='&name='+encodeURIComponent($('#id_to_name').val());
+				}
+				$('#nl_suscribe_btn').hide();
+				$('#nl_slert_bx').removeClass('alert-success').html('Saving , please wait...').show();
+				$.ajax({
+					type: "POST",
+					url: "{% url 'ajax_newsletter_url' %}",
+					data: dataString,
+					success: function(data){
+									if(data=='1'){
+										$('#nl_slert_bx').removeClass('alert-error').addClass('alert-success').html('Thank you for your subscription. You will recieve a confirmation mail to subscribe.');
+										setTimeout(function(){ $('#nl_slert_bx').hide() },4000)
+										setTimeout(function(){ $('#newsletter').modal('hide') },5000)
+									}
+									else if(data=='2'){
+										$('#nl_slert_bx').removeClass('alert-success').addClass('alert-error').html('You have already been subscribed.');
+										setTimeout(function(){ $('#nl_slert_bx').hide() },4000)
+										$('#nl_suscribe_btn').show();
+										}
+									else{
+										$('#nl_slert_bx').removeClass('alert-success').addClass('alert-error').html('Unable to save your details.Please try again later.')
+										setTimeout(function(){ $('#nl_slert_bx').hide() },4000)
+										$('#nl_suscribe_btn').show();
+										}
+								}
+						});
+					}
+			}	
+			
+		function news_letter_restore(){
+			$('#news_letter_status').removeAttr('class').text('');
+			$('#as_news_letter_li').removeClass('onPp');
+			$('#newsletter_signup').hide(300);
+			$('.as_news_submit').show();
+		}
+		
+		function validate_news_letter_email(){
+			var email = $("#to_news_email").val();
+			var email_match = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/
+			if(!email_match.test(email)) {
+				$('input#to_news_email').css('border-color', 'red');
+				//$('.as_news_isemail').html('(Invalid email address)').css('color', 'red');
+				$("#to_news_email").focus();
+				return false;
+			}
+			else {
+				$('input#to_news_email').css('border-color', '');
+				//$('.as_news_isemail').html('(Eg:yourname@domain.com)').css('color', '');
+				return true;
+			}
+		}
+	</script>

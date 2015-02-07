@@ -1,0 +1,68 @@
+{% load i18n %}		
+{% load thumbnail %}
+		<input type="hidden" value="{% url 'staff_theatre_ajax_action' %}" name="id_theatre_action_url" id="id_theatre_action_url">
+		<input type="hidden" value="{% url 'staff_theatre_ajax_display_theatre' %}" name="id_theatre_hidden_url" id="id_theatre_hidden_url">
+
+		<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+		<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+        <input type="hidden" value="{{created}}" name="id_created" id="id_created">
+        <input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+        <input type="hidden" value="{{msg}}" name="id_action_msg" id="id_action_msg">
+		<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+        
+		<input type="hidden" value="" name="id_action" id="id_action">
+		{% if theatredisplay %}
+		<ol class="data-table table-lists-container" id="ajax_content_list">
+		{% for theatre in theatredisplay %}	
+             <li class="table-list" id="li_{{theatre.id}}">
+                <div class="table-list-container check-item has-thumb110 group">
+                 	<span class="checkbox-wrap">
+						<span class="cform-checkbox-container"><input type="checkbox" onclick="fix_action()" status="P" value="{{theatre.id}}" id="id_checkbox_{{theatre.id}}" name="artCulture" class="check-overflow cbox check_action"><span class="cform-checkbox-element"></span></span>
+					</span>
+					       <div class="item-media">
+                        	<a class="inline-block" href="{% url 'staff_theatre_preview' %}?id={{theatre.id}}">
+                                <span class="item-thumb thumb-110">
+                                    <span class="thumb-in">
+                                        <span class="thumb" ><img class="inline-block" alt="Thumbnail"  src="{% if theatre.image %}{% thumbnail theatre.image 164x0 %}{% endif %}"><span class="inline-block h100"></span></span>
+                                    </span>
+                                </span>
+							</a>                                                            
+                        </div> 
+						<div class="item-info relative-block">
+                            <h3 class="title"><a href="{% url 'staff_theatre_preview' %}?id={{theatre.id}}">{{theatre.name}}</a></h3>
+                            <ul class="quick-stats group">
+                                <li class="views"><a title="Address" href="#" class="tttxt">{{theatre.address.address1}} {% if theatre.address.address2 %}{{theatre.address.address2}}{% endif %} {% if theatre.address.city %}{{theatre.address.city}}{% endif %} {% if theatre.address.zip %}{{theatre.address.zip}}{% endif %}</a></li>
+                                <li class="cmnt"><a href="#" title="Contact" class="tttxt">{% trans 'Phone'%} {% if theatre.address.telephone1 %}{{theatre.address.telephone1}}{% else %}{% trans 'N/A'%}{% endif %}</a></li>
+                            </ul>
+				                                            
+                        </div>
+						 <div class="action-buttons {% if forloop.counter == 1 %}tip tip4{% endif %}">
+	                            <div class="relative-block">
+	                                <span class="item-manage inline-block dev_hide_list_settings " id="id_span_settings_{{theatre.id}}" onclick="show_buttons({{theatre.id}})"><span class="action-icon icon-manage" ></span></span>
+	                                <ul class="dropdown-list dev_settingsdrpdwn" id="id_action_ul_{{theatre.id}}">
+		                               {% if perms.movies.change_movies %}
+											<li><a class="edit-theare" title="Edit Theatre" href="{% url 'staff_movie_edit_theatre'  %}?id={{theatre.id}}" >{% trans 'Edit' %}</a></li>
+										    <li><a class="theatre-seo" title="Title / Description (SEO)" href="{% url 'staff_movie_ajax_theatre_seo' %}?theatre_id={{theatre.id}}">{% trans 'Update SEO' %}</a></li>
+											<li><span class="line-break"></span></li>
+										{% endif %}
+	                                    	<li><a class="prom "  href="{% url 'staff_theatre_preview' %}?id={{theatre.id}}&view=st">{% trans ' Show Times'%}</a></li>
+		                                {% if perms.movies.delete_movies %}
+										    <li><span class="line-break"></span></li>
+											<li><a onclick="if(confirm(gettext('Are you sure you want to delete the selected theatre?'))){filter_action({{theatre.id}},'DEL');return false;}" href="javascript:void(0);">{% trans 'Delete' %}</a></li>
+										{% endif %}
+	                                </ul>
+								</div>                                                              	                                                         
+	                       </div>
+				</div>
+			</li>	
+         {% endfor %}
+		</ol>
+			<div id="pagenation">
+				{% include 'common/pagination_ajax.html'%}
+			</div>  
+
+         {% else %}
+				<div class="no-data"> <p>{% trans 'Sorry , No Theatre  found !' %}</p></div>
+         	{% endif %} 
+		 
+		 

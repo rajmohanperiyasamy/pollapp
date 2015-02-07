@@ -1,0 +1,5 @@
+{% with answer as object %}
+	{% with 'community' as appname %}
+        {% include 'default/community/comments/include_comment.html' %}
+    {% endwith %}
+{% endwith %}

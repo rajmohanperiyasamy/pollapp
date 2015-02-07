@@ -1,0 +1,370 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n truncate_filter %}
+{% load thumbnail truncate_filter %}
+{% load bm_community_tags %}
+{% load mptt_comments_tags %}
+{% load ds_utils %}
+{% load  thumbnail %}
+{% block pagetitle %}{% seo_format_tag module='Community' title=entry.title code='DT' category=entry.topic.name as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+	<script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/qna/qna.js"></script>
+    <script>
+        var ajax_login_url = '{% url 'ajax_signin' %}';
+        var ajax_follow_entry_url = '{% url 'entry_follow' entry.id %}';
+        var ajax_unfollow_entry_url = '{% url 'entry_unfollow' entry.id %}';
+		var add_question_url = "{% url 'add_entry' %}?add_type=qna";
+    </script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "community" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+<input type="hidden" id="id_hidden_frm_sbmt" value="">
+<input type="hidden" id="id_ans_cmmt" value="">
+				<!-- Module Search -->
+	        	<div class="pD2015 bM-bX sRcHbR">
+                    <div class="row-fluid">
+                        <div class="span9 fRm" style="height:36px;">
+                            <form class="form-search mRb0" method="get" action="{% url 'community_listing' %}">
+								<input type="hidden" name="src" value="true">
+                                <div class="mDl mRb10">
+                                    <h3 class="mDl-nM mRt6">
+                                        <i aria-hidden="true" title="Community" class="bUi-iCn-cMnT-24 cLr-gRn"></i>
+                                        <span class="ib"><a href="{% url 'community_listing' 'top_stories' %}">Community</a>
+                                            <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy hP"></i>
+                                        </span>
+                                    </h3>
+                                </div>
+                                <div class="span7">
+                                    <input type="text" placeholder="Search" value="{% if kw %}{{kw}}{% endif %}" name="kw" class="w72mP pLlT"></div>
+                                <div class="sUb-bTn mRt0mX480 ib">
+                                    <button type="submit" class="btn btn-primary mRl12 mRl5Mp  pLrT">
+                                    	<i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="AD-bTn">
+                            <div class="pLrT">
+                                <a class="btn btn-danger" id="button_add_qna" {% if user.is_authenticated %} data-toggle="modal" data-target="#add_entry" data-href="{% url 'add_entry' %}?add_type=qna"{% else %} onclick="login_box('postquestion');" href="javascript:void(0);"  {% endif %}>
+                                	<i aria-hidden="true" class="bUi-iCn-pLs-16"></i> Add Question
+                                </a>
+                                <a class="btn btn-danger" href="{% url 'add_entry' %}">
+                                	<i aria-hidden="true" class="bUi-iCn-pLs-16"></i> Write Post
+                                </a>
+                                <!--a class="btn btn-danger" href="#">
+                                	<i aria-hidden="true" class="bUi-iCn-pLs-16"></i> Write Review
+                                </a-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<!-- Module Search -->
+
+                <div class="row-fluid">
+					<div class="main span8 bM-bX mRb0mX769">
+						<div class="row-fluid">
+							<div class="span3 sP12mX767">
+								<section class="pD200">
+									<ul class="nav nav-list fS12">
+										<ul class="nav nav-list mRb20 nVsTyL-cMnTy cMpCt fOmX767 pDfX pD0 w100mN768 dRmN678">
+											<li><a href="{% url 'community_listing' 'top_stories' %}">Top Stories</a></li>
+											<li><a href="{% url 'community_listing' 'question_answer' %}">Questions &amp; Answers</a></li>
+											<li><a href="{% url 'community_listing' 'open_question' %}">Open Questions</a></li>
+											<li><a href="{% url 'community_listing' 'posts' %}">Posts</a></li>
+										</ul>
+										<li class="nav-header">Topics</li>
+										<ul style="overflow-y: auto; overflow-x: hidden; max-height: 400px;" class="nav nav-list cMpCt nVsTyL-cMnTy fOmX767 pDfX pD0 w100mN768 dRmN678">
+											{% for topic in topics %}
+												<li><a href="{{topic.get_absolute_url}}">{{topic.name}}</a></li>
+											{% endfor %}
+										</ul>
+							        </ul>
+								</section>
+							</div> 
+							<div class="span9 sP12mX767">
+                        		<div class="pDb12">
+	                                <div class="cMnTs dVdR0 aVtR-36 mRb0 mRt10 mRr20">
+	                                	<div class="cMnT">
+										    <div class="cMnT-iN">
+										        <div class="vCrD cLrFx pD200">
+										            <a href="{% url 'user_profile' entry.created_by.profile_slug %}" class="pLlT bLk aVtR-36"><img class="aVtR" src="{% if entry.created_by.image %}{% thumbnail entry.created_by.image 36x36 crop %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}"></a>
+										            <div class="cLr-lT pD10 cLr-gRy fS12">
+										            	<span class="fW-bLd"><a href="{% url 'user_profile' entry.created_by.profile_slug %}" class="cLr-dRk">{{entry.created_by}}</a></span>
+														{% if entry.entry_type == 'Q' %}
+														<style>
+															#id_follow_entry:hover .btntxt {display: none}
+															#id_follow_entry:hover .btntxt_hover {display: inline-block; }
+															#id_follow_entry.following:hover {background-color: #E0423D;}
+															#id_follow_entry.following:hover i:before {content: "";}
+														</style>
+										            	<div class="pStN-rT mRt4 StCSmP"><a id="id_follow_entry" {% if user.is_authenticated  %}{% if entry_status %}onclick="follow_entry(2);"{% else %}onclick="follow_entry(1);"{% endif %}{% else %}onclick="login_box('follow');" href="javascript:void(0);" {% endif %} class="btn btn-small btn-success {% if entry_status %}following{% endif %}"><i aria-hidden="true" id="id_follow_icon" class="{% if entry_status %}bUi-iCn-oK-16{% else %}bUi-iCn-pLs-16{% endif %} fS12 mRr5"></i><i aria-hidden="true" id="id_follow_icon" class="bUi-iCn-rMv-16 hide"></i><span class="btntxt_hover hide">{% if entry_status %}{% trans 'Unfollow' %}{% else %}{% trans 'Follow' %}{% endif %}</span><span class="btntxt">{% if entry_status %}{% trans 'Following' %}{% else %}{% trans 'Follow' %}{% endif %}</span></a></div>
+														{% endif %}
+										            </div>
+										        </div>
+												<div class="cMnT-bDy rLvE pD1032 pDl0 pDt0">
+												    <div class="cMnT-bDy-iN">
+												        <header class="cMnT-hD">
+												            <h5 id="id_entryquestion" class="mRt0 cLr-bLk fW-bLd w95P">{{entry.title}}</h5>
+												        </header>
+												        <div class="cLr-dRk">
+												            <div>{% autoescape off %}{{entry.content}}{% endautoescape %}</div>                               
+												        </div>
+												        <footer class="cMnT-fTr cLrFx mRt30">
+															{% get_mptt_comment_count for entry as comment_count %}
+													        <div class="pLlT"><span class="rPlY fS12"><a href="javascript:void(0)" data-toggle="collapse" data-target="#question-comments{{entry.id}}" data-toggle-icon="bUi-iCn-aNg-t-aLt-12"><i aria-hidden="true" class="bUi-iCn-bBlS-12 mRr5"></i><span id="id_entry_comment_count">{{comment_count}}</span> Comments<i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 ib mRl5 cLr-lTgRy"></i></a></span>
+															<!--span class="rPlY sPrTr fS12"><a href="#">Share</a></span-->
+															{% if entry.created_by.id == request.user.id %}
+																{% if entry.entry_type == "Q" %}
+																	<span id="id_edit_entry" class="rPlY sPrTr fS12"><a href="{% url 'add_entry' %}?id={{entry.id}}&add_type=qna" data-target="#add_entry" >Edit</a></span><span id="id_loding_entry"  class="rPlY sPrTr fS12" style="display:none;"><i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i></span>
+																{% else %}
+																	<span id="id_edit_entry" class="rPlY sPrTr fS12"><a href="{% url 'add_entry' %}?id={{entry.id}}&add_type=post" >Edit</a></span><span id="id_loding_entry" class="rPlY sPrTr fS12" style="display:none;"><i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i></span>
+																{% endif %}
+															{% endif %}
+															</div>
+															{% with entry.subscriber.all as subscribers_list %}
+													        <div class="pLrT pLlTSmP mRt5SmP">
+																<span class="fS11 cLr-lTgRy">
+																	<i class="icon-bar-chart fS13 mRr10"></i><span><span class="fS13 cLr-dRk">{{entry.viewed}}</span> Views</span><span class="sPrTr"><a href="javascript:void(0)" data-toggle="collapse" data-target="#followers"><span id="id_subscribers_count" class="fS13 cLr-dRk">{{subscribers_list.count}}</span> Followers</a></span><span class="sPrTr fS11" title="{{entry.created_on}}">{{entry.get_entry_date}}</span>
+																</span>
+													        </div>
+															{% endwith %}
+													    </footer>
+														{% if entry.entry_type == 'P' %}
+														<div class="cMnTy-vTnG">
+										                	<div class="cMnTy-vTnG-iN">
+										                		<div>
+										                            <a class="cMnTy-rTg-uP {% if entry.id|get_session_like:request %}uPvTd{% endif %}" id="id_vote_colorup_{{entry.id}}" title="Upvote" href="javascript:void(0);" onclick="answer_response('{{entry.id}}','like','{% url 'answer_answer_user_rating' %}');">
+										                                <i aria-hidden="true" class="bUi-iCn-aRw-t-16 fS12"></i>
+										                                <span class="nMbRs" id="id_rate_count_{{entry.id}}">{{entry.rateplus}}</span>
+										                            </a>
+										                            <a class="cMnTy-rTg-dWn {% if entry.id|get_session_dislike:request %}dWnvTd{% endif %}" id="id_vote_colordw_{{entry.id}}" title="Downvote" href="javascript:void(0);" onclick="answer_response('{{entry.id}}','dislike','{% url 'answer_answer_user_rating' %}');">
+										                                <i aria-hidden="true" class="bUi-iCn-aRw-b-16 fS12"></i>
+										                            </a>
+										                		</div>
+										                	</div>
+								                        </div>     
+														{% endif %}
+													</div> <!-- /.cMnT-bDy-iN -->
+												</div><!-- /.cMnT-bDy -->
+											</div> <!-- /.cMnT-iN -->
+												<div id="followers" class="collapse">
+												{% with entry.subscriber.all as subscribers_list %}
+                                                	{% include 'default/community/subscribers_list.html' %}
+	                                            {% endwith %}	
+												</div>
+												<div id="question-comments{{entry.id}}" class="collapse">
+													{% with entry as object %}
+														{% with 'community' as appname %}
+															{% include 'comments/include_comment.html' %}
+														{% endwith %}
+													{% endwith %}
+											    	<div class="mRt20">
+											    	</div>
+												</div>
+												{% if entry.entry_type == 'Q' or entry.entry_type == 'A'%}
+												<div class="cLrFx mRt20 rLvE">
+													<ul class="nav nav-tabs tB-cStM rEd  bRdR-tP mR0">
+														<li class="active"><span class="fS14">{{answers.count}} {% trans 'Answers' %}</span></li>
+													</ul>
+												</div>
+												<div class="cMnT-pSt aVtR-22 mRb10 mRr20">
+			                                        <div class="cMnT-pSt-iN">
+			                                            <form class="cMnT-fRm mRb0 dev-aForm" action="{% url 'question_save_answer' entry.id %}" method="post" id="ansbmt_{{entry.id}}">
+			                                                <div class="vCrD pLlT mRr10 mRt5">
+			                                                    <a {% if request.user.id %}href="{% url 'user_profile' request.user.profile_slug %}"{% else %}href="#"{% endif %}>
+			                                                        <img class="aVtR" src="{% if request.user.image %}{% thumbnail request.user.image 36x36 crop %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}">
+			                                                    </a>
+			                                                </div>
+			                                                <div class="cMnT-bDy">
+			                                                    <div class="cMnT-bDy-iN">
+			                                                        <div class="cMnT-tXtArA-wRp">
+			                                                            <textarea id="id_answer" class="cMnT-tXtArA" onkeyup="update_answer_button($(this));" placeholder="Add your answer..." name="answer"></textarea>
+			                                                        </div>
+			                                                        <p class="fS11 cLr-gRy mRt20 pLlT">Posting as <a {% if request.user.id %} target="_blank" href="{% url 'user_profile' request.user.profile_slug %}"{% else %}href="#"{% endif %} class="cLr-lTbLu">{% if request.user.id %}{{request.user.display_name}}{% else %}Unknown{% endif %}</a></p>
+			                                                        <div class="cMnT-pSt-bTn pLrT mRt20">
+			                                                            <a href="{% url 'community_listing' 'top_stories' %}" class="btn btn-light fS12 fW-bLd">Cancel</a>
+																		{% if user.is_authenticated %} 
+																			<button type="submit" class="btn fS12 fW-bLd dev-postBtn disabled" disabled="disabled" >Add Answer</button>
+																		{% else %}
+					                                                    	<a type="button" class="btn fS12 fW-bLd dev-postBtn disabled" disabled="disabled" {% if user.is_authenticated  %}onclick="$('#id_hidden_frm_sbmt').val({{entry.id}});save_answer();" {% else %}onclick="$('#id_hidden_frm_sbmt').val({{entry.id}});login_box('addanswer');"{% endif %} href="javascript:void(0)" >Add Answer</a>
+																		{% endif %}        
+			                                                        </div>
+			                                                    </div>
+			                                                </div>
+			                                            </form>
+			                                        </div>
+			                                    </div>
+												{% endif %}
+										</div> <!-- /.cMnT -->
+	                                </div>
+									{% if entry.entry_type == 'Q' or entry.entry_type == 'A' %}	
+									{% if answers %}
+										<input type="hidden" id="comment_save_id" value="">
+										<ol class="cMnTs aVtR-22 mRb30 mRt0">
+											{% for answer in answers %}
+												<li class="cMnT" id="id_answ_{{answer.id}}" itemprop="review" itemscope itemtype="http://schema.org/Review">
+													<input type="hidden" id="page_{{answer.id}}" value="2">
+												    <div class="cMnT-iN">
+												        <div class="vCrD cLrFx">
+												            <a href="{% url 'user_profile' answer.created_by.profile_slug %}" class="pLlT bLk"><img class="aVtR" src="{% if answer.created_by.image %}{% thumbnail answer.created_by.image 36x36 crop %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}" itemprop="image"></a>
+												            <div class="cLr-lT pD510 cLr-gRy fS13">
+												            	<span class="fW-bLd" itemtype="http://schema.org/Person"><a href="{% url 'user_profile' answer.created_by.profile_slug %}" class="cLr-dRk" itemprop="url"><span itemprop="author">{{answer.created_by}}</span></a></span>
+												            </div>
+												        </div>
+														<div class="cMnT-bDy pD1032 rLvE">
+														    <div class="cMnT-bDy-iN">
+														        <div class="cLr-dRk">
+																{% if answer.content %}	<p itemprop="reviewBody">{% autoescape off %}{{answer.content|removetags:"p" }}{% endautoescape %}</p>{% endif %}
+														        </div>
+														        <footer class="cMnT-fTr">
+																	{% get_mptt_comment_count for answer as comment_count %}
+														        	<span class="rPlY fS12"><a href="javascript:void(0)" data-toggle="collapse" data-target="#answer-comments{{answer.id}}" onclick="load_answer_comment({{answer.id}})" data-toggle-icon="bUi-iCn-aNg-t-aLt-12"><i aria-hidden="true" class="bUi-iCn-bBlS-12 mRr5"></i><span id="id_answ_comment_count_{{answer.id}}">{{comment_count}}</span> Comments<i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 ib mRl5 cLr-lTgRy"></i></a></span><!--span class="rPlY sPrTr fS12"><a href="#">Share</a></span-->
+																	{% if answer.created_by.id == request.user.id %}
+																		<span id="id_edit_{{answer.id}}" class="rPlY sPrTr fS12"><a href="{% url 'question_save_answer' entry.id %}?aid={{answer.id}}" data-eid="{{answer.id}}" data-target="#edit_answer" >Edit</a></span><span id="id_loding_{{answer.id}}" class="rPlY sPrTr fS12" style="display:none;"><i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i></span>
+																	{% endif %}	
+																	<span class="rPlY sPrTr fS12" title="{{answer.created_on}}">{{answer.get_entry_date}}</span>
+																	<meta itemprop="datePublished" content="{{answer.created_on|get_iso_time_format}}">
+											        			</footer>
+															    <div class="cMnTy-vTnG">
+												                	<div class="cMnTy-vTnG-iN">
+												                		<div>
+												                            <a href="javascript:void(0);" id="id_vote_colorup_{{answer.id}}" title="Upvote" onclick="answer_response('{{answer.id}}','like','{% url 'answer_answer_user_rating' %}');" class="cMnTy-rTg-uP {% if answer.id|get_session_like:request %}uPvTd{% endif %}">
+												                                <i aria-hidden="true" class="bUi-iCn-aRw-t-16 fS12"></i>
+												                                <span class="nMbRs" id="id_rate_count_{{answer.id}}">{{answer.rateplus}}</span>
+												                            </a>
+												                            <a href="javascript:void(0);" id="id_vote_colordw_{{answer.id}}" title="Downvote" onclick="answer_response('{{answer.id}}','dislike','{% url 'answer_answer_user_rating' %}');" class="cMnTy-rTg-dWn {% if answer.id|get_session_dislike:request %}dWnvTd{% endif %}">
+												                                <i aria-hidden="true" class="bUi-iCn-aRw-b-16 fS12"></i>
+												                            </a>
+												                		</div>
+												                	</div>
+										                        </div>
+										                        <div id="answer-comments{{answer.id}}" class="collapse">
+																	{% with answer as object %}
+															        	{% with 'community' as appname %}
+															                {% include 'default/community/comments/include_comment.html' %}
+															            {% endwith %}
+																	{% endwith %}
+															    	<div class="mRt20">
+																		
+															    	</div>
+																</div> 	                                    	
+															</div> <!-- /.cMnT-bDy-iN -->
+														</div><!-- /.cMnT-bDy -->
+													</div> <!-- /.cMnT-iN -->
+												</li> <!-- /.cMnT -->
+											{% endfor %}
+						                </ol> <!-- /.cMnTs -->
+									{% endif %}
+									{% endif %}
+                        		</div>
+							</div> <!-- /.span9 -->
+						</div>
+					</div>
+					<aside class="sD-bR span4 oF3mN768 sP9mN768">
+						<div>
+	                            <section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right"></section> 
+						</div>
+                    	<div>
+                            {% include 'default/likebox.html' %}
+						</div>
+                    </aside>
+                    
+                    
+				</div>
+			</div>
+{% include 'default/community/add-question_form.html' %}
+{% include 'default/community/answer_update.html' %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+{% if entry.entry_type == 'Q' %}
+	var edt;
+		function updateTextArea(edt){
+	    CKEDITOR.tools.setTimeout( function(){ 
+		        $('#id_answer').val(edt.getData());
+		        $("#id_answer").trigger('keyup');
+		    }, 0);  
+		}
+	
+		try{
+			var instance = CKEDITOR.instances['id_answer'];
+			CKEDITOR.remove(instance);
+		}
+		catch(e){}
+		CKEDITOR.on( 'instanceCreated', function( e ){
+			   e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+	   	});
+		var edt=CKEDITOR.replace( 'id_answer',{					
+			customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+			toolbar : 'Basic_Image',
+			filebrowserImageUploadUrl : '{%url 'article_upload_from_editor' %}'
+		});
+		edt.on('key', function(event) {updateTextArea(edt);});
+	
+		$('#id_answer').keyup(function(){$('#id_answer').valid();})
+{% endif %}
+function load_answer_comment(ansid){
+	$('#comment_from_div_loading_'+ansid).show();
+	$.ajax({
+    	type: "POST",
+        url: "/community/loadanscomment/"+ansid,
+        dataType:'JSON',
+        success: function(data){
+			$('#comment_from_div_loading_'+ansid).hide();
+			$('#id_load_ans_comment_'+ansid).empty().append(data.display_html);
+			$('#page_'+ansid).val(2);
+		}
+	});
+}
+
+$(document).ready(function(){
+	$("a[data-target=#add_entry]").click(function(ev) {
+	   $('#id_edit_entry').hide();
+	   $('#id_loding_entry').show();
+	   ev.preventDefault();
+	   target = $(this).attr("href");
+	
+	   // load the url and show modal on success
+	   $("#add_entry .modal-body").load(target, function() {
+	        $("#add_entry").modal("show");
+	   		$('#id_loding_entry').hide();
+			$('#id_edit_entry').show();
+			//select menu
+			$('.bM-sLt').doThis(function(){
+				this.bUiSlCt();
+			});
+	   });
+	});
+	
+	$("a[data-target=#edit_answer]").click(function(ev) {
+	   aid = $(this).attr("data-eid");
+	   $('#id_edit_'+aid).hide();
+  	   $('#id_loding_'+aid).show();
+	   ev.preventDefault();
+	   target = $(this).attr("href");
+	
+	   // load the url and show modal on success
+	   $("#edit_answer .modal-body").load(target, function() {
+	        $("#edit_answer").modal("show");
+	  		$('#id_loding_'+aid).hide();
+			$('#id_edit_'+aid).show();
+	   });
+	});
+	
+   $.ajax({
+        type:'get',
+        url:'{% url 'entry_ajax_viewed' entry.id %}',
+        success:function(data){},
+        error:function(data){}
+    });                          
+});
+</script>
+{% endblock %} 

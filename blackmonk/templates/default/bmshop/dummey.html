@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title></title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{STATIC_URL}}css/base.css">
+<link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery-ui-1.10.3.custom-slider.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.bUislider.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-button.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-tooltip.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-model.js"></script>
+<script src="{{STATIC_URL}}js/swipe.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-transition.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-collapse.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-select.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-dropdown.js"></script>
+<script src="{{STATIC_URL}}js/fleximage.js"></script>
+<script src="{{STATIC_URL}}js/main.js"></script>
+
+	<!--  Featured Carousel -->
+	<script>	
+		$(function(){
+            $('.responsive_iMg').bmLoad({onLoadComplete: function() {$(this).closest('.fLxiMgW1').setrSpVWidth(0);}});
+			 $( "#price_sL" ).slider({
+				range: true,
+				min: 0,
+				max: 500,
+				values: [ 75, 300 ],
+				slide: function( event, ui ) {
+				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+				}
+				});
+				$( "#amount" ).val( "$" + $( "#price_sL" ).slider( "values", 0 ) +
+				" - $" + $( "#price_sL" ).slider( "values", 1 ) );
+			
+			$('.fTrD-cRsL').bUiSlider({
+				pager:false,
+				speed:600,
+				//auto:true,
+				slideWidth: 5000,
+				adaptiveHeight: true,
+			    minSlides:3,
+			    maxSlides: 3,
+			    slideMargin: 12,
+			});
+		})
+	</script>
+	
+	
+</head>
+<body>
+<div id="site-wrapper">
+    <header id="mast-head">
+        <div class="topbar vD">
+            <div class="container-fluid">
+                <ul id="site-account" class="nav pLrT">
+                    <li>
+                        <a href="#"> Login </a>
+                    </li>
+                    <li>
+                        <a href="#" class=""> <i class="bUi-iCn-uSr-12" aria-hidden="true"></i> Sign Up </a>
+                    </li>
+                </ul>
+                <!-- /.nav --> 
+            </div>
+        </div>
+        <div class=""></div>
+        <div class="titlebar container-fluid vD">
+            <h1 class="logo"> <a href="/"> <img src="static/site/images/logo/orlando-w2x.png" alt="Orlando"/> </a> </h1>
+            <div class="weather-snipet"> <a href="#"> <i class="icon" aria-hidden="true" data-icon-weather="H"></i>
+                    <span class="max-temp">
+                        18<em class="unit">°C</em>
+                    </span>
+                    <span class="min-temp">
+                        9<em class="unit">°C</em>
+                    </span>
+                </a> </div>
+        </div>
+        <div class="navbar">
+            <div id="primary-nav" class="navbar-inner">
+                <div class="container-fluid">
+                    <form class="site-search">
+                        <div class="input-append">
+                            <input type="text" class="search-query" placeholder="Search">
+                            <button type="submit" class="btn"><i aria-hidden="true" class="bUi-iCn-sRh-16"></i></button>
+                        </div>
+                    </form>
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li class="dropdown">
+                                <div class="rLvE"> <a data-toggle="dropdown" class="dropdown-toggle" href="#">News<b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="#"> Arts &amp; Culture </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Business &amp; Finance </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Community, Charity &amp; Cause </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Crime </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Environment &amp; Nature </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Family &amp; Parenting </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Food, Wine, &amp; Dining </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Health &amp; Wellness </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Home &amp; Garden </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Hot Spots &amp; Night Life </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Local News </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Local Steals &amp; Deals </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Long Island Experts </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Music, Movies &amp; Entertainment </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> National &amp; World News </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Newsletter Archive </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Others </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Pets &amp; Animal </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Press Releases </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Religion </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> School &amp; Education </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Seasonal &amp; Current Events </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Sports &amp; Recreation </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Tech &amp; Science </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Top Ten on Long Island </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Travel &amp; Local Attractions </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Weddings </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Wedding Stories </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Photos </a> </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Videos </a> </div>
+                            </li>
+                            <li class="dropdown">
+                                <div class="rLvE"> <a data-toggle="dropdown" class="dropdown-toggle" href="#">Attractions<b class="caret"></b></a>
+                                    <ul class="dropdown-menu tWcL">
+                                        <li>
+                                            <a href="#"> Business Services </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Construction Engineering </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Dining </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Education &amp; Culture </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Entertainment </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Food &amp; Beverage </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Health &amp; Fitness </a>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a href="#" tabindex="-1">Home Services</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Bakeries &amp; Cafes </a>
+                                                </li>
+                                                <li class="dropdown-submenu">
+                                                    <a href="#" tabindex="-1"> Breakfast &amp; Brunch </a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Bakeries &amp; Cafes </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Breakfast &amp; Brunch </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Desserts &amp; Sweets </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Fine Dining </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Food Services </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Indian Food </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Italian &amp; Pizza </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Lunch Spots </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Mexican Food </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" tabindex="-1"> Seafood </a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Casual Dining </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Catering </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Chinese Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Desserts &amp; Sweets </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Fine Dining </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Food Services </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Indian Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Italian &amp; Pizza </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Lunch Spots </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Mexican Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Seafood </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Steakhouses </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Sushi </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Take Out Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Thai Food </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Leisure </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Manufacturing </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Media Comunication </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Professional Services </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Property &amp; Finance </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Shopping </a>
+                                        </li>
+                                        <li class="dropdown-submenu pLlT">
+                                            <a href="#" tabindex="-1">Transport &amp; Logistics</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Bakeries &amp; Cafes </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Breakfast &amp; Brunch </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Casual Dining </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Catering </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Chinese Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Desserts &amp; Sweets </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Fine Dining </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Food Services </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Indian Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Italian &amp; Pizza </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Lunch Spots </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Mexican Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Seafood </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Steakhouses </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Sushi </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Take Out Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Thai Food </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Social &amp; Public Affairs </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> Travel </a>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a href="#" tabindex="-1">Restaurants & Food</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Bakeries &amp; Cafes </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Breakfast &amp; Brunch </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Casual Dining </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Catering </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Chinese Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Desserts &amp; Sweets </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Fine Dining </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Food Services </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Indian Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Italian &amp; Pizza </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Lunch Spots </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Mexican Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Seafood </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Steakhouses </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Sushi </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Take Out Food </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1"> Thai Food </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="dropdown">
+                                <div class="rLvE"> <a data-toggle="dropdown" class="dropdown-toggle" href="#">Businesses<b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="#">Conferences</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Fundraisers</a>
+                                        </li>
+                                        <li class="disabled">
+                                            <a href="#">Nightlife</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Fitness</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Spas</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Gift Shops</a>
+                                        </li>
+                                        <li class="divider">
+                                        </li>
+                                        <li class="nav-header">
+                                            Nav header
+                                        </li>
+                                        <li>
+                                            <a href="#">Sports</a>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a href="#" tabindex="-1">More options</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a href="#" tabindex="-1">More options</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a href="#" tabindex="-1">More options</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" tabindex="-1">Second level link</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Answers </a> </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Cinemas </a> </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Deals </a> </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Events </a> </div>
+                            </li>
+                            <li>
+                                <div class="rLvE"> <a href="#"> Classifieds </a> </div>
+                            </li>
+                        </ul>
+                        <!-- /.nav --> 
+                    </div>
+                </div>
+            </div>
+            <!-- /#primary-nav -->
+            <div id="secondary-nav" class="navbar-inner">
+                <div class="container-fluid">
+                    <ul class="nav">
+                        <li>
+                            <a href="#"> Latest </a>
+                        </li>
+                        <li>
+                            <a href="#"> Metro </a>
+                        </li>
+                        <li>
+                            <a href="#"> Business </a>
+                        </li>
+                        <li>
+                            <a href="#"> Travel </a>
+                        </li>
+                        <li>
+                            <a href="#"> Entertainment </a>
+                        </li>
+                        <li>
+                            <a href="#"> Health </a>
+                        </li>
+                        <li>
+                            <a href="#"> Sport </a>
+                        </li>
+                        <li>
+                            <a href="#"> Tech </a>
+                        </li>
+                        <li>
+                            <a href="#"> Reviews </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav -->
+                    <ul class="nav social-navs pLrT clearfix">
+                        <li>
+                            <a href="#"><i class="bUi-iCn-fB-16" aria-hidden="true"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"> <i class="bUi-iCn-tWr-16" aria-hidden="true"></i> </a>
+                        </li>
+                        <li>
+                            <a href="#"> <i class="bUi-iCn-gOo-pLs-16" aria-hidden="true"></i> </a>
+                        </li>
+                        <li>
+                            <a href="#"> <i class="bUi-iCn-eNv-16" aria-hidden="true"></i> </a>
+                        </li>
+                        <li>
+                            <a href="#"> <i class="bUi-iCn-bLoG-16" aria-hidden="true"></i> </a>
+                        </li>
+                    </ul>
+                    <!-- /#ocial-profile --> 
+                </div>
+            </div>
+            <!-- /#secondary-nav --> 
+            
+        </div>
+        <!-- /.navbar --> 
+    </header>
+    <!-- /.masthead -->
+    <div id="site">
+        <div class="titlebar container-fluid sub_headder hD"> <a class="btn-navbar">
+                <span class="inline-block">
+                    <span class="icon-bar">
+                    </span>
+                    <span class="icon-bar">
+                    </span>
+                    <span class="icon-bar">
+                    </span>
+                </span>
+                <span class="navbar-text inline-block">
+                    Menu
+                </span>
+            </a>
+            <h1 class="logo"> <a href="/"> <img alt="Orlando" src="static/site/images/logo/orlando-w2x.png"> </a> </h1>
+        </div>
+        <div id="content-container">
+            <div class="container-fluid">
+            	<!-- Module Search -->
+	        	<div class="iNvRt sRcHbR hasCategory zIx9999oV bS-bRdR">
+                    <div class="row-fluid">
+                        <div class="span9 sP10mN768">
+                            <div class="dropdown pD2015 pDr0 sTtC pLlT hP"> 
+                                <a id="shopByCat" data-toggle="dropdown" href="#" class="mDl-nM bLk dropdown-toggle mRt4 "> 
+                                    <i aria-hidden="true" class="bUi-iCn-sToR-24"></i>
+                                    <span class="ib">Shop By Category <i aria-hidden="true" class="bUi-iCn-aNg-b-12 mRl10 bDrD"></i> </span>
+                                </a>
+                                <ul class="nav nav-list fS12 dropdown-menu iNvRt" id="shopByPCatCont">
+                                    <ul class="nav nav-list aWsM-cAt-lSt iNvRt w100mN768 dRmN678" id="shopByPCat">
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Mobile Phones</a>
+                                            <ul class="dropdown-menu fOcL">
+                                                <li class="mRb25">
+                                                    <h4 class="mRt0 mRb12 pDl20">Clothing</h4>
+                                                    <ul class="unstyled pDl20">
+                                                        <li class="mRb5"><a href="#">Camera Accessories (255)</a></li>
+                                                        <li class="mRb5"><a href="#">Cameras - Digicams (124)</a></li>
+                                                        <li class="mRb5"><a href="#">Computer Peripherals (35)</a></li>
+                                                        <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                        <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                        <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                        <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                        <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                        <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                        <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                        <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                        <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                        <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                        <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                    </ul>
+                                                </li>
+                                                
+                                                <li class="mRb25">
+                                                    <h4 class="mRt0 mRb12 pDl20">Footwear</h4>
+                                                    <ul class="unstyled pDl20">
+                                                        <li class="mRb5"><a href="#">Camera Accessories</a></li>
+                                                        <li class="mRb5"><a href="#">Cameras - Digicams</a></li>
+                                                        <li class="mRb5"><a href="#">Computer Peripherals</a></li>
+                                                        <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                        <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                        <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                        <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                        <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                        <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                        <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                        <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                        <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                        <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                        <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                        <li class="mRb5"><a href="#">Camera Accessories</a></li>
+                                                        <li class="mRb5"><a href="#">Cameras - Digicams</a></li>
+                                                        <li class="mRb5"><a href="#">Computer Peripherals</a></li>
+                                                        <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                        <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                        <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                        <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                        <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                        <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                        <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                        <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                        <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                        <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                        <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="mRb25">
+                                                    <h4 class="mRt0 mRb12 pDl20">Watches</h4>
+                                                    <ul class="unstyled pDl20">
+                                                        <li class="mRb5"><a href="#">Camera Accessories</a></li>
+                                                        <li class="mRb5"><a href="#">Cameras - Digicams</a></li>
+                                                        <li class="mRb5"><a href="#">Computer Peripherals</a></li>
+                                                        <li class="mRb5"><a href="#">Fax, EPABX, Office Equipment</a></li>
+                                                        <li class="mRb5"><a href="#">Inverters, UPS &amp; Generators</a></li>
+                                                        <li class="mRb5"><a href="#">IPods, MP3 Players</a></li>
+                                                        <li class="mRb5"><a href="#">Laptops - Desktops - Tablets</a></li>
+                                                        <li class="mRb5"><a href="#">Music Systems - Home Theatre</a></li>
+                                                        <li class="mRb5"><a href="#">Office Supplies</a></li>
+                                                        <li class="mRb5"><a href="#">Security Equipment - Products</a></li>
+                                                        <li class="mRb5"><a href="#">Tools - Machinery - Industrial</a></li>
+                                                        <li class="mRb5"><a href="#">TV - DVD - Multimedia</a></li>
+                                                        <li class="mRb5"><a href="#">Video Games - Consoles</a></li>
+                                                        <li class="mRb5"><a href="#">Everything Else</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Electronics &amp; Technology</a>
+                                            
+
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Mobile - Cell Phones</a></li>
+                                                <li><a href="#">Mobile Accessories</a></li>
+                                            </ul>
+
+
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Home &amp; Lifestyle</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Air Conditioners &amp; Coolers</a></li>
+                                                <li><a href="#">Antiques - Handicrafts </a></li>
+                                                <li><a href="#">Baby - Infant Products</a></li>
+                                                <li><a href="#">Bags - Luggage</a></li>
+                                                <li><a href="#">Barter - Exchange</a></li>
+                                                <li><a href="#">Books - Magazines</a></li>
+                                                <li><a href="#">Clothing - Garments</a></li>
+                                                <li><a href="#">Coins - Stamps</a></li>
+                                                <li><a href="#">Collectibles</a></li>
+                                                <li><a href="#">Discounted - Sale Items</a></li>
+                                                <li><a href="#">Fashion Accessories</a></li>
+                                                <li><a href="#">Gifts - Stationary</a></li>
+                                                <li><a href="#">Health - Beauty Products</a></li>
+                                                <li><a href="#">Home - Kitchen Appliances</a></li>
+                                                <li><a href="#">Home - Office Furniture</a></li>
+                                                <li><a href="#">Home Decor - Furnishings</a></li>
+                                                <li><a href="#">Household</a></li>
+                                                <li><a href="#">Jewellery</a></li>
+                                                <li><a href="#">Music - Movies</a></li>
+                                                <li><a href="#">Musical Instruments</a></li>
+                                                <li><a href="#">Paintings</a></li>
+                                                <li><a href="#">Sport - Fitness Equipment</a></li>
+                                                <li><a href="#">Toys - Games</a></li>
+                                                <li><a href="#">Watches</a></li>
+                                                <li><a href="#">Wholesale - Bulk</a></li>
+                                                <li><a href="#">Everything Else</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Real Estate</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Apartments - For Sale</a></li>
+                                                <li><a href="#">Apartments - Rent - Lease</a></li>
+                                                <li><a href="#">Flatmates</a></li>
+                                                <li><a href="#">Land - Plot For Sale</a></li>
+                                                <li><a href="#">Office-Commercial For Rent - Lease</a></li>
+                                                <li><a href="#">Office-Commercial For Sale</a></li>
+                                                <li><a href="#">Paying Guest - Hostel</a></li>
+                                                <li><a href="#">Service Apartments</a></li>
+                                                <li><a href="#">Vacation Rentals - Timeshare</a></li>
+                                                <li><a href="#">Villas/Bungalows for Rent</a></li>
+                                                <li><a href="#">Villas/Bungalows for Sale</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Cars &amp; Bikes</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Bicycles</a></li>
+                                                <li><a href="#">Buses - Tempos - Trucks - Vans</a></li>
+                                                <li><a href="#">Cars</a></li>
+                                                <li><a href="#">Construction Vehicles</a></li>
+                                                <li><a href="#">Driving Schools</a></li>
+                                                <li><a href="#">Motor Service - Repair</a></li>
+                                                <li><a href="#">Motorcycles</a></li>
+                                                <li><a href="#">Scooters</a></li>
+                                                <li><a href="#">Spare Parts - Accessories</a></li>
+                                                <li><a href="#">SUVs &amp; Vans</a></li>
+                                                <li><a href="#">Other Vehicles</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Jobs</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Accounting - Tax - Audit</a></li>
+                                                <li><a href="#">Advertising - Media - PR</a></li>
+                                                <li><a href="#">Airline - Travel</a></li>
+                                                <li><a href="#">Architects - Interior Designers</a></li>
+                                                <li><a href="#">Banking - Finance - Insurance</a></li>
+                                                <li><a href="#">BPO - Call Center - KPO</a></li>
+                                                <li><a href="#">Catering - Hospitality</a></li>
+                                                <li><a href="#">Content Writers - Translators</a></li>
+                                                <li><a href="#">Customer Service</a></li>
+                                                <li><a href="#">Education - Teaching</a></li>
+                                                <li><a href="#">Engineering</a></li>
+                                                <li><a href="#">Fashion Designing - Merchandising</a></li>
+                                                <li><a href="#">Freelancers</a></li>
+                                                <li><a href="#">Healthcare - Medicine</a></li>
+                                                <li><a href="#">HR</a></li>
+                                                <li><a href="#">Internet - Web Designers</a></li>
+                                                <li><a href="#">IT Hardware</a></li>
+                                                <li><a href="#">IT Software</a></li>
+                                                <li><a href="#">Marketing</a></li>
+                                                <li><a href="#">Non Profit - NGO</a></li>
+                                                <li><a href="#">Part Time - Temps</a></li>
+                                                <li><a href="#">Real Estate - Construction</a></li>
+                                                <li><a href="#">Resumes</a></li>
+                                                <li><a href="#">Retail</a></li>
+                                                <li><a href="#">Sales</a></li>
+                                                <li><a href="#">Secretarial - Office Staff</a></li>
+                                                <li><a href="#">Summer Trainees - Freshers</a></li>
+                                                <li><a href="#">Telecom</a></li>
+                                                <li><a href="#">Work From Home</a></li>
+                                                <li><a href="#">Other Jobs</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Services</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Advertising - Design</a></li>
+                                                <li><a href="#">Airline - Train - Bus Tickets</a></li>
+                                                <li><a href="#">Astrology - Numerology</a></li>
+                                                <li><a href="#">Baby Sitters - Nanny</a></li>
+                                                <li><a href="#">Business Offers</a></li>
+                                                <li><a href="#">Car Rentals - Taxi Services</a></li>
+                                                <li><a href="#">Carpenters - Upholstery</a></li>
+                                                <li><a href="#">Catering -Tiffin Services</a></li>
+                                                <li><a href="#">Computer - Web Services</a></li>
+                                                <li><a href="#">Cooks</a></li>
+                                                <li><a href="#">Courier Services</a></li>
+                                                <li><a href="#">Doctors</a></li>
+                                                <li><a href="#">Drivers</a></li>
+                                                <li><a href="#">DTH &amp; Set Top Boxes</a></li>
+                                                <li><a href="#">Electronics - Appliances Repair</a></li>
+                                                <li><a href="#">Event -Party Planners - DJ</a></li>
+                                                <li><a href="#">Health - Fitness</a></li>
+                                                <li><a href="#">Hotels - Resorts</a></li>
+                                                <li><a href="#">Household Repairs - Renovation</a></li>
+                                                <li><a href="#">Interior Designers - Architects</a></li>
+                                                <li><a href="#">Investment - Financial Planning</a></li>
+                                                <li><a href="#">Lawyers - Advocates</a></li>
+                                                <li><a href="#">Loans - Insurance</a></li>
+                                                <li><a href="#">Maids &amp; Housekeeping</a></li>
+                                                <li><a href="#">Movers &amp; Packers</a></li>
+                                                <li><a href="#">Parlours and Salons</a></li>
+                                                <li><a href="#">Placement - Recruitment Agencies</a></li>
+                                                <li><a href="#">Plumbers - Electricians</a></li>
+                                                <li><a href="#">Restaurants - Coffee Shops</a></li>
+                                                <li><a href="#">Retail</a></li>
+                                                <li><a href="#">Taxation - Audit</a></li>
+                                                <li><a href="#">Travel Agents</a></li>
+                                                <li><a href="#">Vaastu</a></li>
+                                                <li><a href="#">Vacation - Tour Packages</a></li>
+                                                <li><a href="#">Everything Else</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Entertainment</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Acting - Modeling Roles</a></li>
+                                                <li><a href="#">Acting Schools</a></li>
+                                                <li><a href="#">Actor - Model Portfolios</a></li>
+                                                <li><a href="#">Art Directors - Editors</a></li>
+                                                <li><a href="#">Fashion Designers - Stylists</a></li>
+                                                <li><a href="#">Make Up - Hair</a></li>
+                                                <li><a href="#">Modeling Agencies</a></li>
+                                                <li><a href="#">Musicians</a></li>
+                                                <li><a href="#">Photographers - Cameraman</a></li>
+                                                <li><a href="#">Script Writers</a></li>
+                                                <li><a href="#">Set Designers</a></li>
+                                                <li><a href="#">Sound Engineers</a></li>
+                                                <li><a href="#">Studios - Locations for hire</a></li>
+                                                <li><a href="#">Other Entertainment</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Education &amp; Learning</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Career Counseling</a></li>
+                                                <li><a href="#">Coaching &amp; Tuitions</a></li>
+                                                <li><a href="#">Dance - Music Classes</a></li>
+                                                <li><a href="#">Distance Learning Courses</a></li>
+                                                <li><a href="#">Hobby Classes</a></li>
+                                                <li><a href="#">Play Schools - Creche</a></li>
+                                                <li><a href="#">Professional &amp; Short Term Courses</a></li>
+                                                <li><a href="#">Text books &amp; Study Material</a></li>
+                                                <li><a href="#">Workshops</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Pets &amp; Pet Care</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Pet Adoption</a></li>
+                                                <li><a href="#">Pet Care - Accessories</a></li>
+                                                <li><a href="#">Pet Clinics</a></li>
+                                                <li><a href="#">Pet Foods</a></li>
+                                                <li><a href="#">Pet Training &amp; Grooming</a></li>
+                                                <li><a href="#">Pets</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Community</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Announcements</a></li>
+                                                <li><a href="#">Car Pool - Bike Ride</a></li>
+                                                <li><a href="#">Charity - Donate - NGO</a></li>
+                                                <li><a href="#">Lost - Found</a></li>
+                                                <li><a href="#">Tender Notices</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Events</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Dance - Music Concerts</a></li>
+                                                <li><a href="#">Exhibitions - Trade Fairs</a></li>
+                                                <li><a href="#">Festivals</a></li>
+                                                <li><a href="#">Theatre - Plays - Movies</a></li>
+                                                <li><a href="#">Workshops - Seminars</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="hS-dRpDwN dD-rT"> <a href="#">Matrimonial</a>
+                                            <ul class="dropdown-menu tWcL">
+                                                <li><a href="#">Brides</a></li>
+                                                <li><a href="#">Grooms</a></li>
+                                                <li><a href="#">Wedding Planners</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </ul>
+                            </div>
+                            <form class="form-search mRb0 pD2015">
+                                <div class="span7 sP6mN768 pDl30  pD0p">
+                                    <input type="text" placeholder="Search for a product, category or brand">
+                                </div>
+                                <div class="ib sUb-bTn mRl12 sTtC aBpT15">
+                                    <button class="btn btn-success" type="submit"> <i class="bUi-iCn-sRh-16" aria-hidden="true"></i> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="pLrT pD2015 devider">
+                            <div class="pDr30 pDl30 pDl0mN768 pDr0mN768 pD0p">
+                                <h3 class="mDl-nM mRt6 mRb4"> <i aria-hidden="true" class="bUi-iCn-cRtV-24"></i> <a class="ib cLr-wHt" data-toggle="modal" role="button" data-target="#myModal1" href="e-commerce-cart.html">Cart
+                                    <label class="lBl sMl lH1 mR0 cIr wHt cLr-dRk">0</label>
+                                    </a> </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay"></div>
+				<!-- Module Search -->
+				<ul class="bRdCrB">
+                    <li>
+                        <a href="#">e-commerce</a>
+                        <span class="sPrTr"></span>
+                    </li>
+                    <li>
+                        <a href="#">Footwear</a>
+                        <span class="sPrTr"></span>
+                    </li>
+                    <li>
+                        <a href="#">Men's Footwear</a>
+                        <span class="sPrTr"></span>
+                    </li>
+                    <li>
+                        <a href="#"> Shoes </a>
+                        <span class="sPrTr"></span>
+                    </li>
+                    <li class="aCtV">
+                         Casual Shoes 
+                    </li>
+                </ul>
+				<div class="row-fluid">
+					<div class="main">
+						<div class="row-fluid">
+							<div class="span3 sP12mX767">
+								<section class="sCn pD200">
+	                        		<ul class="nav nav-list fS12">
+                                        <li class="nav-header"><a href="#" class="pD0 mR0" style="color: rgb(173, 177, 183);">Category</a></li>
+                                        <ul class="nav nav-list cMpCt pD0 mXh250A">
+                                            <li><a href="#"><i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 fW-bLd " style="color:#3B3F44 !important"></i> Apartments - For Sale </a>
+                                                <ul class="nav nav-list cMpCt">
+                                                    <li><a href="#" class="cLr-dRk"><i class="bUi-iCn-aNg-b-aLt-12 fW-bLd" aria-hidden="true" style="color:#3B3F44 !important"></i> Category</a>
+                                                        <ul class="nav nav-list cMpCt">
+                                                            <li>
+                                                                <a class="cLr-dRk" href="#category-filter" data-toggle="collapse">
+                                                                    <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 fW-bLd" style="color:#3B3F44 !important"></i> <span>Sub Category</span></a>
+                                                                <ul id="category-filter" class="unstyled mRl25 collapse in">
+                                                                    <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                    <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                    <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        <li class="nav-header mRt10">
+                                            <span class="pD0 mR0">
+                                                <span class="pLlT" style="color: rgb(173, 177, 183);">Bedrooms 
+                                                    <span class="close ib mRl5 oP50 lH05">×</span>
+                                                </span>
+                                                <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter1" data-toggle="collapse">
+                                                    <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                                </a>
+                                            </span>
+                                        </li>
+                                        <ul id="filter1" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 collapse in mXh250A">
+                                            <li class="mRb5">
+                                                <input type="text"  placeholder="Search By Brand" class="search-query fS12 mR0 h32">
+                                            </li>
+                                            <li><a href="#">Studio
+                                                <span class="lSt-cNt ">(1238)</span>
+                                                </a></li>
+                                            <li><a href="#">1 BR
+                                                <span class="lSt-cNt">(878)</span>
+                                                </a></li>
+                                            <li><a href="#">2 BR
+                                                <span class="lSt-cNt ">(670)</span>
+                                                </a></li>
+                                            <li><a href="#">3 BR
+                                                <span class="lSt-cNt">(113)</span>
+                                                </a></li>
+                                            <li><a href="#">4 BR
+                                                <span class="lSt-cNt">(78)</span>
+                                                </a></li>
+                                        </ul>
+                                        <li class="nav-header mRt10">
+                                            <span class="pD0 mR0">
+                                                <span class="pLlT" style="color: rgb(173, 177, 183);">Bedrooms 
+                                                    <span class="close ib mRl5 oP50 lH05">×</span>
+                                                </span>
+                                                <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter2" data-toggle="collapse">
+                                                    <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                                </a>
+                                            </span>
+                                        </li>
+                                        <ul id="filter2" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 mXh250A collapse in">
+                                            <li><label><input type="checkbox" class="mRt-4"> Security</label></li>
+                                            <li><label><input type="checkbox" class="mRt-4"> Additional Rooms</label></li>
+                                            <li><label><input type="checkbox" class="mRt-4"> Pool</label></li>
+                                            <li><label><input type="checkbox" class="mRt-4"> Air Condition</label></li>
+                                        </ul>
+                                    </ul>
+
+                        		</section>
+							</div>
+							<div class="span9 sP12mX767">
+								<section class="sCn">
+									<div class="sCn-tTl sCn-tTl-bR mRb10 cLrFx">
+                                        <div class="cLrFx">
+                                            <h2 class="pLlT">
+                                                <span>Casual Shoes</span>
+                                            </h2>
+                                            <form class="form-search mRb0 pLrT" action="#">
+                                                <div class="input-append iNsD">
+                                                    <input type="text" style="" placeholder="Search within Casual Shoes" id="" class="search-query fS12 pD510 w240">
+                                                    <button role="button" class="btn btn-link pD510 pDt9 cLr-gRy" type="submit"><i class="bUi-iCn-sRh-16 fS14 mRt4 ib" aria-hidden="true"></i></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="cLrFx">
+                                            <ul class="unstyled cLr-dRk fS13 mRb0">
+                                                <li class="ib">
+                                                    <b>Brand :</b>
+                                                    <span class="cLr-gRy fS13 mRl5"> Puma</span>
+                                                    <a href="#" class="close ib mRl5 oP50">×</a>
+                                                </li>
+                                                <li class="ib sPrTr vEr">
+                                                    <b>Type :</b>
+                                                    <span class="cLr-gRy fS13 mRl5"> Loafers</span>
+                                                    <a href="#" class="close ib mRl5 oP50">×</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="tLbR mRb40 hP">
+			                            <div class="tLbR-iR">
+                                            <span class="fS12 mRt8 ib cLr-gRy"> Showing 2572 products </span>
+			                            	<div class="pLrT">
+				                            	<select class="bUiSlCtbtn-link tXt-sMl">
+		                                            <option value="sort=popularity">Popularity</option>
+                                                    <option value="sort=price_desc">Price -- High to Low</option>
+                                                    <option value="sort=price_asc">Price -- Low to High</option>
+                                                    <option value="sort=discount">Discount</option>
+                                                    <option value="sort=recency_desc">Newest First</option>
+		                                        </select>
+			                            	</div>
+			                            </div>
+			                        </div>
+                                    <ul class="modulesBrowseData tHcL mDa-gD pDfX nObG fGd dSgDwDt">
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW1 bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> 
+                                                                        <img class="mDa-oT responsive_iMg" data-size0="static/img/e-co/1-s.jpg" data-size1="static/img/e-co/1-n.jpg" src="ui-images/preload.gif" />
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> 
+                                                            <a href="#myModal" role="button" data-toggle="modal" class="btn w50P mRb10" style="">
+                                                                <i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                                <span class="ib">Quick View</span>
+                                                            </a> 
+                                                            <a href="#" class="btn btn-danger w50P">
+                                                                <i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                                <span class="ib">Add To Wishlist</span>
+                                                            </a> 
+                                                        </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Flippd Suede Leather Mid Ankle Sneakers</a></h5>
+                                                    <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>                                            
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/h/9/9/brown-orange-cs141001-flippd-8-400x400-imadrhz6akhyyuyz.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Adidas Alphard Outdoors</a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img8.flixcart.com/image/shoe/r/8/m/black-green-111520-converse-12-400x400-imadzazv6abdy4hh.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Converse Canvas Sneakers             </a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img7a.flixcart.com/image/shoe/q/h/p/olive-lc1695-lee-cooper-44-400x400-imadr64eghbdfbvf.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Quechua Forclaz 500 Ankle Length Trekking Shoes</a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/g/p/n/brown-804140-hush-puppies-6-400x400-imadr8at8gaefxrd.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Lee Cooper Corporate Casuals</a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img8a.flixcart.com/image/shoe/m/f/d/khaki-new-taco-buckaroo-43-400x400-imadpm8cfqsbnb27.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Puma Terrae Mid Africa L Boots</a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img7a.flixcart.com/image/shoe/r/g/g/01-fossil-chocolate-brown-304288-puma-9-400x400-imadhpfpzzkyhkx8.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Nike Dewired Canvas Sneakers</a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/g/z/v/camel-gc-0712109w13-woodland-43-400x400-imadppwxtykpazsr.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">Clarks Crafter Cool Corporate Casuals</a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img6a.flixcart.com/image/shoe/e/v/s/khaki-gc-0572108w13-woodland-43-400x400-imadppwzh4yhvqzn.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+                                                    <div class="mDa-hVr hAtO w100P t0 tXt-cTr vD">
+                                                        <div class="ib"> <a href="#" class="btn w50P mRb10" style=""><i aria-hidden="true" class="bUi-iCn-vEw-16 mRr5 ib"></i>
+                                                            <span class="ib">Quick View</span>
+                                                            </a> <a href="#" class="btn btn-danger w50P"><i aria-hidden="true" class="bUi-iCn-hRt-16 ib mRr5"></i>
+                                                            <span class="ib">Add To Wishlist</span>
+                                                            </a> </div>
+                                                        <span class="ib hAtO"></span>
+                                                    </div>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Reebok Classics Royal Chukka Focus Lp Mid Ankle Sneakers             </a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+		                                <li class="mDa mRb40 w50mP">
+		                                    <div class="mDa-iN mRr15 mRl15">
+		                                        <div class="mDa-wPr"> 
+		                                        	<a class="bUi-tMb-wPr tMb-60 fLxiMgW bUi-tMb-cLsFd" href="#">
+		                                                <span class="bUi-tMb">
+		                                                    <span class="bUi-tMb-pRpL">
+		                                                        <span class="bUi-tMb-cLp">
+		                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://img8a.flixcart.com/image/shoe/f/r/z/601n-brown-391r170-fila-9-400x400-imadqxcj5j4ghdac.jpeg" alt="">
+		                                                                <span class="vRtL-aLn"> </span>
+		                                                            </span>
+		                                                        </span>
+		                                                    </span>
+		                                                </span>
+		                                            </a>
+		                                        </div>
+		                                        <div class="mDa-bDy pD0 pDt5 h140">
+		                                            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title=""><a href="#">                 Reebok On Court Iii Lp Canvas Shoes             </a></h5>
+		                                            <div class="mDa-dTa mRt8">
+                                                        <div class="sTr-rT ib mRb0 pDt0">
+                                                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                                                        </div>
+                                                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                                                        <hr class="mRt5 gRy">
+                                                        <div>
+                                                            <span class="ib">
+                                                                <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                                                                <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="fS22 cLr-bLk">$485.99</span>
+                                                        </div>
+                                                    </div>
+		                                        </div>
+		                                    </div>
+		                                </li>
+                                    </ul>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+        <!-- /#content-container -->
+        
+        <footer id="global-foot">
+            <nav class="utility-nav">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span2">
+                            <h4><i aria-hidden="true" class="icon bUi-iCn-pLs-16"></i> Submit Today</h4>
+                        </div>
+                        <div class="span10">
+                            <ul id="submit-navs" class="nav pLlT">
+                                <li>
+                                    <a href="#"> News </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Photos </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Videos </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Events </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Business </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Classifides </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Answers </a>
+                                </li>
+                            </ul>
+                            <ul class="nav social-navs pLrT clearfix">
+                                <li>
+                                    <a href="#"><i class="bUi-iCn-fB-16" aria-hidden="true"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"> <i class="bUi-iCn-tWr-16" aria-hidden="true"></i> </a>
+                                </li>
+                                <li>
+                                    <a href="#"> <i class="bUi-iCn-gOo-pLs-16" aria-hidden="true"></i> </a>
+                                </li>
+                                <li>
+                                    <a href="#"> <i class="bUi-iCn-eNv-16" aria-hidden="true"></i> </a>
+                                </li>
+                                <li>
+                                    <a href="#"> <i class="bUi-iCn-bLoG-16" aria-hidden="true"></i> </a>
+                                </li>
+                            </ul>
+                            <!-- /#ocial-profile --> 
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- utility-nav -->
+            <nav class="site-index">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <section class="span2">
+                            <h6> <a href="#"> News </a> </h6>
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> Latest </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Metro </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Business </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Travel </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Entertainment </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Health </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Sport </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Tech </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="span2">
+                            <h6> <a href="#"> Events </a> </h6>
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> All Events </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Show By Venue </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Today </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Tomorrow </a>
+                                </li>
+                                <li>
+                                    <a href="#"> This Weekend </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Next 7 Days </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Next 30 Days </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="span2">
+                            <h6> <a href="#"> Things To Do </a> </h6>
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> Amusement Parks </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Beaches </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Boating </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Golf Courses </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Museums </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Nightlife </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Parks </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Sports </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="span2">
+                            <h6> <a href="#"> Community </a> </h6>
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> Photos </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Videos </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Forum </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Answers </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="span2">
+                            <h6> <a href="#"> Businesses </a> </h6>
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> Bars &amp; Clubs </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Hotels </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Nightlife </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Restaurants </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Spas </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Things To Do </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Weddings </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="span2">
+                            <h6> <a href="#"> Classifieds </a> </h6>
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> Cars &amp; Vehicles </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Community </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Items for Sale </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Jobs </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Personals </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Pets </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Real Estate </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Apartments </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Services </a>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+            </nav>
+            <!-- .site-index -->
+            <div class="final">
+                <div class="container-fluid rLvE">
+                    <div class="row-fluid">
+                        <section class="span2 logo-cont">
+                            <h1 class="logo"> <a href="/"> <img src="static/site/images/logo/orlando-w2x.png" alt="Orlando"/> </a> </h1>
+                        </section>
+                        <section class="span10 conpany-nav">
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"> About Us </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Press Releases </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Jobs </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Mobile </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Ad Choices </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Privacy Policy </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Terms of Service </a>
+                                </li>
+                                <li>
+                                    <a href="#"> Contact Us </a>
+                                </li>
+                            </ul>
+                            <p class="copyright">&copy; Copyright Orlando 2013</p>
+                            <div id="site-powered"> <a href="http://blackmonk.com" target="_blank" title="Powered by Blackmonk"> <img src="static/img/theme/BM-pwd-logo@2x.png" alt="Powered by Blackmonk"/> </a> </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!-- .final --> 
+        </footer>
+        <!-- #global-footer --> 
+        
+    </div>
+    <!-- #site-wrapper --> 
+</div>
+<!-- #site --> 
+
+<div id="myModal1" class="modal hide fade mW70" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-body">
+        
+    </div>
+    <div class="modal-footer">
+        <span class="ib mRr20">
+            <h4 class="mR0">Amount Payable:
+                <span class="fS24">Rs. 27988</span>
+            </h4>
+        </span>
+        <button class="btn btn-primary">Place Order</button>
+    </div>
+</div>
+
+
+<div id="myModal" class="modal hide fade mW70" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Puma Deck Sneakers</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row-fluid">
+            <div class="span5">
+                <div class="fTrD-bL tMbpGrpRw mRb0 sLdR-mDm mDa-75 aDpTv cTrL-rT">
+                    <div class="fTrD-bL-iN">
+                        <ul id="tMbpGrpRw" class="fTrD-iTmS">
+                            <li class="fTrD-iTm bS-bRdR">
+                                <figure class="fTrD-mDa">
+                                    <span class="bUi-tMb-wPr fLxiMgW" href="#">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="http://img7a.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhhqsetz3ds.jpeg" alt="" />
+                                                        <span class="vRtL-aLn"></span>  
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </figure> <!-- /.TrD-mDa --> 
+                            </li> <!-- /.fTrD-iTm -->
+                            <li class="fTrD-iTm bS-bRdR">
+                                <figure class="fTrD-mDa">
+                                    <span class="bUi-tMb-wPr fLxiMgW" href="#">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="http://img7.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhheqxms5fn.jpeg" alt="" />
+                                                        <span class="vRtL-aLn"></span>  
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </figure> <!-- /.TrD-mDa --> 
+                            </li> <!-- /.fTrD-iTm -->
+                            <li class="fTrD-iTm bS-bRdR">
+                                <figure class="fTrD-mDa">
+                                    <span class="bUi-tMb-wPr fLxiMgW" href="#">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="http://img7.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhgt4eaatsa.jpeg" alt="" />
+                                                        <span class="vRtL-aLn"></span>  
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </figure>  <!-- /.TrD-mDa -->
+                            </li> <!-- /.fTrD-iTm -->
+                            <li class="fTrD-iTm bS-bRdR">
+                                <figure class="fTrD-mDa">
+                                    <span class="bUi-tMb-wPr fLxiMgW" href="#">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="http://img7.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhgbdmw97ht.jpeg" alt="" />
+                                                        <span class="vRtL-aLn"></span>  
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </figure> <!-- /.TrD-mDa --> 
+                            </li> <!-- /.fTrD-iTm -->
+                        </ul> <!-- /.fTrD-iTms -->
+                    </div><!-- /.fTrD-bL-iN -->                                  
+                </div>
+
+                <div class="fTrD-bL tMbpGr cTrL-dFt mRb10">
+                    <div class="fTrD-bL-iN">
+                        <div id="tMbpGr">
+                            <a href="#" class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" data-slide-index="0">
+                                <span class="bUi-tMb">
+                                    <span class="bUi-tMb-pRpL">
+                                        <span class="bUi-tMb-cLp">
+                                            <span class="bUi-tMb-cLp-iN">
+                                                <img alt="" src="http://img7a.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhhqsetz3ds.jpeg" class="mDa-oT" />
+                                                <span class="vRtL-aLn"></span>  
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a href="#" class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" data-slide-index="1">
+                                <span class="bUi-tMb">
+                                    <span class="bUi-tMb-pRpL">
+                                        <span class="bUi-tMb-cLp">
+                                            <span class="bUi-tMb-cLp-iN">
+                                                <img alt="" src="http://img7.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhheqxms5fn.jpeg" class="mDa-oT" />
+                                                <span class="vRtL-aLn"></span>  
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a href="#" class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" data-slide-index="2">
+                                <span class="bUi-tMb">
+                                    <span class="bUi-tMb-pRpL">
+                                        <span class="bUi-tMb-cLp">
+                                            <span class="bUi-tMb-cLp-iN">
+                                                <img alt="" src="http://img7.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhgt4eaatsa.jpeg" class="mDa-oT" />
+                                                <span class="vRtL-aLn"></span>  
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a href="#" class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" data-slide-index="3">
+                                <span class="bUi-tMb">
+                                    <span class="bUi-tMb-pRpL">
+                                        <span class="bUi-tMb-cLp">
+                                            <span class="bUi-tMb-cLp-iN">
+                                                <img alt="" src="http://img7.flixcart.com/image/shoe/h/w/h/mid-moonless-night-353865-puma-8-1100x1360-imadqqhgbdmw97ht.jpeg" class="mDa-oT" />
+                                                <span class="vRtL-aLn"></span>  
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                    </div><!-- /.fTrD-bL-iN -->                                  
+                </div>
+            </div>
+            <div class="span7 pDl30">
+                <h2 class="mR0">Puma Deck Sneakers </h2>
+                <div class="cLr-gRy mRt5">
+                    <span class="ib">
+                        <div class="sTr-rT ib mRb0 pDt0">
+                            <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span>
+                        </div>
+                        <span class="fS11 cLr-gRy mRl10">(22 rating)</span>
+                    </span>
+                    <span class="vEr sPrTr fS12 ib">3 Reviews</span>
+                    <span class="vEr sPrTr fS12 pLrT">
+                        <a href="#" class="btn-link cLr-gRy"><i class="bUi-iCn-hRt-12 mRr8" aria-hidden="true"></i> Add to My Wishlist</a>
+                    </span>
+                    <span class="fS12 pLrT">
+                        <a href="#" class="btn-link cLr-gRy"><i class="bUi-iCn-rVeW-12 mRr8" aria-hidden="true"></i> Write a Review</a>
+                    </span>
+                </div>
+                <ul class="unstyled tHcL cLrFx mRt30">
+                    <li>
+                        <div class="fW-bLd mRb10"> Select Color </div>
+                        <div class="color">
+                            <a class="lBl pD0 w20 h20 mRr10 pLlT "> </a>
+                            <a class="lBl pD0 w20 h20 mRr10 pLlT " style="background-color:red"> </a>
+                            <a class="lBl pD0 w20 h20 mRr10 pLlT " style="background-color: black;"> </a>
+                            <a class="lBl pD0 w20 h20 mRr10 pLlT " style="background-color: green;"> </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="fW-bLd mRb10"> Select Size </div>
+                        <div class="size">
+                            <a style="padding: 2px 6px 1px;" class="lBl pLlT mRr10 bRdR-gRy cLr-dRk fS11">5</a>
+                            <a style="padding: 2px 6px 1px;" class="lBl pLlT mRr10 bRdR-gRy cLr-dRk fS11">6</a>
+                            <a style="padding: 2px 6px 1px;" class="lBl pLlT mRr10 bRdR-gRy cLr-dRk fS11">7</a>
+                            <a style="padding: 2px 6px 1px;" class="lBl pLlT mRr10 bRdR-gRy cLr-dRk fS11">8</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="fW-bLd mRb10"> Quantity </div>
+                        <div class="quantity">
+                            <input type="text" class="mRb0 fS12 W80 h22" value="1">
+                        </div>
+                    </li>
+                </ul>
+                <hr />
+                <div class="details mRt30">
+                    <div>
+                        <span class="ib">
+                            <span class="lN-tRg fW200 cLr-gRy fS15">$556.55</span>
+                            <span class="cLr-gRn fW-bLd fS15 mRl10">30%OFF</span>
+                        </span>
+                    </div>
+                    <h2 class="mR0 mRb5">Rs. 4899</h2>
+                    <span class="help-block mRb0 fS12">Inclusive of taxes </span>
+                    <span class="help-block mRb5 cLr-gRy fS13">(Free home delivery)</span>
+                    <a href="#" class="btn btn-large mRt30">Buy Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<script src="{{STATIC_URL}}js/jquery.bUislider.js"></script>
+<script src="{{STATIC_URL}}js/jquery.raty.js"></script> 
+<script type="text/javascript">
+    var tMbpGrpRwpGr;
+    var tMbpGrpRw;
+    tMbpGrpRwpGr = $('#tMbpGr').bUiSlider({
+        slideWidth: 56,
+        minSlides: 1,
+        maxSlides: 8,
+        slideMargin: 6,
+        infiniteLoop: false,
+        hideControlOnEnd: true,
+
+    });
+    $('#tMbpGrpRw').bUiSlider({
+        pagerCustom: '#tMbpGr',
+        animatepager: true,
+        infiniteLoop: false,
+        pagerSl:tMbpGrpRwpGr,
+        hideControlOnEnd: true,
+    });
+
+
+    $('.sTr-rT-rD').raty({
+        readOnly: true, 
+        score: 3.6, 
+        //precision: true,
+        //target    : '#rw0001',
+        //targetKeep: true,
+        size      : 16
+    });
+    $(document).ready(function() {
+        var width = $('#shopByPCatCont').width()-230;
+        $('#shopByPCat').find('.dropdown-menu').css({'width':width+'px','min-width':width+'px'});
+        var $dropdown = $('#shopByCat');
+        var $dropdownCh = $dropdown.parent().find('.hS-dRpDwN');
+        var $dropdownChF = $dropdownCh.first();
+        var activeOver = false;
+        $dropdown.on('click',function() {
+            $('body').toggleClass('eNoverlay');
+            $dropdownChF.addClass('hover');
+        });
+        $(document).on('click', function() {
+            if( this.id != 'shopByCat') {
+                $('body').removeClass('eNoverlay');
+            }
+        });
+        $dropdownCh.mouseover(function() {
+            if($dropdownChF.hasClass('hover')){
+                $dropdownChF.removeClass('hover');
+            }
+        });
+        $('#shopByPCat').mouseout(function() {
+            $dropdownChF.addClass('hover');
+        });
+
+    });
+</script>
+		
+
+
+</body>
+</html>

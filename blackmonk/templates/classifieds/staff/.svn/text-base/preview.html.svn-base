@@ -1,0 +1,160 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "classifieds" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Preview - Classifieds' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+	<div class="header-bar has-preview-head">
+        <h2 onclick="window.location.replace('{% url 'staff_classified_home' %}')" style="cursor:pointer;">Classifieds</h2>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+            	{% if classified.listing_type == 'F' %}
+        			<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+				{% else %}
+					{% if classified.listing_type == 'S' %}
+	        			<span class="list-type sponsored-item"><a class="tttxt" original-title="{% trans 'Item listed as sponsored' %}" href="javascript:void(0);">{% trans 'sponsored' %}</a></span>
+			 		{% endif %}
+				{% endif %}
+                <div class="item-title">
+                    <h1>{{ classified.title }}</h1>
+                    <p class="ltxt80">By <a href="{% url 'user_profile' classified.created_by.profile_slug %}">{{classified.created_by.get_full_name}}</a> <span class="divider12">|</span> {{classified.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+                <ul class="status-tabs group">
+                	<li>{{classified.most_viewed}}<span class="meta">{% trans 'views' %}</span></li>
+                    <!--li> <a href="#">4<span class="meta">{% trans 'comments' %}</span></a> </li-->
+                </ul>                                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="article-preview" class="preview-center group">
+                    <div class="preview-items">
+                        <div class="preview-group">  
+                        	<div class="preview-items-head">
+								{% if perms.classifieds.change_classifieds %}
+                                <div class="right-item"><div class="cform-button"><a href="{% url 'update_classified' classified.id %}"><span>{% trans 'Edit' %}</span></a></div></div>
+                            	{% endif %}
+								<h3 style="vertical-align:top">{% trans 'Classifieds Details' %}</h3>
+                            </div>            
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Name' %}</h4></div>
+                                <div class="value">{{ classified.title }}</div>
+                            </div> 
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Category' %}</h4></div>
+                                <div class="value">
+                                	{{ classified.category.parent }}&nbsp;&rarr;&nbsp;{{ classified.category }}
+								</div>
+                            </div> 
+							{% if classified.classified_price %}
+							<div class="preview-item price">
+                                <div class="label"><h4>{% trans 'Price' %}</h4></div>
+                                <div class="value">{{classified.classified_price}}</div>
+                            </div> 
+							{% endif %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Description' %}</h4></div>
+                                <div class="value">{% autoescape off %}{{ classified.description }}{% endautoescape %}</div>
+                            </div> 
+							{% if classified.address %}                                           
+                            <div class="preview-item address map">
+                                <div class="label"><h4>{% trans 'Address' %}</h4></div>
+                                <div class="value">
+									<div class="inline-block map-preview"  style="width: 190px; height: 150px;" id="map"></div>                                             
+                                	<div class="inline-block valign-top" style="width:324px;">
+										<div> 
+	                                        <span class="address-name"><strong>{{ classified.address.address1 }}</strong></span>                             
+	                                        <span class="address-details">{{classified.address.zip}}{% if classified.address.address2 %},{{ classified.address.address2 }}{% endif %}</span>                             
+	                                       	{% if classified.address.email %}<span class="address-number">Email: {{ classified.address.email }}</span>{% endif %} 
+											{% if classified.address.website %}<span class="address-number">Website: {{ classified.address.website }}</span>{% endif %} 
+										    {% if classified.address.telephone1 %}<span class="address-number">Phone: {{ classified.address.telephone1 }}</span>{% endif %} 
+											{% if classified.address.mobile %}<span class="address-number">Mobile: {{ classified.address.mobile }}</span>{% endif %}
+											{% if classified.address.city %}<span class="address-number">City: {{ classified.address.city }}{% if classified.address.zip %} - {{ classified.address.zip }}{% endif %}</span>{% endif %} 
+										</div> 
+									</div>   
+                                </div>
+                            </div>
+							{% endif %} 
+							{% if classified.get_attribute_values %}
+                            <div class="preview-item price">
+                                <div class="label"><h4>{% trans 'Attributes' %}</h4></div>
+                                <div class="value">
+                                	{% for cla_atr in classified.get_attribute_values %}
+									{% if cla_atr.value %}
+                                		<span>{{cla_atr.attribute}}&nbsp;&rarr;&nbsp;{{cla_atr.value}}</span>
+									{% endif %}
+									{% endfor %}
+								</div>
+                            </div> 
+							{% endif %}
+							{% if classified.album.get_gallery_uploaded_images %}  
+                                <div class="preview-item medias">
+                                    <div class="label"><h4>{% trans 'Photos' %}</h4></div>
+                                    <div class="value">
+                                        <div class="item-photos">
+                                            <ul class="fxslider">
+                                            	{% for photo in classified.album.get_gallery_uploaded_images %}
+                                                <li class="inline-block" data-src="{{photo.photo.url}}">
+                                                    <div class="photos-preview"><img src="{% thumbnail photo.photo 110x0 %}"><a class="icon-view preview-item" title="{% trans 'Large preview' %}" href="#"></a></div>
+                                                </li>
+												{% endfor %}
+                                            </ul>
+                                        </div>
+									</div>
+                                </div>
+							{% endif %} 
+							{% if classified.tags.all %}  
+                            <div class="preview-item tags">
+                                <div class="label"><h4>{% trans 'Tags' %}</h4></div>
+                                <div class="value">
+                                	<span class="note">{% for tag in classified.tags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+								</div>
+                            </div> 
+							{% endif %}                                                                                       
+                        </div>   
+                    </div>                                            
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+             {#% include 'classifieds/staff/faq.html' %#}         
+        </div>                            
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script src="{{STATIC_URL}}themes/js/fxslider.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ui/css/fxslider.css" />
+<script type="text/javascript">
+$(document).ready(function(){
+ $(".fxslider").fxslider();
+});
+</script>
+{% if classified.address %}
+	<script type="text/javascript">
+		var markers=[];
+		$(document).ready(function(){
+				var marker = new Object();
+				marker["lat"] = {{classified.address.lat}};
+				marker["lng"] = {{classified.address.lon}};
+				marker["zoom"] = {{classified.address.zoom}};
+				marker["name"] = "{{ classified.name }}";
+				marker["address"] = "{{ classified.address.address1|escape|linebreaks }}{{ classified.address.city }} - {{classified.address.zip }}";
+				markers.push(marker);
+			//load_multi_marker('map',{{ classified.biz_address.all.0.pointer_lat }}, {{classified.biz_address.all.0.pointer_lng }}, {{classified.biz_address.all.0.map_zoom }},markers)
+load_multi_marker('map',{{ classified.address.lat }}, {{classified.address.lon }}, {{classified.address.zoom }},markers);
+		});
+	</script>
+{% endif %}
+{% endblock %}

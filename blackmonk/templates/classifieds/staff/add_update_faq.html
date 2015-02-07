@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="section">
+		<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/1qSud3JD7RY5ybuy5vj2Es2lSQmb2Iuwcu8SpHlb5b1Y/edit#bookmark=id.xbw68qgdsuag" target="_blank"><span class="icon">?</span>Quick help</a><hr>
+       <h5>{% trans 'FAQs' %}</h5>
+       <h6>{% trans 'Classified Title' %}</h6>
+       <p>{% trans "Enter a short meaningful title. (This Title shows in the search results)" %}</p>
+       <hr>
+       <h6>{% trans "Choosing a Category" %}</h6>
+       <p>{% trans "Choose an appropriate category which is relevant to the product/service to post the Classified Ad." %}</p>
+	   	{% if user.is_superuser %}
+	       <p>{% trans "If you don't find the desired category, you can add in the " %}<a href="/admin/portal/classifieds/category" target="_blank">Admin CP</a></p>
+		{% endif %}
+		<hr>
+       <h6>{% trans "Classified Details" %}</h6>
+       <p>{% trans "Enter relevant classified details, attribute fields, description and tags." %}</p>
+	   <hr>
+       <h6>{% trans "Photos" %}</h6>
+       <p>{% trans "Upload photos of the product/service to educate the buyer to take a sneek peek for what you are selling." %}</p>
+	   <hr>
+	   <h6>{% trans "Contact Details" %}</h6>
+       <p>{% trans "Enter appropriate contact details of the poster which will be helpful for the end user to close the deal faster." %}</p>
+	   <hr>
+       <h6>{% trans "Promote Classified Ad" %}</h6>
+       <p>{% trans "Once you finish posting your Classified Ad you can promote the classified ad either as sponsored or featured listing to get genuine enquiries.See Plans" %}</p>
+	   <p>{% trans "Note: To update categories, attributes and SEO's Click on the Admin CP." %}</p>
+</div> 

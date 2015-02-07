@@ -1,0 +1,90 @@
+{% load i18n %}
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving ListingType' %}</p>
+</div>
+<div class="main_col" id="ajax_content">
+	<div id="add-new-category" class="modal-form" style="width:560px !important;">
+    <form name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="fields-head">
+                    <p class="ltxt80">{% trans 'Choose how would you like to promote your classified ad in the website.' %}.</p> 
+                </div>             
+                <div class="field text-field">
+                    <div class="label"><label>{% trans 'Listing Type' %}<span class="required-field">*</span></label></div>
+                    <div class="value">
+                    	<div class="fd-cols mrb0 pd50 group">
+                            {% for classified_price in classified_price_objects %}
+								<span class="pdr6"><label for="typeFeatured" id="l:typeFeatured"><input type="radio" value="{{classified_price.id}}" onclick="payment_option({{classified_price.id}})" name="listingtype" {% if forloop.first %}{% if not classified %}CHECKED{% endif %}{% endif %}{% ifequal classified.payment.id classified_price.id %}CHECKED{% endifequal%} id="{{classified_price.id}}">{{classified_price.level_label}}</label></span>
+							{% endfor %} 
+						</div> 
+						<div class="fd-cols mrb0 pd50 group" style="float:left;">
+						{% trans 'From' %} 
+							<input type="text" style="width:80px !important;" class="cat_price" name="listing_start_date" id="id_listing_start_date" class="tttxt" value="{{classified.listing_start_date|date:'Y-m-d'}}">
+						{% trans 'to' %} 
+							<input type="text" style="width:80px !important;" class="cat_price" name="listing_end_date" id="id_listing_end_date" class="tttxt" value="{{classified.listing_end_date|date:'Y-m-d'}}">
+						</div>
+						{% for classified_price in classified_price_objects %}
+							<div id="id_{{classified_price.id}}" class="payment_div" style="width:260px;padding:15px 0 0 10px;float:left;{% if classified %}{% ifnotequal classified.payment.id classified_price.id %}display:none;{% endifnotequal%}{% endif %}{% if not classified %}{% if not forloop.first %}display:none{% endif %}{% endif %}">
+								<h4 class="price_lrg">
+								{% if classified_price.level == 'level1' %}
+									{% if classified_price.level != 'level0' %}
+									<span class="rs mdm">{{globalsettings.currency}}</span>
+										{% if classified.category.parent.sp_price %}
+											<input type="text" style="width:200px !important;" class="cat_listing_price cat_price" name="price_{{classified_price.id}}" id="price_{{classified_price.id}}" class="tttxt" value="{% if classified.payment.id == classified_price.id  %}{{classified.price|floatformat:2}}{% else %}{{classified.category.parent.sp_price|floatformat:2}}{% endif %}">
+										{% else %}
+											<input type="text" style="width:200px !important;" class="cat_listing_price cat_price" name="price_{{classified_price.id}}" id="price_{{classified_price.id}}" class="tttxt">
+										{% endif %}
+									{% endif %}
+								{% else %}
+	                        		{% if classified_price.level != 'level0' %}
+									<span class="rs mdm">{{globalsettings.currency}}</span>
+										<input type="text" style="width:200px !important;"  class="cat_listing_price tttxt" name="price_{{classified_price.id}}" id="price_{{classified_price.id}}" value="{% if classified.payment.id == classified_price.id  %}{{classified.price|floatformat:2}}{% else %}{{classified_price.price|floatformat:2}}{% endif %}">
+		                    		{% endif %}
+								{% endif %}
+								</h4>
+							</div>
+						{% endfor %}<div class="clear"></div>  
+						<!--span class="tip" style="display:inline-block;">{% trans 'Choose how would you like to promote your classified ad in the website.' %}</span-->                                                             
+					</div>	
+                </div> 
+            </div>            
+		</div>    
+        <div class="modal-base form-submit group">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="save_listing_type({{classified.id}})"><span class="cform-button-text">{% trans 'Update' %}</span></button>
+		</div>           
+    </form>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+	<script type="text/javascript">
+		function payment_option(id){
+			$('.payment_div').hide();
+			$('#id_'+id).show();
+			$.colorbox.resize();
+		}
+	$(document).ready(function(){
+		if($("#id_listing_end_date").length){
+			$("#id_listing_end_date").datepicker({ dateFormat: "yy-mm-dd",minDate: new Date()});
+		}
+		if($("#id_listing_start_date").length){
+			$("#id_listing_start_date").datepicker({ dateFormat: "yy-mm-dd",minDate: new Date(),
+                onSelect: function(){
+                    enddate = $(this).val();
+                    splittedval = enddate.split('-');
+                    var date = new Date(splittedval[0], splittedval[1]-1, splittedval[2]);
+                    //date.setDate(date.getDate() + 1);
+                    $("#id_listing_end_date").datepicker( "option", "minDate", date );
+                }
+            });
+		}
+		$('.cat_listing_price').keyup(function(){
+			var flag=/^\d+(\.\d{0,2})?$/.test($(this).val());
+			if(flag){remove_error_class($(this));}
+			else{add_error_class($(this));}
+		});
+	});
+	</script>
+</div>

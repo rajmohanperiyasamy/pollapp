@@ -1,0 +1,58 @@
+{% load i18n %}
+<style>
+#add_events {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #D4E5F3;
+    border-color: #C0D9EC #C0D9EC #C0D9EC #ACCBE3;
+    border-style: solid;
+    border-width: 1px 1px 1px 2px;
+    height: 39px;
+    padding: 10px;
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    width: 160px;
+}
+#add_events a {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 16px;
+}
+#add_events a span {
+    color: #3F799E;
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    padding-top: 2px;
+}
+</style>
+<div id="search_events" class="module_search rel_block">
+<!-- form class="group" name="sform" method="post" action="javascript:void(0)" -->{% csrf_token %}
+        <label for="id_find">{% trans 'SEARCH' %}</label>
+        <span class="field_wrap search_ex">
+        	<input name="find" id="search_keyword" class="events_tips_input" tabindex="1" type="text" value="">
+			<em class="tips" id="events_tips" >{% trans 'Search bookmark..' %}</em>
+		</span>
+       	<label for="scategory">{% trans 'By category' %}</label>
+        <span class="field_wrap">
+			<select id="search_category" name="scategory" >
+            	<option value="" selected="selected">{% trans 'Select a Category' %}</option>
+			{% for cat in categories %}                            	
+				<option value="{{cat.slug}}">{{cat.name}}</option>
+			{% endfor %}	
+			</select>
+        </span>
+		<span class="btn_m_search">
+        	<button class="super large blue button single_submit" id="search_button" name="id_find" type="button" role='button'><span class="movie_search">{% trans 'Search' %}</span></button>
+		</span>
+	<div id="add_events">
+		<a href="/user/bookmarks/add/" style="font-size: 15px;">{% trans 'Add your Bookmarks' %}<span>{% trans ' Now, Its free!' %}</span></a>
+	</div>
+	<div class="clear"></div>
+<!-- /form -->
+<div class="clear"></div>
+</div>

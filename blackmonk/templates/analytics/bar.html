@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <style type="text/css">
+    	.chart-top-bar{width:700px;padding:10px;clear:both;font-family:Arial, Helvetica, sans-serif;height:40px;}
+		.chart-top-bar .chart-date-range{float:left;width:250px;}
+		.chart-top-bar .chart-date-range span{font-size:16px;color:#AAA}
+		.chart-top-bar .chart-date-range span strong{color:#222; font-size:14px;font-weight:normal}
+ 		.chart-top-navigation {float:right; width:350px;text-align:right;}
+		.chart-top-navigation a {color:#AAA;display:inline-block; font-size:12px;padding:0 2px;text-decoration:none;}
+		.chart-top-navigation a:hover{color:#666}
+		.chart-top-navigation a.active-chart{color:#000; font-weight:bold;cursor:default;}
+		
+		    </style>
+			  <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+  <fb:like></fb:like>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(BarChart);
+      function BarChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Modules', 'User', 'Staff'],
+			  {% for k,v in modules_staff.items %}
+			  
+							{%for a,b in modules_user.items %}
+									
+									{% if k == a %}
+				  			
+								          ['{{k}}',{{v}},{{b}}],
+										
+									{% endif %}
+										
+							{% endfor %}
+									
+				{% endfor %}		  
+          
+		  ]);
+
+        var options = {
+			width: 732,
+			height: 300,
+          title: 'date',
+		  colors: [ '#b7d968'],
+		  hAxis:{baselineColor:'red'},
+		  hAxis:{
+		  	textPosition:'in',
+			textStyle:'arial', 
+			fontSize: "10"
+			},
+          vAxis: {
+		  	title: 'Post',
+			titleTextPosition:'in',
+			baselineColor: "#999",
+		  	titleTextStyle: {
+		  		color: '#BEBEBE',
+				font:10
+		  	},
+		  	gridlines: {
+		  		color: "#ECECEC",
+		  		count: "6",
+				style:'dotted',
+		  	}
+		  },
+		 legend: {
+		 	position: 'bottom',
+		 	legendTextStyle:{fontSize: 10}
+			}
+					
+        };
+		
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('Content_charts'));
+        chart.draw(data, options);
+      }
+      	
+    </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the bar chart-->
+	<div class="chart-top-bar">
+		<div class="chart-date-range">
+			<span><strong>Apr 21, 2012</strong> - <strong>May 20, 2012</strong></span>
+		</div>
+		<div class="chart-top-navigation">
+	      
+	      <a href="#" id="Content_charts" class="">monthly</a>
+	    </div>			 
+	</div>			 
+    <div id="Bar_chart"></div>
+    <!--Div that will hold the pie chart-->
+    <div id="Pie_chart" align="center">{% for m,n in modules_staff.items %}
+	{{m}}
+	{{n}}
+	{% endfor %}</div>
+	<div> <script type="text/javascript">
+		//var l=0;
+		//for(l=0;l<=9;l++)
+		//document.write(pos[l]);
+		
+	</script></div>
+	<label></label>
+  </body>
+</html>

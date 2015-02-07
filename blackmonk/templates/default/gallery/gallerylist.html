@@ -1,0 +1,96 @@
+{% extends base %}
+{% load tabs %}
+{% load truncate_filter %}
+{% load thumbnail %}
+{% load i18n %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Photos' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Photos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/gallery.css">
+ 	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/gallery_slider.css">
+	<script type="text/javascript" src="{{STATIC_URL}}js/gallery/gallery.js"></script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "photos" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+            <div class="main_wraper">
+			{% include 'default/gallery/gallery-search.html' %}
+                <div class="group">                                        
+                    <div class="col_11"> 
+                    	<div id="galleries" class="thick_box">
+                            <div class="thick_box_core mod_article group">                    
+                                <div class="mod_gallery group">
+								    <div class="clear"></div> 
+								    <div class="gallery_box group pb_0">
+									   <div id ="as_photos_content"><!-- the whole photo content begin -->
+										    <div id="gallery_extras" class="col_2 mr_0">
+	                                            <div id="gallery_categories">
+	                                                <h3>{% trans 'Categories' %}</h3>
+	                                                <ul id="">
+	                                            		<li id='all' onclick="window.location.replace('{% url 'gallery_all' 'all' %}')" {% if not acat %}class="selected"{% endif %}><a href="{% url 'gallery_all' 'all' %}" name="0">{% trans 'All' %}</a></li>
+														{% for cat in photocategory %}
+                                                        {% if cat.is_editable %}
+	                                            		<li id="{{ cat.slug }}" onclick="window.location.replace('{% url 'gallery_listing' cat.slug %}')" {% if cat.id == acat.id %}class="selected"{% endif %}><a href="{{cat.get_absolute_url}}" name="{{ cat.id }}">{{ cat.name }}</a></li>
+                                                        {% endif %}
+														{% endfor %}
+	                                        	   </ul>
+	                                            </div>                                    
+	                                        </div> 
+                                        <!-- photos content begin -->
+										<center><span id="ajax_content_loading" class="load-list-items" style="display:none">
+										 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+										</span></center>
+										<div id="as_gallery_thumbnails" class="gallery_col rel_block">
+											{% include 'default/gallery/ajax_home_photos.html' %}
+										</div>
+										<!-- photos content end -->
+									<div class="clear"></div>
+									</div><!-- the whole photo content end -->
+									</div>
+                               </div><!-- /mod_gallery -->
+							</div>                                
+						</div>                            
+					</div> 
+                    <div class="secondary">
+	                    <div id="banner_placement_right"></div><!-- Banner Placement -->
+	                    <div class="mod_tagcloud">
+	                        <h2 class="section_title">{% trans 'Most popular tags' %}</h2>
+	                        <div id="tagcloud">
+	                        {% for tag in tags %}
+		                        <a href="/photos/all/?tag={{ tag.id }}" class="{% cycle 'cloud_0' 'cloud_1' 'cloud_5' 'cloud_6' 'cloud_4' 'cloud_3' 'cloud_2' 'cloud_4' %}" rel="tag" style="font-size: {{ tag.font_size }}px;" title="{{tag.tag}}">{{tag.tag}}</a> 
+		                    {% endfor %}      
+	                        
+							</div>
+	                  <!--   <p class="more_link"><a href="#">See all tags</a></p>  -->
+	                    </div> <!-- /mod_tagcloud -->
+						<!-- Facebook likebox starts -->
+                        {% include 'default/likebox.html' %}
+						<!-- Facebook likebox ends -->
+                    </div><!-- /secondary -->
+				</div>                    
+			</div>
+
+            <div class="clear"></div>
+<script type="text/javascript">
+	var featured_list = [];
+	var featured_link = [];
+	var featured_list_title = [];
+	var featured_list_summary = [];
+	{% for p in featured_photos %}
+		featured_list[{{ forloop.counter0 }}] = "{% if p.photo %}{% thumbnail p.photo 672x0 %}{% else %}{{p.get_large_image}}{% endif %}";
+		featured_link[{{ forloop.counter0 }}] = '{{ p.get_absolute_url }}';
+		featured_list_title[{{ forloop.counter0 }}] = "{{ p.album.title }}";
+		featured_list_summary[{{ forloop.counter0 }}] = "{{ p.album.summary|truncatewords:25 }}";
+	{% endfor %}
+	
+	var featured_list_point = 0;
+	var featured_list_length = featured_list.length;
+	
+</script>  
+{% endblock %}

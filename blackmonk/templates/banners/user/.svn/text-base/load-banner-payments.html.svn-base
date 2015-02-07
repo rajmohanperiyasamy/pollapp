@@ -1,0 +1,22 @@
+<!-- Hidden Inputs -->
+<input type="hidden" id="id_total_amount" name="total_amount" value="{% if banner_obj.total_amount %}{{banner_obj.total_amount}}{% elif total_amount %}{{total_amount}}{% else %}0{% endif %}">
+<input type="hidden" name="total_impression" id="id_total_impression" value="{% if banner_obj.impressions %}{{banner_obj.impressions}}{% elif total_impression %}{{total_impression}}{% else %}0{% endif %}">
+<!-- Hidden Inputs -->
+{% if selected_zone %}
+<label class="control-label" >Payment Price :<em class="cLr-rEd">*</em></label>
+        {% for bp in banner_payments %} 
+        {% if selected_zone.get_slot_display == bp.level %}
+<input type="hidden" name="payment" id="id_paymente" value="{{bp.id}}">
+<div class="controls error" style="display:block;">
+            <span class="label has-fd-icon">{{bp.level}} Banner : </span>    
+            <span class="inline-block">{{globalsettings.currency}} {{bp.price_impressions}} per {{bp.impressions}} impressions</span>
+                <span style="margin-left: 10px;" class="inline-block">
+				<input type="text" class="iSp8 {% if banner_obj %}bm_faded{% endif %}" maxlength="8" placeholder="Impressions" name="n_impressions" id="n_impressions" value="{% if banner_obj %}{{banner_obj.impressions}}{% elif bp.impressions %}{{bp.impressions}}{% else %}0{% endif %}" onkeyup="calculate_total_price($(this).val(),'{{bp.price_impressions}}','{{bp.impressions}}');">
+                {% if banner_obj %}<a class="btn btn-link" title="Click here to update impressions" a href="javascript:void(0);" id ="enable_edit" onclick="enable_impression();"><i class="bUi-iCn-rVeW-12 ib" aria-hidden="true"></i></a>{% endif %}</span>
+        <div class="value" style="margin-top: 10px;">
+            <span class="inline-block"><strong>Total price :</strong><span id="bnr_total_span" xclass="bnr_total_span"> {{globalsettings.currency}} {% if banner_obj.total_amount %}{{banner_obj.total_amount}}{% elif bp.price_impressions %}{{bp.price_impressions}}{% else %}0{% endif %}</span></span>
+        </div>  
+</div>
+{% endif %}
+      {% endfor %}         
+{% endif %}

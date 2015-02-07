@@ -1,0 +1,161 @@
+{% extends "staff_base.html" %}
+{% load modulotag %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "locality" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Edit Location{% endblock %}
+{% block head %}
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ globalsettings.google_map_key }}" type="text/javascript"></script>
+<script type="text/javascript">
+    //<![CDATA[
+
+    var iconPink = new GIcon(); 
+    iconPink.image = '{{ STATIC_URL }}images/map/marker_pink.png';
+    iconPink.shadow = '{{ STATIC_URL }}images/map/shadow.png';
+    iconPink.iconSize = new GSize(20, 34);
+    iconPink.shadowSize = new GSize(37, 34);
+    iconPink.iconAnchor = new GPoint(9, 34);
+    iconPink.infoWindowAnchor = new GPoint(5, 1);
+
+    var iconGreen = new GIcon(); 
+    iconGreen.image = '{{ STATIC_URL }}images/map/marker_green.png';
+    iconGreen.shadow = '{{ STATIC_URL }}images/map/shadow.png';
+    iconGreen.iconSize = new GSize(20, 34);
+    iconGreen.shadowSize = new GSize(37, 34);
+    iconGreen.iconAnchor = new GPoint(9, 34);
+    iconGreen.infoWindowAnchor = new GPoint(5, 1);
+
+    var customIcons = [];
+    customIcons["pink"] = iconPink;
+    customIcons["green"] = iconGreen;
+    
+    var opt  
+	opt = {}
+	opt.draggable = true  
+	opt.clickable = true  
+	opt.dragCrossMove = true 
+
+	var marker;
+	var map;
+	function load(lat,lng,zoom,type,name,address,locality) {
+		if (GBrowserIsCompatible()) {
+			map = new GMap2(document.getElementById("map"));
+			map.addControl(new GSmallMapControl());
+			map.addControl(new GMapTypeControl());
+			map.setCenter(new GLatLng(lat,lng), zoom);
+	
+			var point = new GLatLng(lat, lng);
+			marker = createMarker(point, name, address, type);
+			map.addOverlay(marker);
+		}
+    }
+
+    function createMarker(point, name, address, type) {
+    	opt.icon = customIcons[type]
+		var marker = new GMarker(point, opt);
+		var html = "<b>" + name + "</b> <br/>" + address;
+		GEvent.addListener(marker, 'click', function() {
+			marker.openInfoWindowHtml(html);
+		});
+		return marker;
+    }
+    //]]>
+</script>
+<script type="text/javascript">
+	function addlocation(){
+		window.document.mform.lat_lng.value = marker.getPoint();
+		window.document.mform.zoom.value = map.getZoom();
+		return true;
+	}
+</script>
+{% endblock %}
+{% block content %}
+			<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="/staff/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff Home</a></li>
+                        <li><a href="/staff/locality/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Locality</a></li>
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Add Locality</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="float:left; display:block;width:300px; margin:0; padding-left:10px; line-height:normal">Add Locality</h2>           
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                    	<li><a href="/staff/locality/" class="side_menu">Locality Home</a></li
+						<li><a href="/staff/locality/add/" class="side_menu on">Add new Locality</a></li>                        
+                    </ul>                    
+                </div> 	
+			<div class="main_col">
+				{% if message %}
+					<div style="clear:both;"></div>
+					 <div class="message">{{ message }}</div>
+				{% endif %}
+				{% if form.errors %}
+					<div class="messageerror" >
+						<span style="font-size:1.2em;font-weight:250;"><strong>There is a problem with your submission</strong></span>
+	                    <ul>
+	           			 {% for field in form %}
+	           			 	{% if field.errors%}
+	           	            	<li>
+	           	            	{%for error in field.errors%}
+	           	            		{{error}}
+	               	            {%endfor%}
+								</li>
+	       	             {% endif %}
+	          	 		 {% endfor %}
+						</ul>
+	 		 		 		 </div>
+				{% endif %}
+				<div id="formContainer" class="add_cat clearfix"> 
+					<form action="/staff/locality/edit/?lid={{ locality.id }}" name="mform" id="mform" method="post" class="add_category" onsubmit="return addlocation()">
+						<input type="hidden" name="lat_lng" value=""/>
+						<input type="hidden" name="zoom" value=""/>
+						<fieldset id="venue-info" style="padding:0; margin-top:10px">
+                    		<div class="title"><h2>Locality info </h2></div>
+							<div id="map" style="width: 540px; height: 150px; margin-bottom:20px; position: relative; background-color: rgb(229, 227, 223);"></div>
+                    		<div style="text-align:right; margin-top:-20px;"><a href="#">View Large Map</a></div>
+                    		<br/>
+                   			<dl class="horizontal">
+			    		  		<dt><label for="id_venue"><strong>Locality Name </strong></label></dt>
+                      			<dd id="jaxtag">
+                      				{{ form.name }}
+                      				<em></em>
+               			  		</dd>
+                       			
+                       			<dt><label for="id_zip"><strong>Postal Code</strong></label></dt>
+                      			<dd>
+                      				{{ form.zipcodes }}
+                      			</dd>
+								
+                      			<dt><label for="city"><strong>City/Town</strong></label></dt>
+                      			<dd>
+                      				{{ form.city }}
+                          		</dd>
+
+                                <dt>&nbsp;</dt>
+                                <dd>
+                                	<div class="buttons" style="padding-top: 10px;"><input class="inputsubmit on" id="" name="" value="Submit" type="submit"> <input class="inputsubmit off" id="" name="" value="Cancel" type="submit"></div>
+								</dd>
+							</dl>
+						</fieldset>                              
+					</form>
+                </div>
+
+			</div> 
+            <hr />
+		</div>
+<script type="text/javascript">
+{% if locality.latitude %}
+load({{ locality.latitude }}, {{ locality.longitude}}, {{ locality.zoom }},'green','{{ locality.name }}',"select the location",'{{ locality.city.name }}')
+{% else %}
+load({{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},"green","{{ globalsettings.city }}","select the location","{{ globalsettings.city }}");
+{% endif %}
+</script>
+{% endblock %}

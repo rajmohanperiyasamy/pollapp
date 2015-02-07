@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load comparison %}
+{% load modulotag %}
+
+<div class="col_11 bm_dev_hotel_content" id="hotel_photos_content" style="display:none;">
+<ul class="accordian9 group">
+    <li id="bsns_photos" class="acdn_row">
+        <div class="acdn_content photo_gallery" style="display:block;padding:0px;">
+            <div id="display_pic" class="rel_block">
+				<div class="loader_32" style="opacity:0.7"></div>       
+                <a href="javascript:void(0)" class="large_pic_prev hide_thumb " id="top_prev" ><span class="prev_btn_block" style="_display:block"></span></a>
+                    <div id="full_img_block">
+                        <img alt="{{hotel.hotel_images.all.0.caption}}" class="attachment-original" src="{{ hotel.hotel_images.all.0.image_big}}" id="full_img">
+                    </div>                                                        
+                <a href="javascript:void(0)" class="large_pic_next hide_thumb" id="top_next"><span class="next_btn_block" style="_display:block"></span></a>
+            </div>
+			<input type = "hidden" value = "yes" id = "as_load_hack" />
+			<div id="pg_slider" class="group">
+                <div class="slider_mask">
+                    <ul class="page" id = "slider_thumb">
+						<!-- Carousel begin  -->
+						<div id="galleryc" class="stepcarousel" style="overflow:hidden;">
+						<div class="belt">
+
+                        {% for image in hotel.hotel_images.all %}
+						{%ifmodulo forloop.counter 7 1 %}
+						<div class="panel">
+						{% endifmodulo %}	
+						<li
+						{% if forloop.first %}class="active_li first_li" {% endif %}
+						{% if forloop.last %} class="last_li"{% endif %}
+						{%ifmodulo forloop.counter 7 1 %}{% if forloop.last %}  id="div_fst_li" {% else %} class="div_fst_li" {% endif %} {% endifmodulo %}
+						{%ifmodulo forloop.counter 7 0 %} class="div_lst_li" {% endifmodulo %}
+						><a href="javascript:void(0)" {% if forloop.first %}class="selected"{% endif %}>
+
+							<img src="{{image.image_thumbnail}}"  datasrc="{{image.image_big}}" alt="{{image.caption|title}}" height="75" width="75">
+						
+						</a></li>
+						
+						{% if forloop.last %}									
+						</div>
+						{% else %}
+							{%ifmodulo forloop.counter 7 0 %}									
+							</div>
+							{% endifmodulo %}
+						{% endif %}						
+						{% endfor %}
+						
+						</div>
+						</div>
+                   
+				    </ul>
+                </div>
+
+                <a class="gth_slider_prev" href="javascript:stepcarousel.stepBy('galleryc', -1)">&lt;</a>
+				<a class="gth_slider_next inactive" href="javascript:stepcarousel.stepBy('galleryc', 1)">&gt;</a>
+            
+			</div> <!-- /slider -->                                        
+        </div>
+        <!--p class="more_link99"><a href="javascript:void(0)">More</a></p--> 
+    </li>                                                         
+</ul>            
+</div><!--/call_11-->

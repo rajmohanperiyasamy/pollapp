@@ -1,0 +1,217 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Events' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Events' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "article" %}
+	{#{ block.super }#}
+{% endblock %}
+
+{% block alertbar %}
+	<div class="alert alert-info pD0 mRt-30">
+		<div class="container-fluid">
+			<div class="pD100 cLrFx">
+				<p class="ib fS14 fW-bLd mRb0 mRt4">This is how listing looks like.</p>
+				<div class="pLrT">
+					<a href="{% url 'events_addevent' %}?eid={{event.id}}" class="btn btn-light fS12 fW-bLd mRl5"><i class="bUi-iCn-rVeW-12 mRr5" aria-hidden="true"></i> Edit</a>
+					<a href="{% url 'events_dash_board' %}" class="btn btn-light fS12 fW-bLd mRl5"><i class="bUi-iCn-dSbB-16 fS12 mRr5" aria-hidden="true"></i> Content Manager</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block content %}
+			<div class="main span8">
+                <div class="fTrD-bL bNr mDa-35 aDpTv tXt-oTsD">
+                    <div class="fTrD-bL-iN bM-bX oFl">
+                        <div class="fTrD-iTmS">
+                            <div class="fTrD-iTm oFl">
+                                <figure class="fTrD-mDa">
+                                    <div class="fTrD-mDa-hVr">
+                                        <div class="tR"></div>
+                                        <div class="fTrD-mDa-hVr-tXt hide">
+                                            <h2 class="fTrD-hD">{{event.title}}</h2>
+                                        </div>
+                                    </div>
+                                    <span class="bUi-tMb-wPr fLxiMgW" href="#">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="{% thumbnail event.album.album_photos.all.0.photo 900x0 %}" title="{{event.title}}" alt="{{event.title}}">
+                                                        <span class="vRtL-aLn">
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </figure>
+                                <!-- /.TrD-mDa -->
+                                <div class="fTrD-tXt">
+                                    <div class="fTrD-tXt-iN pD15">
+                                        <h3 class="fTrD-hD cLr-bLk">{{event.title}}</h3>
+                                        {% if event.payment.share_buttons == 'Y' %}
+                                            {% with event as object %}
+                                                <div class="pStN-rB sHr">
+                                                    {% include 'default/social-share-links.html' %}
+                                                </div>
+                                            {% endwith %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!-- /.TrD-tXt -->                                       
+                            </div>
+                        </div>
+                        <!-- /.fTrD-iTms --> 
+                    </div>
+                    <!-- /.fTrD-bL-iN --> 
+                </div>
+                <!-- /.fTrD-bL -->
+                <div class="row-fluid mRb30">
+                    <div class="span7">
+                        <section class="sCn">
+                            <div class="sCn-tTl">
+                                <h4><span>Details</span></h4>
+                            </div>
+                            <div class="dTs-cRd">
+                                <ul class="iCnC-lSt iCn12 mRb20 iCn-gRy">
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-cLdR-12"></i>
+                                        <p class="iCnC-dL"><span class="cLr-dRk">{{event.start_date|ds_site_dateformat}}{% if event.start_date != event.end_date %}{% if not event.is_reoccuring %} - {{event.end_date|ds_site_dateformat}}{% endif %}{% endif %}</span> {% if event.start_time %}<span class="cLr-gRy sPrTr">{{event.start_time|ds_site_timeformat}}{% endif %}{% if event.end_time %} - {{event.end_time|ds_site_timeformat}}{% endif %}</span>                                                 
+                                    </li>
+                                    {% if event.venue %}
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i>
+                                        <p class="iCnC-dL"><span><a href="{% url 'events_view_venue_event' event.venue.slug %}" class="cLr-dRk">{{event.venue}}</a></span> <span class="cLr-dRk">{{event.venue.address1}}{% if event.venue.address2%}, {{event.venue.address2}}{% endif %}</span></p>
+                                    </li>
+									{% endif %}
+                                    {% if event.phone %}
+                                    <li class="iCnC-lSt-iTm">
+                                        <i class="bUi-iCn-cAl-12"></i>
+                                        <p class="iCnC-dL"><span class="cLr-dRk">{{event.phone}}</span><!--span class="cLr-dRk sPrTr">+44 1732 851442</span--></p>
+                                    </li>
+                                    {% endif %}
+                                    {% if event.payment.social_media == 'Y' %}
+                                    {% if event.event_website or event.facebook or event.googleplus %}
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-gLb-12"></i>
+                                        <p class="iCnC-dL">{% if event.event_website %}<span><a href="{{event.event_website}}" target="_blank" class="cLr-dRk">{{event.event_website}}</a></span>{% endif %}{% if event.facebook %}<span class="sPrTr"><a href="{{event.facebook}}" target="_blank" class="cLr-dRk">Facebook</a></span>{% endif %}{% if event.googleplus %}<span class="sPrTr"><a href="{{event.googleplus}}"  target="_blank" class="cLr-dRk">Google+</a></span>{% endif %}</p>
+                                    </li>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% if event.tkt_prize %}
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-tKt-16"></i>
+                                        <p class="iCnC-dL"><span class="cLr-dRk">{% trans 'Cost' %} <strong>{% if event.tkt_prize == 'FREE' %}{% trans 'Free' %}{% else %}{{globalsettings.currency}}{{ event.tkt_prize }}{% endif %}</strong></span></p>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                                {% if event.payment.ticket_info == 'Y' and event.ticket_site %}<div class="mRb30" style="margin-left:22px;"><a href="{{event.ticket_site}}" class="btn btn-success" target="_blank">Buy Tickets <i aria-hidden="true" class="bUi-iCn-eXtL-lK-12"></i></a></div>{% endif %}
+                                <div class="mP-wPr oTsT-hRz mRb20">
+                                    <div class="mP-iN">
+                                        <img class="Rlb" src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.venue.lat }},{{ event.venue.lon }}&zoom={{ event.venue.zoom }}&size=438x86&markers={{ event.venue.lat }},{{ event.venue.lon }}&sensor=false" style="width:100%;">
+                                        <div class="mP-aCtN">
+                                            <a href="javascript:void(0);" title="{% trans 'Directions' %}" onclick="init_get_direction('{{event.venue.id}}','{{event.id}}','events','{% url 'locality_map_ajax_get_direction' %}');"  role="button" class="btn btn-large btn-light"><i aria-hidden="true" class="bUi-iCn-dRt-16"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mRb20">
+                                    <h5 class="cLr-bLk">{% trans 'Description' %}</h5>
+                                    {% if event.event_description|length|get_digit:"-1" > 320 %} 
+                                        <div class="dSc sMl cLr-dRk" id="less_synopsis">
+                                            {% autoescape off %}{{ event.event_description|truncatechars:321 }}{% endautoescape %}<a onclick="show_toggle()" href="javascript:void(0)">{% trans 'More' %}</a>
+                                        </div>
+                                        <div class="dSc sMl cLr-dRk" id="more_synopsis" style="display:none;">
+                                            {% autoescape off %}{% spaceless %}{{ event.event_description|rstrip_cont }}{% endspaceless %}{% endautoescape %}<a onclick="show_toggle()" href="javascript:void(0)">{% trans 'Less' %}</a>
+                                        </div>
+                                    {% else %}
+                                        <div class="dSc sMl cLr-dRk" id="all_synopsis">
+                                            {% autoescape off %}{{ event.event_description }}{% endautoescape %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% if event.tags.all %}<div class="tGs"><p><em class="">{% trans 'TAGS: ' %}</em> {% for tag in event.tags.all %}<a href="#" rel="tag">{{tag.tag}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p></div>{% endif %}
+                            </div>
+                        </section>
+                    </div>
+                    <div class="span5">
+                        <section class="sCn pDb0 rSvP">
+                            {% if event.check_occured %}
+                                <div class="sCn-tTl">
+                                    <h4><span>{% trans 'Did you go?' %}</span></h4>
+                                </div>
+                                <div class="mRb20 clearfix" id="id_rsvp_list">
+                                    <button class="btn btn-primary" data-value="Y" type="button">{% trans 'Yes' %}</button>
+                                    <!--button class="btn btn-primary" data-value="M" type="button">{% trans "Don't Remember" %}</button-->
+                                    <button class="btn btn-primary" data-value="N" type="button">{% trans 'No' %}</button>
+                                </div>
+                                <ul class="iCnC-lSt mRb0 oTsT-hRz">
+                                    <li class="iCnC-lSt-iTm">
+                                        <span class="gSt-cNt" id="id_rsvp_going_count"></span> {% trans 'Went' %}
+                                    </li>
+                                    <!--li class="iCnC-lSt-iTm">
+                                        <span class="gSt-cNt">28</span> {% trans "Didn't Go" %}
+                                    </li-->
+                                </ul>
+                             {% else %}
+                                   <div class="sCn-tTl">
+                                    <h4><span>{% trans 'Are you going?' %}</span></h4>
+                                </div>
+                                <div class="mRb20 clearfix" id="id_rsvp_list">
+                                    <button class="btn btn-primary" data-value="Y" type="button">{% trans 'Yes' %}</button>
+                                    <button class="btn btn-primary" data-value="M" type="button">{% trans 'Maybe' %}</button>
+                                    <button class="btn btn-primary" data-value="N" type="button">{% trans 'No' %}</button>
+                                </div>
+                                <ul class="iCnC-lSt mRb0 oTsT-hRz">
+                                    <li class="iCnC-lSt-iTm">
+                                        <span class="gSt-cNt" id="id_rsvp_going_count"></span> Going
+                                    </li>
+                                    <li class="iCnC-lSt-iTm">
+                                        <span class="gSt-cNt" id="id_rsvp_mb_count"></span> Maybe
+                                    </li>
+                                </ul>
+                              {% endif %}
+                              <input type="hidden" id="id_selected_rsvp_status" value="">
+                        </section>
+                        {% if event.payment.images == 'Y' and event.get_photo_gallery %}    
+                        <section class="sCn">
+                            <div class="sCn-tTl">
+                                <h4><span>{% trans 'Photos' %}</span> <a href="#1" class="tXt-lNk rGhT">View all photos ({{event.get_photo_gallery.count}})</a></h4>
+                            </div>
+                            <ul class="tMbS tHcL mRb0 pDfX">
+                                {% for img in event.album.album_photos.all %}
+                                <li>
+                                    <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox" href="{{img.photo.url}}">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="{% thumbnail img.photo 0x120 %}" alt="{{event.title}}">
+                                                        <span class="vRtL-aLn">
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </li>
+                               {% endfor %}
+                            </ul>
+                        </section>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Comment Code -->
+            </div>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>  
+<script type="text/javascript" src="{{STATIC_URL}}js/locality/global-map-location.js"></script>
+{% endblock %}

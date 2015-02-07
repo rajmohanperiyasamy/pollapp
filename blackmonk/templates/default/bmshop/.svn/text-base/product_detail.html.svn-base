@@ -1,0 +1,388 @@
+{% extends base %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load i18n %}
+{% load tabs %}
+{% load currency %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% block pagetitle %}{% seo_format_tag module='Shop' title=product_obj.meta_title code='DT' category=category.name as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{ product_obj.meta_description }}" />
+{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/store.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+	{% include 'default/bmshop/include_search.html' %}	
+<div id="product_view" class="page_wraper">
+    <div class="group product_detail_wrap" style="min-height:530px;">
+		<div class="mrl_0" id="breadcrumbs"><a href="{%url 'bmshop_product_home'%}">{% trans 'Home' %}</a>{% for categories in product_obj.get_category %}{% if categories.get_parent %}&nbsp;»&nbsp;<a href="{{categories.get_parent.get_absolute_url}}">{{categories.get_parent.name}}</a>&nbsp;»&nbsp;<a href="{{categories.get_absolute_url}}">{{categories.name}}</a>{%else%}&nbsp;»&nbsp;<a href="{{categories.get_absolute_url}}">{{categories.name}}</a>{%endif%}{%endfor%}&nbsp;»&nbsp;<span class="here">{{product_obj.name}}</span></div>
+        <div id="other_views">
+        	<div class="product_image_carousel_container">
+                <ul id="product_view_slider" class="product_image_carousel">
+                    {%for photo in product_obj.get_all_photos%}  
+					<li class="items">    
+                        <a href='javascript:void(0)' class='cloud-zoom-gallery' title='{{product_obj.name}}'
+                           rel="useZoom: 'zoom1', smallImage: '{% thumbnail photo.photo 400x0 %}' ">
+                          <img src="{% thumbnail photo.photo 400x0 crop %}" alt = "{{product_obj.name}}"/></a>
+					</li>
+					{%endfor%}
+                </ul>
+            </div>
+            <div class="counter"><span class="current">1</span> of 4</div>
+		</div>                                                          
+                           
+		<div id="product_image">
+            <a href='{{ product_obj.get_cover_image_user.url  }}' class = 'cloud-zoom' id='zoom1'
+                rel="adjustX: 10, adjustY:-4, softFocus:true">
+                <img style="max-height:350px" src="{%if product_obj.get_cover_image_user%}{% thumbnail product_obj.get_cover_image_user 400x0 %}{%endif%}" alt='' align="left" title="{{product_obj.name}}" />
+            </a>
+		</div>
+        <div id="product_detail" class="group">
+            <div id="page_actions" class="group">
+                <span onclick = "location.replace('{% url 'bmshop_user_add_wish_list' product_obj.slug %}');" class="item_fav clicked">
+                    <span class="fav_icon"></span>
+                    <em class="fav_count">{% if message %}{{ message }}{% else %}Add to Wishlist{% endif %}</em>
+                </span><!-- / Fave Button \ -->
+                <div class="item_share share_buttons">
+                    <div class="share_button" onclick="$('.social_list_wrapper').hide();$('#id_social_share_top35').fadeIn(400);FB.XFBML.parse();"><span class="share_icon"></span> Share</div>
+                    <div id="id_social_share_top35" class="social_list_wrapper" style="display:none">
+                        <div class="social_button_list social_wrap">
+	                            <a 
+	                                href="http://pinterest.com/pin/create/button/?url={{globalsettings.website_url}}{{product_obj.get_absolute_url}}&media={% if product_obj.get_cover_image_user %}{% thumbnail product_obj.get_cover_image_user 400x0 %}{% endif %}&description={{product.description|safe|truncate_chars:500}}" 
+	                                class="pin-it-button"
+	                                count-layout="none"><img border="0" src="http://assets.pinterest.com/images/PinExt.png" title="Pin It" /></a>
+	                            <a
+	                                href="https://twitter.com/share"
+	                                class="twitter-share-button"
+	                                data-url="{{globalsettings.website_url}}{{product_obj.get_absolute_url}}"
+	                                data-text="{{product.title}}"
+	                                data-count="none"
+	                                data-via="designstaff"></a>
+	                            <g:plusone
+	                                class="google-plus-button"
+	                                size="medium"
+	                                annotation="none"
+	                                href="{{globalsettings.website_url}}{{product_obj.get_absolute_url}}"></g:plusone>
+	                            <div
+	                                class="fb-like"
+	                                data-href="{{globalsettings.website_url}}{{product_obj.get_absolute_url}}"
+	                                data-send="false"
+	                                data-width="80"
+	                                data-show-faces="false"
+	                                data-layout="button_count"
+	                                data-font="arial"></div>
+                        </div>
+                    </div>                                                                
+                </div><!-- / Share Buttons \ -->
+                <!--span class="item_email">
+                    <span class="email_icon"></span>
+                    <em>e-mail</em>
+                </span--><!-- / Fave Button \ -->                                
+            </div> <!-- / Page Actions \ --> 
+        	<h2 class="brand_name">{{product_obj.name}}</h2>
+            <div class="product_pricing">
+                <div class="price">
+                    <!--div class="standard_price">$155</div -->
+                    <div class="discount_price">
+                        <div class="sales_price">{%if product_obj.get_base_price%}<em style="font-weight: normal; padding-right: 10px; font-size: 13px;">{{globalsettings.currency}}{{product_obj.get_base_price|floatformat:2}}</em>{%endif%}<div class="standard_price"> {{globalsettings.currency}}{{product_obj.for_sale_price|floatformat:2}}</div></div>
+                    </div>                                                        
+                </div>  
+            </div>
+			<span style="display: block; font-size: 11px; font-weight: normal; color: rgb(170, 170, 170);">{%ifequal product_obj.tax_calculator 'PIT'%}(Prices inclusive of taxes){%else%}(Prices exclusive of taxes){%endifequal%}</span>
+			<div class="{%if product_obj.get_product_stock%}in_stock{%else%}out_of_stock{%endif%}">
+                  <p class="info">{%if product_obj.get_product_stock%}Avaliable{%else%}Out Of Stock{%endif%}</p>
+                  {%if product_obj.get_product_stock%}
+				  	{%if product_obj.deliverable%}
+						{%if product_obj.manual_delivery_time%}
+							<p>Delivered in {{product_obj.delivery_time.min_unit}}-{{product_obj.delivery_time.max_unit}} business {{product_obj.delivery_time.get_unit_display}}.</p>
+						{%else%}
+				  			
+						{%endif%}
+					{%endif%}
+				  {%endif%}
+			</div>
+			{%if product_obj.for_sale%}
+			<div id="buy_product">
+                <div class="cart_options group">
+					<div class="add_cart_wrap group">
+                        <div class="buy_now">
+                        	<input type="hidden" name="quantity" id="id_guantity" value="1">
+							<input type="hidden" name="product" id="id_product" value="{{product_obj.id}}">
+                            <button class="buy_now button uc black" name="buy_now" id="add_bag_button" type="button"><span class="icon_plus"></span>ADD TO BAG</button>
+							<span id="ajax_state_loading" class="loading-stats" style="vertical-align: text-top; margin-left: 5px; display: none;"><img align="..." src="{{STATIC_URL}}ui/images/global/loading-s.gif"></span>
+                        </div>
+                    </div>
+				</div>
+            </div>
+			{%endif%}
+            <div class="entry ">
+                <div class="entry_contents html_block group short_desc">
+                	{% autoescape off %}{{product_obj.short_description}}{% endautoescape %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fit_width group">
+        <div class="col_11 group" style="width:662px; margin-right:20px;">
+        	<h2 class="title">{{product_obj.name}} Price: {{globalsettings.currency}}{{product_obj.for_sale_price|floatformat:2}}</h2>
+        	<div class="product_detail entry ">
+                <div class="entry_contents html_block group">
+                    <p align="justify">
+                        <span>{% autoescape off %}{{product_obj.description}}{% endautoescape %}</span>
+					</p>
+                        
+                </div>
+
+            </div>
+			{%if display_properties%}
+            <div class="specifications">
+                <h2 class="title">
+                    Specifications {{product_obj.name}}
+                </h2>
+				{% for property_group in display_properties %}
+            	<table cellspacing="0" class="fk-specs-type2">
+                	<tbody>
+                    	<tr>
+                            <th colspan="2">{{ property_group.name }}</th>
+                        </tr>
+						{% for property in property_group.properties %}
+							{%if property.display_select_field and property.select_options %}
+	                        <tr>
+	                            <td class="label">{{property.title}}</td>
+	                            <td class="value">{% for option in property.select_options%} {{option}}{%if not forloop.last %},{%endif%}{%endfor%}</td>
+	                        </tr>
+							{% elif property.value %}
+								<tr>
+		                            <td class="label">{{property.title}}</td>
+		                            <td class="value">{{ property.value }}</td>
+		                        </tr>
+							{%endif%}
+						{%endfor%}
+                    </tbody>
+                </table>
+				{%endfor%}
+             </div>
+			 {%endif%}
+		<div class="clear"></div>
+        <div id="article_coments">
+            <div id="commenting">
+				{% with product_obj as object %}
+				{% with 'shop' as appname %}
+					{% include 'comments/include_comment.html' %}
+				{% endwith %}
+				{% endwith %}
+           </div>
+        </div> 	 
+        </div>
+        <div class="secondary">
+        	{%if related_objs%}
+        	<div class="related_items">
+                <h2 class="title">Similar Products</h2>
+				<div class="place_list group">
+					{%for rel_obj in related_objs%}
+                    <div class="item group">
+                        <div class="item_wrap">
+                            <div class="product_image" >
+                                <span class="cover">
+                                    <span class="inner">
+                                        <img src="{%if rel_obj.get_cover_image_user%}{% thumbnail rel_obj.get_cover_image_user 80x0 %}{%endif%}" alt="Antigua" /><span class="v_align"></span>
+                                    </span>
+                                </span>
+                            </div> 
+                            <div class="product_info">
+                                <div class="inside">
+                                    <div class="name">
+                                        <a title="{{rel_obj.name}}" href="{{rel_obj.get_absolute_url}}">
+                                            <span class="display_name">{{rel_obj.name}}</span>
+                                        </a>
+                                    </div>                                                
+                                    <div class="price">
+                                        <div class="discount_price">
+                                            <div class="sales_price">{%if rel_obj.get_base_price%}<em style="font-weight:normal">{{globalsettings.currency}}{{rel_obj.get_base_price|floatformat:2}}</em>{%endif%}
+												<div class="standard_price">{{globalsettings.currency}}{{rel_obj.for_sale_price|floatformat:2}}</div>
+											</div>
+                                        </div>                                                      
+                                    </div>                                                
+                                </div><!-- end .inside -->
+                            </div><!-- end .info -->                                                                                                                                                                                      
+                        </div><!-- end .item_wrap -->
+                    </div><!-- end .item -->
+					{%endfor%}
+                </div>                                
+            </div>
+			{%endif%}
+			{%if accrssories_objs%}
+            <div class="related_items">
+                <h2 class="title">Supported Accessories</h2>
+				<div class="place_list group">
+                    {%for acc_obj in accrssories_objs%}
+					<div class="item group">
+                        <div class="item_wrap">
+                            <div class="product_image" >
+                                <span class="cover">
+                                    <span class="inner">
+                                        <img src="{%if acc_obj.get_cover_image_user%}{% thumbnail acc_obj.get_cover_image_user 80x0 %}{%endif%}" alt="{{acc_obj.name}}" /><span class="v_align"></span>
+                                    </span>
+                                </span>
+                            </div> 
+                            <div class="product_info">
+                                <div class="inside">
+                                    <div class="name">
+                                        <a title="{{acc_obj.name}}" href="{{acc_obj.get_absolute_url}}">
+                                            <span class="display_name">{{acc_obj.name}}</span>
+                                        </a>
+                                    </div>                                                
+                                    <div class="price">
+                                        <div class="discount_price">
+                                            {%if acc_obj.get_base_price%}<div class="sales_price"><em style="font-weight:normal">{{globalsettings.currency}}{{acc_obj.get_base_price|floatformat:2}}</em></div>{%endif%}
+                                            <div class="standard_price">{{globalsettings.currency}}{{acc_obj.for_sale_price|floatformat:2}}</div>
+                                        </div>                                                        
+                                    </div>                                                
+                                </div><!-- end .inside -->
+                            </div><!-- end .info -->                                                                                                                                                                                      
+                        </div><!-- end .item_wrap -->
+                    </div><!-- end .item -->
+					{%endfor%}
+                </div>                                
+            </div>
+			{%endif%}
+        </div>               
+    </div>                     
+</div> <!-- /Product View\ -->
+<script src="{{STATIC_URL}}js/jquery.bxSlider.min.js"></script>
+<!--script type="text/javascript" src="{{STATIC_URL}}js/cloud.zoom.js"></script-->
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.product_image img').css('width','70px')	
+		$('#other_views li a img').css('width','60px')	
+		
+		$("#add_bag_button").click(function(){
+			
+			var dataString = 'pid='+$('#id_product').val();
+			dataString+='&quantity='+$('#id_guantity').val();
+			
+			$('#ajax_state_loading').css('display','inline-block');
+			$('#add_bag_button').addClass('disabled');
+			
+			$.ajax({
+				   type: "POST",
+				   url: "{% url 'bmshop_product_add_to_cart' %}",
+				   data: dataString,
+				   dataType:'JSON',
+				   success: function(data){	
+				   			if(data.status){
+				   				$('#ajax_state_loading').css('display','none');
+								$('#add_bag_button').removeClass('disabled');
+								$('#id_cart_count').empty().html(data.cart_count);
+								$('#id_mini_cart_content').empty().html(data.html);
+								$('#id_mini_cart_content').slideDown('slow');
+							}else{
+								$('#ajax_state_loading').css('display','none');
+								$('#add_bag_button').removeClass('disabled');
+								alert(data.msg);
+							}
+					}
+			});	
+			
+		});
+		
+		
+		
+	});
+	$(window).load(function(){
+	  	$('.product_image img').each(function() {
+			$(this).removeAttr('style');
+	         width = $(this).width();
+	         height = $(this).height();
+	         if( width >= height){
+	                 $(this).css('width','70px')
+	         }
+	         else{$(this).css('height','70px')}  
+	     })
+		 $('#other_views li a img').each(function() {
+		 	$(this).removeAttr('style');
+	         width = $(this).width();
+	         height = $(this).height();
+	         if( width >= height){
+	                 $(this).css('width','60px')
+	         }
+	         else{$(this).css('height','60px')}  
+	     })
+	})
+</script>	
+<script>	
+  $(document).ready(function(){
+	  var length = $("#other_views ul#product_view_slider li.items").length;
+	  $('#other_views .counter').html("<span class='current'>1</span> of " + length);
+	  $('li.items .cloud-zoom-gallery').click(function(){
+		  	$('.cloud-zoom-gallery').removeClass('selected');
+	  		$(this).addClass('selected');
+			$("#other_views ul#product_view_slider li.items").removeClass('selected');
+			$(this).parent($("#other_views ul#product_view_slider li.items")).addClass('selected');
+			var selected_index = $("#other_views ul#product_view_slider li.items.selected").index()-2;
+			$('#other_views .counter').html("<span class='current'>"+selected_index+"</span> of " + length);
+		  })
+	  
+	  
+    $('#product_view_slider').bxSlider({mode: 'vertical',displaySlideQty: 3,
+    moveSlideQty: 3});
+	
+	$('li.items .cloud-zoom-gallery').live('click',function(){
+		var src = $(this).find('img').attr('src');
+		$('#product_image a img').attr('src',src)
+	})
+ 
+
+  });
+
+	$(document).ready(function(){
+
+		$("#detail_trigger").click(function()
+		  { 
+			$("#detail_body").toggle();
+		  });
+
+		$("#detail_body .close").click(function () 
+		  {
+		  	$("#detail_body").fadeOut(500);
+		  	return false;
+		});
+	});
+</script>
+
+<!-- Pinterest -->
+	<script type="text/javascript" src="http://assets.pinterest.com/js/pinit.js"></script>
+	
+	<!-- Google Plus -->
+	<script type="text/javascript">
+	  (function() {
+	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/plusone.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	  })();
+	</script>
+	
+	<!-- Twitter -->
+	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	
+	<!-- Facebook -->
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>  
+
+
+
+{% endblock %}

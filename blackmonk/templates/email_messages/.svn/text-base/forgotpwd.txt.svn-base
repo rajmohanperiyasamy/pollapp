@@ -1,0 +1,22 @@
+{% load get_settings %}
+Dear {{user}},
+<br/>
+
+<pre>
+*******************************************************************************
+<p style="font-size: 12px; font-family: 'Lucida Grande','Lucida','Arial',Sans-serif;">
+Your login details for your {% get_settings 'website_url' %} account are as follows:
+
+Username:  {{username}}
+Password:  {{password}}
+
+Please be aware that these account details are CASE sensitive.
+</p>
+
+********************************************************************************
+</pre>
+
+<p style="font-size: 12px; font-family: 'Lucida Grande','Lucida','Arial',Sans-serif;">To log into your account now, please go to:{% get_settings 'website_url' %}/accounts/signin/</p>
+
+
+<p>Go to <a href="{% get_settings 'website_url' %}">{% get_settings 'website_url' %}</a></p>

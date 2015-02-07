@@ -1,0 +1,173 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Article Price' %} {% endblock %}
+{% block head %}
+<script type="text/javascript">
+function change_payment_own(id)
+{
+	//alert($(id.val()));
+	if ( id.val() == "True")
+	{
+		$('.own_cost').css("display","block");
+		$('.own_free').css("display","none");
+	}
+	else{
+		$('.own_free').css("display","block");
+		$('.own_cost').css("display","none");
+		}
+}
+function change_payment_press(id)
+{
+	if(id.val() == "True")
+	{
+		$('.press_cost').css("display","block");
+		$('.press_free').css("display","none");
+	}
+	else
+	{
+		$('.press_free').css("display","block");
+		$('.press_cost').css("display","none");
+	}
+}
+function change_payment_advert(id)
+{
+	if(id.val() == "True")
+	{
+		$('.advert_cost').css("display","block");
+		$('.advert_free').css("display","none");
+	}
+	else
+	{
+		$('.advert_free').css("display","block");
+		$('.advert_cost').css("display","none");
+	}
+}
+function change_payment_request(id)
+{
+	if(id.val() == "True")
+	{
+		$('.request_cost').css("display","block");
+		$('.request_free').css("display","none");
+	}
+	else
+	{
+		$('.request_free').css("display","block");
+		$('.request_cost').css("display","none");
+	}
+}
+</script>	
+{% endblock %}
+{% block content %}
+	    {% if article_priceform.errors %}
+				<div class="messageerror">
+					<strong>{% trans 'There is a problem with your submission' %}, </strong>
+					<strong>{% trans 'Errors in article pricing form column' %} {{ forloop.counter }} </strong>
+		            <ul style="list-style:square;margin-left:20px;">
+		           		{% for field in article_priceform %}
+		           			{% if  field.errors%}<li>{%for error in field.errors%}{{field.name}}: {{error}}{%endfor%}</li>{% endif %}
+		          	 	{% endfor %}
+					</ul>
+			 	</div>
+		{% endif %}		 
+        <div id="admin_wrapper">
+                <div id="admin-platform" class="group">
+                    <div class="header-bar">
+                        <div id="nav-roll">
+                              <ul>
+                                    <li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" title="{% trans 'Modules' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                                    <li><a href="{% url 'admin_portal_articles' %}" title="{% trans 'Articles' %}" style="z-index:8">{% trans 'Articles' %}</a></li>
+                                    <li><a href="javascript:void(0);" title="{% trans 'Pricing' %}" style="z-index:7">{% trans 'Pricing' %}</a></li>
+                              </ul>
+                        </div>
+                    </div>
+					<div id="core-wraper" class="group">
+                        <div class="admin-main col_12">
+                            {% block leftnavigation %}
+							{% activetab 'topnav' 'site' %}
+							{% activetab 'leftnav' 'articles' %}
+							{% activetab 'leftnavsub' 'art_price' %}
+							{{ block.super }}
+							{% endblock %}
+                            <div class="left-nav-list-bg"></div>
+                            <div class="col_9 mr_0">
+								<div class="page-wrap mod-settings">
+                                	<div class="page-head br_0">
+                                    	<h2>{% trans 'Articles Pricing' %}</h2>
+                                        <p class="ltxt80">{% trans "Set price chart to display in the user submission articles.Article module has customized pricing option for different types of articles." %}</p>
+                                    </div>
+                                	<div class="contentpricing group">
+                               	<form method="post" action="{% url 'admin_portal_articles_price' %}">{% csrf_token %}
+                                <div class="table_data">
+                                <div class="table_wrap group">
+                                    <div class="col_feature" style="width:292px;">
+                                        <ul>
+                                            <li style="border-width:1px 0 0px 1px;" class="light_gray_row column"><span class="feature_label">{% trans 'Non-Commercial' %}</span></li>
+                                            <li class="column"><span class="feature_label">{% trans 'Own Story' %}</span></li>
+                                            <li style="border-width:1px 0 0px 1px;" class="light_gray_row column"><span class="feature_label">{% trans 'Commercial' %}</span></li>
+                                            <li class="column"><span class="feature_label">{% trans 'Press Release' %}<span class="sub_label"><!--/span>{% trans 'Sub title' %}</span></li-->
+                                            <li class="column"><span class="feature_label">{% trans 'Advertorial' %}<span class="sub_label "><!--/span>{% trans 'Sub title' %}Sub title</span></li-->
+                                            <li class="column" style="border-bottom-width:1px;"><span class="feature_label">{% trans 'Request for Review' %}</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col_108">
+                                        <ul>
+                                            <li style="border-width:1px 0 0px 0;" class="light_gray_row column"></li>
+                                            <li class="own_paid column">
+												{{article_priceform.ownstory_is_paid}}
+                                            </li>
+                                            <li style="border-width:1px 0 0px 0;" class="light_gray_row column"></li>
+                                            <li class="press_paid column">
+												{{article_priceform.pressrelease_is_paid}}
+                                            </li>
+                                            <li class="advert_paid column">
+												{{article_priceform.advertorial_is_paid}}
+                                            </li>
+                                            <li class="request_paid column" style="border-bottom-width:1px;">
+												{{article_priceform.requestreview_is_paid}}  
+                                            </li>                                                                                        
+                                        </ul>
+                                    </div> 
+                                    <div class="col_108">
+                                        <ul>
+										
+											<li class="light_gray_row column" style="border-width:1px 1px 0 0;"></li>
+											<li class = "own_cost column" {% if article_priceform.instance.ownstory_is_paid %} style="display:block" {% else %} style="display:none" {% endif %}>{{ globalsettings.currency }} <input id="id_ownstory_price" class="textField" type="text" value="{{article_priceform.ownstory_price.value|floatformat:2}}" style="width:66px;" name="ownstory_price"></li>
+											<li class = "own_free column" {% if article_priceform.instance.ownstory_is_paid %} style="display:none" {% else %} style="display:block" {% endif %}><h3 style="margin:0px; font-size:13px; color:$666;">{% trans 'FREE' %}</h3></li>
+
+											<li class="light_gray_row column" style="border-width:1px 1px 0 0;"></li>
+											<li class="press_cost column"{% if article_priceform.instance.pressrelease_is_paid %} style="display:block" {% else %} style="display:none" {% endif %}>{{ globalsettings.currency }} <input id="id_pressrelease_price" class="textField" type="text" value="{{article_priceform.pressrelease_price.value|floatformat:2}}" style="width:66px;" name="pressrelease_price"></li>
+											<li class="press_free column"{% if article_priceform.instance.pressrelease_is_paid %} style="display:none" {% else %} style="display:block" {% endif %}><h3 style="margin:0px; font-size:13px; color:$666;">{% trans 'FREE' %}</h3></li>
+										
+											<li class="advert_cost column" {% if article_priceform.instance.advertorial_is_paid %} style="display:block" {% else %} style="display:none" {% endif %}>{{ globalsettings.currency }} <input id="id_advertorial_price" class="textField" type="text" value="{{article_priceform.advertorial_price.value|floatformat:2}}" style="width:66px;" name="advertorial_price"></li>
+											<li class="advert_free column" {% if article_priceform.instance.advertorial_is_paid %} style="display:none" {% else %} style="display:block" {% endif %}><h3 style="margin:0px; font-size:13px; color:$666;">{% trans 'FREE' %}</h3></li>
+                                        
+											<li class="request_cost column"{% if article_priceform.instance.requestreview_is_paid %} style="display:block; border-bottom:1px solid #e0e0e0;" {% else %} style="display:none; border-bottom:1px solid #e0e0e0;" {% endif %}>{{ globalsettings.currency }} <input id="id_requestreview_price" class="textField" type="text" value="{{article_priceform.requestreview_price.value|floatformat:2}}" style="width:66px;" name="requestreview_price"></li>
+											<li class="request_free column"{% if article_priceform.instance.requestreview_is_paid %} style="display:none;border-bottom:1px solid #e0e0e0;" {% else %} style="display:block;border-bottom:1px solid #e0e0e0;" {% endif %}><h3 style="margin:0px; font-size:13px; color:$666;">{% trans 'FREE' %}</h3></li>
+											
+                                        </ul>
+                                    </div>                                                                                                
+                                </div>
+                                <div class="form-submit right group trp-bg">
+                                   <button role="button" class="cform-button" type="button" onclick="location.replace('{% url 'admin_portal_articles_price' %}')"><span class="cform-button-text">{% trans 'RESET' %}</span></button>
+                                   <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'UPDATE' %}</span></button>
+                                </div>
+                           	  </div>
+                          </form>                                       	   
+                      </div>
+                  </div>
+              </div>                       
+          </div>                            
+         <div id="aside" class="side-bar col_4">
+            {% include 'admin/portal/article/pricing-faq.html' %}                                  
+         </div>                            
+	  </div>                                                    
+   </div>
+ </div>
+{% endblock %}
+

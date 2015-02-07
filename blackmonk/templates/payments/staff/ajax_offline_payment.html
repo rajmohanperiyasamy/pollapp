@@ -1,0 +1,110 @@
+{% load i18n %}
+
+<div id="add_venue" class="modal-form">
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+     <form action="{% url 'staff_ajax_offline_payment' payment.id %}" name="mform"  id="mform" method="post" class="add_venue">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="fields-head">
+                    <p class="ltxt80">{% trans 'There is no need to index every single file that you have got on your content' %}</p> 
+                </div> 
+                <div class="group">
+            		<div class="fields-left col400">                    
+                        <div class="field text-field">	 
+                            <div class="label"><label>{% trans 'Name' %}<span class="required-field">*</span></label></div>	
+                            <div class="value">
+								<input type='text' name='name' value='{{payment.user.display_name}}' onkeyup='check(id_name);' class='fm' id='id_name'>
+                            </div>	
+                        </div>
+						{% with payment.offline_mode as pay_mode %}
+                        <div class="field select-field">	
+                            <div class="label"><label>{% trans 'Mode of Payment' %}<span class="required-field">*</span></label></div>	
+                            <div class="value">
+								<select style="width:180px;" title="payment_mode" name="payment_mode" id="id_payment_mode" onchange='select_mode();' data-placeholder="Select interval" class="lb_select-menu" autocomplete="off">
+									<option selected="selected" value="select">Select Payment Mode</option>
+									<option value="cash" {% if pay_mode = 'cash' %}selected='selected'{% endif %}>Cash</option>
+									<option value="cheque" {% if pay_mode = 'cheque' %}selected='selected'{% endif %}>Cheque</option>
+									<option value="dd"{% if pay_mode = 'dd' %}selected='selected'{% endif %}>DD</option>
+								</select>
+							</div>
+                        </div>
+                        <div class="field text-field">	
+                            <div class="label"><label>{% trans 'Email ID' %}</label></div>	
+                            <div class="value"><input type='text' name='emailid' value='{{payment.email}}' onkeyup='check(id_emailid);' class='fm' id='id_emailid'></div>	
+                        </div>
+                        <div class="field text-field">	
+                            <div class="label"><label>{% trans 'Phone No' %}</label></div>	
+                            <div class="value">
+								<input type='text' name='phone' value='{{payment.phone_no}}' onkeyup='check(id_phone);' class='fm' id='id_phone'>
+							</div>	
+                        </div>
+						{% if not pay_mode = 'cash' %}
+						<div class="field text-field" id='id_cheque_dd_div' {% if pay_mode = 'cash' %}"display: none;"{% endif %}>	
+                            <div class="label"><label>{% trans 'Cheque/DD No:' %}</label></div>	
+                            <div class="value">
+								<input type='text' name='cheque_dd_num' value='' class='fm' id='id_cheque_dd_num'>
+							</div>	
+                        </div>
+						{% endif %}
+					</div> <!--/--> 
+					{% endwith %}
+            	</div>            
+            </div>                        
+		</div>    
+        <div class="modal-base form-submit group">
+           <input class="cform-button prime right cform-button-text"  name='offlinesubmit' type="submit" value="{% trans 'Payment Received' %}" />
+        </div>           
+    </form>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+</div>
+
+<script>
+function select_mode(){
+	if($('#id_payment_mode').val() != 'cash' && $('#id_payment_mode').val() != 'select'){
+		$('#id_cheque_dd_div').show()
+	}
+	else{
+		$('#id_cheque_dd_div').hide()
+		}
+}
+$(document).ready(function(){
+	$("#mform").validate({
+        ignore:'',
+			highlight: function(element, errorClass){
+				$(element).parent().parent().addClass('field-error');
+				$(element).addClass("error");
+				},
+			unhighlight: function(element, errorClass){
+				$(element).parent().parent().removeClass('field-error');
+				$(element).removeClass("error");
+				},
+        errorPlacement: function(error, element){},
+           rules:{
+            name: "required",
+			phone: {required:true,number:true},
+            emailid: {required:true,email:true},
+           },
+    });
+	$('input[name=offlinesubmit]').click(function(){
+		if($('#id_payment_mode').val() != 'cash' && $('#id_payment_mode').val() != 'select'){
+			if($('#id_cheque_dd_num').val() == ''){
+				$('#id_cheque_dd_num').parent().parent().addClass('field-error');
+				$('#id_cheque_dd_num').addClass("error");
+				return false;
+			}
+		}
+	});
+});
+function check(id){
+	if($(id).val() == ''){
+		$(id).parent().parent().addClass('field-error');
+		$(id).addClass("error");
+		return false;
+	}
+	else{
+		$(id).parent().parent().removeClass('field-error');
+		$(id).removeClass("error");
+	}
+}
+</script>

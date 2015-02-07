@@ -1,0 +1,154 @@
+{% load thumbnail %}
+{% load mptt_comments_tags %}
+<input type="hidden" value="{% url 'events_ajax_display_events' %}" name="id_hidden_url" id="id_hidden_url">
+<input type="hidden" value="{% url 'events_ajax_action' %}" name="id_action_url" id="id_action_url">
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="{{msg}}" name="id_action_msg" id="id_action_msg">
+
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+<input type="hidden" value="" name="id_action" id="id_action">
+{% if eventsdisplay %}
+<ul class="modulesBrowseData dSrS480 mDa-lT mDa-oT-lT oVrfLw-vSbL">
+	{% for event in eventsdisplay %}
+    <li class="mDa mDa-sTtS-iN">
+        <div class="mDa-iN">
+            <div class="mDa-wPr"> 
+            	<a class="bUi-tMb-wPr tMb-75 dSpD  fLxiMgW bUi-tMb-110" href="{% url 'user_event_preview' event.id %}">
+                    <span class="bUi-tMb w100pXmP">
+                        <span class="bUi-tMb-pRpL">
+                            <span class="bUi-tMb-cLp">
+                                <span class="bUi-tMb-cLp-iN"><img class="mDa-oT" src="{% if event.get_first_event_photo %}{% thumbnail event.get_first_event_photo 110x0 %}{% else %}{{event.get_default_image}}{%endif%}" alt="{{event}}">
+                                    <span class="vRtL-aLn"> </span>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+            </div>
+            <div class="mDa-bDy mRr0mP">
+			{% if event.listing_type == 'F' %}<span style="cursor:pointer;" title="Featured" class="fTrd-lSt"></span>
+			{% else %}{% if event.listing_type == 'S' %}<span style="cursor:pointer;" title="Sponsored" class="sPnD-lSt"></span>{% endif %}{% endif %}
+				
+                <h5 class="mDa-hD tRnCt0 mR50 rLvE h65 h65" title="{{event.title|title}}"><a href="{% url 'user_event_preview' event.id %}">{{event.title|title|truncatechars:70}}</a></h5>
+                <p class="fS12 cLr-gRy">
+                	<span class="fS11 cLr-lTgRy">{{event.created_on|date:"F d, Y f A"}}</span>
+                	{% if event.status == 'N' %}
+	                	{% with event.get_offline_payment_object as offpay %}
+							{% if offpay.status == 'N' %}<span class="sPrTr fS12 fW-bLd cLr-rEd">Last date for offline payment: {{offpay.expiry_date|date:'m/d/Y'}} <span style="color: #9F9F9F;">|</span> <a href="{% url 'events_ajax_payment' event.id %}">Pay online</a></span>{% endif %}
+	                	{% endwith %}
+                	{% endif %}
+               	</p>
+                <div class="clearfix">
+                	<div class="btn-group pLlT iM" id="id_drop_{{event.id}}">
+                        <a href="{% url 'events_addevent' %}?eid={{event.id}}" title="Edit" class="btn btn-light btn-small"><span id="id_delete_{{event.id}}"><i aria-hidden="true" class="bUi-iCn-rVeW-12 ib"></i></span><span id="id_loding_{{event.id}}" style="display:none;"><i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i></span></a>
+                        <button class="btn btn-light btn-small dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu mNi pLrT dSpL">
+							<li><a title="Edit" href="{% url 'events_addevent' %}?eid={{event.id}}">Edit</a></li>		
+							{% if event.status == 'P' or event.status == 'N' %}  
+								<li><a href="{% url 'events_ajax_payment' event.id %}">Change Listing Type</a></li>
+								<li><span class="line-break"></span></li>
+							{% endif %}	
+							<li><a href="{% url 'events_update_seo' event.id %}" data-target="#update_seo" >Update SEO info</a></li>							
+							{% if event.status == 'D' %}
+								<li><a href="{% url 'events_ajax_payment' event.id %}">Send for Approval</a></li>
+								<li><span class="line-break"></span></li>
+							{% endif %}
+                            <li class="divider"></li>
+                            <li><a onclick="if(confirm('Are you sure you want to delete the selected event?')){filter_action({{event.id}},'DEL');return false;}" href="javascript:void(0)">Delete</a></li>
+                        </ul>
+                    </div>
+                    <div class="pLrT mRr10 iM" style="cursor:pointer;">
+                        <i {% if event.status == 'P' %}class="bUi-iCn-pPiE-24 cLr-pUb" title="Published"{% endif %}
+							{% if event.status == 'R' %}class="bUi-iCn-rGt-24 cLr-rEj" title="Rejected"{% endif %}
+							{% if event.status == 'N' %}class="bUi-iCn-pNdG-24 cLr-pEn" title="Pending"{% endif %}
+							{% if event.status == 'E' %}class="bUi-iCn-eXp cLr-eXp" title="Expired"{% endif %}
+							{% if event.status == 'D' %}class="bUi-iCn-dRaT-24 cLr-dRf" title="Drafted"{% endif %}
+							{% if event.status == 'B' %}class="bUi-iCn-bLk-24 cLr-bLoK" title="Blocked"{% endif %} aria-hidden="true"></i>
+                    </div>	
+                </div>
+                <div class="mDa-lT-sTtS aBsLt tR0 StCmP tXt-rTp bGtRp">
+                   <span class="fS11 cLr-lTgRy mRr10 bLk" style="cursor:pointer;" title="Views"><i aria-hidden="true" class="bUi-iCn-vEw-12"></i> {{event.visits}}</span>
+                   <span class="fS11 cLr-lTgRy mRr10 bLk" style="cursor:pointer;" title="Comments"><i aria-hidden="true" class="bUi-iCn-bBl-12 fS11"></i> {% get_mptt_comment_count for event as comment_count %}{{comment_count}}</span>
+                   <!--span class="fS11 cLr-lTgRy mRr10 bLk"><i aria-hidden="true" class="bUi-iCn-hRt-16 fS11"></i> 102</span-->
+                </div> 
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+	<!-- No data -->
+	<div class="hT600 rLvE">
+ 		<div class="tBl-bLk pDt0">
+			<div class="tBl-cEl">
+				<span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-eVnT-24 fS42-1 cLr-lTgRy ib"></i></span>
+				{% if search %}
+					<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You haven't submitted any events with keyword "{{search_keyword}}"</p>
+				{% else %}
+					{% if status == "P" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no published events.</p>
+					{% elif status == "N" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no pending events.</p>
+					{% elif status == "R" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no rejected events.</p>
+					{% elif status == "D" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no event drafts.</p>
+					{% elif status == "E" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no expired events.</p>
+					{% elif status == "B" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no blocked events.</p>
+					{% elif listing_type == "B" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no free events.</p>
+					{% elif listing_type == "F" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no featured events.</p>
+					{% elif listing_type == "S" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no sponsored events.</p>
+					{% elif listing_type == "all" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You haven't created any events yet.</p>
+						<p class="mRt15"><a href="{% url 'events_addevent' %}" class="btn btn-danger fS12 fW-bLd">Add a Event</a></p>
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<!-- /No data -->
+{% endif %}
+{% include 'usercp_pagination.html' %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("a[data-target=#upgrade_list]").click(function(ev) {
+		   ev.preventDefault();
+		   target = $(this).attr("href");
+		
+		   // load the url and show modal on success
+		   $("#upgrade_list .modal-body").load(target, function() {
+		        $("#upgrade_list").modal("show");
+		   });
+		});
+		$('#upgrade_list').on('show.bs.modal', function (e) {
+               $('html, body').css({
+                   'overflow': 'hidden',
+                   'height': '100%'
+               })
+       })
+		$('#upgrade_list').on('hide.bs.modal', function (e) {
+               $('html, body').css({
+                   'overflow': 'auto',
+                   'height': 'auto'
+               })
+       })
+		$("a[data-target=#update_seo]").click(function(ev) {
+		   ev.preventDefault();
+		   target = $(this).attr("href");
+		
+		   // load the url and show modal on success
+		   $("#update_seo .modal-body").load(target, function() {
+		        $("#update_seo").modal("show");
+		   });
+		});
+	});
+</script>

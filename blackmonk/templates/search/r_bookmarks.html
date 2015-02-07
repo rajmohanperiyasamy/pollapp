@@ -1,0 +1,18 @@
+{% load truncate_filter %}                        	
+<td class="added_on">
+    <h5 class="module_title bookmark">Bookmark</h5>
+    <span>Posted On<br>{{object.created_on|date:"d M, Y"}}</span>
+</td>
+<td class="article">
+    <!--<h4 class="module_title">Bookmarks</h4>-->
+    <div class="item group">
+         <div class="source_url"><a href="http://{{object.source}}" target="_blank">{{object.source}}</a></div>
+       <!-- <a href="#" class="pic"><img src="{{ globalsettings.smugmug_url }}/photos/{{object.get_thumb }}-114x151.jpg"" height="70" width="114"></a> -->
+        <div class="detail  mr_0">
+            <h4 class="title"><a style="" href="{{ object.get_absolute_url }}">{% autoescape off %}{{object.title}}{% endautoescape %}</a></h4>
+            <div class="sub_title"><span class="by_line">By <a href="/profile/{{object.created_by}}">{{object.created_by.profile.get_full_name}}</a></div>
+            <div class="summary">{{object.summary|truncate_chars:225 }}</div>
+        </div>                                                
+        <div class="footer"></div>    
+    </div>                                    	
+</td>

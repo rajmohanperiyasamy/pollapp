@@ -1,0 +1,48 @@
+{% if is_paginated %}
+<div class="pGn pGn-cTr pDb20">
+    <ul>
+		{% if has_previous %}
+			{% ifequal num page %}
+				<li class="aCtV"><a href="javascript:void(0)" name="{{ num }}">{{ num }}</a></li>
+			{% else %}
+				<li><a href="javascript:go_to({{prev}})"><i aria-hidden="true" class="bUi-iCn-aRw-l-16 fS12"></i></a></li>
+			{% endifequal %}
+		{% endif %}
+
+		{% if not in_leading_range %}
+			{% for num in pages_outside_trailing_range %}
+				{% ifequal num page %}
+					<li class="aCtV"><a href="javascript:void(0)"  name="{{ num }}" >{{ num }}</a></li>
+				{% else %}
+					<li><a href="javascript:go_to({{num}})" name="{{ num }}">{{ num }}</a></li>
+				{% endifequal %}
+			{% endfor %}
+			<li>&hellip;</li>
+		{% endif %}
+	
+		{% for num in page_numbers %}
+			{% ifequal num page %}
+				<li class="aCtV"><a href="javascript:void(0)" name="{{ num }}" >{{ num }}</a></li>
+			{% else %}
+				<li><a href="javascript:go_to({{num}})" name="{{ num }}" >{{ num }}</a></li>
+			{% endifequal %}
+		{% endfor %}
+	
+		
+		{% if not in_trailing_range %}
+			<li>&hellip;</li>
+			{% for num in pages_outside_leading_range reversed %}
+				{% ifequal num page %}
+					<li class="aCtV"><a href="javascript:void(0)" name="{{ num }}" >{{ num }}</a></li>
+				{% else %}
+					<li><a href="javascript:go_to({{num}})" name="{{ num }}">{{ num }}</a></li>
+				{% endifequal %}
+			{% endfor %}
+		{% endif %}
+	
+		{% if has_next %}
+			<li><a href="javascript:go_to({{ next }})"><i aria-hidden="true" class="bUi-iCn-aRw-r-16"></i></a></li>
+		{% endif %}
+	</ul>
+</div> 
+{% endif %}

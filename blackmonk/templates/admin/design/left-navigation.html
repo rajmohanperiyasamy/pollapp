@@ -1,0 +1,41 @@
+{% load tabs %}
+{% load i18n %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.expand_span').live("click",function(event){
+		event.preventDefault();
+		if($(this).hasClass('nav-collaps')){
+			$('.left-nav-container').removeClass('selected-child');
+			$(this).parent('a').parent('li').addClass('selected-child');
+			$('.nav-expand').addClass('nav-collaps').removeClass('nav-expand');
+			$(this).removeClass('nav-collaps').addClass('nav-expand');	
+		}else{
+			$(this).parent('a').parent('li').toggleClass('selected-child');
+			$(this).toggleClass('nav-collaps').toggleClass('nav-expand');
+		}
+	});
+});
+</script>
+<div class="left-nav-list modules col_3">
+    <ul>
+        <li class="left-nav-container {% ifactivetab "leftnav" "navigation" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_design_manage_navigation' %}" class="left-nav">
+                <span class="icon"><img alt="" src="ui/images/global/020112bm-pixel.gif" class="general"></span>
+                <span class="display-name">{% trans 'Navigation' %}</span><span class="expand_span {% ifactivetab "leftnav" "navigation" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+			<ul class="sub-items">
+	              <li><a href="{% url 'admin_design_manage_navigation' %}" class="{% ifactivetab "leftnavsub" "header" %}selected{% endifactivetab %}">{% trans 'Header Links' %}</a></li>
+	              <li><a href="{% url 'admin_design_manage_subheader_navigation' %}" class="{% ifactivetab "leftnavsub" "sub-header" %}selected{% endifactivetab %}">{% trans 'Sub Header Links' %}</a></li>
+				  <li><a href="{% url 'admin_design_manage_footer' %}" class="{% ifactivetab "leftnavsub" "footer" %}selected{% endifactivetab %}">{% trans 'Footer Links' %}</a></li>	
+            </ul>   
+        </li>
+        
+		<li class="left-nav-container {% ifactivetab "leftnav" "copyright" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_design_manage_copyright' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="copyright"></span>
+              <span class="display-name">{% trans 'Copyright' %}</span><span class="nav-collaps">&rsaquo;</span>
+          </a>
+        </li>
+
+    </ul> 
+</div>

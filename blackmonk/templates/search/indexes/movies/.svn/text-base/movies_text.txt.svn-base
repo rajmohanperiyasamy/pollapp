@@ -1,0 +1,10 @@
+{{ object.title }}
+{% autoescape off %}{{ object.synopsis }}{% endautoescape %}
+{{ object.twitter_hash }}
+{{ object.director }}
+{{ object.cast }}
+{{ object.certification }}
+{{ object.language.name }}
+{% for mt in  object.movie_type.all %}
+	{{mt.name}}
+{% endfor %}    

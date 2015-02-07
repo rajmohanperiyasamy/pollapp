@@ -1,0 +1,74 @@
+
+{% extends base %}
+{% load tabs %}
+{% load ds_utils %}
+{% load i18n %}
+{% load truncate_filter %}
+{% block pagetitle %}{{forum.seo_title}}{% endblock %}
+{% block meta %}
+<meta name="Description" content="{{forum.category}} | {{forum}} | {{seo.seo_description}}">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="imagetoolbar" content="no" />
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/forum.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "forum" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+        	<div id="breadcrumbs"><a href="/discussions/" title="{{ globalsettings.domain }} Home">{% trans 'Forum Index' %}</a> &nbsp;»&nbsp; {% ds_link forum.category %} &nbsp;»&nbsp; <span class="here">{{ forum.name }}</span></div>
+			<div class="group">
+				<div id="forum" class="col_11 group">
+                    <div class="thick_box">
+                        <div class="thick_box_core group"> 
+                            <div class="forums place_list">
+                                <dl class="forum header group">
+                                    <dt class="w_80">
+                                       {% ds_link forum 'cat_title'%} 
+                                    </dt>
+									{% if forum.is_user_restricted %}
+            							{% if request.user.is_superuser or request.user in forum.moderators.all %}
+                                   			<dd class="new_topic"><a href="{% url 'forum_add_topic' forum.id %}" class="button small super red"><span style="padding:4px 8px 6px;">{% trans 'New Thread' %}</span></a></dd>
+										{% endif %}
+									{% else %}
+										<dd class="new_topic"><a href="{% url 'forum_add_topic' forum.id %}" class="button small super red"><span style="padding:4px 8px 6px;">{% trans 'New Thread' %}</span></a></dd>
+									{% endif %}
+                                </dl>                             
+                                <dl class="forum sub_head group">
+                                    <dt class="topics"><span>{% trans 'Threads' %}</span></dt>
+                                    <dd class="replies">{% trans 'Replies' %}</dd>
+                                    <dd class="views">{% trans 'Views' %}</dd>
+                                    <dd class="last_post">{% trans 'Last post' %}</dd>           
+                                </dl>   
+                                {% for topic in topics %}                          
+                                <dl class="forum topic group {% cycle '' 'alt' %}">
+                                    <dt class="read_icon">
+                                        {% ds_link topic 'title'%}
+                                        <span class="sub_title">by <a href="/profile/{{topic.user.username}}" class="auth_name">{{ topic.user.first_name}}</a> {% trans 'on' %} <span class="time">{% ds_time topic.created %}</span></span>
+                                    </dt> 
+                                    <dd class="topics">{{topic.post_count}}<dfn>{% trans 'Posts' %}</dfn></dd>
+                                    <dd class="posts">{{ topic.views }}<dfn>{% trans 'Views' %}</dfn></dd>
+                                    {%if topic.posts %}
+										{% with obj=topic.posts.reverse.0 %}
+                                  		<dd class="last_post"><span><dfn>{% trans 'Last post' %}</dfn><a href="{{obj.get_absolute_url }}"  title="{{topic.name}}" class="post_title">{{topic.name|truncate_chars:18}}</a><br>by {%ds_link  obj.user.profile 'auth_name'%} <br>on <span class="time">{% ds_time obj.created %}</span></span></dd>
+										{% endwith %}
+                                    {% else %}   
+                                    	<dd class="last_post"><span class="no_post"><dfn>{% trans 'Last post' %}</dfn> {% trans 'No Post' %}</span></dd>           
+                                    {% endif %}
+                                </dl> 
+                                {% endfor %}
+							</div>
+                           {% if is_paginated %}     
+								{% include "default/forum/pagination.html" %}             
+							{% endif %}                   					
+                        </div>
+                    </div>
+                </div>
+				<div class="secondary col_5 mr_0">
+                	{% include 'default/forum/quick_access.html'%}
+                    <div id="banner_placement_right"></div><!-- Banner Placement -->                                      
+                </div>
+			</div>
+ {%endblock%}

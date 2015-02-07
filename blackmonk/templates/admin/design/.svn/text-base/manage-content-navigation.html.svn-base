@@ -1,0 +1,102 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'design' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Site Navigation' %} {% endblock %}
+{% block head %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.bm-menu-content').colorbox({width:"600",initialWidth:"600",initialHeight:"200",top:"170",title:function(){return getLBTitle($(this));}});
+})
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+		<div class="header-bar">
+			<div id="nav-roll">
+				<ul>
+					<li id="design-index" class="first"><a href="{% url 'admin_design_overview' %}" style="z-index:9"><span class="icon"></span>{% trans 'Design' %}</a></li>
+					<li><a href="{% url 'admin_design_manage_navigation' %}" style="z-index:8">{% trans 'Navigation' %}</a></li>
+
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+			<div class="admin-main col_12">
+				{% block leftnavigation %}
+				{% activetab 'leftnav' 'navigation' %}
+				{% activetab 'leftnavsub' 'header' %}
+				{% include 'admin/design/left-navigation.html' %}
+				{{ block.super }}
+				{% endblock %}
+				<div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">        
+                    <div class="page-wrap mod-settings">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Header Navigation Links' %}</h2>
+                            <p class="ltxt80">Manage your header links by adding, editing and moving the menu items whichever order you want to display in the website.</p>
+                        </div>
+                        <div class="add-menu group">
+                        	<a href="{% url 'admin_design_update_menu_item' %}" title="{% trans 'Add New Menu Item' %}" class="btn-txt-blue small bm-menu-content" ><img class="add_menu_plus" src="{{STATIC_URL}}ui/images/global/plus-white.png" /><span class="btn-txt">Add item</span></a>
+                        </div>
+                        {% include 'admin/design/include-header-navigation.html' %}   
+                  	</div>
+					{% if disabled_main_menus %}
+					<!-- div class="page-wrap mod-settings">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Disabled Header Navigation Links' %}</h2>
+                            <p class="ltxt80">{% trans 'The link that are belong to dsiabled apps listed here.' %}</p>
+                        </div>
+						<div class="sortable-menu group" style="opacity:0.3;pointer-events:none;" disabled="true">
+						    <ol class="sortable">
+							{% for menu in disabled_main_menus %}
+								<li>
+						        	<div class="sortable-menu-inner group handle_test">
+						            	<div class="drag-icon"> <img src="{{STATIC_URL}}ui/images/icons/b/48.png" /></div> 
+						            	<div class="sortable-menu-item">{{menu.name}}</div>
+						                <div class="action-buttons">
+						                    <div class="group">
+						                        <a href="javascript:void(0);" class="tttxt-n" title="{% trans 'Delete Menu' %}"><span class="action-icon icon-delete"></span></a>
+						                        <a class="txt-button tttxt-n bm-add-gadget light_box bmElement bm-menu-content" id="id_update_link_{{menu.id}}" href="javascript:void(0)" title="{% trans 'Update Menu' %}"><span class="action-icon icon-edit"></span></a>
+						                    </div>                                                            
+						                </div>
+						            </div>
+								{% if menu.get_sub_menus %}
+						        	<ol>
+									{% for smenu in menu.get_sub_menus %}	
+						            	<li>
+						                	<div class="sortable-menu-inner group handle_test">
+						                    	<div class="drag-icon"> <img src="{{STATIC_URL}}ui/images/icons/b/48.png" /></div>
+						                    	<div class="sortable-menu-item">{{smenu.name}}</div>
+						                        <div class="action-buttons">
+						                            <div class="group">
+						                                <a href="javascript:void(0);" class="tttxt-n" title="{% trans 'Delete Menu' %}"><span class="action-icon icon-delete"></span></a>
+						                                <a class="txt-button tttxt-n bm-add-gadget light_box bmElement bm-menu-content" id="id_update_link_{{smenu.id}}" href="javascript:void(0)" title="{% trans 'Update Menu' %}"><span class="action-icon icon-edit"></span></a>
+						                            </div>                                                            
+						                        </div>
+						                    </div>
+						                </li>
+									{% endfor %}
+						            </ol>
+								{% endif %}
+						        </li>
+							{% endfor %}
+						    </ol>
+						</div>
+					</div -->
+					{% endif %}
+                </div>
+			</div>                                                                
+            {% include 'admin/design/menu-navigation-faq.html' %}                   
+		</div>                                                    
+	</div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/admin/admin_design.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load tabs %}
+<!-- Module Search -->
+<div class="pD2015 bM-bX sRcHbR">
+    <div class="row-fluid">
+        <div class="span9 fRm">
+			<form class="form-search mRb0" id='sform' name="clas_search" method="get" action="{% url 'classified_search' %}">{#% csrf_token %#}
+				<input type="hidden" name="search" value="1" />
+                <div class="mDl">
+                    <h3 class="mDl-nM">
+                        <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                        <span class="ib">Classifieds
+                            <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+                        </span>
+                    </h3>
+                </div>
+                <div class="span5">
+					<input type="text"  id="id_find" autocomplete="off" class="" name="q" value="{{q}}" placeholder="{% trans 'What are you looking for?' %}">
+                </div>
+                <div class="span3">
+					<select id="category" name="category" class="bUiSlCt-wHt">
+                		<option value="0">{% trans 'All Categories' %}</option>
+		               	{% for type in categories %} 	
+							<option value="{{type.id}}" {% ifequal category.id type.id %}selected="selected"{% endifequal %} title="{{type.name}}">{{type.name}}</option>
+					   	{% endfor %}
+					</select>
+                </div>
+                <div class="ib sUb-bTn mRl12 mRl0mP">
+                    <button type="submit" class="btn btn-primary">
+                    <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+		{% block searchblock %}
+		{% activetab 'addbutton' 'classifieds' %}
+       	{% include "default/add_object_search.html" %}
+		{% endblock %}
+    </div>
+</div>
+<!-- Module Search -->
+<script type="text/javascript">
+$(function () {
+    $('#id_find').typeahead({
+        ajax: { url: '{% url 'auto_suggest_classifieds' %}',type: "GET",triggerLength: 1 },
+        itemSelected:function(){
+                $('#sform').submit();
+        }
+    });
+});
+</script>
+

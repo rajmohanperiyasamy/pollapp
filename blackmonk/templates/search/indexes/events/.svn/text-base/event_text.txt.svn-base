@@ -1,0 +1,22 @@
+{{ object.title }}
+{{ object.repeat_summary }}
+{% autoescape off %}{{ object.event_description }}{% endautoescape %}
+{{ object.category.name }}
+{% for cat in objects.category.all %}
+	{{cat.name}}
+{% endfor %}  
+{% for tag in objects.tags.all %}
+	{{tag.tag}}
+{% endfor %}   
+{{ object.venue.venue }}
+{{ object.venue.type.title }}
+{{ object.venue.address1 }}
+{{ object.venue.address2 }}
+{{ object.venue.city }}
+{{ object.venue.state }}
+{{ object.venue.country }}
+{% autoescape off %}{{ object.address.description }}{% endautoescape %} 
+
+
+
+    

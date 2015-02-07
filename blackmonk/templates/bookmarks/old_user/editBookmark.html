@@ -1,0 +1,249 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "bookmark" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}
+	{% trans 'Edit Bookmark' %}
+{% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+{% endblock %}
+{% block content %}
+<style type="text/css">
+.bookmark .image_block {
+    display: inline-block;
+    margin-bottom: 12px;
+    margin-right: 10px;
+    width: 134px;
+}
+.alert_bar {
+    -moz-transition: all 0.6s ease-in-out 0s;
+    background: -moz-linear-gradient(center top , #9A9A9A 0pt, #787878 45px) repeat scroll 0 0 #787878;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.224);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 1px rgba(0, 0, 0, 0.2) inset;
+    margin: 0 auto 10px;
+    min-height: 36px;
+    opacity: 1;
+    overflow: hidden;
+    padding-left: 10px;
+    position: relative;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+    width: 600px;
+    z-index: 10;
+}
+.alert_bar .icon-alert {
+    float: left;
+    height: 16px;
+    margin-right: 10px;
+    margin-top: 10px;
+    width: 16px;
+}
+.alert_bar h4 {
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    padding: 9px 0;
+}
+</style>
+
+<div id="userHub-platform" class="group">
+                    <div class="header-bar has-sub">
+                    	<h2><a href="{% url 'bookmark_dash_board' %}"><span class="go_back"></span></a>{% trans 'Edit Bookmark' %}</h2>
+                        <section class="sub-header-bar">
+							<div class="group">
+                                  <div class="filter-view-tabs"></div>
+                                  <div class="add-section-right">
+									<ul class="status-tabs group">
+					                    <li>{{bookmark.most_viewed}}<span class="meta">{% trans 'views' %}</span> </li>
+					                </ul>  
+                                  </div> 
+                            </div>
+                        </section>                           
+					</div>
+                    <div id="core-wraper" class="group">
+                        <div class="userHub-main">
+                            <div class="page-wrap">
+                                <div id="Bookmarks-edit" class="group">
+                                    <div id="edit-Bookmark" class="bookmark">
+
+                        <form action="{% url 'bookmark_edit_bookmark' bookmark.id %}" name="mform1" id="mform1" method="post" >
+						{% csrf_token %}
+	                        <div id='proceed_with_details'>
+	                        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<div id="Bookmark-edit" class="group">
+    <div id="edit-Bookmark">
+    	<div class="fields hform">
+    		<input type='hidden' id='id_source_url' 	 name='source_url'	   value="{{bookmark.source_url}}"></input>
+			<input type='hidden' id='id_seo_title' 	 	 name='seo_title'	   value="{{bookmark.seo_title}}"></input>
+        	<input type='hidden' id='id_seo_description' name='seo_description' value="{{bookmark.seo_description}}"></input>
+			<div class="field-group">
+				<div class="field text-field fd-title">
+			        <div class="label"><label for="">{% trans 'Title' %}<span class="required-field">*</span></label></div>
+			        <div class="value" >
+			            <input type='text' id='id_title' name='title' style="font-size: 16px;    font-weight: bold;    padding: 3px 0 3px 6px;    width: 560px;" >
+			            <span class="tip">
+			            	{{ globalsettings.website_url }}/{% trans 'bookmarks' %}/
+			            	<input type="text" onkeyup="fillslug(this.value)" name="slug" id="id_slug" value="{{ bookmark.slug }}" class="default-url">
+			            </span>
+			        </div>
+			    </div>
+			</div>
+			<div class="field-group">
+				<div class="field select-field">
+					<div class="label">
+						<label for="">
+							Category
+							<span class="required-field">*</span>
+						</label>
+					</div>
+					<div class="value">
+						<select name="category" id="id_category" class="select-menu fl">
+							{% for category in category_list %}
+								<option value={{category.id}} {% if category == bookmark.category %}selected="selected"{% endif %}>{{category}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="field-group">
+				<div class="field text-field fd-title">
+			        <div class="label"><label for="">{% trans 'Summary' %}<span class="required-field">*</span></label></div>
+			        <div class="value" >
+			            <textarea id="id_summary" class="fxl" rows="8" cols="40" name="summary">{{bookmark.summary}}</textarea>
+			        </div>
+			    </div>
+			</div>
+			<div id='image_grid' >
+				
+			</div>
+			<center>
+            	<span align='center' id="ajax_loading" class="loading-stats"  style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" align="..."></span>
+            </center>
+            <div id='alert'>
+				<!-- Alert message -->
+			</div>
+            <div class="form-submit right group">
+	            <button class="cform-button" type="button" roll="button" onclick="location.replace('{% url 'bookmark_dash_board' %}')">
+	            	<span class="cform-button-text">{% trans 'Cancel' %}</span>
+	            </button>
+	            <button id="save_button" name="save_button" class="cform-button prime" value="save" >
+	            <!-- button id="save_button" name="save_button" class="cform-button prime" type="button" roll="button" -->
+	            	<span class="cform-button-text">{% trans 'SAVE' %}</span>
+	            </button>
+	        </div>
+	    </div>
+	</div>
+</div>
+	                        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	                        	<!-- Detailed Form here -->
+	                        <div>
+                        </form>
+                        </div></div>
+                    </div>	<!-- edit-Bookmark -->
+                </div>		<!-- bookmark edit -->
+            </div>			<!-- page wrap -->
+        </div>				<!-- user main -->
+        <div id="aside" class="side-bar">
+            {% include 'bookmarks/user/bookmark-faq-addpge.html' %} 
+        </div>	<!-- side-bar -->
+    </div> 		<!-- core wraper -->
+</div>			<!-- user-platform -->
+{% endblock %}
+{% block footer_include%}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bookmarks/bookmark_user.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/tag-it.js"></script>
+
+
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script-->
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#ajax_loading").show();
+		$.ajax({
+			type:		"POST",
+			url: 		'{% url 'user_bookmark_edit_fetch_images' %}',
+		    data:   	"id="+{{bookmark.id}},
+		    dataType: 	"html",
+		    success: 	function( result ) {
+		    				$("#ajax_loading").hide();
+							$("#image_grid").html(result);
+							$('input[value="{{ bookmark.image_url }}"]').attr('checked',true);
+		    			},
+	  	});
+	  	$("#id_title").val("{{ bookmark.title }}");
+		$("#alert_bar").hide();
+		$("#id_title").live("keyup",function(){
+			slug($(this).val());
+			$("#id_seo_title").val($(this).val());
+		});
+		{% if bookmark %}
+			$('.form-submit').addClass('form-submit-original');
+			easy_form_submit();
+		{% endif %}
+		$("#proceed_button").live('click',function(event){
+				$("#proceed_with_details").html('');
+				$("#alert").html('');
+				$("#ajax_loading").show();
+				var source_url = $("#id_source_url").val();
+				if(source_url.match("^(http:\/\/|https:\/\/|ftp:\/\/){1}([0-9A-Za-z]+\.)"))
+				{
+					$.ajax({    
+						type:		"POST",
+						url: 		'{% url 'user_bookmark_fetch_images' %}',
+					    data:   	"source_url="+$("#id_source_url").val(),
+					    dataType: 	"html",
+					    success: 	function( result ) {
+					    				$("#ajax_loading").hide();
+										$("#proceed_with_details").html(result);
+					    			},
+					    error:		function( result ) {
+					    				$("#ajax_loading").hide(); 
+										$("#alert").html("<div id='alert_bar' class='alert_bar'><span class='icon-alert' width='300px'></span><h4 id='message'>Sorry cannot fetch the requested URL. Try again with another URL</h4></div>");
+					    			}
+				  	});
+				}
+				else
+				{	
+					$("#ajax_loading").hide();
+					$("#alert").html("<div id='alert_bar' class='alert_bar'><span class='icon-alert' width='300px'></span><h4 id='message'> Enter valid url, for example http://www.example.com/ </h4></div>");										
+				}
+		});
+		$("#mform1").validate({
+			ignore:'',
+			highlight: 		function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');	$(element).addClass("error");	},
+			unhighlight: 	function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	title: 		"required",
+		    	slug:		"required",
+		    	category:	"required",
+		    	summary:	"required",
+    			image_url: 	"required"	
+		   	}	
+		});
+	});
+
+function slug(value){
+	_slugify_strip_re = /[^\w\s-]/g;
+	_slugify_hyphenate_re = /[-\s]+/g;
+	value = value.replace(_slugify_strip_re, '').trim().toLowerCase();
+	value = value.replace(_slugify_hyphenate_re, '-');
+	$("#id_slug").val(value);
+}
+</script>
+{% endblock %}

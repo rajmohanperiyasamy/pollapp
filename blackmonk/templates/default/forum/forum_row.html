@@ -1,0 +1,16 @@
+{% load ds_utils %}
+{% load truncate_filter %}
+{% load i18n %}
+  <dl class="forum group {% cycle '' 'alt' %}">
+       <dt class="read_icon">
+          {% ds_link forum 'title' %}
+          <span class="sub_title">{{forum.description|truncate_chars:20}}</span>
+       </dt> 
+       <dd class="topics">{{forum.topic_count}}<dfn>{% trans 'Topics' %}</dfn></dd>
+       <dd class="posts">{{ forum.post_count }}<dfn>{% trans 'Posts' %}</dfn></dd>
+       {%if forum.last_post%}
+       <dd class="last_post"><span><dfn>{% trans 'Last post' %}</dfn><a href="{{forum.last_post.get_absolute_url }}"  title="{{forum.last_post.topic.name}}" class="post_title">{{forum.last_post.topic.name|truncate_chars:18}}</a><br>by {%ds_link  forum.last_post.user.profile 'auth_name'%} <br>on <span class="time">{% ds_time forum.last_post.created %}</span></span></dd>
+       {%else%}     
+       <dd class="last_post"><span class="no_post"><dfn>{% trans 'Last post' %}</dfn> {% trans 'No Post' %}</span></dd>
+       {%endif%} 
+  </dl> 

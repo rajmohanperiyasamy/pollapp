@@ -1,0 +1,125 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{% trans "Twitter connect" %} - {{globalsettings.domain}}</title>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/access.css">
+</head>
+
+<body>
+	<div class="container">
+        <div class="container-inner">
+        	<h1 class="logo">
+            	<a href="#">
+                	<span>
+                		<img width="261" height="35" src="{% if globalsettings.logo %}{{ globalsettings.logo.url }}{% endif %}" alt="{{globalsettings.domain}}" />
+                    </span>
+                </a>
+            </h1>
+            <div class="form-container group" style="width:343px;" id="signupdiv">
+
+            	<form class="signup-email" id="complete_form" action="/twitter/associate/" method="POST" style="border-right:none; margin-bottom:0px;">
+            	{% csrf_token %}
+            	  <input type="hidden" name="next" value="{{ next }}" />
+              
+                <input type="hidden" name="screen_name" value="{{ screen_name }}" />
+                	<h4 class="title">{% trans "Complete your account creation" %}</h4>
+                	{{error}}
+            		<dl>
+                        <dt><label>{% trans "E-mail address" %}</label><em>*</em></dt>
+                        <dd><input type="text" name="email" value='{{email}}' style="width: 80%;"></dd>
+                        <dt><label>{% trans "Your name" %}</label><em>*</em><dt>
+                        <dd><input type="text" name="display_name" value="{{ screen_name }}" style="width: 80%;"></dd>
+                     
+					</dl>
+                    <button class="blue" type="submit" style=""><span>{% trans "Submit & Continue" %}</span></button>
+                    <div class="group">
+                        <a href="/privacy-policy.html" target="_blank" style="text-align: left; display:block; padding-left: 22px; font-size: 11px; margin-top: 10px; text-decoration: none; padding-right:22px;">{% trans "Privacy statement" %}</a>
+                   </div>
+                </form>
+
+                               
+                <div class="group" style="background-color: #F6F6F6; border-radius: 0 0 5px 5px; border-top: 1px solid #DBDBDA; float: left; padding: 20px; text-align: left; width: 303px;">
+                   <span style="color:#999;font-size:13px;" >{% trans "Already a member?"%} </span> <a href="#" style="font-size:13px;" id="signinlink">
+                      {% trans "connect with your account" %}
+                   </a>
+               </div>
+            </div>
+            <div class="form-container group" style="width:343px;display:none" id="signindiv">
+
+            	<form class="signup-email" id="connect_form" action="/twitter/associate/" method="POST" style="border-right:none; margin-bottom:0px;">
+            	{% csrf_token %}
+            	<input type="hidden" name="next" value="{{ next }}" />
+              
+                <input type="hidden" name="screen_name" value="{{ screen_name }}" />
+                	<h4 class="title">{% trans "Connet with your existing account"%}</h4>
+                	{{error}}
+            		<dl>
+                        <dt><label>{% trans "E-mail address"%}</label><em>*</em></dt>
+                        <dd><input type="text" name="email" value='{{email}}' style="width: 80%;"></dd>
+                        <dt><label>{% trans "Password" %}</label><em>*</em><dt>
+                        <dd><input type="password" name="password"  style="width: 80%;"></dd>
+                     
+					</dl>
+                    <button class="blue" type="submit" style=""><span>{% trans "Submit & Continue" %}</span></button>
+                    <div class="group">
+                        <a href="/privacy-policy.html" target="_blank" style="text-align: left; display:block; padding-left: 22px; font-size: 11px; margin-top: 10px; text-decoration: none; padding-right:22px;">{% trans "Privacy statement" %}</a>
+                   </div>
+                </form>
+        
+                
+                
+                <div class="group" style="background-color: #F6F6F6; border-radius: 0 0 5px 5px; border-top: 1px solid #DBDBDA; float: left; padding: 20px; text-align: left; width: 303px;">
+                   <span style="color:#999;font-size:13px;" >{% trans "New user?" %} </span><a href="#" style="font-size:13px;" id="signuplink">
+                       {% trans "complete your account creation" %}
+                   </a>
+               </div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$("#complete_form").validate({
+		ignore: "",
+		highlight: function(element, errorClass){$(element).addClass('error');$(element).parent().addClass('field-error');},
+		unhighlight: function(element, errorClass){$(element).removeClass('error');$(element).parent().removeClass('field-error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			email:{required:true,email:true},
+			//username:"required",
+			display_name:"required"
+	   	}
+	});
+	$("#connect_form").validate({
+		ignore: "",
+		highlight: function(element, errorClass){$(element).addClass('error');$(element).parent().addClass('field-error');},
+		unhighlight: function(element, errorClass){$(element).removeClass('error');$(element).parent().removeClass('field-error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			email:{required:true,email:true},
+			//username:"required",
+			password:"required"
+	   	}
+	});
+	$(document).ready(function(){
+		$('#signinlink').bind('click', function() {
+		$("#signupdiv").hide();
+ 			$('#signindiv').show();
+		});
+		$('#signuplink').bind('click', function() {
+		$("#signindiv").hide();
+ 			 $('#signupdiv').show();
+		});
+	});
+</script>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+		<a href="https://docs.google.com/document/pub?id=12wUL4bUex8RrBMzXOu8jCU-c-mYNE3svjKJc5AxTLag#id.34cmpz2oni0d" target="_blank" class="btn-txt-prime bm-upload-videos" title="Quick Demo"><span class="btn-txt" id="aeaoofnhgocdbnbeljkmbjdmhbcokfdb-mousedown">Quick Demo</span></a>
+	    <hr>
+        <h5>{% trans 'Twitter lists' %}</h5>
+		<p>Click on ‘Add New List’ and enter list name, description and choose a category you would like to add your list to, and then click on ‘Save’. .</p>
+		<p>{% trans '* You can add upto 20 lists.' %}</p>
+		<p>{% trans '* List names cannot begin with a numerical character.' %}</p>
+		<h6>Note:</h6> 
+		<p>The twitter lists which you create in your twitter account should be similar to the one you created in BlackMonk Admin CP.<p>
+	</div>                                    
+</div>   

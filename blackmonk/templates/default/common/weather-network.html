@@ -1,0 +1,224 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% load i18n %}
+{% load tabs %}
+{% block pagetitle %}{{globalsettings.city}} {% trans 'Weather, Weather Forecast, Current Conditions, & Temperature' %} | {{globalsettings.domain}}{% endblock %}
+{% block meta %}
+<meta name="Description" content="{{globalsettings.domain}} {% trans 'has the most accurate local weather forecasts and weather information for' %} {{globalsettings.city}}. {% trans 'Check out the current weather conditions in real time before stepping out of your home!' %}">
+<meta name="Keywords" content="{{globalsettings.city}} {% trans 'weather' %}, {{globalsettings.city}} {% trans 'weather forecast' %}, {% trans 'weather' %}, {% trans 'weather forecast' %}, {% trans 'weather conditions' %}, {% trans 'current weather conditions' %}, {% trans 'temperature' %}, {% trans 'climate' %}, {% trans 'forecast' %}, {% trans 'condition' %}, {% trans 'pressure' %}, {% trans 'tendency' %}, {% trans 'visibility' %}, {% trans 'wind' %}, {% trans 'humidity' %}, {{globalsettings.city}}">
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/weather.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "weather" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+
+			<div class="group">
+			{% if error %}
+				<div class="flash_error_alert"><h2>{% trans 'Sorry.! Weather Forecast Information is not availabale now.Please try again later' %}</h2></div> 
+			{% else %}
+                <div id="weather_datas" class="main"> 
+				<div id="weather_header" class="group">
+					{% for link in weather_links %}
+                        {% ifequal link.link_name 'TWN Logo'%}<a href="{{link.link_url}}" target="_blank"><img src="{{STATIC_URL}}images/weather/nw/wn_logo.gif" alt="The Weather Network" title="The Weather Network"></a>{% endifequal %}
+                    {% endfor %}    
+						<ul>
+                        	<li class="title_text"><h4>{% trans 'Other Links:' %}</h4></li>
+						    {% for link in weather_links %}
+	                            {% ifequal link.link_name 'School Day Forecast'%}<li><a href="{{link.link_url}}" target="_blank">{% trans 'School Day Forecast' %}</a></li>{% endifequal %}
+	                            {% ifequal link.link_name 'Airport Forecast'%}<li><a href="{{link.link_url}}" target="_blank">{% trans 'Airport Forecast' %}</a></li>{% endifequal %}
+	                            {% ifequal link.link_name 'Highway Conditions'%}<li><a href="{{link.link_url}}" target="_blank">{% trans 'Highway Conditions' %}</a></li>{% endifequal %}
+	                            {% ifequal link.link_name 'Weather Warnings'%}<li><a href="{{link.link_url}}" target="_blank">{% trans 'Weather Warnings' %}</a></li>{% endifequal %}
+							{% endfor %}	
+                        </ul>                        
+                    </div>  
+					<h2 class="section_title" style="font-size:24px;">{% trans 'Weather for' %} {{globalsettings.city|title}}</h2>
+                    <div id="currentForecast">
+						<h3>{% trans 'Current Weather' %}<span>{% trans 'Updated:' %} {{wdate|ds_site_dateformat}}, {{wdate|ds_site_timeformat}} - {{station}}</span></h3>
+                        <div class="hslice group" id="obs_conds">
+                        	<div class="col_left">
+                                <img id="condicon" class="fl" title="{{forcast}}" alt="{{forcast}}" src="{{cur_weather_icon}}">
+                                <div id="obs_currtemp">
+                                    <div>
+                                        <p>{{temperature}}</p>
+                                        <p id="tempunit">{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %}</p>
+                                    </div>
+                                    <p id="conddesc">{{forcast}}</p>
+                                </div><!-- /obs_currtemp -->
+                            </div>
+                            <!-- secondary obs lists -->
+                            <div id="obs_lists" class="col_right">							
+                                <ul>		
+                                    <!-- Feels like -->
+                                    <li><strong>{% trans 'Feels Like:' %}</strong> {{feels}}</li>
+                                    <!-- Station -->
+                                    <li><strong>{% trans 'Station:' %}</strong> {{station}}</li>
+                                    <!-- Wind -->
+                                    <li><strong>{% trans 'Wind:' %}</strong> {{wind_dir}} {{wind_speed}}{% trans 'km/h' %}</li>
+                                </ul>
+                                <ul>
+                                    <!-- Humidity -->
+                                    <li><strong>{% trans 'Relative Humidity:' %}</strong> {{humidity}}%</li>
+                                    <!-- Pressure -->
+                                    <!--li><strong>Pressure:</strong> {{pressure}} kPa, {{pressure_trend}}</li-->
+                                </ul>
+                            </div>                            
+                        </div>
+                        <div class="forecast_btns">
+                        {% for link in weather_links %}
+                            {% ifequal link.link_name 'Hourly Forecast'%}<a class="button super black" href="{{link.link_url}}" target="_blank">{% trans 'Hourly' %}</a>{% endifequal %}	
+                            {% ifequal link.link_name 'Last 24 Hours'%}<a class="button super black" href="{{link.link_url}}" target="_blank">{% trans 'Last 24 Hours' %}</a>{% endifequal %}	
+                            {% ifequal link.link_name 'Satellite Maps'%}<a class="button super black" href="{{link.link_url}}" target="_blank">{% trans 'Radar Map' %}</a>{% endifequal %}						
+                        {% endfor %}
+						</div>                                                                  
+					</div>
+                    <div id="shortTermForecast">
+						<h3>{% trans 'Short Term Forecast' %}<span>{% trans 'Updated:' %} {{wdate|ds_site_dateformat}}, {{wdate|ds_site_timeformat}} - {{station}}</span></h3>
+            
+						<table>
+			
+                        <thead>
+                        	<tr>
+                        		<th class="desc">&nbsp;</th>
+             {% for stfc in short_term_forcast.name_in %}
+                                
+                                <th>{{stfc}}</th>
+		   	{% endfor %}
+				 		   </tr>
+                        </thead>
+							
+                        <tbody>
+                        	<tr>
+                        		<td class="desc">&nbsp;</td>
+            {% for stfc in short_term_forcast.icon %}            	
+                                <td><img title="" alt="" src="{{stfc}}"></td>
+			{% endfor %}	
+			 				</tr>				
+                            <tr id="stcond">
+                            	<td class="desc">{% trans 'Condition:' %}</td>
+            {% for stfc in short_term_forcast.forcast %}   
+                                <td class="cond">{{stfc}}</td>
+            {% endfor %}               
+						    </tr>
+							
+                            <tr id="sttemp">
+                                <td class="desc temperature">{% trans 'Temperature:' %}</td>
+		   {% for stfc in short_term_forcast.temp %}  
+                                <td class="temp">{{stfc}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %}</td>
+		   {% endfor %} 						
+                            </tr>
+                            <tr id="stpop">
+                            	<td class="desc">{% trans 'P.O.P.:' %}</td>  
+           {% for stfc in short_term_forcast.pop %} 
+                                <td>{{stfc}}%</td>
+           {% endfor %}                   
+							</tr>   
+                            <!--tr id="stwind">
+                            	<td class="desc">Wind:</td>
+           {% for stfc in short_term_forcast.wind %} 
+                                <td>
+                                {{stfc}}km/h						
+                               </td> 
+           {% endfor %}                  
+							</tr-->
+                            </tbody>
+                        </table>
+                        <div class="forecast_btns">
+                        {% for link in weather_links %}
+                            {% ifequal link.link_name '14 Day Trend'%}<a class="button super black" href="{{link.link_url}}" target="_blank">{% trans '14 Day Trend' %}</a>{% endifequal %}	
+                            {% ifequal link.link_name 'Video Forecast'%}<a class="button super black" href="{{link.link_url}}" target="_blank">{% trans 'Video Forecast' %}</a>{% endifequal %}	
+                            {% ifequal link.link_name 'Weather Statistics'%}<a class="button super black" href="{{link.link_url}}" target="_blank">{% trans 'Statistics' %}</a>{% endifequal %}						
+                        {% endfor %}
+                        </div>                            	
+                    </div>
+                    <div id="longTermForecast">
+                        <h3>{% trans 'Long Term Forecast' %} <span>{% trans 'Updated:' %} {{wdate|ds_site_dateformat}}, {{wdate|ds_site_timeformat}} - {{station}}</span></h3>	
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="desc">&nbsp;</th>
+		        	{% for ltf in long_term_forcast.lf_name_in %} 
+                                    <th>{{ltf.day}} <span class="session">{{ltf.date}}</span></th>
+                                    <!--th>Thursday </th>
+                                    <th>Friday <span class="session">Feb. 18</span></th>
+                                    <th>Saturday <span class="session">Feb. 19</span></th>
+                                    <th>Sunday <span class="session">Feb. 20</span></th-->
+					{% endfor %}				
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="dayicons">
+                                    <td class="desc">&nbsp;</td>
+					{% for ltf in long_term_forcast.lf_icon %} 				
+                                    <td><img title="" alt="" src="{{ltf}}"></td>
+                    {% endfor %}                
+                                </tr>
+                                <tr id="dayconditions">
+                                	<td class="desc">{% trans 'Condition:' %}</td>
+                    {% for ltf in long_term_forcast.lf_forcast %} 	            	
+                                    <td class="cond">{{ltf}}</td>
+                    {% endfor %}                 
+                                </tr>
+                                <tr id="high">
+                                    <td class="desc">{% trans 'High Temp:' %}</td>
+					{% for ltf in long_term_forcast.lf_high_temp %}				
+                                    <td>{{ltf}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %}</td>
+                    {% endfor %}               
+                                </tr>   
+                                <tr id="low">
+                                    <td class="desc">{% trans 'Low Temp:' %}</td>
+					{% for ltf in long_term_forcast.lf_low_temp %}					
+                                    <td>{{ltf}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %}</td>
+					{% endfor %}
+                                </tr>                                                                     
+                                <tr id="daypop">
+                                    <td class="desc">{% trans 'P.O.P.:' %}</td>
+					{% for ltf in long_term_forcast.lf_pop %}					
+                                    <td>{{ltf}}%</td>
+					{% endfor %}				
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="almanac">
+                        <h3>Almanac</h3>
+                        <div id="cond_lists">							
+                            <ul>		
+                                <!-- Feels like -->
+                                <li><strong>{% trans 'Normal Low:' %}</strong> {{almanac.alm_nor_low}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %}</li>
+                                <!-- Station -->
+                                <li><strong>{% trans 'Normal High:' %}</strong> {{almanac.alm_nor_high}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %}</li>
+                                <!-- Wind -->
+                                <li><strong>{% trans 'Sunrise at:' %}</strong> {{almanac.alm_sunrise}}</li>
+                            </ul>
+                            <ul class="br_0">		
+                                <!-- Feels like -->
+                                <li><strong>{% trans 'Record Low:' %}</strong> {{almanac.alm_record_low}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %} in {{almanac.alm_record_low_year}}</li>
+                                <!-- Station -->
+                                <li><strong>{% trans 'Record High:' %}</strong> {{almanac.alm_record_high}}{% if wx_api_obj.weather_unit == 'cel' %}&deg;C{% else %}F{% endif %} in {{almanac.alm_record_high_year}}</li>
+                                <!-- Wind -->
+                                <li><strong>{% trans 'Sunset at:' %}</strong> {{almanac.alm_sunset}}</li>
+                            </ul>
+                        </div>                            
+                    </div>  
+					{% for link in weather_links %}
+                    {% ifequal link.link_name 'TWN Copyright'%}<div style="clear:left; padding:40px 20px 20px; text-align:center;color:#999">&copy; {% trans '2011 Data supplied by' %} <a href="{{link.link_url}}" target="_blank">{% trans 'The Weather Network' %}</a>. {% trans 'All rights reserved.' %}</div>{% endifequal %}                                              
+                	{% endfor %} 
+				</div>                  
+                <div class="secondary">
+					<div class="advt ad_300x250">
+                    	<span class="declare">{% trans 'Advertisement' %}</span>
+                    	<div class="display_ad"></div>                 		
+                    </div><!-- /ad_300x250 --> 
+					<!--div style="margin-top:10px;background-color:#fcfcfc; border:1px solid #e6e6e6;">
+						<!-- Facebook likebox starts -->
+                        {% include 'default/likebox.html' %}
+						<!-- Facebook likebox ends -->                    </div-->
+                </div> <!-- /secondary -->
+		{% endif %}		
+			</div>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends base %}
+{% load tabs %}
+{% load truncate_filter %}
+{% load thumbnail %}
+{% load i18n %}
+{% load ds_utils %}
+{% load bm_gallerytags %}
+{% block pagetitle %}{% if selected_category.seo_title %}{% seo_format_tag module='Photos' title=selected_category.seo_title code='LT' category=category.name as seo_meta_title %}{% elif selected_category.name %}{% seo_format_tag module='Photos' title=selected_category.name code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Photos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/gallery/gallery.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+		<script type="text/javascript">
+	    $(document).ready(function(){
+		 $('.bids').each(function(){
+				bids.push($(this).val());
+			});
+	        module_listing(bids,category);
+		});
+		
+		</script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "photos" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+	<div class="pD2015 bM-bX sRcHbR">
+            <div class="row-fluid">
+                <div class="span9 fRm">
+                    <form class="form-search mRb0" action="{% url 'search_gallery' %}">
+                        <div class="mDl">
+                            <h3 class="mDl-nM">
+                                <i class="bUi-iCn-pHoT-24 fS16" aria-hidden="true"></i>
+                                <span class="ib">Gallery
+                                    <i class="bUi-iCn-aNg-rT-12 cLr-lTgRy hMp" aria-hidden="true"></i>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="span5">
+                            <input type="text" placeholder="Search for Photo" id="keyword" name="keyword" class="">
+                        </div>
+                        <div class="span3">
+                            <select class="bUiSlCt-wHt w100DrD" id='category' name='category'>
+                                <option>All Categories</option>
+								{% for cat in photocategories %}
+                                    {% if cat.is_editable %}
+									<option>{{cat.name}}</option>
+                                    {% endif %}
+								{% endfor %}
+                            </select>
+                        </div>
+                        <div class="ib sUb-bTn mRl12 mRl0mP">
+                            <button class="btn btn-primary" type="submit">
+                            <i class="bUi-iCn-sRh-16" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+   				{% block searchblock %}
+				{% activetab 'addbutton' 'photos' %}
+               	{% include "default/add_object_search.html" %}
+				{% endblock %}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="main span8">
+			{% if not keyword %}
+                {% get_featured_photos limit=20 as featured_photos %}
+				{% with featured_photos as featured_img %}
+                {% if featured_img %}
+                <div class="row-fluid">
+                    <section class="sCn pD0">
+                        <div class="fTrD-bL mRb0 sLdR-mDm mDa-65 aDpTv cTrL-rT">
+                            <div class="fTrD-bL-iN bDrRtLbL">
+                                <ul id="fTrDgLrY" class="fTrD-iTmS" style="width:10000px;">
+                                    {% for photo in featured_img %}
+                                    <li class="fTrD-iTm bDrRtLbL" style="float:left" itemscope itemtype="http://schema.org/ImageGallery">
+                                        <div class="fTrD-tXt sDw">
+                                            <div class="vAlGn">
+                                                <div class="fTrD-tXt-iN">
+                                                    <h3 class="fTrD-hD" itemprop="name"><a href="{{photo.get_absolute_url}}" itemprop="url">{{photo.album.title}}</a></h3>
+                                                    <div class="fTrD-mTa mR50">
+                                                        <p><span class="fS12"><a href="{{photo.get_absolute_url}}" class="fW200 mRr10"><i aria-hidden="true" class="bUi-iCn-aRw-r-16 ib fS12"></i> {% trans 'View Gallery' %}</a></span><span class="pPlT"><a href="{% url 'user_profile' photo.created_by.profile_slug %}" class="uC fS11 fW200" itemprop="author">{{photo.created_by.display_name}}</a></span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <!-- /.TrD-tXt -->
+                                        <figure class="fTrD-mDa">
+                                            <div class="fTrD-mDa-hVr" itemprop="genre">
+                                                <a href="{{photo.album.category.get_absolute_url}}" title="Go to {{photo.album.category}}" class="lBl tL dFt mNi uC">{{photo.album.category}}</a>
+                                            </div>
+                                            <span class="bUi-tMb-wPr fLxiMgW" href="{{photo.get_absolute_url}}">
+                                                <span class="bUi-tMb">
+                                                    <span class="bUi-tMb-pRpL">
+                                                        <span class="bUi-tMb-cLp">
+															{% with photo.album.new_cover_image as cover %}
+																{% if cover %}
+			                                                        <span class="bUi-tMb-cLp-iN">
+			                                                            <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if cover.photo %}{% thumbnail cover.photo 800x0 %}{% else %}{{ cover }}{% endif %}" alt="{{photo.title}}" itemprop="image">
+			                                                            <span class="vRtL-aLn"></span>    
+			                                                        </span>
+																{% else %}
+																		<span class="iCn-bRdR50 oP25" title="{{photo.title}}"><i aria-hidden="true" class="bUi-iCn-pHoT-24 cLr-gRy ib"></i></span>
+																		<div class="vRtL-aLn"></div>
+																{% endif %}
+															{% endwith %}
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </figure> <!-- /.TrD-mDa --> 
+                                    </li> <!-- /.fTrD-iTm -->
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                {% endif %}
+				{% endwith %}
+			{% endif %}
+                <div class="row-fluid">
+                    {% include 'default/gallery/ajax_home_photos.html' %}
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div class="mSnRy">
+                    <section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right"></section>
+                </div>
+                <div class="mSnRy">
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}            

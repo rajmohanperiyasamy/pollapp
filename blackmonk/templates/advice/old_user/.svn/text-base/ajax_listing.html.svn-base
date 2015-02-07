@@ -1,0 +1,57 @@
+{% load i18n %}	
+{% load thumbnail %}	
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{created}}" name="id_created" id="id_created">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="" name="id_action" id="id_action">
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+{% if advice %} 
+	<ol class="data-table table-lists-container" id="ajax_content_list">
+		{% for atr in advice %}	
+			<li class="table-list" id="li_{{atr.id}}">
+				<div class="table-list-container check-item group">
+			 		{% if atr.is_featured %}
+						<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+					{% endif %}
+				 	<span class="checkbox-wrap">
+						<span class="cform-checkbox-container"><input type="checkbox" value="{{atr.id}}" id="id_event_action" name="artCulture" class="check-overflow cbox"><span class="cform-checkbox-element"></span></span>
+					</span>
+					<div class="item-info relative-block">
+						<h3 class="title"><a href="{% url 'user_preview_advice' atr.id %}">{{atr.question}}</a></h3>
+						<p class="ltxt80">
+							{{atr.category}}
+							<span class="divider12">|</span> {% trans 'By' %} <a href="{% url 'user_profile' atr.created_by.profile_slug %}">{{atr.created_by.display_name}}</a> 
+							<span class="divider12">|</span>{{atr.created_on|date:"M d, Y"}}
+						</p>
+						<ul class="quick-stats group">
+	        	            <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{atr.viewed}}</a></li>
+	            	        <li class="cmnt"><a class="tttxt"title="{% trans 'Answers(Reply)' %}" href="{% url 'user_preview_advice' atr.id %}"><span class="inline-block icon-cmnt-stats"></span>{{atr.get_answer_count}}</a></li>
+		                </ul>
+						<div class="item-status no-options dev_hide_list_status" onclick="display_change_status({{atr.id}},$('#id_estatus_{{atr.id}}').attr('name'));">
+		                	<span class="status-inside inline-block" id="id_span_chge_sts_{{atr.id}}">
+								<span title="{{atr.get_status|capfirst}}" name="{{atr.status}}" id="id_estatus_{{atr.id}}" class="inline-block tttxt status-idty icon-{{atr.get_status}}"></span>
+							</span>	 
+	    	            </div>
+				   	</div>
+					<div class="action-buttons {% if forloop.counter == 1 %}tip tip7{% endif %}">
+	                	<div class="relative-block">
+	                    	<span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{atr.id}}" onclick="display_settings({{atr.id}});"><span class="action-icon icon-manage"></span></span>
+		                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{atr.id}}" style="display:none">
+								{% if atr.status == 'D' or atr.status == 'N' %}
+									<li><a href="{% url 'user_add_advice' %}?id={{atr.id}}">{% trans 'Edit' %}</a></li>
+								{% endif %}
+	                	        <li><a onclick="if(confirm(gettext('Are you sure you want to delete the advice?'))){filter_action({{atr.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+	                    	</ul>
+						</div>                                                              	                                                         
+	            	</div>
+				</div>
+			</li>
+		{% endfor %}
+	</ol>
+	<div id="pagenation">
+		{% include 'common/pagination_ajax.html'%}  
+	</div>
+{% else %}
+	<div class="no-data"><p>{% trans 'Sorry , No Advice found !' %}</p></div> 
+{% endif %}   

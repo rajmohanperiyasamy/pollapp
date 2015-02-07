@@ -1,0 +1,46 @@
+{% load thumbnail %}
+{% load i18n %}
+{% load template_loop %}	
+	<div class="preview-items-head">
+     <h4>{% trans 'Classifieds Suggested to you' %}</h4>
+    </div>
+	<input type="hidden" id="current_display_module" value="classifieds">
+	<input type="hidden" id="current_display_mode" value="{{current_display_mode}}">
+	<input type="hidden" id="current_sort_by_mode" value="{{current_sort_by_mode}}">      
+	{% if object_list %}		   
+	<ol class="data-table table-lists-container" id="ajax_content_list">
+			{% for object in object_list %}	
+			<li class="table-list" id="li_{{object.id}}" style="background-color:{% if object.status == 'R' %}#fff{% else %}#ffb{% endif %}">
+			        <div class="table-list-container has-thumb110 group">
+			            <div class="item-media">
+                        	<a href="{{ object.suggestion.suggested_item.get_absolute_url }}" class="inline-block">
+                                <span class="item-thumb thumb-110">
+                                    <span class="thumb-in">
+                                        <span class="thumb"><img src="{% if object.suggestion.suggested_item.get_first_photo_90 %}{% thumbnail object.suggestion.suggested_item.get_first_photo_90 110x0 %}{% else %}{{ object.suggestion.suggested_item.get_default_image }}{% endif %}" alt="{{ object.suggestion.suggested_item.title }}" class="inline-block"><span class="inline-block h100"></span></span>
+                                    </span>
+                                </span>
+							</a>                                                            
+                        </div> 
+						<div class="item-info relative-block">
+			                <h3 class="title" id="hed"><a class="notify_obj_title" href="javascript:void(0)" id="{{object.id}}">{{object.suggestion.suggested_item.title}}</a></h3>
+							<p class="ltxt80">{% trans 'Suggested by' %} {{object.suggestion.suggested_by.profile.display_name}} {% trans 'On' %} {{object.suggestion.suggested_on|date:"d M, Y"}}</p>
+							<input type='hidden' class="ltxt80 read_status" id="read_status_{{object.id}}" value="{% if object.status == 'N' %}Unread{% else %}Read{% endif %}">
+			                <ul class="quick-stats group">
+			                    <li class="cmnt">{% autoescape off %}{{ object.suggestion.suggested_item.description|truncatewords:30  }}{% endautoescape %}</li>
+			                </ul>
+							<p class="ltxt80 message" id="msg_box_{{object.id}}" style="display:none;">
+								{% trans 'Message :' %} {{object.suggestion.subject}}<br>
+								click <a href="{{object.suggestion.suggested_item.get_absolute_url}}">HERE</a> to open the classified
+							</p>
+			            </div>
+			        </div>
+			    </li> 
+			{% endfor %}
+			</ol>
+			<div id="pagenation">
+				{% include 'account/suggestfriend/pagenation.html' %}      
+			</div>  
+			{% else %}
+				<div class="no-data"> <p>{% trans 'Sorry , No Suggested classifieds found' %}</p></div>
+         	{% endif %}
+<script type="text/javascript" src="{{STATIC_URL}}js/user_notification.js"></script>

@@ -1,0 +1,61 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:96px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Advertisement Settings' %}</p>
+</div>
+<div id="advertisement-options" class="group">
+    <form action="{% url 'admin_configuration_advertisement_update' %}" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+				<section id="signin-with-facebook" class="section">
+                	<div class="section-head">
+                    	<label for="doubleclick" class="check-in">
+                    		<span class="check-button tttxt-e" title="{% trans 'Select' %}">
+                    			<span class="cform-radio-container">
+                    				<input id="doubleclick" name="adoption" type="radio" value="D"  {% if not advertisement.adoption %}checked="checked"{% endif %}{% if advertisement.adoption == 'D' %}checked="checked"{% endif %}>
+									<span class="cform-radio-element"></span>
+								</span>
+							</span>
+						</label>
+						<h3 class="section-title tttxt-e checkbox-left" title="{% trans 'Select' %}">
+							<span class="favicon"><img src="http://www.google.com/doubleclick/images/favicon.ico" /></span>
+							{% trans 'Doubleclick' %}
+						</h3>
+                   	</div>
+                    <div class="section-content tgle" id="D" style="{% if advertisement.adoption == 'O' %}display:none;{% endif %}">
+                    	<div class="field text-field">	
+					    	<div class="label"><label>{% trans 'Header Section' %}</label></div>	
+					    	<div class="value">
+								<textarea name="adopt" id="adopt_D" style="width:300px;" rows="8">{% if advertisement.adoption == 'D' %}{{advertisement.header_section}}{% endif %}</textarea>
+					    	</div>	
+				        </div>
+					</div>                                                                  
+    		</section> <!-- end section --> 
+			<section id="signin-with-twitter" class="section">
+                <div class="section-head">
+                    <label for="openid" class="check-in">
+                    	<span class="check-button tttxt-e" title="{% trans 'Select' %}">
+                    		<span class="cform-radio-container">
+                    			<input id="openid" name="adoption" type="radio" value="O" {% if advertisement.adoption == 'O' %}checked="checked"{% endif %}>
+								<span class="cform-radio-element"></span>
+							</span>
+						</span>
+					</label>
+					<h3 class="section-title tttxt-e checkbox-left" title="{% trans 'Select' %}">
+						<span class="favicon"><img src="http://openx.com/sites/default/files/openx_favicon.ico" /></span>
+						{% trans 'OpenX' %}
+					</h3>
+                </div> 
+                <div class="section-content tgle" id="O" style="{% if advertisement.adoption == 'D' %}display:none;{% endif %}{% if not advertisement.adoption %}display:none;{% endif %}">
+                	<div class="field text-field">	
+				    	<div class="label"><label>{% trans 'Header Section' %}</label></div>	
+				    	<div class="value">
+							<textarea name="adopt" id="adopt_O" style="width:300px;" rows="8">{% if advertisement.adoption == 'O' %}{{advertisement.header_section}}{% endif %}</textarea>
+						</div>	
+			        </div>
+				</div>                
+        	</section> <!-- end section -->   
+		</div>    
+    	<div class="modal-base form-submit group trp-bg">
+	  		<button role="button" class="cform-button prime right" type="button" onclick="save_advertisement_setting()"><span class="cform-button-text">{% trans 'Save Changes' %}</span></button>
+		</div>           
+    </form>
+</div>     

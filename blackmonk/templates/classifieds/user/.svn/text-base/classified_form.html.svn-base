@@ -1,0 +1,454 @@
+{% extends "user_base.html" %}
+{% load i18n %}
+{% load upload_tags %}
+{% load ds_utils %}
+{% load tabs %}
+
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor4/ckeditor.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "classifieds" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+    	<div class="span10 sP9mX979 sP12mX767">
+            <div class="row-fluid">
+				<div class="main span9">
+					<section class="sCn pD0">
+						<div class="cLrFx pD20">
+							<div class="pLlT">
+								<h3 class="mR0 tRnCt">{% if not classified %}Submit{% else %}Update{% endif %} Classifieds</h3>
+							</div>
+						</div>
+						<hr class="mRb12 mRt0">
+						<div class="pD20">
+							<form class="form-horizontal uSr-aCnT mRb0" id="mform" action="{% url 'user_add_classified' %}" method="post" onsubmit="return validate();">{% csrf_token %}
+                            	<div class="control-group mRb5">
+                                    <div class="controls">
+                                        <label class="radio inline fW-nRmL">
+                                            <input type="radio" value='S' name="action" {% if classified.action == 'S'%}checked='checked'{% endif %} {% if not classified %}checked='checked'{% endif %}> I am offering
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <label class="radio inline fW-nRmL">
+                                            <input type="radio" value='B' name="action" {% if classified.action == 'B'%} checked='checked'{% endif %} > I want
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Title<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{form.title}}
+                                    </div>
+                                </div>
+                                {% include 'common/coverphoto_form_user.html' %}
+                                <div class="control-group">
+                                    <label class="control-label" >Parent Category<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+										<input type="hidden" id="classified" name="classified" value="{{classified.id}}">
+										<input type="hidden" id="classified_category" name="classified_category" value="{{category.id}}">
+                                        <select name="parent_category" id="parent_category" title='Choose one of the following...' class="iSp8 bM-sLt">
+											<option value=""></option>
+											{% for pc in parent_category %}
+											{% if pc.name != 'Uncategorized' %}
+                                            	<option value="{{pc.id}}" {% if classified.category.parent.id == pc.id  %}selected="selected"{% endif %}>{{pc}}</option>
+                                            {% endif %}
+											{% endfor %}
+                                        </select>
+                                        <span class="help-block">Select a parent category.</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Sub Category<em class="cLr-rEd">*</em></label>
+                                    <div class="controls" id="sub_cat_holder">
+                                        <select data-size="10" name="sub_category" title='Choose parent category first...' class="iSp8 bM-sLt">
+                                            
+                                        </select>
+                                        <span class="help-block">Click a sub category.</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">Price ({{globalsettings.currency}})</label>
+                                    <div class="controls">
+                                        <input type="text" id="id_price" value="{% if classified.classified_price %}{{classified.classified_price}}{% endif %}" name="classified_price" class="iSp8" placeholder="$0000">
+                                    </div>
+                                </div>
+								<div id="attributes">
+									{% include 'classifieds/user/part_attributes.html' %}
+								</div>
+                                <div class="control-group">
+                                    <label class="control-label" >Description<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{form.description}}
+                                    </div>
+                                </div>
+                                 <div class="control-group">
+                                    <label class="control-label">Tags</label>
+                                    <div class="controls">
+                                        <input type="text" id='tags' name='tags' value="{% for tag in classifieds_tags %}{{tag}}{% if not forloop.last %},{% endif %}{% endfor %}" class="iSp8 tagsinput" placeholder="tags">
+                                    </div>
+                                </div>
+                                <div class="control-group mRb10">
+                                    <label class="control-label" >Address<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.address1}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{aform.address2}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Zip/Postal Code<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.zip}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >City/Town<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.city}}
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    <div class="controls mR0">
+                                    	<div id="map-canvas" style="height:220px"></div>
+										<input type="hidden" name="lat_lng" id="lat_lng" value=""/>
+										<input type="hidden" name="zoom" id="zoom" value=""/>
+                                    </div>
+                                </div>
+                                <hr class="oTsT-hRz20">
+								<div class="row-fluid mUl-fLd vEr-fLd">
+                                	<div class="vEr-fLd-wPr">
+                                    	<div class="span4 sP6mP pLlTmP">
+                                            <div class="control-group">
+                                                <label class="control-label">Main Phone<em class="cLr-rEd">*</em></label>
+                                                <div class="controls">
+                                                    {{aform.telephone1}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span4 sP6mP pLlTmP pDl6mP">
+                                            <div class="control-group">
+                                                <label class="control-label">Mobile</label>
+                                                <div class="controls">
+                                                    {{aform.mobile}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Fax</label>
+                                    <div class="controls">
+                                        {{aform.fax}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Email address<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        {{aform.email}}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Website</label>
+                                    <div class="controls">
+                                        {{aform.website}}
+                                    </div>
+                                </div>
+								<div class="control-group">
+	                               	<div class="controls">
+										<div id="fileupload" >
+		 									<div class="fileupload-content">
+		    									<ul class="files bm-uploader-list"></ul>
+											</div><div class="clear"></div>
+											<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+	        								{% csrf_token %}<div class="clear"></div>
+	       									 <div class="upload-button-wrapper">
+	           									 <a class="btn btn-primary fS12 fW-bLd">{% trans 'Add Images' %}</a>
+	                							 <div class="fileinput-button">
+	                    							 <input type="file" style="cursor:pointer;" title="Add Images" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+	                							 </div>
+	           								 </div>
+										</div>
+	                               	</div>
+	                           	</div>
+                                <hr class="oTsT-hRz20 mRb0">
+                                <div class="row-fluid">
+                                    <div class="form-actions pD0 pLrT">
+                                    <!-- 
+                                        <button type="button" onclick="window.location.replace('{% url 'user_classified_home' %}')" class="btn btn-light fS12 fW-bLd ">Cancel</button>
+                                        <button type="submit" value="draft" name="draft" class="btn btn-primary  fS12 fW-bLd id_class_submit" id="draftbutton">Save as Draft</button>
+                                        <button class="btn btn-danger fS12 fW-bLd id_class_submit" type="submit"  id="savebutton">{% if classified %}Update{% else %}Save & Next{% endif %}</button>
+                                     -->
+                                        <button class="btn btn-danger fS12 fW-bLd id_class_submit" type="submit"  id="savebutton">Save / Next</button>
+                                    </div>
+                                </div>
+                            </form>
+						</div>
+					</section>
+				</div> <!-- /.main -->
+				<aside class="sD-bR span3">
+					<div>
+						<section class="tXt-cTr pD0 bNr-aD"> 
+                           
+                        </section>
+					</div>
+				</aside>
+			</div>  <!-- /.row-fluid -->
+		</div>  <!-- /.span10 -->
+		<div id="update_caption" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        <div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	            <h4 id="myModalLabel" class="mR50">Update Caption</h4>
+	        </div>
+	        <div class="modal-body">
+				<div style="text-align: center; width: 100%;">
+					<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+				</div>
+	        </div>
+	        <div class="modal-footer">
+	            <button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button>
+	            <button class="btn btn-primary" type="submit" onclick="update_caption();">Done</button>
+	        </div>
+	    </div>
+{% endblock %}
+
+{% block footerarea %}
+	{% upload_js %}
+	<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript">
+var edt;
+	function updateTextArea(edt){
+    CKEDITOR.tools.setTimeout( function(){ 
+	        $('#id_description').val(edt.getData());
+	        $("#id_description").trigger('keyup');
+	    }, 0);  
+	}
+$(document).ready(function(){
+	{% if not classified %}
+		$('#id_email').val("{{request.user.useremail}}");
+	{% endif %}
+
+	try{
+		var instance = CKEDITOR.instances['id_description'];
+		CKEDITOR.remove(instance);
+	}
+	catch(e){}
+	/*
+	CKEDITOR.on( 'instanceCreated', function( e ){
+		   e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+   	});
+	*/
+	var edt=CKEDITOR.replace( 'id_description',{					
+		customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+		toolbar : 'Basic'
+	});
+	edt.on('key', function(event) {updateTextArea(edt);});
+
+	$('#id_description').keyup(function(){$('#id_description').valid();})
+
+	$.validator.addMethod("desc_required", function(value, element) {  
+    	$('#id_description').val(edt.getData());
+		if($('#id_description').val()!=''){return true;}
+		else{return false;}
+	},"Please enter a description.");
+	$("#mform").validate({
+		ignore:'',
+		highlight: function(element, errorClass){
+					$(element).parent('div').parent('div').addClass('error');
+					$(element).parent('div').addClass('error');
+					$(element).addClass('error');
+			},
+			unhighlight: function(element, errorClass){
+					$(element).parent('div').parent('div').removeClass('error');
+					$(element).parent('div').removeClass('error');
+					$(element).removeClass('error');
+			},
+		errorPlacement: function(error, element){},
+		invalidHandler: function(event, validator) { 
+			var id = $(validator.errorList[0].element).parent('div');
+			$('html,body').animate({ scrollTop: $(id).offset().top }, 'slow');
+		},
+	   	rules:{
+	    	title: "required",
+			description: "required",
+			parent_category:"required",
+			sub_category:"required",
+			classified_price:'number',
+			address1:"required",
+			city:"required",
+			zip:"required",
+			telephone1:"required",
+			id_price:{required:false,number:true},
+			email:{required:true,email: true},
+			website:{required:false,url:true},					
+	   	},
+		submitHandler:function(){
+			get_lat_lang();
+			$('.id_class_submit').attr('disabled','disabled');
+			form.submit();
+		}
+
+	});
+
+
+	$('#parent_category').on('change',function(){
+		if($('#parent_category').val()!=''){
+			load_subcategories();
+		}else{
+			alert("not able to process request!");
+		}
+	});
+	$('#parent_category').bind("change", function(){
+			$("#mform").validate().element($(this));
+	});
+
+	$('#id_website').focusin(function(){
+		if($('#id_website').val()==""){ 
+				$('#id_website').val('http://www.');
+		}
+		  
+	});
+	$('#id_website').focusout(function(){
+	if($('#id_website').val()=='http://www.'){
+				$('#id_website').val('');
+			$(this).parent('div').parent('div').removeClass('field-error');$('#id_website').removeClass("error");	
+			}
+	});
+	$( ".id_class_submit" ).click(function(event){
+		setTimeout(function(){
+			$('.id_class_submit').removeAttr('disabled'),event.preventDefault();
+		},3000);
+	});
+
+	file_upload("{% url 'classifieds_ajax_upload_photos' %}?id={{classified.id}}",5);
+	{% with form.instance|content_type as ctype %}
+	cover_photo_upload("{% url 'common_upload_cover_photo' %}?ctype={{ctype.pk}}&cobj={{form.instance.id}}", 100/70);
+	{% endwith %}
+	{% if not classified %}
+	{% if new_pic %}
+		get_images('{% url 'classifieds_ajax_get_default_photos' %}?ids={% for np in new_pic %}{{np}}{% if not forloop.last %},{% endif %}{% endfor %}')
+	{% endif %}
+	{% endif %}
+	
+	{% if classified %}
+		load_subcategories();
+	{% endif %}
+	
+	$('#id_city').live("keyup",function(){getPin(getaddress(),$('#id_zip').val());});
+
+});
+function load_subcategories(){
+	$.ajax({
+	type: "GET",
+	url: "{% url 'ajax_get_user_sub_category' %}",
+	data: 'id='+$('#parent_category').val()+"&cid="+$('#classified').val(),
+	dataType:'JSON',
+	success: function(data){
+			 $('#sub_cat_holder').empty().html(data.html);
+			 $('#id_sub_category').bUiSlCt('refresh');
+		}
+	});
+}
+function load_attributes(id){
+	//$('#classified_category').val(id);
+	//$('#attributes_loading').show();
+	//$('#attributes').hide();
+	var dataString="id="+id;
+	if($('#classified').val()!=''){dataString+='&cid='+$('#classified').val()}
+	$.ajax({
+		type: "GET",
+		url: "{% url 'ajax_get_user_category_attribute' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#attributes').html(data.html);
+				 //select menu
+	               $('.bM-sLt').doThis(function(){
+	                       this.bUiSlCt();
+	               });
+				//$('#parent_category').removeClass('error');
+				//$('#category').removeClass('error');
+				//$('.select-field-dupe').parent().parent().removeClass('field-error');
+				//$('#attributes_loading').hide();
+				//$('#attributes').show();
+				//$('.append_attr').chosen({disable_search_threshold:10}); 
+			}
+		});
+}
+
+	{% if address %}
+		load_for_add('map-canvas',{{ address.lat }}, {{ address.lon }}, {{ address.zoom }},'{{ address.city }}','{{ globalsettings.city }} - {{address.zip}}');
+	{% else %}
+		load_for_add('map-canvas',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},'{{ globalsettings.city }}','{{ globalsettings.city }}');
+	{% endif %}
+	$( "#id_zip" ).autocomplete({
+			source: '{% url 'auto_suggest_pin' %}',
+		   	select: function(event, ui) {
+     			$("#id_zip").val(ui.item.id);
+     	 	}
+	});
+	function get_lat_lang(){
+		var lat_lng = marker.getPosition();
+		var zoom = map.getZoom();
+		$('#lat_lng').val(lat_lng);
+		$('#zoom').val(zoom);
+	}
+	function getaddress(){return $('#id_address1').val()+" "+$('#id_address2').val()+" "+$('#id_city').val();}
+
+	function show_update_caption_lb(url) {
+			target = url+'?user="true"';
+		   // load the url and show modal on success
+		   $("#update_caption .modal-body").load(target, function() {
+		        $("#update_caption").modal("show");
+		   });
+		}
+	
+	function update_caption(){
+		  	/*var flag = $('#id_form_update_caption').validate({
+					ignore:'',
+					highlight: function(element, errorClass){
+						$(element).parent('div').parent('div').addClass('error');
+						$(element).addClass('error');
+					},
+					unhighlight: function(element, errorClass){
+						$(element).parent('div').parent('div').removeClass('error');
+						$(element).removeClass('error');
+					},
+					errorPlacement: function(error, element){},
+				   	rules:{
+				    	caption: "required"
+				   	}
+				}).form()
+				if(flag==true){*/
+		  $.ajax({
+		    type: "POST",
+		    url: $('#id_form_update_caption').attr('action'),
+		    data: 'caption='+encodeURIComponent($('#id_caption').val()),
+		    dataType:'JSON',
+		    success: function(data){
+		            if(data.status){
+		               $('#update_caption').modal('hide');
+		            }
+		            else{
+						$("#update_caption .modal-body").html(data.html);
+		            }
+		        }
+		    });
+	/*}*/
+	}
+</script>
+{% endblock %}

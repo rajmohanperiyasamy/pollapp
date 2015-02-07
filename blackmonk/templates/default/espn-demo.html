@@ -1,0 +1,147 @@
+{% extends base %}
+{% load modulotag %}
+{% load comparison %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load bm_articletags %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% seo_format_tag module='Bookmarks' title=seo.seo_title code='MT' as seo_meta_title %}Espn Demo Sports Headlines {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+    <meta name="description" content="Espn Demo Headlines" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "espndemo" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span8">
+                <div class="row-fluid">
+                    
+                    
+                    <div class="tLbR mRt20">
+                        <div class="tLbR-iR">
+                            <div class="sCn-tTl pLlT mRb0">
+                                <h2>Sports</h2>
+                            </div>                              
+                            <div class="btn-toolbar pLrT hP">
+                                <div id="media-toggle" class="btn-group" data-toggle="buttons-radio">                                           
+                                    <button type="button" title='Grid View' class="btn btn-link {% if view_type == 'grid' %}active{% endif %} c-gD" onclick="change_url_parm('grid');"><i class="bUi-iCn-tH-lR-aLt-16" aria-hidden="true"></i></button>
+                                    <button type="button" title='List View' class="btn btn-link mRl5 {% if view_type == 'list' %}active{% endif %} c-lT" onclick="change_url_parm('list');"><i class="bUi-iCn-rE-oDr-aLt-16" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <div class="pLrT mRr10">
+                                <select data-link="true" class="bUiSlCtbtn-link tXt-sMl">
+                                    <option {% if not category %}selected="selected"{% endif %} data-location="javascript:void(0);">{% trans 'Sports' %}</option>
+                                    {% for cat in categories %}   
+                                    <option {% if cat.id == category.id %}selected="selected"{% endif %} data-location="{% url 'bookmark_category_list' cat.slug %}">{{cat.name}}</option> 
+                                    {% endfor %}
+                                </select>
+                            </div> 
+                        </div>
+                    </div>
+                    <ul class="modulesBrowseData fOcL {% if view_type == 'grid' %}mDa-gD mDa-oT-tP pDfX{% else %}mDa-lT mDa-oT-lT{% endif %}">
+                        {% if sports %}
+                            {% for article in sports.headlines %}
+                            <li class="mDa">
+                                <input type="hidden"  name="fbids" class="bids" value="{{bkmrk.id}}">
+                                <div class="mDa-iN">
+                                    <div class="mDa-wPr"> 
+                                        <a class="bUi-tMb-wPr tMb-75 fLxiMgW bUi-tMb-cLsFd" href="{{article.links.web.href}}" target="_blank">
+                                            <span class="bUi-tMb">
+                                                <span class="bUi-tMb-pRpL">
+                                                    <span class="bUi-tMb-cLp">
+                                                        <span class="bUi-tMb-cLp-iN"><img class="mDa-oT" src="{% if article.images.0.url %}{{article.images.0.url}}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{article.title}}" title="{{article.title}}">
+                                                            <span class="vRtL-aLn"> </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="mDa-bDy">
+                                        <h4 class="mDa-hD tRnCt0 mR50 rLvE h65" title="{{article.headline}}"><a href="{{article.links.web.href}}" target="_blank">{{article.headline}}</a></h4>
+                                        <p class="fS12 cLr-gRy hD-gD">{{article.description}}</p>
+                                        <div class="mDa-dTa mRt4">
+                                           <span class="fS11 cLr-lTgRy">{{article.lastModified|get_date_format_espn|date:'F d, Y'}}</span>
+                                        </div>                                            
+                                        <!--div class="mDa-hVr"><a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="#"><i class="BUI-icon-63"></i>Share</a></div-->
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <div class="hT600 rLvE sCn">
+                                <div class="tBl-bLk pDt0">
+                                    <div class="tBl-cEl">
+                                        <span class="iCn-bRdR80 oP25"><i class="bUi-iCn-aRtL-24 fS42-1 cLr-gRy ib" aria-hidden="true"></i></span>
+                                        <p class="bLk mRt20 fS16 cLr-lTgRy oP75">No Headlines found {% if category %}under category '{{category.name}}'{% endif %}.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </ul>
+                    {% if is_paginated %}
+                    <div class="pGn pGn-bX pGn-cTr">
+                        <ul>
+                            {% if has_previous %}
+                                    <li><a href="{{url}}?page={{ prev }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr" id="{{ prev }}"><i class="bUi-iCn-aNg-lT-12"></i></a></li>
+                            {% endif %}
+                            {% if not in_leading_range %}
+                                {% for num in pages_outside_trailing_range %}
+                                    {% ifequal num current_page %}
+                                         <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                                    {% else %}
+                                         <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }} </a></li>
+                                    {% endifequal %}
+                                {% endfor %}
+                                <li><span>...</span></li>
+                            {% endif %} 
+                            {% for num in page_numbers %}
+                                {% ifequal num current_page %}
+                                     <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                                {% else %}
+                                    <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+                                {% endifequal %}
+                            {% endfor %}
+                            {% if not in_trailing_range %}
+                                <li><span>...</span></li>
+                                {% for num in pages_outside_leading_range reversed %}
+                                    {% ifequal num current_page %}
+                                         <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                                    {% else %}
+                                        <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+                                    {% endifequal %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if has_next %}
+                                <li><a  href="{{url}}?page={{ next }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" id="{{next}}" class="bm_pgntn_anchr"><i class="bUi-iCn-aNg-rT-12"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                                    
+                    
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div class="mSnRy">
+                    <section class="sCn bNr-aD hide" id="banner_placement_right"></section> 
+                </div>
+                <div class="mSnRy">
+                    <section class="sCn">
+                        {% include 'default/likebox.html' %}
+                    </section>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}        

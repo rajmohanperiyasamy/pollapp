@@ -1,0 +1,173 @@
+{% load i18n %}
+{% load upload_tags %}
+<div id="ajax_content_loading_gallery_photo" style="display:none;padding-top:222px;padding-bottom:350px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Please wait...' %}</p>
+</div>
+<div id="ajax_content_gallery_photo">
+<div id="create-gallery">
+    <div class="upload-gadget-main">
+        <form class="modal-form" name="photomform" id="photomform" action="{% url 'staff_add_gallery_add_photos' id %}">
+            <div class="hform relative-block">
+                <ul class="modal-sc-tabs group">
+                    <li class="modal-sc-tab {% if not gallery.get_gallery_uploaded_images %}modal-sc-tab-unselected{% else %}modal-sc-tab-selected{% endif %} modal-sc-first-tab inline-block" id="tab0" onclick="show_option($(this),1)"><span class="icon-system inline-block"></span>From your computer</li>
+					<li class="modal-sc-tab {% if not gallery.get_gallery_uploaded_images %}modal-sc-tab-selected{% else %}modal-sc-tab-unselected{% endif %} modal-sc-last-tab inline-block" id="tab1"  onclick="show_option($(this),0)"><img src="http://l.yimg.com/g/favicon.ico" class="inline-block fav-icon"/> Flickr public photos</li>
+				</ul> 
+                <div class="modal-search-bar flick group" style="{% if gallery.get_gallery_uploaded_images %}display:none;{% endif %}" style="text-align:left" id="searched_image_holder">
+					{% if gsetting %}
+                	<div class="modal-search-bar-input">
+                        <input type="text" placeholder="Search photos.." name="title" id="id_title" size="32">
+                        <button role="button" class="cform-button search-button" type="button" onclick="getPhotos()"><span class="search-icon">Search</span></button>
+    					<div id="search_sort_options" class="inline-block">
+                    		Sort:
+								<a class="a_link" style="display:none;" id="a_relevance" href="javascript:search_filter('relevance')">Relevant</a>
+								<strong class="strong_disp" id="s_relevance">Relevant</strong>
+							<span class="item-divider"></span>
+								<a class="a_link" id="a_date-posted-desc" href="javascript:search_filter('date-posted-desc')">Recent</a>
+								<strong style="display:none;" class="strong_disp" id="s_date-posted-desc">Recent</strong>
+							<span class="item-divider"></span>
+								<a class="a_link" id="a_date-posted-asc" href="javascript:search_filter('date-posted-asc')">Older</a>
+								<strong style="display:none;" class="strong_disp" id="s_date-posted-asc">Older</strong>
+							<span class="item-divider"></span>
+								<a class="a_link" id="a_interestingness-asc" href="javascript:search_filter('interestingness-asc')">Interesting</a>
+								<strong style="display:none;" class="strong_disp" id="s_interestingness-asc">Interesting</strong>			
+        				</div>   
+					</div>
+				</div>                                              
+                <div class="photo-library search-results flick" style="{% if gallery.get_gallery_uploaded_images %}display:none;{% endif %}" id="selected_image_holder">
+                    <ul id="images">
+                        
+                    </ul>
+					<div class="item-preview-wrapper photo-inside">
+                    	<div class="preview">
+                        	<div style=" min-width:80px;min-height:80px;background:url({{STATIC_URL}}ui/images/global/loading-xs.gif) no-repeat center transparent;">
+								<img id="large_image" src="" class="inline-block" />
+							</div>
+                            <span class="icon-close distroy-preview inline-block"></span>
+						</div>
+					</div>
+					<div id="ajax_content_loading_flicker_search_page" style="display:none;padding-top:100px;text-align:center;">
+						<img src="{{STATIC_URL}}ui/images/global/loading.gif"></p>
+					</div>
+                    <div class="hang-items" id="default_text">
+                        <span id="ajax_content_loading_flicker_search" style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" /></span>
+                        <span class="tip">{% trans "Search and select multiple photos to upload from Flickr." %}</span>
+                    </div>
+					{% else %}
+						<div class="modal-search-bar" style="font-size: large; font-weight: bold; padding: 16.3% 26%;">{% trans "It seems like Flickr search has been disabled." %}</div>
+					{% endif  %}	
+                </div>
+				<div class="drop-box-bottom flick" style="{% if gallery.get_gallery_uploaded_images %}display:none;{% endif %}">
+                    {% with gallery.get_gallery_flicker_images as flickr_img_list %}
+                	<div class="drop-box-header-bar">
+                    	<div class="inline-block">
+                        	<div class="drop-box-title">{{gallery.title|capfirst}} <span>( <span id="photo_count">{{flickr_img_list.count}}</span> photos added)</span></div>
+                        </div>
+                    </div>
+                    <div class="drop-box-items">
+                        <ul id="selected_images">
+                            {% for img in flickr_img_list %}
+                                {% with img.get_flickr_id as flickr_id %}
+                                <li data-flickrid="{{flickr_id}}" style="min-width:75px;min-height:75px;" id="simage_{{flickr_id}}" class="photos-selectable selected-flickr-images inline-block">
+                                    <div class="photos-selectable-area inline-block">
+                                        <div class="photos-selectable-preview" style="height: 75px; width: 75px;">
+                                            <img src="{{img.get_flickr_thumbnail}}">
+                                            <a href="javascript: deselect_photo('{{flickr_id}}')" title="Remove" class="icon-remove"></a>
+                                            <a class="icon-view preview-item" title="Large preview" onclick="view_large_image(event,'{{img.photo_url}}')" href="#"></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endwith %}
+                            {% endfor %}
+                        </ul> 
+                        <div class="hang-items" id="selected_default_text" style="display:{% if flickr_img_list %}none{% else %}block{% endif %}">
+                        	<span class="tip" style="display:block">{% trans "Select photos you'd like to include in your gallery from the above search result..." %}</span>
+                        </div>                     
+					</div>                                            
+                    {% endwith %}
+                </div>
+            </div>   
+			<div class="field-group system" style="height:470px;overflow-x:auto;{% if not gallery.get_gallery_uploaded_images %}display:none;{% endif %}">
+           		<div class="fields-head"></div>
+				<div class="value">
+					<div id="fileupload" >
+				 		<div class="fileupload-content" style="padding-left:20px;">
+				    		<ul class="files bm-uploader-list"></ul>
+						</div>
+                        <div class="clear"></div>
+		    			<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+		            	{% csrf_token %}<div class="clear"></div>
+		            	<div class="upload-button-wrapper"  style="padding-left:20px;">
+		                	<a class="upload-button">{% trans 'Add Images' %}</a>
+		                    <div class="fileinput-button">
+		                    	<input type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+							</div>
+		                </div>
+					</div>
+				</div>
+			</div>
+            <div class="modal-base form-submit group">
+               <button role="button" class="cform-button prime bm-describe-upload" type="button" onclick="save_photo()" title="Describe upload" ><span class="cform-button-text">{% trans 'Next Step: Update Caption' %}</span></button>
+            </div>           
+        </form>
+    </div>            
+</div>
+{% upload_js %}
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+<script type="text/javascript">
+var PAGE=1;
+var SORT='relevance';
+function initapp(){
+    file_upload("{% url 'gallery_ajax_upload_photos' %}?id={{id}}",25);
+    $('#fileupload').bind('fileuploadstart', function (e, data) {
+		$.colorbox.resize();
+		if($('.bm-uploader-file').length>=0){$('.upload-button').html(gettext('Upload More'));}
+		else{$('.upload-button').html(gettext('Add Images'));}
+	});
+	$('#fileupload').bind('fileuploadstop', function (e, data) {
+		if($('.bm-uploader-file').length>=0){$('.upload-button').html(gettext('Upload More'));}
+		else{$('.upload-button').html(gettext('Add Images'));}
+		$.colorbox.resize();
+	});
+	$("#photomform").submit(function(event){
+		event.preventDefault();
+		getPhotos();			
+	});
+	$('#id_title').bind('keypress', function(e) {
+	var code = (e.keyCode ? e.keyCode : e.which);
+ 	if(code == 13) {
+   		getPhotos();
+ 	}
+	});	
+    $('div.photo-library').endlessScroll({
+	  fireOnce: true,
+	  fireDelay: false,
+	  callback: function(p){
+	  	if(flag){
+			$("#ajax_content_loading_flicker_search_page").show();
+	  		setTimeout(function(){load_more()},2000);
+		}
+	  }
+	});
+}
+$(document).ready(function(){
+	var scripts = [ "{{STATIC_URL}}js/jquery/bm.jfp.js", 
+             '{{STATIC_URL}}js/jquery/bm.fup.appln.js',"{{STATIC_URL}}ui/js/inline.js","{{STATIC_URL}}ui/js/jquery.endless.js" ];
+  	preuploadjs(scripts,initapp);
+});
+function show_option(id,option){ 
+	$('.modal-sc-tab').removeClass('modal-sc-tab-selected');
+	$('.modal-sc-tab').addClass('modal-sc-tab-unselected');
+	$(id).removeClass('modal-sc-tab-unselected');
+	$(id).addClass('modal-sc-tab-selected');
+	if(option==1){
+		$('.flick').hide();
+		$('.system').show();
+		$.colorbox.resize({width: "880", height:"630", top:"5%"});
+	}else{
+		$('.system').hide();
+		$('.flick').show();
+		$.colorbox.resize({width: "880", height:"630", top:"5%"});
+	}
+}
+</script>
+</div>

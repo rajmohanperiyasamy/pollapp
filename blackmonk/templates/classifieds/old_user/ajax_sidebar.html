@@ -1,0 +1,8 @@
+{% load i18n %}	
+<li class="pending-state"><strong id="id_pend">{{ pending }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Pending' %}</a></li>
+<li class="published-state"><strong id="id_pub">{{ published }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Published' %}</a></li>
+<li class="expired-state"><strong id="id_blk">{{ expired }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Expired' %}</a></li>
+<li class="rejected-state"><strong id="id_rej">{{ rejected }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Rejected' %}</a></li>
+<li class="drafted-state"><strong id="id_dft">{{ drafted }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Draft' %}</a></li>
+<li class="blocked-state"><strong id="id_blk">{{ blocked }}</strong> {% trans 'in' %} <a href="javascript:void(0)">{% trans 'Blocked' %}</a></li>
+<li class="sum"><strong id="id_tot">{{ total }}</strong> {% trans 'total classified Ad.' %}</li> 

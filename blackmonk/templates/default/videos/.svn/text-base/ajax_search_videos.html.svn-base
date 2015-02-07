@@ -1,0 +1,84 @@
+{% load truncate_filter %}
+{% load i18n %}
+{% load thumbnail %}
+
+{% if videos  %}
+<div class="galleries_inner group">
+    {% if videos %}
+    {% for video in videos %}
+	<div class="gallery_150">
+   		<a href="{{video.get_absolute_url }}" class="gallery_150_image rel_block" style="background:#000 no-repeat center;">
+			<span class="item-thumb">
+                <span class="thumb-in">
+                    <span class="thumb">
+                        <img id="vimeo_{{video.video_id}}" src="{% if not video.is_vimeo %}{{video.get_hq_thumb}}{% endif %}" width="150px;" alt="{{video.title}}">
+                        <span class="inline-block h100"></span>
+                    </span>
+                </span>
+			 </span>
+   		 	<img width="114" height="70" class="overlay" alt="" src="{{ STATIC_URL }}themes/green/images/global/video_overlay_114.png" style="width: 114px; height:70px;">
+		</a>	
+		<div class="gallery_150_summary">
+  			<div class="gallery_150_summary_inner">
+   				 <h5><a href="{{video.get_absolute_url}}" title="{{video.title}}.">{{video.title|truncate_chars:16 }}  </a></h5>
+  			</div>
+	   </div>
+ 	</div>
+ 	{% cycle '' '' '<div class="clear"></div>' %}
+	{% endfor %}
+  	{% else %}
+ 	<p class="global_message">{% blocktrans  %}Ooops...! There are 	No Videos under  {{catslug}} Category. {% endblocktrans %}  </p>  
+  	{% endif %}                                           	
+</div>
+{% else %}
+	<p class="global_message" style="padding-left:20px;" align="center"> {% trans 'Oops...! There are no videos under this search' %}.</p>
+	<!-- p class="global_message" align="center"><a href="{% url user_video_home_listingboard %}">{% trans 'Submit Now' %}.</a></p -->  
+{% endif %}
+
+	{% if is_paginated %}
+   <div id="thick_pagination" class="group" style="margin-left:10px;">
+<ul class="pagination_nav">
+{% if has_previous %}
+	{% ifequal num current_page %}
+			<li class="selected_page"><a href="#">{{ num }}</a></li>
+	{% else %}
+		<li class="prev"><strong>&laquo;</strong><a href="javascript:void(0)" onclick="do_search('{{s_key}}', '{{s_cat}}', '{{prev}}');" ohref="{{ base_url }}{% if category %}{{ category.slug }}/?page={% else %}?page={% endif %}{{ prev }}{% if sm %}&year={{sy}}&month={{sm}}{% endif %}{% if tagid %}&tagid={{tagid}}{% endif %}{% if module %}&module={{module}}{% endif %}{% if search %}&find={{search}}{% endif %}"  class="Prev" title="Previous Page"> {% trans 'Prev' %}</a></li> 
+		{% endifequal %}
+	{% endif %}
+
+	{% if not in_leading_range %}
+		{% for num in pages_outside_trailing_range %}
+			{% ifequal num current_page %}
+				<li class="selected_page"><a href="#">{{ num }}</a></li>
+			{% else %}
+				<li><a href="javascript:void(0)" onclick="do_search('{{s_key}}', '{{s_cat}}', '{{num}}');" ohref="{{ base_url }}{% if category %}{{ category.slug }}/?page={% else %}?page={% endif %}{{ num }}{% if sm %}&year={{sy}}&month={{sm}}{% endif %}{% if tagid %}&tagid={{tagid}}{% endif %}{% if module %}&module={{module}}{% endif %}{% if search %}&find={{search}}{% endif %}"  >{{ num }}</a></li> 
+			{% endifequal %}
+		{% endfor %}
+		<li>&hellip;</li>
+	{% endif %}
+ 
+	{% for num in page_numbers %}
+	  {% ifequal num current_page %}
+	    	<li class="selected_page"><a href="javascript:void(0)">{{ num }}</a></li>
+	  {% else %}
+	  		<li><a href="javascript:void(0)" onclick="do_search('{{s_key}}', '{{s_cat}}', '{{num}}');" ohref="{{ base_url }}{% if category %}{{ category.slug }}/?page={% else %}?page={% endif %}{{ num }}{% if sm %}&year={{sy}}&month={{sm}}{% endif %}{% if tagid %}&tagid={{tagid}}{% endif %}{% if module %}&module={{module}}{% endif %}{% if search %}&find={{search}}{% endif %}"  title="Page {{ num }}">{{ num }}</a></li> 
+	  {% endifequal %}
+	{% endfor %}
+ 
+	{% if not in_trailing_range %}
+		<li>&hellip;</li>
+		{% for num in pages_outside_leading_range reversed %}
+			{% ifequal num current_page %}
+				<li class="selected_page"><a href="#">{{ num }}</a></li>
+			{% else %}
+				<li><a href="javascript:void(0)" onclick="do_search('{{s_key}}', '{{s_cat}}', '{{num}}');" ohref="{{ base_url }}{% if category %}{{ category.slug }}/?page={% else %}?page={% endif %}{{ num }}{% if sm %}&year={{sy}}&month={{sm}}{% endif %}{% if tagid %}&tagid={{tagid}}{% endif %}{% if module %}&module={{module}}{% endif %}{% if search %}&find={{search}}{% endif %}" >{{ num }}</a></li> 
+			{% endifequal %}
+		{% endfor %}
+	{% endif %}
+ 
+	{% if has_next %}
+		<li class="next br_0"><a href="javascript:void(0)" onclick="do_search('{{s_key}}', '{{s_cat}}', '{{next}}');" ohref="{{ base_url }}{% if category %}{{ category.slug }}/?page={% else %}?page={% endif %}{{ next }}{% if sm %}&year={{sy}}&month={{sm}}{% endif %}{% if tagid %}&tagid={{tagid}}{% endif %}{% if module %}&module={{module}}{% endif %}{% if search %}&find={{search}}{% endif %}"  class="Next" title="Next Page">Next </a><strong>&raquo;</strong></li> 
+	{% endif %}
+</ul>
+</div>
+{% endif %}

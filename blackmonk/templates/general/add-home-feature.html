@@ -1,0 +1,149 @@
+{% load i18n %}
+
+	<link rel="stylesheet" href="{{STATIC_URL}}ui/css/base.css" type="text/css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}ui/css/staff.css" type="text/css" />
+	
+	
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+	
+
+<div id="add_venue_overall">
+
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:350px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Address' %}</p>
+</div>
+
+<div id="add_venue" class="modal-form">
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	
+     <form action="{% url 'staff_feature_save_featured_content' %}" name="mform" id="mform" method="post" class="add_venue">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="fields-head">
+                    <p class="ltxt80">{% blocktrans %}There is no need to index every single file that you've got on your content.{%  endblocktrans%}</p> 
+                </div> 
+                <div class="group">
+            		<div class="fields-left col400">                    
+                        <div class="field text-field">	
+                            <div class="label"><label>{% trans 'Select' %}<span class="required-field">*</span></label></div>	
+                            <div class="value" style="display: block;">
+                             	<span class="cform-radio-container"><input type="radio" name="fetch" value="article" {% ifequal module 'article'%}checked{% endifequal %}/><span class="cform-radio-element"></span></span>Article<br />
+								<span class="cform-radio-container"><input type="radio" name="fetch" value="event" {% ifequal module 'event'%}checked{% endifequal %}/><span class="cform-radio-element"></span></span>Event<br />
+								<span class="cform-radio-container"><input type="radio" name="fetch" value="attraction" {% ifequal module 'attraction'%}checked{% endifequal %}/><span class="cform-radio-element"></span></span>Attraction<br />
+								<span class="cform-radio-container"><input type="radio" name="fetch" value="photos" {% ifequal module 'photos'%}checked{% endifequal %}/><span class="cform-radio-element"></span></span>Photos<br />
+								<span class="cform-radio-container"><input type="radio" name="fetch" value="other" {% if not module %}checked{% endif %}/><span class="cform-radio-element"></span></span>Other<br />
+                            </div>	
+                        </div>
+                        <input id='mod_id' type="hidden"  name="mod"  value="{{module}}" >
+                        <ul id="messageBox" style="color: red;"></ul>
+                        <div class="field text-field" id="id_search_field">	
+                            <div class="label"><label>{% trans 'Search' %}<span class="required-field">*</span></label></div>	
+                            <div class="value"><input type="text" id="id_value" name="value" style="width: 400px;"  maxlength="300" name="title"></div>	
+                        </div>
+                         <div id="id_mod_detail" style="display: none;">
+                         		{% include 'general/ajax-add-feature.html' %}  
+                         </div>
+					</div> <!--/--> 
+            	</div>            
+            </div>                        
+		</div>    
+        <div class="modal-base form-submit group">
+           <button role="button" class="cform-button prime right" onclick="" type="submit"><span class="cform-button-text">{% trans 'Save' %}</span></button>
+        </div>           
+    </form>
+    
+</div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+	
+		$("input[type='radio']").change( function() {
+			$('#mod_id').val($(this).val());
+			if($(this).val()=='other'){
+				$('#id_search_field').hide();
+				$('#id_title').val('');
+				$('#id_slug').val('');
+				$('#id_photo_field').hide();
+				$('#id_photo_url').val('');
+				$('#id_photo_url_field').show();
+				$('#id_mod_detail').show();
+			}else{
+				$('#id_search_field').show();
+				$('#id_value').val('');
+				$('#id_mod_detail').hide();
+			}	
+			auto_suggest();
+		});
+		auto_suggest();
+		
+	});	
+		
+	function auto_suggest(){
+		$( "#id_value" ).autocomplete({
+					source: '{% url 'staff_feature_auto_sgt_moduls' %}?md='+$('#mod_id').val(),
+				   	select: function(event, ui) {
+		     			display_auto_sgtd_module(ui.item.id);
+		     	 	}
+		});
+	}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".selct_photo").live('click',function () {
+					$(".photos-preview").removeClass('selected');
+					$(".icon-tick").hide();
+      				$(this).find(".photos-preview").addClass('selected');
+					$(this).find(".icon-tick").show();
+					$('#id_photo_url').val('{{globalsettings.website_url}}'+$(this).attr('id'));
+					alert($('#id_photo_url').val());
+   			 });
+		});
+	
+</script>	
+<script type="text/javascript">
+	function display_auto_sgtd_module(obj){
+				
+				$.ajax({
+					   type: "GET",
+					   url: '{% url 'staff_feature_dsply_sgstd_module' %}',
+					   data:'obj_id='+obj+'&mod='+$('#mod_id').val(),
+					   dataType:'JSON',
+					   success: function(data){	
+					   			if(data.status == '1'){
+					   				$('#id_mod_detail').empty().html(data.temp);
+					   				$('#id_mod_detail').show();
+								}else{show_msg(data.msg,data.mtype);}
+						}
+				});	
+			}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			ignore:'',
+			errorLabelContainer: "#messageBox",
+   			wrapper: "li",
+			//highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass("error");},
+			//unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	title: "required",
+		    	slug: "required",
+				photo_url: "required",
+	
+		   	},
+		   	messages:{
+		   		title: "Title Required",
+		    	slug: "Slug Required",
+		   		photo_url: "Please choose a photo/photo url",
+		  
+		   	}
+		});
+	});
+</script>

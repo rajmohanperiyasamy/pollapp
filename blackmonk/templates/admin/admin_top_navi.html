@@ -1,0 +1,31 @@
+{% load tabs %}
+{% load i18n %}
+<div id="admin-tab" class="fit_width group">
+	<ul class="admin-tab-items">
+		<li class="dashboard {% ifactivetab "topnav" "site" %}active{% endifactivetab %}">
+        	<a href="{% url 'admin_portal' %}">
+            	<span class="icon"></span><span class="title">{% trans 'DashBoard' %}</span>
+			</a>
+		</li>
+		 <li class="config {% ifactivetab "topnav" "config" %}active{% endifactivetab %}">
+        	<a href="{% url 'admin_configuration' %}">
+            	<span class="icon"></span><span class="title">{% trans 'Settings' %}</span>
+			</a>
+		</li>
+        <li class="design {% ifactivetab "topnav" "design" %}active{% endifactivetab %}">
+        	<a href="{% url 'admin_design_overview' %}">
+            	<span class="icon"></span><span class="title">{% trans 'Design' %}</span>
+			</a>
+		</li>
+        <li class="report {% ifactivetab "topnav" "report" %}active{% endifactivetab %}">
+            <a href="{% url 'admin_report' %}">
+                <span class="icon"></span><span class="title">{% trans 'Report' %}</span>
+            </a>
+        </li>   
+		<li style="float:right;" class="usermgmt {% ifactivetab "topnav" "user" %}active{% endifactivetab %}">
+        	<a href="{% url 'admin_display_users' %}">
+            	<span class="icon"></span><span class="title">{% trans 'User Management' %}</span>
+			</a>
+		</li>   
+	</ul>
+</div>

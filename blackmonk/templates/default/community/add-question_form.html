@@ -1,0 +1,81 @@
+{% load tabs %}
+{% load i18n truncate_filter %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<div id="add_entry" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	   <div class="modal-header">
+	       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	       <h4 id="myModalLabel" class="mR50">Add Question</h4>
+	   </div>
+	   <div class="modal-body">
+			<div style="text-align: center; width: 100%;">
+				<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+			</div>
+	   </div>
+	   <div class="modal-footer">
+	       <button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button>
+	       <button class="btn btn-primary" id="id_qna_submit" type="submit" onclick="save_question();">Submit</button>
+			<img id="id_loading" src="{{STATIC_URL}}ui/images/global/loading.gif" align="..." style="display:none">
+	   </div>
+</div>
+<script type="text/javascript">
+$.fn.emulateTransitionEnd = function(duration) {
+  return true;
+};
+var flag1 = false;
+function save_question(){
+	 flag1 = $('#community_add_qna').validate({
+				ignore:'',
+				highlight: function(element, errorClass){
+					$(element).parent('div').parent('div').addClass('error');
+					$(element).addClass('error');
+				},
+				unhighlight: function(element, errorClass){
+					$(element).parent('div').parent('div').removeClass('error');
+					$(element).removeClass('error');
+				},
+				errorPlacement: function(error, element){},
+			   	rules:{
+			    	topic: "required",
+			    	title: "required"
+			   	}
+			}).form()
+	if(flag1){
+			var dataString='add_type='+$('#id_add_type').val();
+			dataString+='&topic='+$('#id_topic').val();
+			dataString+='&title='+encodeURIComponent($('#id_title').val());
+			dataString+='&content='+encodeURIComponent($('#id_content').val());
+			$('#id_qna_submit').hide();
+			$('#id_loading').show();
+			$.ajax({
+				type: "POST",
+				url: $('#community_add_qna').attr('action'),
+				data: dataString,
+				dataType:'JSON',
+				success: function(data){
+						if(data.status){
+							location.replace(data.url);
+						}else{
+							$("#add_entry .modal-body").html(data.html);
+						}
+				},
+		        error:function(data){
+					$("#add_entry .modal-body").html(data.html);
+				}
+			});
+
+		//$('#community_add_qna').submit();
+	}
+}
+
+$(document).ready(function(){
+	$("#button_add_qna").click(function(ev) {
+	   ev.preventDefault();
+	   target = $(this).attr("data-href");
+	
+	   // load the url and show modal on success
+	   $("#add_entry .modal-body").load(target, function() {
+	        $("#add_entry").modal("show");
+	   });
+	});
+});
+</script>

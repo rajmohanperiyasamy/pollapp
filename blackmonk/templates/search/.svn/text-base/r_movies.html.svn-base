@@ -1,0 +1,50 @@
+{% load ds_utils mptt_comments_tags i18n %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> 
+        	<a class="bUi-tMb-wPr tMb-150 fLxiMgH bUi-tMb-145" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> 
+                            	<img class="mDa-oT" src="{% if object.image %}{{object.image.url}}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{object.title}}">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a>
+        </div>
+        <div class="mDa-bDy pD0 pDt5">
+            <h5 class="mDa-hD tRnCt mR50 rLvE fW-bLd" title="{{object.title}}"><a href="{{object.get_absolute_url}}">{{object.title}}</a></h5>
+            <div class="mDa-dTa mRt4 fS11 cLr-gRy">
+            	<span class="bDg bRdR-gRy mRr10">{{object.certification|default:"NR"}}</span>{% if object.duration_hours %}<span class="hD-gD">{{object.duration_hours}}</span>{% endif %}<span class="sPrTr hD-gD"> {% for gnr in object.movie_type.all %}{{gnr.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</span><span class="sPrTr hD-gD">{{object.release_date|ds_site_dateformat}}</span>
+            	<div class="sTr-rT mR100 mNi sTtC hD-gD">{% if object.ratings %}<span class="rT-oVrL-sCr ib fS12 mRr5"><strong class="cLr-dRk">{{object.ratings}}</strong>/10</span> <span class="sTr-wPr sTr-rT-mNi iCn16 oRg tN-sTr" id="id_rating_{{object.id}}"></span>{% endif %}<a href="{{object.get_absolute_url}}#comments" class="cLr-lTbLu sPrTr mRt4 ib">{% get_mptt_comment_count for object as comment_count %}{{comment_count}} {% trans 'reviews' %}</a></div>
+            	<p class="fS12 cLr-gRy hD-gD">{{object.synopsis|striptags|truncatechars:190}}</p>
+            	<dl class="dl-horizontal mNi tXt-lFt fS11 hD-gD">
+					{% if object.director %}<dt><span class="dT-iN">{% trans 'Director' %}</span></dt><dd><span>{{object.director|striptags}}</span></dd>{% endif %}
+					{% if object.cast %}<dt><span class="dT-iN">{% trans 'Stars' %}</span></dt><dd><span>{{object.cast}}</span> </dd>{% endif %}
+				</dl>
+            </div>
+        </div>
+    </div>
+</li>
+{% if object.ratings %}
+<script>$(function(){$('#id_rating_{{object.id}}').raty({number: 10,readOnly: true,score: {{object.ratings}},size:12});});</script>
+{% endif %}
+  <!--td class="added_on">
+    <h5 class="module_title movie">Movie</h5>
+    <span>Posted On<br>{{object.release_date|date:"d M, Y"}}</span>
+</td>
+<td class="movie">
+    <div class="item group">
+        <a class="movie_pic" href="{{object.get_absolute_url}}"><img width="66" height="99" alt="{{object.title}}" src="{{object.get_image}}"></a> 
+        <div class="detail">
+                <div class="hdr">
+                    <p class="review_rating_trans mt_2"></p>  <h4 class="movie_title"><a href="{{object.get_absolute_url}}" style="">{{object.title}}</a></h4><div class="lang">({{object.language}})</div>
+                </div>
+            <div class="release_date"><strong>Release Date:</strong> {{object.release_date|date:"d F, Y"}}</div>
+            <div class="movie_summary">{% autoescape off %}{{object.synopsis|truncatechars:150}}{% endautoescape %}</div>
+        </div>       
+    </div>
+</td-->

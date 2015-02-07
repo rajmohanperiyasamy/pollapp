@@ -1,0 +1,198 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "bookmark" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}
+	{% trans 'Create Bookmark' %}
+{% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+
+{% endblock %}
+{% block content %}
+<style type="text/css">
+.alert_bar {
+    -moz-transition: all 0.6s ease-in-out 0s;
+    background: -moz-linear-gradient(center top , #9A9A9A 0pt, #787878 45px) repeat scroll 0 0 #787878;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.224);
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 1px rgba(0, 0, 0, 0.2) inset;
+    margin: 0 auto 10px;
+    min-height: 36px;
+    opacity: 1;
+    overflow: hidden;
+    padding-left: 10px;
+    position: relative;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+    width: 600px;
+    z-index: 10;
+}
+.alert_bar .icon-alert {
+    float: left;
+    height: 16px;
+    margin-right: 10px;
+    margin-top: 10px;
+    width: 16px;
+}
+.alert_bar h4 {
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    padding: 9px 0;
+}
+</style>
+<div id="staff-platform" class="group">
+	<div class="header-bar">
+       	<h2><a href="{% url 'staff_bookmark_home' %}"><span class="go_back"></span></a>{% trans 'Add Bookmark' %}</h2>
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="Bookmark-add" class="group">
+                	<div id='add-new-Bookmark'>
+                        <form action="javascript:void(0)">
+                        	<div class="fields hform">
+                            	<div class="field-group">
+                                    <div class="field text-field fd-title">
+                                        <div class="label">		<label for="">{% trans 'Source URL' %}<span class="required-field">*</span></label></div>
+                                        <div class="value" >    
+                                        	<input type='text' id='id_source_url' name='source_url' placeholder="For e.g., http://www.cnn.com/abcjdskdl" style="width: 450px;" >
+                                        	&nbsp;&nbsp;
+                                        	<button class="cform-button prime" type="button" roll="button" id="proceed_button">
+                            					<span class="cform-button-text">{% trans 'PROCEED' %}</span>
+                            				</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <center>
+                        	<span align='center' id="ajax_loading" class="loading-stats"  style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" align="..."></span>
+                        </center>
+                        <div id='alert'>
+							<!-- Alert message -->
+						</div>
+						<form action="javascript:void(0)">
+	                        <div id='proceed_with_details'>
+	                        	<!-- Detailed Form here -->
+	                        <div>
+                        </form>
+                        </div></div>
+                    </div>	<!-- add-new-Bookmark -->
+                </div>		<!-- bookmark add -->
+            </div>			<!-- page wrap -->
+        </div>				<!-- staff main -->
+        <div id="aside" class="side-bar">
+            {% if bookmark %}
+            <div class="preview-aside-meta group">
+                <ul class="side-navigation">
+                    <li class="active"><a href="javascript:void(0);">{% trans 'Bookmark Details' %}</a></li>
+                    <li><a href="#">{% trans 'Comments' %}</a></li>
+                </ul>
+                <div class="preview-item-stats">
+                    <a href="{% url 'staff_bookmark_preview' %}?aid={{bookmark.id}}" class="btn-txt-blue" style="display:block; text-align:center"><span class="btn-txt">{% trans 'Preview this Bookmark' %}</span></a>
+                </div>
+            </div>
+            {% endif %}
+            {% include 'bookmarks/staff/bookmark-faq-addpge.html' %} 
+        </div>	<!-- side-bar -->
+    </div> 		<!-- core wraper -->
+</div>			<!-- staff-platform -->
+{% endblock %}
+{% block footer_include%}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bookmark/bookmark_staff.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+
+
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script-->
+<script>
+$('#id_source_url').bind('keydown',function(e){
+	if(e.which == 13)
+		proceed_fetching();
+});  
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+
+    /*$('#id_source_url').focusin(function(){
+		if($('#id_source_url').val()==""){
+				$('#id_source_url').val('http://www.');
+		}
+		  
+	});*/
+
+	/*$('#id_source_url').focusout(function(){
+	if($('#id_source_url').val()=='http://www.'){
+				$('#id_source_url').val('');
+			$(this).parent('div').parent('div').removeClass('field-error');$('#id_source_url').removeClass("error");	
+			}
+	});*/
+
+		$("#alert_bar").hide();
+		$("#id_title").live("keyup",function(){
+			slug($(this).val());
+			$("#id_seo_title").val($(this).val());
+		});
+		$("#proceed_button").live('click',function(event){
+				proceed_fetching();
+		});
+	});
+function proceed_fetching(){
+	var csrf='';
+	if($('input[name=csrfmiddlewaretoken]').val()!=undefined){csrf='&csrfmiddlewaretoken='+$('input[name=csrfmiddlewaretoken]').val()}
+	$("#proceed_with_details").html('');
+	$("#alert").html('');
+	$("#ajax_loading").show();
+	var source_url = $("#id_source_url").val();
+	if(source_url.match("^(http:\/\/|https:\/\/|ftp:\/\/){1}([0-9A-Za-z]+\.)"))
+	{
+		$.ajax({    
+			type:		"post",
+			url: 		'{% url 'staff_bookmark_fetch_images' %}',
+		    data:   	"source_url="+$("#id_source_url").val()+csrf,
+		    dataType: 	"html",
+		    success: 	function( result ) {
+							$("#id_source_url").removeClass('error');
+							$("#id_source_url").parent().parent().removeClass('field-error');
+		    				$("#ajax_loading").hide();
+							$("#proceed_with_details").html(result);
+		    			},
+		    error:		function( result ) {
+		    				$("#ajax_loading").hide();
+							$("#id_source_url").addClass('error');
+							$("#id_source_url").parent().parent().addClass('field-error');
+							//$("#alert").html("<div id='alert_bar' class='alert_bar'><span class='icon-alert' width='300px'></span><h4 id='message'>Sorry cannot fetch the requested URL. Refresh the page and try again.</h4></div>");
+		    			}
+	  	});
+	}
+	else
+	{	
+		$("#ajax_loading").hide();
+		$("#id_source_url").addClass('error');
+		$("#id_source_url").parent().parent().addClass('field-error');
+		//$("#alert").html("<div id='alert_bar' class='alert_bar'><span class='icon-alert' width='300px'></span><h4 id='message'> Enter valid url, for example http://www.example.com/ </h4></div>");										
+	}
+}
+function slug(value){
+	_slugify_strip_re = /[^\w\s-]/g;
+	_slugify_hyphenate_re = /[-\s]+/g;
+	value = value.replace(_slugify_strip_re, '').trim().toLowerCase();
+	value = value.replace(_slugify_hyphenate_re, '-');
+	$("#id_slug").val(value);
+}
+</script>
+{% endblock %}

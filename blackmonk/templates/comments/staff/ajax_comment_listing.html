@@ -1,0 +1,124 @@
+{% load i18n mptt_tags mptt_comments_tags %}
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{flag}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{created}}" name="id_created" id="id_created">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="" name="id_action" id="id_action">
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+{% if comments %}
+	<ol class="data-table table-lists-container" style="margin-bottom:30px;" id="ajax_content_list">
+		{% for comment, tree in comments|tree_info %}
+			 <li class="table-list" id="li_{{comment.id}}">
+					<div class="table-list-container check-item group">
+				 	<span class="checkbox-wrap"><input type="checkbox" onclick="fix_action()" {% if comment.is_removed %}status="B"{% else %}{% if comment.is_public %}status="P"{% else %}status="N"{% endif %}{% endif %} value="{{comment.id}}" id="id_checkbox_{{comment.id}}" name="artCulture" class="check-overflow cbox check_action"></span>
+					<div class="item-info relative-block">
+						{% if comment.comment|length|get_digit:"-1" > 169 %} 
+		                	<h3 class="title less_c" style=" text-overflow: clip;white-space: normal;">
+								{{comment.comment|truncatechars:170}} <a style="color:#4083A9;" class="see_more" href="javascript:void(0)">({% trans 'see more' %})</a>
+							</h3>
+							<h3 class="title more_c" style="display:none;text-overflow: clip;white-space: normal;">
+								{{comment.comment}} <a class="see_less" style="color:#4083A9;"  href="javascript:void(0)">({% trans 'see less' %})</a>
+							</h3>
+						{% else %}
+							<h3 class="title" style=" text-overflow: clip;white-space: normal;">
+								{{comment.comment}}
+							</h3>
+						{% endif %}
+		               	<p style="margin-bottom:5px;">
+							{% if not m %}
+							<span style="font-size: 13px; font-weight: bold; margin-right: 6px;">
+								{{comment.content_type|title}}
+							</span> 
+							{% endif %}
+							<a target="_blank" href="{% if comment.content_type.model == 'theatres' %}{{comment.content_object.comment_get_absolute_url}}{% else %}{{comment.content_object.get_absolute_url}}{% endif %}">
+								{{comment.content_object|truncatechars:100|title}}
+							</a>
+						</p>
+						<p class="ltxt80">
+							{% trans 'By' %} <a href="/profile/{{comment.user.profile_slug }}">{{comment.user.first_name}}</a> 
+							<span class="divider12">|</span>{{comment.submit_date|date:"M d, Y"}}
+						</p>
+		                <ul class="quick-stats group">
+		                    <li class="like"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Like' %}"><span class="inline-block icon-view-stats"></span>{{comment.like}}</a></li>
+							<li class="flag"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Flag' %}"><span class="inline-block icon-view-stats"></span>{{comment.flag}}</a></li>
+							<li class="reply"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Reply' %}"><span class="inline-block icon-view-stats"></span>{{comment|children_count}}</a></li>
+		                </ul>
+		                <div class="item-status {% if forloop.counter == 1 %}tip tip5{% endif %} dev_hide_list_status" onclick="display_change_status({{comment.id}},$('#id_estatus_{{comment.id}}').attr('name'));">
+		                	<span class="status-inside inline-block" id="id_span_chge_sts_{{comment.id}}">
+							<span title="{% if comment.is_removed %}blocked{% else %}{% if comment.is_public %}published{% else %}pending{% endif %}{% endif %}" name="{% if comment.is_removed %}B{% else %}{% if comment.is_public %}P{% else %}N{% endif %}{% endif%}" id="id_estatus_{{comment.id}}" class="inline-block status-idty icon-{% if comment.is_removed %}blocked{% else %}{% if comment.is_public %}published{% else %}pending{% endif %}{% endif %}"></span>	 
+			                    <span class="arrow"></span></span>
+								<ul class="dropdown-list" id="change_status_id_{{comment.id}}">
+									<li><strong>{% trans 'Update status to...' %}</strong></li>
+									<ul id="id_dis_status_{{comment.id}}">
+			                       	</ul>
+			                    </ul>
+		                </div>                                                        
+		            </div>
+		            <div class="action-buttons {% if forloop.counter == 1 %}tip tip6{% endif %}">
+		                <div class="relative-block">
+		                    <span style="cursor:pointer;" class="item-manage inline-block" id="id_span_settings_{{comment.id}}" onclick="delete_comment({{comment.id}});"><span class="action-icon icon icon-delete"></span></span>
+						</div>                                                              	                                                         
+		            </div>
+		        </div>
+		    </li> 
+		{% endfor %}
+	</ol>	
+	<div id="pagenation" class="group" style="margin-bottom:30px;">
+		{% include 'common/pagination_ajax.html'%}  
+	</div>
+	<div class="clear"></div>
+<script>
+	function status_function(id,status){
+			$('#id_dis_status_'+id).html('');
+			if(status=='P'){
+				ahtml = '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);">{% trans 'Block' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else if(status=='N'){
+				ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+				ahtml+= '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);" >{% trans 'Block' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else if(status=='B'){
+				ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else{
+				$('#change_status_id_'+id).hide();
+				$('#id_span_chge_sts_'+id).removeClass('active')
+				return false;
+			}
+		}
+	function save_status(id,status){
+		$('#id_estatus_'+id).addClass('loading');
+		var DataString="id="+id+"&status="+status;
+		$.ajax({
+			type: "GET",
+			url: "{% url 'staff_comment_status_change' %}",
+			data: DataString,
+			dataType:'json',
+			success: function(data){
+				if(data.status != '0'){
+					$('#id_estatus_'+id).removeClass('loading');
+					$('#id_estatus_'+id).replaceWith(data.html);
+					$('#change_status_id_'+id).hide();
+					$('#id_span_chge_sts_'+id).removeClass('active')
+					$('#id_total').html(data.count_total);
+					$('#id_pending').html(data.count_pending);
+					$('#id_published').html(data.count_published);
+					$('#id_blocked').html(data.count_blocked);
+					$('#id_checkbox_'+id).attr('status',status);
+	
+				}else{
+					$('#change_status_id_'+id).hide();
+					$('#id_span_chge_sts_'+id).removeClass('active')
+					$('#id_estatus_'+id).removeClass('loading');
+					alert(gettext('Oops!!! Not able to process your request.'));
+				}
+			}
+		});
+	}
+</script> 
+{% else %}
+	<div class="no-data"><p>{% trans 'Sorry , No comments found !' %}</p></div> 
+{% endif %} 

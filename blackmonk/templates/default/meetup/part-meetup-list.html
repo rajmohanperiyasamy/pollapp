@@ -1,0 +1,76 @@
+{% load i18n ds_utils %}
+
+{% for meetup in meetups %}
+ <li class="mDa">
+     <div class="mDa-iN">
+         <div class="mDa-wPr">
+             <a href="{{ meetup.url}}" target="_blank" class="bUi-tMb-wPr tMb-60 bUi-tMb-210 fLxiMgH">
+                 <span class="bUi-tMb">
+                     <span class="bUi-tMb-pRpL">
+                         <span class="bUi-tMb-cLp">
+                             <span class="bUi-tMb-cLp-iN">
+                                 {% if meetup.photo%}
+                                     <img alt="" src="{{ meetup.photo }}" class="mDa-oT" style="height: 127px; width: auto;">
+                                 {% else %}
+                                     <span class="iCn-bRdR50 oP25" title="{{event.title}}"><i aria-hidden="true" class="bUi-iCn-eVnT-24 cLr-gRy ib"></i></span>
+                                 {% endif %}
+                                 <span class="vRtL-aLn"></span>
+                             </span>
+                         </span>
+                     </span>
+                 </span>
+             </a>
+         </div>
+         <div class="mDa-bDy">
+             <span class="fS11 hMp cLr-gRy">{% trans 'a Meetup of' %}</span>
+             <a class="sPrTr" href="http://www.meetup.com/{{meetup.group_url}}/" target="_blank">
+                 <span class="fS11 uC cLr-lTbLu hMp">{{ meetup.group_name}}</span>
+             </a>
+             <div class="aBsLt tR10">
+                 <div class="pLrT iM cRsR-pNtR cLr-gRy" title="{{ meetup.rsvp }} {% trans 'attending' %}">
+                     <i aria-hidden="true" class="bUi-iCn-pPiE-24 ib"></i>
+                     <span class="ib" >{{ meetup.rsvp }}</span>
+                 </div>
+             </div>
+             <h5 title="{{ meetup.name }}" class="mDa-hD mR50 title">
+                 <a id="parashow" href="javascript:void(0);">{{ meetup.name }}</a>
+             </h5>
+             <div class="mDa-dTa">
+                 <div style="display:none;" id="para" class="fS12 cLr-gRy desc">
+                     {% autoescape off %}{{ meetup.description|default:"--description not available--" }} {% endautoescape %}
+                 </div>
+                 <ul class="iCnC-lSt iCn12 iCn-gRy">
+                     <li class="iCnC-lSt-iTm">
+                         <i class="bUi-iCn-tMe-12"></i>{{ meetup.event_date|ds_site_dateformat }}, {{ meetup.event_date|ds_site_timeformat }}
+                     </li>
+                     {% if meetup.venue %}
+                     <li class="iCnC-lSt-iTm">
+                         <i class="bUi-iCn-mP-mKr-12"></i>
+                         <a href="/venues/deerfoot-casino/">{{ meetup.venue }}{% if meetup.city %}, {{ meetup.city }}{% endif %}{% if meetup.state %}, {{ meetup.state }}{% endif %}</a>
+                     </li>
+                     {% endif %}
+                 </ul>
+             </div>
+             <!--div class="mDa-hVr"> <a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="#"><i class="BUI-icon-63"></i> Share</a> </div-->
+         </div>
+     </div>
+ </li>
+{% empty %}
+     <div class="hT600 rLvE sCn">
+         <div class="tBl-bLk pDt0">
+             <div class="tBl-cEl">
+                 <span class="iCn-bRdR80 oP25"><i class="bUi-iCn-eVnT-24 fS42-1 cLr-gRy ib" aria-hidden="true"></i></span>
+                 <p class="bLk mRt20 fS16 cLr-lTgRy oP75">{% trans ' Oops! No meetups found.' %}</p>
+             </div>
+         </div>
+     </div>
+{% endfor %}
+
+<script type="text/javascript">
+$(document).ready(function(){
+   $('h5.title').toggle( 
+       function(){$(this).closest('div').find(".desc").show("slow");},
+       function(){$(this).closest('div').find(".desc").hide("slow");}
+   );
+});
+</script>

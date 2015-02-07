@@ -1,0 +1,39 @@
+{% load thumbnail %}
+{% load i18n %}
+{% load template_loop %}	
+	<div class="preview-items-head">
+     <h4>{% trans 'Favorite Events' %}</h4>
+    </div>
+	{% if events %}		   
+	<ol class="data-table table-lists-container" id="ajax_content_list">
+			{% for event in events %}	
+			<li class="table-list" id="li_{{event.id}}">
+			        <div class="table-list-container has-thumb110 group">
+			            <div class="item-media">
+                        	<a href="{{ event.get_absolute_url }}" class="inline-block">
+                                <span class="item-thumb thumb-110">
+                                    <span class="thumb-in">
+                                        <span class="thumb"><img src="{% if event.get_cover_image %}{% thumbnail event.get_cover_image 110x0 %}{% else %}{{event.get_default_image}}{%endif%}" alt="{{event.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                                    </span>
+                                </span>
+							</a>                                                            
+                        </div> 
+						<div class="item-info relative-block">
+			                <h3 class="title"><a href="{{ event.get_absolute_url }}">{{event.title}}</a></h3>
+			                <p class="ltxt80">{% trans 'On' %} {{event.created_on|date:"d M, Y"}}</p>
+			                <ul class="quick-stats group">
+			                    <li class="cmnt">{% autoescape off %}{{ event.event_description|truncatewords:40  }}{% endautoescape %}</li>
+			                </ul>
+			            </div>
+			        </div>
+			    </li> 
+			{% endfor %}
+			</ol>
+			<div id="pagenation">
+				{% include 'account/favorite/pagenation.html' %}      
+				<input type="hidden" id="url" value="{% url 'ajax_myfav_list' events %}">
+				<input type="hidden" id="module" value="events">    
+			</div>  
+			{% else %}
+				<div class="no-data"> <p>{% trans 'Sorry , No favorite events found' %}</p></div>
+         	{% endif %}

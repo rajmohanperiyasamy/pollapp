@@ -1,0 +1,185 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "bm_shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Preview - Product' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+	<div class="header-bar has-preview-head">
+        <a href="{% url 'staff_bmshop_product_list' %}"><h2 style="cursor:pointer;"><span class="go_back"></span>Product</h2></a>
+        <section class="sub-header-bar">
+			<div class="preview-head">
+				{% if pty_obj.featured %}
+					<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+				{% endif %}
+                <div class="item-title">
+                    <h1>{{ pty_obj.name }}</h1>
+                    <p class="ltxt80">{% trans 'By' %} <a href="#">{{pty_obj.created_by.profile.get_full_name}}</a> <span class="divider12">|</span> {{pty_obj.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+				<ul class="status-tabs group">
+                    <li>{{pty_obj.most_viewed}}<span class="meta">{% trans 'views' %}</span> </li>
+                </ul>                                
+            </div>  
+        </section>                     
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="article-preview" class="preview-center group">
+                    <div class="preview-items">
+                        <div class="preview-group">  
+                        	<div class="preview-items-head">
+                        		{% if perms.business.change_business %}
+                                	<div class="right-item"><div class="cform-button"><a href="{% url 'staff_bmshop_edit_product' pty_obj.id %}"><span>{% trans 'Edit' %}</span></a></div></div>
+								{% endif %}
+                            	<h3 style="vertical-align:top">{% trans 'Product Details' %}</h3>
+                            </div>            
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Name' %}</h4></div>
+                                <div class="value">{{ pty_obj }}</div>
+                            </div> 
+							{% if pty_obj.get_cover_image_user %}  
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Cover Image' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                            <li class="inline-block">
+                                                <div class="photos-preview"><img src="{% thumbnail pty_obj.get_cover_image_user 110x0 %}"><a class="icon-view preview-item" title="{% trans 'Large preview' %}" href="#"></a></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+								</div>
+                            </div>
+							{% endif %} 
+							{% if pty_obj.categories.all %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Category' %}</h4></div>
+                                <div class="value">{% for cat in pty_obj.categories.all %}{{ cat }}{% if not forloop.last %},{% endif %}{% endfor %}</div>
+								</div>
+                            </div> 
+							{% endif %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Manufacturer' %}</h4></div>
+                                <div class="value">{{ pty_obj.manufacturer }}</div>
+                            </div> 
+							{% if pty_obj.short_description %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Highlights' %}</h4></div>
+                                <div class="value">{% autoescape off %}{{ pty_obj.short_description }}{% endautoescape %}</div>
+                            </div> 
+							{% endif %}
+							{% if pty_obj.description %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Description' %}</h4></div>
+                                <div class="value">{% autoescape off %}{{ pty_obj.description }}{% endautoescape %}</div>
+                            </div> 
+							{% endif %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Price' %}({{globalsettings.currency}})</h4></div>
+                                <div class="value">{{ pty_obj.price }}</div>
+                            </div>
+							<div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Tax' %}</label></div>	
+                                <div class="value">{{ pty_obj.get_tax_calculator }}</div>	
+                            </div>
+							  <div class="preview-item title">	
+                                <div class="label"><label>{% trans 'For Sale' %}</label></div>	
+                                <div class="value">{{ pty_obj.for_sale }}</div>	
+                            </div>
+							  <div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Sale Price' %}</label></div>	
+                                <div class="value">{{ pty_obj.for_sale_price }}</div>	
+                            </div>
+							<div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Manual Delivery Time' %}</label></div>	
+							    <div class="value">{{ pty_obj.manual_delivery_time }}</div>	
+                            </div>
+							{% if pty_obj.manual_delivery_time %}
+							<div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Delivery Time' %}</label></div>	
+                                <div class="value">{{ pty_obj.delivery_time }}</div>	
+                            </div>
+							{% endif %}
+							 <div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Manage Stock' %}</label></div>	
+                                <div class="value">{{ pty_obj.manage_stock_amount }}</div>	
+                            </div>
+							{% if pty_obj.manual_delivery_time %}
+							<div class="preview-item title">	
+                                <div class="label"><label>{% trans 'No. of stock Items' %}</label></div>	
+                                <div class="value">{{ pty_obj.stock_amount }}</div>	
+                            </div>
+							{% endif %}
+							<div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Supported&nbsp;Accessorie' %}</label></div>	
+                                <div class="value">{% for cat in pty_obj.accessories.all %}{{ cat }}{% if not forloop.last %},{% endif %}{% endfor %}</div>
+                            </div>
+							<div class="preview-item title">	
+                                <div class="label"><label>{% trans 'Related Products' %}</label></div>	
+								<div class="value">{% for cat in pty_obj.related_products.all %}{{ cat }}{% if not forloop.last %},{% endif %}{% endfor %}</div>
+                            </div>
+							<div class="preview-item medias">	
+                                <div class="label"><label>{% trans 'Property Groups' %}</label></div>	
+                                <div class="value">{% for name in pty_obj.property_groups.all%}{{name}}{% endfor %}</div>	
+                            </div>
+							{%if is_displayables%}
+							<div class="preview-item medias">
+								<div class="group" style="padding:10px;">
+							 		<h3>{% trans 'Property Values' %}</h3>
+									<p>{% trans 'Manage properties and values related to the product.' %}</p>
+								</div>
+								<div class="fields-head"></div> 
+							    {% for property_group in displayables %}
+								<div class="title_group">
+							    	<div class="field text-field">	
+							            <div class="label">
+							            	<span class="title">{{ property_group.name }}</span>
+							            </div>	
+									{% for property in property_group.properties %}
+							            <div class="value">{{property.name}} =>
+							            	{% if property.display_select_field %}
+											  {% for option in property.options %}
+											  {% if option.selected %}{{ option.name }}{% if not forloop.last %},{% endif %}{% endif %}
+											  {%endfor%}
+											{%endif%}
+											{% if property.display_text_field %}
+												{{ property.value }}
+											{%endif%}
+							            </div>	
+									{%endfor%}</div>
+							    </div>
+								{%endfor%}
+							</div>
+							{%endif%}
+							{% if pty_obj.get_all_photos %}  
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Photos' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                        	{% for photo in pty_obj.get_all_photos %}
+                                            <li class="inline-block">
+                                                <div class="photos-preview"><img src="{% thumbnail photo.photo 110x0 %}"><a class="icon-view preview-item" title="{% trans 'Large preview' %}" href="#"></a></div>
+                                            </li>
+											{% endfor %}
+                                        </ul>
+                                    </div>
+								</div>
+                            </div>
+							{% endif %} 
+                    </div>                                            
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+{% endblock %}

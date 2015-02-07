@@ -1,0 +1,270 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load truncate_filter %}
+{% block navigation %}
+    {% activetab "selmodule" "banners" %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Preview - Banner' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+    <div class="header-bar has-preview-head">
+        <a href="{% url 'staff_banners_manage_banners' %}"><h2 style="cursor:pointer;"><span class="go_back"></span>Banners</h2></a>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+                <div class="item-title">
+                    <h1>{{ banner.caption|truncate_chars:59}}</h1>
+                    <p class="ltxt80">By <a href="{% url 'user_profile' banner.created_by.profile_slug %}">{{banner.created_by.get_full_name}}</a> <span class="divider12">|</span> {{banner.created_on|date:"M d, Y"}}</p>
+                </div>                                   
+                <ul class="status-tabs group">
+                     <li>{{banner.get_total_banner_views}}<span class="meta">{% trans 'views' %}</span></li>
+                    <li>{{banner.get_total_banner_clicks}}<span class="meta">{% trans 'clicks' %}</span></li>
+                </ul>                                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="article-preview" class="preview-center group">
+                    <div class="preview-items">
+                        <div class="preview-group">  
+                            <div class="preview-items-head">
+                                <div class="right-item">
+                                    <div class="cform-button" style="float: left;"><a href="{% url 'staff_banners_banner_traffic_reports' %}?bid={{banner.id}}"><span>{% trans 'View Traffic' %}</span></a></div>
+                                    <div class="cform-button" style="float: left; margin-left: 10px;"><a href="{% url 'staff_banners_add_banner' %}?bid={{banner.id}}"><span>{% trans 'Edit' %}</span></a></div>
+                                </div>
+                                <h3 style="vertical-align:top">{% trans 'Banner Details' %}</h3>
+                            </div>            
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Caption' %}</h4></div>
+                                <div class="value">{{ banner.caption }}</div>
+                            </div> 
+                            {% if banner.image %}
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Banner Image' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                            <li class="inline-block">
+                                                <div class="photos-preview"><img src="{{banner.image.url}}"></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Zone/Type' %}</h4></div>
+                                <div class="value">
+                                    {{banner.zones}}
+                                </div>
+                            </div> 
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Expiry Date' %}</h4></div>
+                                <div class="value">
+                                    {{banner.expiry_date|date:"M d, Y"|default:"Not Specified"}}
+                                </div>
+                            </div> 
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Section' %}</h4></div>
+                                <div class="value">
+                                    {{banner.section.name}}
+                                </div>
+                            </div>
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Open in a new window' %}</h4></div>
+                                <div class="value">
+                                    {% if banner.is_new_tab%}Yes{% else %}No{% endif %}
+                                </div>
+                            </div>
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Destination URL' %}</h4></div>
+                                <div class="value">
+                                    {{banner.destination_url|default:"Not Specified"}}
+                                </div>
+                            </div>
+                            
+                            
+                            {% if business.getaddress %}                                           
+                            <div class="preview-item address map">
+                                <div class="label"><h4>{% trans 'Address' %}</h4></div>
+                                <div class="value">
+                                    <div class="inline-block map-preview"  style="width: 190px; height: 150px;" id="map"></div>                                             
+                                    <div class="inline-block valign-top" style="width:324px;">
+                                        {% for addr in business.getaddress %}
+                                        <div> 
+                                            <span class="address-name"><strong>{{ addr.address1 }}</strong></span>                             
+                                            <span class="address-details">{{addr.zip}}{% if addr.address2 %},{{ addr.address2 }}{% endif %}</span>                             
+                                               {% if addr.email %}<span class="address-number">Email: {{ addr.email }}</span>{% endif %} 
+                                            {% if addr.website %}<span class="address-number">Website: {{ addr.website }}</span>{% endif %} 
+                                            {% if addr.telephone1 %}<span class="address-number">Phone: {{ addr.telephone1 }}</span>{% endif %} 
+                                            {% if addr.mobile %}<span class="address-number">Mobile: {{ addr.mobile }}</span>{% endif %}
+                                            {% if addr.city %}<span class="address-number">City: {{ addr.city }}{% if addr.zip %} - {{ addr.zip }}{% endif %}</span>{% endif %} 
+                                        </div> 
+                                        <script type='text/javascript'>total_address={{ forloop.counter }};</script>
+                                        {% endfor %} 
+                                    </div>   
+                                </div>
+                            </div>
+                            {% endif %} 
+                            {% if business.get_attribute_values %}
+                            <div class="preview-item price">
+                                <div class="label"><h4>{% trans 'Attributes' %}</h4></div>
+                                <div class="value">
+                                    {% for atr in business.get_attribute_values %}
+                                        {% ifchanged atr.key.attribute_group %}
+                                            <span><h5>{{atr.key.attribute_group}}</h5></span>
+                                        {% endifchanged %}
+                                        {% if atr.key.type == 'C' %}
+                                            {% if atr.textbox_value %}
+                                            <span>{{atr.key}}&nbsp;&rarr;&nbsp;{{atr.textbox_value}}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span>
+                                                {{atr.key}}&nbsp;&rarr;&nbsp;
+                                                {% for value in atr.value.all %}{{value}}{% if not forloop.last %},{% endif %}{% endfor %}
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div> 
+                            {% endif %}
+                            {% if business.operating_hours and business.workinghours.status == 'P' %}
+                            <div class="preview-item price">
+                                <div class="label"><h4>{% trans 'Working Hours' %}</h4></div>
+                                <div class="value">
+                                    {% if business.workinghours.mon_start or business.workinghours.mon_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Monday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.mon_start %}{{business.workinghours.mon_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.mon_end %}{{business.workinghours.mon_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                    {% if business.workinghours.tue_start or business.workinghours.tue_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Tuesday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.tue_start %}{{business.workinghours.tue_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.tue_end %}{{business.workinghours.tue_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                    {% if business.workinghours.wed_start or business.workinghours.wed_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Wednesday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.wed_start %}{{business.workinghours.wed_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.wed_end %}{{business.workinghours.wed_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                    {% if business.workinghours.thu_start or business.workinghours.thu_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Thursday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.thu_start %}{{business.workinghours.thu_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.thu_end %}{{business.workinghours.thu_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                    {% if business.workinghours.fri_start or business.workinghours.fri_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Friday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.fri_start %}{{business.workinghours.fri_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.fri_end %}{{business.workinghours.fri_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                    {% if business.workinghours.sat_start or business.workinghours.sat_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Saturday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.sat_start %}{{business.workinghours.sat_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.sat_end %}{{business.workinghours.sat_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                    {% if business.workinghours.sun_start or business.workinghours.sun_end %}
+                                    <span style="font-weight:bold">
+                                        <span style="float:left;width:80px !important;">{% trans 'Sunday' %}</span>:&nbsp;
+                                        {% trans 'From' %}{% if business.workinghours.sun_start %}{{business.workinghours.sun_start}}{% else %}--{% endif %}
+                                        {% trans 'to' %}&nbsp;{% if business.workinghours.sun_end %}{{business.workinghours.sun_end}}{% else %}--{% endif %}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div> 
+                            {% endif %}
+                            {% if business.get_photos %}  
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Photos' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                            {% for photo in business.get_photos %}
+                                            <li class="inline-block">
+                                                <div class="photos-preview"><img src="{% thumbnail photo.photo 110x0 %}"><a class="icon-view preview-item" title="{% trans 'Large preview' %}" href="#"></a></div>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %} 
+                            {% if business.get_files %}  
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Brochure/Menu' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                            {% for files in business.get_files %}
+                                            <li class="inline-block">
+                                                <a target="_blank" title="{% trans 'Download file' %}" href="{{globalsettings.website_url}}{{MEDIA_URL}}{{files.file}}">{{files.title}}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if business.paymentoptions.all %}  
+                            <div class="preview-item tags">
+                                <div class="label"><h4>{% trans 'PaymentOption' %}</h4></div>
+                                <div class="value">
+                                    <span class="note">{% for popt in business.paymentoptions.all %}<a href="javascript:void(0)">{{ popt }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+                                </div>
+                            </div> 
+                            {% endif %}  
+                            {% if business.tags.all %}  
+                            <div class="preview-item tags">
+                                <div class="label"><h4>{% trans 'Tags' %}</h4></div>
+                                <div class="value">
+                                    <span class="note">{% for tag in business.tags.all %}<a href="javascript:void(0)">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+                                </div>
+                            </div> 
+                            {% endif %}                                                                                       
+                        </div>   
+                    </div>                                            
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->
+        
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+{% if business.getaddress %}
+    <script type="text/javascript">
+        var markers=[];
+        $(document).ready(function(){
+            {% for addr in business.address.all %}
+                var marker = new Object();
+                marker["lat"] = {{addr.lat}};
+                marker["lng"] = {{addr.lon}};
+                marker["zoom"] = {{addr.zoom}};
+                marker["name"] = "{{ business.name }}";
+                marker["address"] = "{{ addr.address1|escape|linebreaks }}{{ addr.city }} - {{addr.zip }}";
+                markers.push(marker);
+            {% endfor %}
+            load_multi_marker('map',{{ business.address.all.0.lat }}, {{business.address.all.0.lon }}, {{business.address.all.0.zoom }},markers)                
+        });
+    </script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "home.html" %}
+<{% block title %}{% endblock %}>
+{% block content %}
+
+<p>HI you added the following author </p>
+
+
+	<p>NAME  :{{author.id}}</p>
+	<p>Gender:{{author.title}}</p>
+	<p>B-DAte:{{author.birth_date}}</p>
+	
+	<p>Author added time: {{time}}
+	
+
+
+<h4>List of authors<h4>
+	{% for authors in all_authors %}
+   
+      <a href="{%url 'update_author' author.id %}">{{ authors|truncatechars:20 }}</a>
+	  
+    
+{% endfor %}
+
+{% endblock %}

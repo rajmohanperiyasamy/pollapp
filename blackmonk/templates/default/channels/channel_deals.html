@@ -1,0 +1,75 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load currency %}
+{% load truncate_filter %}
+{% load bm_channeltags %}
+{% get_home_page_featured_deals channel=channel limit=1 as featured_deals %}
+{% with featured_deals.0 as deal %}
+{% if deal %}
+<div>
+	<section class="sCn mDa-lT-mNi">
+    	<div class="sCn-tTl mRb15">
+            <h3><span>{% trans 'Deal of the Week' %}</span>{# <a href="{% url 'deal_deals_home' %}" class="tXt-lNk rGhT">{% trans 'View all' %}</a> #}</h3>
+        </div>
+        <div class="oTsT-hRz">
+        	<div class="fTrD-bL mRb0 sLdR-sMl mDa-75 cTrL-rT">
+                <div class="fTrD-bL-iN">
+                    <ul class="fTrD-iTmS">
+                        <li class="fTrD-iTm">
+                            <div class="fTrD-tXt sDw">
+                                <div class="vAlGn">
+                                    <div class="fTrD-tXt-iN">
+                                        <h3 class="fTrD-hD w100P"><a href="{{deal.get_absolute_url}}">{{deal.title}}</a></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <figure class="fTrD-mDa">
+                                <span class="bUi-tMb-wPr fLxiMgW" href="{{deal.get_absolute_url}}">
+                                    <span class="bUi-tMb">
+                                        <span class="bUi-tMb-pRpL">
+                                            <span class="bUi-tMb-cLp">
+                                                <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% thumbnail deal.get_first_deal_image 0x335 %}" alt="{{deal.title}}" />
+                                                    <span class="vRtL-aLn"></span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </figure>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dSpLy-tBl bRdR tHcL tXt-cTr fS12">
+                <span>
+                    {% trans 'Value:' %}
+                    <span class="fS16 fW200 mRl5">{{ deal.original_price|floatformat:0|moneyfmt }}</span>
+                </span>
+                <span>
+                    {% trans 'Discount:' %}
+                    <span class="fS16 fW200 mRl5">{{ deal.get_discount }}%</span>
+                </span>
+            </div>
+        </div>
+        <div class="cLrFx mRt20">
+			{% ifnotequal deal.get_count_total_sold deal.max_count %}
+            <div class="pLlT">
+                <span class="fS18 fW200 ib mRt10 cLr-dRk" title="Time Left">
+                    <i aria-hidden="true" class="bUi-iCn-tMe-aLt-16 fS18 mRr5 cLr-gRy ib"></i>
+                    <span class="ib defaultCountdown"></span>
+                </span>
+            </div>
+			{% endifnotequal %}
+			<input type="hidden" value="{{ deal.get_remaining_scnd }}" id="deal_time_left">
+            <div class="pLrT">
+                <span class="ib mRr10 lH1">
+                    <span class="cLr-fRm fW200 fS24">{{ deal.discount_price|moneyfmt }}</span>
+                </span>
+                <a class="btn btn-primary ib fS13 uC" href="{% url 'deal_confirmation' %}?did={{deal.id}}">{% trans 'Shop Now' %}</a> 
+            </div>
+        </div>
+	</section>
+</div>
+{% endif %}
+{% endwith %}
+

@@ -1,0 +1,12 @@
+{% load i18n %}
+<select class="bUiSlCt" id="id_sel_rsvp_status" onchange="update_event_rsvp($(this).val());">
+    {% if event.check_occured %}
+        <option value="Y" {% if rsvp_obj.status == 'Y' %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+        <option  value="M" {% if rsvp_obj.status == 'M' %} selected="selected" {% endif %}>{% trans "Don't Remember" %}</option>
+        <option value="N" {% if rsvp_obj.status == 'N' %} selected="selected" {% endif %}>{% trans 'No' %}</option>
+    {% else %}
+        <option value="Y" {% if rsvp_obj.status == 'Y' %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+        <option  value="M" {% if rsvp_obj.status == 'M' %} selected="selected" {% endif %}>{% trans 'Maybe' %}</option>
+        <option value="N" {% if rsvp_obj.status == 'N' %} selected="selected" {% endif %}>{% trans 'No' %}</option>
+    {% endif %}       
+</select>

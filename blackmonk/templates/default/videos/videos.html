@@ -1,0 +1,139 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load i18n %}
+{% load tabs %}
+{% load ds_utils %}
+{% load bm_videostags %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Videos' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Videos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+    <meta name="title" content="{{seo.seo_title}}"  />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/videos/videos.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+	<script type="text/javascript">
+    $(document).ready(function(){
+	 $('.bids').each(function(){
+			bids.push($(this).val());
+		});
+        module_listing(bids,category);
+	});
+	
+	</script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "videos" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+{% get_video_categories as categories %}
+    <div class="container-fluid">
+	<div class="pD2015 bM-bX sRcHbR">
+                    <div class="row-fluid">
+                        <div class="span9 fRm">
+                            <form class="form-search mRb0" action="{% url 'search_videos' %}">
+                                <div class="mDl">
+                                    <h3 class="mDl-nM">
+                                        <i class="bUi-iCn-vDeO-aLt-24 fS16" aria-hidden="true"></i>
+                                        <span class="ib">Videos
+                                            <i class="bUi-iCn-aNg-rT-12 cLr-lTgRy hMp" aria-hidden="true"></i>
+                                        </span>
+                                    </h3>
+                                </div>
+                                <div class="span5">
+                                    <input type="text" placeholder="Search for Video" value="" name="keyword" id="keyword" class="">
+                                </div>
+                                <div class="span3">
+                                    <select class="bUiSlCt-wHt w100DrD" id="category" name="category">
+                                        <option>All Categories</option>
+										{% for cat in categories %}	
+										<option>{{cat.name}}</option>
+										{% endfor %}
+                                    </select>
+                                </div>
+                                <div class="ib sUb-bTn mRl12 mRl0mP">
+                                    <button class="btn btn-primary" type="submit">
+                                    <i class="bUi-iCn-sRh-16" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+						{% block searchblock %}
+						{% activetab 'addbutton' 'videos' %}
+                       	{% include "default/add_object_search.html" %}
+						{% endblock %}
+                    </div>
+                </div>
+        <div class="row-fluid">
+            <div class="main span8">
+				{% if not keyword %}
+                {% get_featured_videos_by_category category=maincategory limit=20 as featured_videos %}
+                {% if featured_videos %}
+                <div class="row-fluid">
+                    <section>
+                        <div class="fTrD-bL cRsL mRb0">
+                            <div class="fTrD-bL-iN">
+                                <ul class="mDa-gD fGd tWcL dSgDwDt mDa-oT-tP {% if featured_videos.count > 1 %}bM-Ftrd-ViDs{% endif %}" {% if featured_videos.count > 1 %} style="width:10000px;" {% endif %}>
+                                    {% for video in featured_videos %}
+                                    <li class="mDa mRb0 pDl0 bM-bX" {% if featured_videos.count > 1 %} style="float:left;" {% endif %} itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+										<input type="hidden" id="fbids" name="fbids" class="bids" value="{{video.id}}">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr tMb-50 bUi-tMb-210 fLxiMgW" href="{{video.get_absolute_url}}" itemprop="url">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{{video.get_video_hq_image}}" alt="{{video.title}}" title="{{video.title}}" itemprop="thumbnail">
+                                                                    <span class="vRtL-aLn"> </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                                <div class="mDa-hVr cVr tR-hVr"><span class="bR5"><span class="lBl dRk mNi">{{video.duration}}</span><meta itemprop="duration" content="{{ video.duration|get_iso_time_duration }}" /></span></div>
+                                                <div class="mDa-hVr tR-hVr cVr">
+                                                    <a class="s-32 cTr" href="{{video.get_absolute_url}}">
+                                                        <i class="bUi-iCn-pLy-aLt-24 hT-aTo fS32-1 pLy-iCn" aria-hidden="true"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mDa-bDy">
+                                                <span class="fS11 uC cLr-lTbLu" itemprop="genre">{{video.category}}</span>
+                                                <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{video.title}}" itemprop="name"><a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a></h5>
+                                                
+                                                <div class="mDa-dTa mRt4">
+                                                   <img src="{{STATIC_URL}}themes/img/icons/{% if video.is_vimeo %}vimeo{% else %}youtube{% endif %}.png" class="mRr5 ib mRb0"><span class="fS11 cLr-lTgRy ib mRb0">{{video.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span><meta itemprop="uploadDate" content="{{video.published_on|get_iso_time_format}}" />
+                                                   <a href="javascript:void(0);" title="{{video.video_view}} views" class="fS12 cLr-lTgRy pLrT mRt3 iM"><i aria-hidden="true" class="bUi-iCn-vEw-16 ib lH1"></i> <span class="ib" itemprop="interactionCount">{{video.video_view}}</span></a>
+                                                </div>                                           
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <!-- /.fTrD-iTms --> 
+                            </div>
+                            <!-- /.fTrD-bL-iN --> 
+                        </div>
+                    </section>
+                </div>
+                {% endif %}
+				{% endif %}
+                <div class="row-fluid">
+                    {% include 'default/videos/ajax_home_videos.html' %}
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div class="mSnRy">
+                    <section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right"></section>
+                </div>
+                <div class="mSnRy">
+                	{% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}        

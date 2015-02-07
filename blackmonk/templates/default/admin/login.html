@@ -1,0 +1,104 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" xmlns="http://www.w3.org/1999/xhtml">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Signin | {{globalsettings.domain}}</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{STATIC_URL}}themes/css/base.css">
+<link href="{% if globalsettings.fav_ico %}{{ globalsettings.fav_ico.url }}{% else %}{{STATIC_URL}}themes/green/images/ico/16X16-BM_ICON.png{% endif %}" rel="icon">
+</head>
+<body>
+<div id="site-wrapper" class="oFl">
+    
+    <header id="mast-head" class="mRb30">
+	    <div class="titlebar container-fluid vD">
+	        <h1 class="logo pLlT"> <a href="/" class="pD100"> <img src="{% if globalsettings.logo %}{{ globalsettings.logo.url }}{% endif %}" alt="Orlando"/> </a> </h1>
+	        <div class="aBsLt tBr0">
+	        	<p class="fS13 mR0 ib">{% trans "Not a member?" %}<a href="/account/signup/?next={{next}}" class="fW-bLd"> {% trans 'Sign up' %}</a></p>
+	        	<span class="ib hAtO"></span>
+	        </div>
+	    </div>
+	</header>
+
+    <!-- /.masthead -->
+    <div id="site">
+    	<div class="titlebar container-fluid sub_headder rLvE hD">
+            <h1 class="logo pLlT"> <a href="/"> <img alt="Orlando" src="{% if globalsettings.logo %}{{ globalsettings.logo.url }}{% endif %}"> </a> </h1>
+            <div class="aBsLt tBr0 pDr15">
+	        	<p class="fS13 mR0 ib">{% trans "Not a member" %} <a href="/account/signup/?next={{next}}" class="fW-bLd"> {% trans 'Sign up' %}</a></p>
+	        	<span class="ib hAtO"></span>
+	        </div>
+        </div>
+        <div id="content-container" class="tBl-bLk pDt70mX640">
+        	<div class="tBl-cEl">
+	            <div class="container-fluid">
+	            	<div class="row-fluid">
+	            		<div class="span6 sP6mN980 sP8mN768 sP10p sP12mX640 cTr-bLk pL0">
+	            			<section class="sCn tXt-cTr pD30">
+		            			<h2 class="mRt0">{% trans 'Sign in to ' %}{{ globalsettings.domain }}</h2>
+		            			{% include 'account/signin_other.html' %}
+		            			<hr>
+								<form class="signup-email" action="{{ app_path }}"  id="signup_form" name="signup_form" method="post">{% csrf_token %}
+								<input type="hidden" name="next" value="{{ next }}" />
+								{%if form.errors %}
+			            		{%trans "Enter a correct email and password."%}<br/><br/>
+			            		{%endif%}
+		            			<div class="row-fluid tXt-lT">
+									<h3 class="fS14 cLr-gRy mRb20">{% trans 'Sign in with your email address' %}</h3>
+									<fieldset>
+	                    				<div class="control-group">
+		                                    <label class="control-label">{% trans 'Email' %}</label>
+		                                    <div class="controls">
+		                                        <input type="text" name="username">
+		                                    </div>
+		                                </div>
+		                                <div class="control-group">
+		                                    <label class="control-label">{% trans 'Password' %}</label>
+		                                    <div class="controls">
+		                                        <input type="password" name="password">
+		                                    </div>
+		                                </div>
+		                                <input type="hidden" name="this_is_the_login_form" value="1" />
+									</fieldset>
+									<div class="form-actions pD0">
+									  <button type="submit" class="btn btn-primary fS12 fW-bLd ">{% trans 'Sign In' %}</button>
+									  <span class="help-inline fS12 mRl10"><a href="/account/forgotpwd/">{% trans 'Forgot password?' %}</a></span>
+									</div>
+		            			</div>
+								</form>
+	            			</section>
+	            			<p class="tXt-cTr pDt10 mRb30 cLr-gRy fS13"><a href="{{request.META.HTTP_REFERER}}" class="fW-bLd">{% trans 'Go back' %}</a></p>
+	            		</div>
+	                </div>
+	            </div>
+        	</div>
+        </div>        
+    </div>
+    <!-- #site-wrapper --> 
+</div>
+<!-- #site --> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$("#signup_form").validate({
+		ignore: "",
+		highlight: function(element, errorClass){$(element).addClass('error');$(element).parent().parent().addClass('error');},
+		unhighlight: function(element, errorClass){$(element).removeClass('error');$(element).parent().parent().removeClass('error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			username:{required:true,email:true},
+			//username:"required",
+			password:"required"
+	   	}
+	});
+</script>
+</body>
+</html>

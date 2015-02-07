@@ -1,0 +1,36 @@
+{% load i18n thumbnail %}
+<div class="cMnT-pSt cLrFx">
+<div class="cMnT-pSt-iN bM-bX pD20">
+    <input type="hidden" id="id_hidden_frm_sbmt" value="">
+    <form class="cMnT-fRm mRb0 dev-aForm" method="post" id="add_qna_form" action="{% url 'advice_post_advice' %}" novalidate>
+        <div class="vCrD pLlT nEdS-fCs mRr10">
+            <span class="bBl-aRw">
+                <span class="aRw a1"></span>
+                <span class="aRw a2"></span>
+            </span>
+            <a href="{% if request.user.id %}{% url 'user_profile' request.user.profile_slug %}{% else %}javascript:void(0);{% endif %}">
+                <img class="aVtR" src="{% if request.user.image %}{% thumbnail request.user.image 36x36 crop %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}">
+            </a>
+        </div>
+        <div class="cMnT-bDy">
+            <div class="cMnT-bDy-iN">
+                <div class="nEdS-fCs mRb10 control-group">
+                    {{form.category}}
+                    <span class="help-block bm-error-txt-spn fS12 hide">{% trans 'Choose a Topic' %}</span>
+                </div>
+                <div class="cMnT-tXtArA-wRp control-group mRb0">
+                    {{form.question}}
+                    <span class="help-block bm-error-txt-spn fS12 hide">{% trans 'Please enter a Thread ' %}</span>
+                </div>
+                <div class="cMnT-tXtArA-wRp nEdS-fCs">
+                    {{form.moredetails}}
+                </div>
+                <div class="cMnT-pSt-bTn mRt10 nEdS-fCs">
+                    <button type="button" class="btn btn-success fS12 fW-bLd dev-postBtn disabled" disabled="disabled" onclick="check_login(0,'postadvice');">{% trans 'Submit' %}</button>
+                    <a  href="javascript:void(0);" onclick="cancel_comment($(this));" class="btn btn-light fS12 fW-bLd">{% trans 'Cancel' %}</a>    
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>

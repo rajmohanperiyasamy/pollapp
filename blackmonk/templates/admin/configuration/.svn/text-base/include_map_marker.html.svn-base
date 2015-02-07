@@ -1,0 +1,52 @@
+{% load i18n %}
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<div id="ajax_content_loading" style="display:none;padding-top:96px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Map Marker' %}</p>
+</div>
+<div id="map-options" class="group">
+    <form action="" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+            <div id="meta-tags" class="field-group">
+            	<div class="field text-field">	
+            		<div id="map" style="width:500px; height:200px;margin-left:10px; margin-bottom:20px; position: relative; background-color: rgb(229, 227, 223);"></div>
+				</div>
+				<div class="field text-field">	
+                	<div class="label"><label>{% trans 'Map Latitude' %}</label></div>	
+                	<div class="value">{{form.google_map_lat}}</div>	
+                </div>
+				<div class="field text-field">	
+                	<div class="label"><label>{% trans 'Map Longitude' %}</label></div>	
+                	<div class="value">{{form.google_map_lon}}</div>	
+                </div>
+				<div class="field text-field">	
+                	<div class="label"><label>{% trans 'Map Zoom' %}</label></div>	
+                	<div class="value">{{form.google_map_zoom}}</div>	
+                </div>
+            </div>            
+		</div>    
+        <div class="modal-base form-submit group trp-bg">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="save_map_marker()"><span class="cform-button-text">{% trans 'Save Changes' %}</span></button>
+		</div>           
+    </form>
+</div>  
+{% if globalsettings.google_map_lat and globalsettings.google_map_lon %}
+<script type="text/javascript">
+	config_load('map',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},'{{ globalsettings.city }}');
+</script> 
+{% else %}
+<script type="text/javascript">
+$(document).ready(function(){ codeAddress();});
+var geocoder;
+var map;
+function codeAddress() {
+  	geocoder = new google.maps.Geocoder();
+    var address = "{{globalsettings.city}}";
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        config_load('map',results[0].geometry.location.lat(),results[0].geometry.location.lng(),8,'{{ globalsettings.city }}');
+      }else {config_load('map',34, 0,1,'{{ globalsettings.city }}');}
+    });
+}
+</script>
+{% endif %} 

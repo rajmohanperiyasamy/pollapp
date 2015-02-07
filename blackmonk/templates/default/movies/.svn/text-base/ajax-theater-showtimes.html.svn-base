@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load bm_movie_tags %}
+
+{% if showtimes %}
+<hr class="oTsT-hRz mRb10 mRt15">
+<div class="tLbR mRb10">
+    <div class="tLbR-iR">
+        <div class="pLlT fS11 mRt4">
+            <span class="uC cLr-lTgRy">{% if today == selected_date %}{% trans 'Today' %}, {% now "F j" %}{% else %}{{selected_date|date:"l, F d"}}{% endif %}</span><span class="cLr-lTgRy sPrTr">{{showtimes.count}} movies playing at this theater.</span>
+        </div>
+    </div>
+</div>
+<ul class="showtimeData mDa-lT mR0 mDa-oT-lT">
+    {% for st in showtimes %}
+    {% with st.movietime.movie as movie %}
+    <li class="mDa">
+        <div class="mDa-iN wLl mRb0 pD10">
+            <div class="mDa-wPr"> 
+                <a class="bUi-tMb-wPr tMb-150 fLxiMgH bUi-tMb-80" href="{{movie.get_absolute_url}}">
+                    <span class="bUi-tMb">
+                        <span class="bUi-tMb-pRpL">
+                            <span class="bUi-tMb-cLp">
+                                <span class="bUi-tMb-cLp-iN"> 
+                                    <img class="mDa-oT" src="{% if movie.image.url %}{{movie.image.url}}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{movie.title}}">
+                                    <span class="vRtL-aLn"> </span>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+            </div>                                        
+            <div class="mDa-bDy pD0">
+                <h5 class="mDa-hD tRnCt mR50 rLvE w85P" title="{{movie.title}}"><a href="{{movie.get_absolute_url}}" class="fW-bLd">{{movie.title}}</a></h5>
+                <div class="mDa-dTa fS11 cLr-gRy">
+                    <span class="bDg bRdR-gRy mRb0 mRr5">{{movie.certification|default:"NR"}}</span>{% if movie.duration_hours %}<span>{{movie.duration_hours}}</span>{% endif %}<span class="sPrTr">{% for gnr in movie.movie_type.all %}{{gnr.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</span><span class="sPrTr"><strong class="cLr-dRk">{{movie.ratings|floatformat}}</strong>/10 <span class="fS11 cLr-lTgRy">({{movie.votes}} votes)</span></span>
+                </div> 
+                {% if st.movietime.theatre.tkt_url %}<a href="{{st.movietime.theatre.tkt_url}}" target="_blank" class="btn btn-warning fS11 pD612 cLr-wHt pStN-rT mRt10mX480 StCmP">Get Tickets</a>{% endif %}
+                <div class="cLrFx mRt10 mRb30">
+                    <div class="tMlN hRz">
+                        <ol class="inline tMs">
+                            {% for show in st.show_times|get_showtime_format %}
+                                <li><a href="javascript:void(0);" class="tM-gD" style="left:{{show.position}}%"><span class="dOt"></span><span class="tM"><span class="aRw"></span> {{show.showtime}}</span></a></li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </li>
+    {% endwith %}
+    {% endfor %}
+</ul>
+<script>
+$(document).ready(function(e) {
+    setTimeout(function(){$('.fLxiMgH').setrSpVHeight('mDa-lT')});                            
+});
+</script>
+{% endif %}

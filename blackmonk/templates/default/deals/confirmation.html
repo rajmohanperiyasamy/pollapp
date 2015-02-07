@@ -1,0 +1,180 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n thumbnail truncate_filter %}
+{% load currency %}
+{% load modulotag %}
+{% block pagetitle %} {% if seo.seo_title %}{{seo.seo_title}}{% else %}{{ globalsettings.domain }} {% trans 'Hot Deals' %} | {% trans 'Deal Coupons' %} | {% trans 'Restaurant, Spa, and Tickets' %} | {% trans 'Group Buying' %}{% endif %}{% endblock %}
+{% block meta %}
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#basicInformation").validate({
+                ignore:'',
+                highlight: function(element, errorClass){$(element).addClass('error');$(element).parent().parent('div').addClass('error');},
+                unhighlight: function(element, errorClass){$(element).removeClass('error');$(element).parent().parent('div').removeClass('error');},
+                   rules: {
+                    name: "required",
+                    address:"required",
+                    mobile: "required",
+                    email:"required",
+                   },
+                   errorPlacement: function(error, element) {
+                        //$(element).parent('div').find('.bm-error-txt-spn:first').removeClass('hide');
+                   },
+            });                          
+        });
+    </script>
+    
+    <script type="text/javascript">
+        function update_price(){
+            var v = $('#id_quantity').val();
+            var t= '{{ globalsettings.currency }}' + v * $('#deal_price').val();
+            $('.total_price').html(t);
+            $('#org_quantity').val(v);
+        }
+    </script>
+    
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "deals" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+
+    <div class="container-fluid"> 
+        {% block headernavigation %}
+            {% activetab 'headernav' 'alldeals' %}
+            {% include 'default/deals/top-header-part.html' %}
+            {{ block.super }}
+        {% endblock %}
+        <div class="row-fluid">
+            <div class="span8 main">
+                <section class="sCn">
+                    <div class="sCn-tTl sCn-tTl-bR mRb0">
+                        <h3 class="clearfix oFl">
+                            <span class="ib pLlT">{% trans 'Order Details' %}</span>
+                        </h3>
+                    </div>
+                    <div class="oTsT-hRz">
+                        <table class="table bDr-lT">
+                            <thead>
+                                <tr class="bF5">
+                                    <th class="w15 pD0"></th>
+                                    <th class="span6 pDl0 hSmP">{% trans 'Item' %}</th>
+                                    <th>{% trans 'Price' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th class="tXt-rT pDr15">{% trans 'Total' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="w15 pD0"></td>
+                                    <td class="pDl0 pD15 hSmP">
+                                        <ul class="modulesBrowseData tHcL mDa-lT mDa-oT-lT">
+                                            <li class="mDa mRb0">
+                                                <div class="mDa-iN bDr0 pD0">
+                                                    <div class="mDa-wPr"> <a class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-110" title="{{deal.title}}" href="{{deal.get_absolute_url}}">
+                                                            <span class="bUi-tMb">
+                                                                <span class="bUi-tMb-pRpL">
+                                                                    <span class="bUi-tMb-cLp">
+                                                                        <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if deal.album.album_photos.all.0.photo %}{% thumbnail deal.album.album_photos.all.0.photo 0x333 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{deal.title}}">
+                                                                            <span class="vRtL-aLn"> </span>
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </a> </div>
+                                                    <div class="mDa-bDy">
+                                                        <h4 class="mDa-hD tRnCt0 fW200 mR50 rLvE h65 h65" title="{{deal.title}}"><a href="{{deal.get_absolute_url}}">{{deal.title}}</a></h4>
+                                                        <p class="fS12 cLr-gRy pDt5 hD-gD">{% autoescape off %}{{ deal.about|striptags|truncate_chars:130 }}{% endautoescape %}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td class="pDt15">{{ deal.discount_price|floatformat:0|moneyfmt }}</td>
+                                    <td class="pDt15">
+                                        <input type="hidden" name="deal_price" id="deal_price" value="{{ deal.discount_price|floatformat:2 }}" />
+                                        <select name="id_quantity" id="id_quantity" onChange="update_price()" autocomplete="off" class="tBlbUiSlCtbtn-light tXt-sMl">
+                                            {% for count in count_limits %}<option value="{{count}}" {% if forloop.first %}selected="selected"{% endif %}>{{count}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td class="tXt-rT pDr15 pDt15" id="id_total"><strong class="total_price">{{ deal.discount_price|floatformat:0|moneyfmt }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="w15 pD0"></td>
+                                    <td></td>
+                                    <td colspan="3" class="tXt-rT pDr15">
+                                        <div class="ib mRr10 cLr-gRy">{% trans 'Total amount :' %}</div>
+                                        <h3 class="ib total_price">{{ deal.discount_price|floatformat:0|moneyfmt }}</h3>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <section class="sCn">
+                    <div class="sCn-tTl sCn-tTl-bR">
+                        <h3 class="clearfix oFl">
+                            <span class="ib pLlT">{% trans 'Billing Information' %}</span>
+                        </h3>    
+                        <p class="mR0 mRt4 cLr-gRy">{% trans 'Please fill out the below form to complete your purchase and have your discount voucher sent instantly to your email.' %}</p>      
+                    </div>
+                    <form class="form-horizontal" id="basicInformation" method="post" action="{% url 'deal_confirmation' %}?did={{deal.id}}{% if friend %}&friend=1{% endif %}">{% csrf_token %}
+                    
+                        <input type="hidden" name="did" value="{{ deal.id }}" />
+                        <input type="hidden" name="quantity" id="org_quantity" value="1" />
+                        <input type="hidden" name="gfr_addr_id" id="id_gfr_addr_id" value="{{gif_addr.id}}" />
+                        
+                        <div class="control-group mRb10">
+                            <label class="control-label">{% trans 'Your Name*' %}</label>
+                            <div class="controls">
+                                {{ form.name }}
+                            </div>
+                        </div>
+                        <div class="control-group mRb10">
+                            <label class="control-label">{% trans 'Address*' %}</label>
+                            <div class="controls">
+                                {{ form.address }}
+                            </div>
+                        </div>
+                        <div class="control-group mRb10">
+                            <label class="control-label">{% trans 'Mobile Phone*' %}</label>
+                            <div class="controls">
+                                {{ form.mobile }}
+                            </div>
+                        </div>
+                        <div class="control-group mRb10">
+                            <label class="control-label">{% trans 'Your Email*' %}</label>
+                            <div class="controls">
+                                {{ form.email }}
+                            </div>
+                        </div>
+                        
+                        {% if not friend %}
+                            <input type="hidden" id="deliveryaddress" name="deliveryaddress" value="1">
+                        {% endif %}
+                        
+                        <div class="control-group mR0 mRt30">
+                            <div class="controls">
+                                <button type="button" class="btn btn-light" onclick="location.replace('{% url 'deal_deals_home' %}');">{% trans 'Cancel' %}</button>
+                                <button type="submit" class="btn">{% trans 'Complete Order' %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+            <!--main-->
+            <aside class="sD-bR span4 mSnRy">
+               {% include 'default/deals/deal-part-faqs.html' %}
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+

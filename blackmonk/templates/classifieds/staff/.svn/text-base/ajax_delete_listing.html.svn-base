@@ -1,0 +1,80 @@
+{% load i18n %}
+{% load ds_utils %}
+{% if classified %}
+	{% for cls in classified %}
+		{% if not new_id or new_id and cls.id in new_id %}	
+	   	<li class="table-list" id="li_{{cls.id}}">
+			<div class="table-list-container check-item group">
+			 	{% if cls.listing_type == 'F' %}
+			 		<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+				{% else %}
+					{% if cls.listing_type == 'S' %}
+			 			<span class="list-type sponsored-item"><a class="tttxt" title="{% trans 'Item listed as sponsored' %}" href="#">{% trans 'Sponsored' %}</a></span>
+					{% endif %}
+				{% endif %}
+			 	<span class="checkbox-wrap">
+					<span class="cform-checkbox-container"><input type="checkbox" onclick="fix_action()" status="{{cls.status}}" value="{{cls.id}}" id="id_checkbox_{{cls.id}}" name="artCulture" class="check-overflow cbox check_action"><span class="cform-checkbox-element"></span></span>
+				</span>
+				{% get_payment_mode id=cls.id type='classifieds' as payments %}
+				<div class="item-info relative-block">
+	                <h3 class="title"><a href="{% url 'staff_preview_classified' cls.id %}">{{cls.title}}</a></h3>
+	                <p class="ltxt80">{{cls.category.name}} <span class="divider12">|</span> {% trans 'By' %} <a href="{% url 'user_profile' cls.created_by.profile_slug %}">{{cls.created_by.display_name}}</a> <span class="divider12">|</span>{{cls.created_on|date:"M d, Y"}}</p>
+					{%if payments %}<p class="ltxt80">Payment Mode: {{payments.payment_mode}} & Payment Status: {% if cls.is_paid %}Paid{% endif %}{% endif %} 
+					<ul class="quick-stats group">
+	                    <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{cls.most_viewed}}</a></li>
+	                    <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span>46</a></li-->
+	                </ul>
+	                <div class="item-status {% if forloop.counter == 1 %}tip tip8{% endif %} {% if not perms.classifieds.publish_classifieds %}no-options{% endif %} dev_hide_list_status" onclick="display_change_status({{cls.id}},$('#id_estatus_{{cls.id}}').attr('name'));">
+	                	<span class="status-inside inline-block" id="id_span_chge_sts_{{cls.id}}">
+						<span title="{{cls.get_status|capfirst}}" name="{{cls.status}}" id="id_estatus_{{cls.id}}" class="inline-block tttxt status-idty icon-{{cls.get_status}}"></span>	 
+	                    {% if not perms.classifieds.publish_classifieds %}</span>{% endif %}
+						{% if perms.classifieds.publish_classifieds %}
+							<span class="arrow"></span></span>
+							<ul class="dropdown-list" id="change_status_id_{{cls.id}}">
+								<li><strong>{% trans 'Update status to...' %}</strong></li>
+								<ul id="id_dis_status_{{cls.id}}">
+		                       	</ul>
+		                    </ul>
+						{% endif %}
+	                </div>                                                        
+	            </div>
+	            {% with cls.get_offline_payment_object as offpay %}
+	            {% if offpay.status == 'N' %}<a class="bm-add-gadget light_box" href='{% url 'classified_offline_payment' cls.id %}' style="position: absolute; right: 15px; bottom: 15px; color: red;" title="Process Offline Payment">* process offline payment</a>{% endif %}
+	            <div class="action-buttons {% if forloop.counter == 1 %}tip tip9{% endif %}">
+	                <div class="relative-block">
+	                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{cls.id}}" onclick="display_settings({{cls.id}});"><span class="action-icon icon-manage"></span></span>
+	                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{cls.id}}" style="display:none;{% if offpay.status == 'N' %}width: 145px;{% endif %}">
+							{% if offpay.status == 'N' %}
+								<li><a title="{% trans 'Process Offline Payment' %}" href="{% url 'classified_offline_payment' cls.id %}" class="bm-add-gadget light_box">{% trans 'Procress Offline Payment' %}</a></li>
+	                         	<li><span class="line-break"></span></li>
+	                        {% endif %}
+	                    	{% if perms.classifieds.promote_classifieds %}
+								<div id="id_upgrade_{{cls.id}}" {% if cls.status == 'B' or cls.status == 'R' %}style="display:none"{% endif %}>
+									<li><a title="{% trans 'Update Listing Type' %}" href="{% url 'staff_classified_listing_type' %}?id={{cls.id}}" class="bm-add-gadget light_box">{% trans 'Update Listing Type' %}</a></li>
+									<li><span class="line-break"></span></li>
+								</div>
+							{% endif %}
+							{% if perms.classifieds.change_classifieds %}
+								<li><a title="{% trans ' Edit Classified Ad' %}" href="{% url 'update_classified' cls.id %}">{% trans ' Edit' %}</a></li>
+								<li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'staff_classified_seo' cls.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+							{% endif %}
+								<li><a title="{% trans 'view Stats' %}" href="{% url 'common_get_modules_elements_views' cls.id 'classifieds' 0 %}">{% trans 'View Stats' %}</a></li>
+								<li><a title="{% trans 'Classifieds Logs' %}" class="bm-add-gadget light_box" href ="{% url 'common_log' %}?obj_id={{ cls.id }}&type=classifieds">Audit Logs</a></li>
+								<li><span class="line-break"></span></li>
+							{% if perms.classifieds.delete_classifieds %}
+	            	        	<li><a onclick="if(confirm(gettext('Are you sure you want to delete the Classified ?'))){filter_action({{cls.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+							{% endif %}
+							<li><a href="{% url 'staff_manage_classified_enquiry' cls.id %}" >{% trans 'Manage Enquiry' %}</a></li>
+	                    </ul>
+					</div>                                                              	                                                         
+	            </div>
+	     		{% endwith %}
+	        </div>
+	    </li>
+	    {% endif %} 
+	{% endfor %}
+{% else %}
+<div class="no-data">
+	<p>{% trans 'Sorry , No Classifieds found !' %}</p>
+</div>
+{% endif %}

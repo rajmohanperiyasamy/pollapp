@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load ds_banners %}
+<table class="banner_mnthly_info"> 
+        <tbody id="ajax_content_cls">
+        <tr class="header">
+            <th><span>Date #</span></th>
+            <th><span>Impressions</span></th>
+            <th><span>Click Thru</span></th>
+        </tr>
+        {% for br in banner_reports %}
+        <tr class="{% if br.month == selected_date.month %}active{% endif %} banner_mnths">
+            <td><span class="text">{{br.month|date:"F Y"}}</span></td>
+            <td><span class="text">{{br.views}}</span></td>
+            <td><span class="text">{{br.month|get_banner_clicks_mnthly:banner.id}}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>                            
+</table>

@@ -1,0 +1,155 @@
+{% load i18n %}		
+{% load thumbnail %}
+		<!-- script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script -->		
+		<input type="hidden" value="{% url 'staff_video_ajax_display_video' %}" name="id_hidden_url" id="id_hidden_url">
+		<input type="hidden" value="{% url 'staff_video_ajax_action' %}" name="id_action_url" id="id_action_url">
+		<input type="hidden" value="{% url 'staff_video_ajax_adding' %}" name="youtube_video_add" id="youtube_video_add">
+		
+		
+		<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+		<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+        <input type="hidden" value="{{created}}" name="id_created" id="id_created">
+        <input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+        <input type="hidden" value="{{msg}}" name="id_action_msg" id="id_action_msg">
+		<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+		
+		<input type="hidden" value="{{catgy}}" name="search_cat" id="id_search_cat">
+        <input type="hidden" value="" name="id_action" id="id_action">
+		{% if videodisplay %}
+		<ol class="data-table table-lists-container" id="ajax_content_list">
+		{% for video in videodisplay %}	
+             <li class="table-list" id="li_{{video.id}}">
+                <div class="table-list-container check-item has-thumb110 group">
+                 {% if video.featured %}
+                <span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+				 {% endif %}
+                <span class="checkbox-wrap">
+					<span class="cform-checkbox-container"><input type="checkbox" onclick="fix_action()" status="{{video.status}}" value="{{video.id}}" id="id_checkbox_{{video.id}}" name="artCulture" class="check-overflow cbox check_action"><span class="cform-checkbox-element"></span></span>
+				</span>
+		 		 <div class="item-media">
+                	<a class="inline-block">
+                        <span class="item-thumb thumb-110">
+                            <span class="thumb-in">
+                                <span class="thumb"><img id="vimeo_{{video.video_id}}" src="{% if not video.is_vimeo %}{{video.get_thumb}}{% endif %}"   alt="{{video.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                            </span>
+                        </span>
+					</a>
+					<span onclick="{% if video.is_vimeo %}play_lightbox_vimeo('{{video.video_id}}'){% else %}play_lightbox('{{video.video_id}}'){% endif %}" id="id_span_play_icon_6dxm_W3uNYw" title="Play this video" class="play-icon preview-item "></span>                                                            
+                 </div> 
+				 <div class="item-info relative-block">
+				 	<h3 class="title"><a >{{video.title}}</a></h3>
+					<p class="ltxtAA">{{video.category}}<span class="divider12">|</span>{% trans 'By' %} <a href="{% url 'user_profile' video.created_by.profile_slug %}">{{video.created_by.display_name}}</a> <span class="divider12">|</span> {{video.created_on|date:"M d, Y"}}</p>
+                    <ul class="quick-stats group">
+                        <li class="views"><a class="tttxt" href="javascript:void(0);" title="Video View "><span class="inline-block icon-view-stats"></span>{{video.video_view}}</a></li>
+                        <!--li class="cmnt"><a class="tttxt"title="View comments" href="javascript:void(0);"><span class="inline-block icon-cmnt-stats"></span>24</a></li-->
+                    </ul>
+				      <div class="item-status {% if forloop.counter == 1 %}tip tip8{% endif %} {% if not perms.videos.publish_videos %}no-options{% endif %} dev_hide_list_status" onclick="display_change_status({{video.id}},$('#id_estatus_{{video.id}}').attr('name'));">
+                		<span class="status-inside inline-block" id="id_span_chge_sts_{{video.id}}">
+						<span title="{{video.get_event_status|capfirst}}" name="{{video.status}}" id="id_estatus_{{video.id}}" class="inline-block tttxt status-idty icon-{{video.get_video_status}}"></span>	 
+	                    {% if not perms.videos.publish_videos %}</span>{% endif %}
+						{% if perms.videos.publish_videos %}
+							<span class="arrow"></span></span>
+							<ul class="dropdown-list" id="change_status_id_{{video.id}}">
+								<li><strong>{% trans 'Update status to...' %}</strong></li>
+								<ul id="id_dis_status_{{video.id}}"> </ul>
+	                    	</ul>
+						{% endif %}
+                 	</div>   
+				</div>
+                <div class="action-buttons {% if forloop.counter == 1 %}tip tip9{% endif %}">
+                 <div class="relative-block">
+                  <div class="group">
+                  	  <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{video.id}}" onclick="display_settings({{video.id}});"><span class="action-icon icon-manage"></span></span>
+			          <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{video.id}}" style="display:none">
+                    	{% if perms.videos.promote_videos %}
+						{% if video.featured %}<li><a title="{% trans 'Non-Feature this video' %}" onclick="if(confirm('Are you sure you want to Unfeature this video?')){filter_action({{video.id}},'UF');}" href="javascript:void(0);">{% trans 'Non-Feature this' %}</a></li>{% else %}<li><a title="{% trans 'Feature this video' %}"  onclick="if(confirm('Are you sure you want to Feature this video?')){filter_action({{video.id}},'F');}" href="javascript:void(0);">{% trans 'Feature this' %}</a></li><li><span class="line-break"></span></li>{% endif %}
+						{% endif %}
+						{% if perms.videos.change_videos %}
+						  	<li><a title="{% trans 'Edit Video' %}" class=" bm-add-gadget light_box" href="{% url 'staff_video_ajax_edit_video' %}?video_id={{video.id}}">{% trans 'Edit' %}</a></li>
+						  	<li><a title="{% trans 'Title / Description (SEO)' %}" class=" bm-add-gadget light_box" href="{% url 'staff_videos_ajax_video_seo' %}?video_id={{video.id}}">{% trans 'Update SEO' %}</a></li>
+						{% endif %}
+							<li><a title="{% trans 'view Stats' %}" href="{% url 'common_get_modules_elements_views' video.id 'videos' 0 %}">{% trans 'View Stats' %}</a></li>
+							<li><a title="{% trans 'Video Logs' %}" class="bm-add-gadget light_box" href ="{% url 'common_log' %}?obj_id={{ video.id }}&type=videos">Audit Logs</a></li>
+							<li><span class="line-break"></span></li>
+						{% if perms.videos.delete_videos %}
+                         	<li><a title="{% trans 'Delete' %}"  onclick="if(confirm('Are you sure you want to delete this video?')){filter_action({{video.id}},'DEL');}" href="javascript:void(0);">{% trans 'Delete' %}</a></li>
+						{% endif %}
+                  	 </ul>
+				  </div>                                                            
+               </div>
+             </div>
+		</div>
+    </li>
+	{% endfor %}
+</ol>
+<div id="pagenation">
+	{% include 'common/pagination_ajax.html'%}
+</div>  
+{% else %}
+	<div class="no-data"> <p>{% trans 'Sorry , No video found !' %}</p></div>
+{% endif %}  
+<script type="text/javascript">
+function status_function(id,status){
+	$('#id_dis_status_'+id).html('');
+	if(status=='P'){
+		ahtml = '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);">{% trans 'Blocked' %}</a></li>'
+		$('#id_dis_status_'+id).append(ahtml);
+	}
+	else if(status=='N'){
+		ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+		ahtml+= '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);" >{% trans 'Blocked' %}</a></li>'
+		$('#id_dis_status_'+id).append(ahtml);
+	}
+	else if(status=='B'){
+		ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+		$('#id_dis_status_'+id).append(ahtml);
+	}
+	else if(status=='R'){
+		ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+		$('#id_dis_status_'+id).append(ahtml);
+	}
+	else{
+		$('#change_status_id_'+id).hide();
+		$('#id_span_chge_sts_'+id).removeClass('active')
+		return false;
+	}
+}
+					
+function save_status(id,status){
+	$('#id_estatus_'+id).addClass('loading');
+	var DataString="id="+id+"&status="+status;
+	$.ajax({
+		type: "GET",
+		url: "{% url 'staff_video_change_status' %}",
+		data: DataString,
+		success: function(data){
+			if(data!=0){
+				$('#id_estatus_'+id).removeClass('loading');
+				$('#id_estatus_'+id).replaceWith(data);
+				$('#change_status_id_'+id).hide();
+				$('#id_span_chge_sts_'+id).removeClass('active')
+				$('#id_checkbox_'+id).attr('status',status);
+				show_count('all');
+			}else{
+				alert(gettext('Oops!!! Not able to process your request.'));
+			}
+		}
+	});
+}
+setTimeout(function(){
+	{% for cat in videodisplay %}
+	{% if cat.is_vimeo %}
+	    $.ajax({
+	        type:'GET',
+	        url: 'http://vimeo.com/api/v2/video/{{cat.video_id}}.json',
+			jsonp: 'callback',
+	        dataType: 'jsonp',
+	        success: function(data){
+	            var thumbnail_src = data[0].thumbnail_medium;
+	            $('#vimeo_{{cat.video_id}}').attr('src',thumbnail_src);
+	        }
+	    });
+	{% endif %}
+	{% endfor %}	
+},500);
+</script>			   

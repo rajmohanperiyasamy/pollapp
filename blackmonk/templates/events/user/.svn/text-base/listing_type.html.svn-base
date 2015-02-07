@@ -1,0 +1,316 @@
+{% extends "user_base.html" %}
+{% load i18n %}
+{% load ds_utils %}
+{% load tabs %}
+
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Events' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Events' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/bm.common.js"></script>
+	<script type="text/javascript">
+	    $(document).ready(function(){
+			$('#id_event_venue').typeahead({
+        		ajax: { url: '{% url 'auto_suggest_venue' %}',type: "GET",
+                triggerLength: 1 },
+				itemSelected: function(item){display_auto_sgtd_addres($(".typeahead.dropdown-menu .active").attr("data-value"));},
+    		});
+		});
+    </script>
+{% endblock %}
+
+{% block navigation %}
+    {% activetab "leftnav" "events" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="span10 sP9mX979 sP12mX767">
+    <div class="row-fluid">
+		<div class="main span9">
+			<section class="sCn pD0">
+				<div class="cLrFx pD20">
+					<div class="pLlT">
+						<div class="mRr5 mRb15"><a class="btn btn-small btn-light" href="{% url 'events_addevent' %}?eid={{event.id}}"><i class="bUi-iCn-aRw-l-16  ib" aria-hidden="true"></i> <strong class="ib">Back</strong></a></div>
+						<h3 class="mR0 tRnCt">Choose a Listing Type</h3>
+					</div>
+				</div>
+				<hr class="mRb12 mRt0">
+				<div class="pD20">
+					<form method="post" onsubmit="return validate();" id="mform" name="mform" action="{% url 'events_ajax_payment' event.id %}?types=add" class="uSr-aCnT mRb0">{% csrf_token %}
+						<input type="hidden" name="payment_level" id="payment_level">
+                        <div class="row-fluid pricing mRb30">
+							{% for event_price in event_price_objects %}
+                        	<div class="span4 pD0">
+                            	<ul class="features mRr0mP
+                            	{% if event.is_paid %}
+                            		{% if event.listing_type == 'B' %}
+                            			{% if event_price.level == 'level1' %}aCtV{% endif %}
+                            		{% elif event.listing_type == 'S' %}
+                            			{% if event_price.level == 'level2' %}aCtV{% endif %}
+                            		{% endif %}
+                            	{% else %}
+                            		{% if forloop.first %}aCtV{% endif %}
+                            	{% endif %}
+                            	" id="type_{{event_price.level}}">
+                                	<li class="pRiCe-hD">
+                                		<label>
+                                			<input value="{{event_price.level}}" onclick="$('.aCtV').removeClass('aCtV');$('#type_{{event_price.level}}').addClass('aCtV');show_contents('{{event_price.level}}')" type="radio" name="pricing"
+                                			{% if event.is_paid %}
+			                            		{% if event.listing_type == 'B' %}
+			                            			{% if event_price.level == 'level1' %}checked="checked"{% endif %}
+			                            		{% elif event.listing_type == 'S' %}
+			                            			{% if event_price.level == 'level2' %}checked="checked"{% endif %}
+			                            		{% else %}
+			                            			dSbLd
+			                            		{% endif %}
+			                            	{% else %}
+                            					{% if forloop.first %}checked="checked"{% endif %}
+			                            	{% endif %}
+                                			>
+                                        	<h3>{{ event_price.level_label }}</h3>
+                                            <div class="price">
+												{% if event_price.level == 'level0' %}
+													<span class="lBl">FREE</span>
+												{% else %}
+							                  		<span class="sUp">{{ globalsettings.currency }}</span><span class="aMt">{{ event_price.price|floatformat:2 }}</span>
+                                                    {% if event_price.level == 'level1' %}
+							                  		<span class="tRm" style="font-weight: bold; font-style: normal; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">Billed {{ globalsettings.currency }}{{ event_price.price|floatformat:2 }} for total.</span>
+                                                    {% elif event_price.level == 'level2' %}
+							                  		<span class="tRm" style="font-weight: bold; font-style: normal; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">Billed {{ globalsettings.currency }}{{ event_price.price|floatformat:2 }} per day.</span>
+    												{% endif %}
+												{% endif %}
+							                </div>
+                                		</label>
+                                    </li>
+                                    <li class="info">
+                                        <ol id="p_Free" class="unstyled collapse in">
+											<li><i aria-hidden="true" class="bUi-iCn-oK-16 cLr-gRn mRr5"></i> {{event_price.get_exposure}} Exposure</li>
+{% if event_price.images == 'Y' %} 			<li><i aria-hidden="true" class="bUi-iCn-oK-16 cLr-gRn mRr5"></i> Images</li>{% endif %}
+{% if event_price.comments == 'Y' %}		<li><i aria-hidden="true" class="bUi-iCn-oK-16 cLr-gRn mRr5"></i> Comments</li>{% endif %}
+{% if event_price.share_buttons == 'Y' %}	<li><i aria-hidden="true" class="bUi-iCn-oK-16 cLr-gRn mRr5"></i> Share Buttons</li>{% endif %}
+{% if event_price.newsletter == 'Y' %}		<li><i aria-hidden="true" class="bUi-iCn-oK-16 cLr-gRn mRr5"></i> Newsletter Promotion</li>{% endif %}
+{% if event_price.social_media == 'Y' %}	<li><i aria-hidden="true" class="bUi-iCn-oK-16 cLr-gRn mRr5"></i> Social Media Promotion</li>{% endif %}
+                                        </ol>
+                                        <a href="javascript:void(0)" data-toggle-icon="bUi-iCn-mNs-12" data-target="#p_Free" data-toggle="collapse" class="tXt-cTr bLk cLr-lTbLu fW-bLd VieW-Dt tRcL480 vOp"><i aria-hidden="true" class="bUi-iCn-pLs-12"></i> View details</a>
+                                    </li>
+                                </ul>
+                            </div>
+							{% endfor %}
+                        </div>
+<!-- --------------------------------------------------------------------------------------- -->
+						<div>
+							<p>Your Event will start on {{event.start_date}}, and ends on {{event.end_date}}</p>
+							<p><strong>Select Listing Start & End dates:</strong> (The duration you want your listing to be displayed in the website)</p>
+							<div>
+								<input placeholder="from" type="text" style="width:100px;" onchange="calculate_payment();" name="listing_start_date" value="" class="textField date customdate" id="listing_start_date">
+								<input placeholder="to" type="text" style="width:100px;" onchange="calculate_payment();" name="listing_end_date" value="" class="textField date customdate" id="listing_end_date">
+							</div>
+						</div>
+						{% for event_price in event_price_objects %}
+							<table class="table mRb30 table-bordered bDrT0Mp" id="level_{{event_price.level}}" style="
+								{% if event.is_paid %}
+									{% if event.listing_type == 'B' %}
+										{% if event_price.level != 'level1' %}display:none;{% endif %}
+									{% else %}
+										{% if event.listing_type == 'S' %}
+											{% if event_price.level != 'level2' %}display:none;{% endif %}
+										{% else %}
+											{% if event_price.level != 'level0' %}display:none;{% endif %}
+										{% endif %}
+									{% endif %}
+								{% else %}
+									{% if not forloop.first %}display:none;{% endif %}
+								{% endif %}">
+                            	<thead class="hMp">
+									<tr>
+										<td><p>{% trans 'Your event listing will be set as' %} <b>{{event_price.level_label}}</b>.</p></td>
+									</tr>
+									{% if event_price.level != 'level0' %}
+                                	<tr>
+                                    	{% if event_price.level == 'level2' %}<th class="span4"><span>Duration</span></th>{% endif %}
+                                    	<th class="span2"><span>Mode</span></th>
+                                    	<th class="tXt-rT span2"><span>Total</span></th>
+                                	</tr>
+									{% endif %}
+                            	</thead>
+								{% if event_price.level != 'level0' %}
+								<tbody>
+									<tr>
+										{% if event_price.level == 'level2' %}
+										<td class="span4">
+											<div class="control-group">
+												<div class="controls">
+													<ul class="unstyled pD15 pDt5 fS13 pDl0mP">
+														<li>Listing Cost: <strong>{{ globalsettings.currency }}{{event_price.price|floatformat:2}} / day</strong></li>
+														<li>Total Days: <strong id="id_total_days{{event_price.id}}">0 days(s)</strong></li>
+													</ul>
+												</div>
+			                                </div>
+										</td>
+										{% endif %}
+										<td class="span2">
+											<div class="control-group">
+                                            	<label class="control-label pDt0 vOp">Mode</label>
+			                                    <div class="controls">
+													{% if payment_settings.online_payment %}					                                      
+			                                        <label for="mode1" class="radio fW-nRmL mRb0"><input type="radio" class="paymode_{{event_price.level}}" name="payment_mode{{event_price.id}}" value="online" onclick="$('#offline_form').addClass('hide');" id="mode1" checked=""> Online</label>
+													{% endif  %}               
+													{% if payment_settings.invoice_payment %}
+			                                        <label for="mode2" class="radio fW-nRmL mRb0"><input type="radio" class="paymode_{{event_price.level}}" name="payment_mode{{event_price.id}}" value="offline" onclick="$('#offline_form').removeClass('hide');" {% if not payment_settings.online_payment %}checked="checked"{% endif %}> Offline</label>
+													{% endif  %}
+			                                    </div>
+		                                    </div>
+										</td>
+										<td class="tXt-rT span2"><strong>{{ globalsettings.currency }}</strong><strong class="fS14" id="id_total_pay{{event_price.id}}">{% if event_price.level == 'level1' %}{{event_price.price|floatformat:2}}{% else %}0{% endif %}</strong></td>
+									</tr>
+								</tbody>
+								{% endif %}
+				            </table>
+						{% endfor %}
+<!-- --------------------------------------------------------------------------------------- -->   
+						{% include 'payments/user/part_offline_payment_form.html' %}                     
+			            <hr class="oTsT-hRz20 mRb0">
+                        <div class="row-fluid">
+                            <div class="form-actions pD0 pLrT">
+                                <button type="submit" class="btn btn-primary fS12 fW-bLd mRl5">Next</button>
+                            </div>
+                        </div>
+                    </form>
+				</div>
+			</section>
+		</div> <!-- /.main -->
+		<aside class="sD-bR span3">
+			<div>
+				<section class="tXt-cTr pD0 bNr-aD"> 
+                   
+                </section>
+			</div>
+		</aside>
+	</div>  <!-- /.row-fluid -->
+</div>  <!-- /.span10 -->
+<script type="text/javascript">
+$(document).ready(function(){
+	var mindate=new Date({{today|date:"Y"}}+","+{{today|date:"m"}}+","+{{today|date:"d"}});
+	var ev_st_date=new Date({{event.start_date|date:"Y"}}+","+{{event.start_date|date:"m"}}+","+{{event.start_date|date:"d"}});
+	var ev_en_date=new Date({{event.end_date|date:"Y"}}+","+{{event.end_date|date:"m"}}+","+{{event.end_date|date:"d"}});
+
+	if($("#listing_start_date").length){
+		$("#listing_start_date").datepicker({ dateFormat: "mm/dd/yy" , minDate:mindate , maxDate: ev_st_date});
+		$("#listing_start_date").val('{{today|date:"m"}}/{{today|date:"d"}}/{{today|date:"Y"}}');
+	}
+	
+	if($("#listing_end_date").length){
+		$("#listing_end_date").datepicker({ dateFormat: "mm/dd/yy" , minDate:mindate , maxDate: ev_en_date});
+		$("#listing_end_date").val('{{event.end_date|date:"m"}}/{{event.end_date|date:"d"}}/{{event.end_date|date:"Y"}}');
+	}
+	
+	$("#listing_start_date").change(function(){
+        cdate = $(this).datepicker('getDate');
+    	ctime = new Date(cdate.getTime());
+    	ctime.setDate(ctime.getDate());
+    	$("#listing_end_date").datepicker("option", "minDate", ctime);
+    });
+	
+	calculate_payment();
+});
+function show_contents(level){
+	$('#offline_form').addClass('hide');
+	$('input:radio[name=payment_mode3]:checked').removeAttr('checked')
+	$('input:radio[name=payment_mode2]:checked').removeAttr('checked');
+	$('.select_button_top').removeClass('active');
+	$('#select_button_top_'+level).addClass('active');
+	$('#payment_level').val(level);
+	if(level=='level2'){
+		$('#level_level2').show();
+		$('#level_level1').hide();
+		$('#level_level0').hide();
+	}else if(level == 'level1'){
+		$('#level_level1').show();
+		$('#level_level2').hide();
+		$('#level_level0').hide();
+	}else{
+		$('#level_level0').show();
+		$('#level_level1').hide();
+		$('#level_level2').hide();
+	}
+	if($("#listing_start_date").length){
+		$("#listing_start_date").datepicker({ dateFormat: "mm/dd/yy" , minDate: new Date()});
+	}
+	if($("#listing_end_date").length){
+		$("#listing_end_date").datepicker({ dateFormat: "mm/dd/yy" , minDate: new Date()});
+	}
+}
+function days_between(date1, date2){
+	    // The number of milliseconds in one day
+	    var ONE_DAY = 1000 * 60 * 60 * 24
+	    // Convert both dates to milliseconds
+	    var date1_ms = date1.getTime()
+	    var date2_ms = date2.getTime()
+	    // Calculate the difference in milliseconds
+	    var difference_ms = Math.abs(date1_ms - date2_ms)
+	    // Convert back to days and return
+	    return Math.round(difference_ms/ONE_DAY)
+}
+function calculate_payment(){
+	{% for event_price in event_price_objects %}
+		{% if event.is_paid %}
+			{% if event.listing_type == 'B' or event.listing_type == 'S' %}
+				var payment_level="{{event_price.level}}"
+			{% endif %}
+		{% else %}
+			{% if forloop.first %}
+				var payment_level="{{event_price.level}}";
+			{% endif %}
+		{% endif %}
+		{% if event_price.level == 'level2' %}
+			var price={{event_price.price}};
+			var level='{{event_price.level}}';
+			var id={{event_price.id}};
+		{% endif %}
+	{% endfor %}
+	$('#payment_level').val(payment_level);
+	var date1=$("#listing_start_date").val();
+	var date2=$("#listing_end_date").val();
+	if (date1!='' && date2!='')
+	{
+		var start_date=new Date(date1);
+		var end_date=new Date(date2);
+		
+		var nw_date=days_between(start_date,end_date);
+		var nw_date=nw_date+1;
+		var day_total=nw_date*price;
+		var total=day_total;
+		
+		$('#id_total_pay'+id).html(total);
+		$('#id_day_pay'+id).html("=> {{ globalsettings.currency }} "+day_total);
+		$('#id_total_days'+id).html(nw_date+" days");
+		$('#id_fdsp_duration').val(nw_date);
+		$('#id_fdsp_payment').val(total);
+		$('#id_fdsp_start_dates').val(date1);
+		$('#id_fdsp_end_dates').val(date2);
+	}
+}
+function validate(){
+	var success=true;
+	if($('#listing_start_date').val()==''){
+		$('#listing_start_date').addClass('error');
+		$('#listing_start_date').parent('div').parent('div').addClass('field-error');
+		success=false;
+	}
+	else{$('#listing_start_date').removeClass('error');}
+	if($('#listing_end_date').val()==''){
+		$('#listing_end_date').addClass('error');
+		$('#listing_end_date').parent('div').parent('div').addClass('field-error');
+		success=false;
+	}
+	else{$('#listing_end_date').removeClass('error');}
+	return success;
+}	
+</script>
+{% endblock %}

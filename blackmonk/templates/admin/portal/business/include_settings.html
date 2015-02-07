@@ -1,0 +1,177 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Settings' %}</p>
+</div>
+<div id="ajax_content" class="group">
+	 <form action="" name="mform" id="mform" method="post">{% csrf_token %}
+	<ul class="overview-list group">
+		<li class="list-item-container group">
+        	<div class="col-dt">
+            	<div class="col-inner">
+                	<h5>{% trans 'Business listed' %}</h5>
+                </div>
+			</div>
+            <div class="col-dd">
+            	<div class="col-inner">
+                	<h3>{{count_business}}</h3>
+                    <p><span class="ltxt80">{% trans 'Featured' %}: {{featured_business}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Sponsored' %}: {{sponsored_business}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Free' %}: {{basic_business}}</span></p>
+					<p><span class="ltxt80">{% trans 'Published' %}:{{published_business}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Pending' %}: {{pending_business}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Drafted' %}: {{drafted_business}}</span></p>
+					<p><span class="ltxt80">{% trans 'Rejected' %}: {{rejected_business}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Blocked' %}: {{blocked_business}}</span></p>
+                    <a href="{% url 'staff_manage_business' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Business' %}">{% trans 'Manage' %}</a>
+               	</div>                                                    
+          	</div>
+		</li> 
+		<li class="list-item-container group">
+        	<div class="col-dt">
+            	<div class="col-inner">
+                	<h5>{% trans 'Categories' %}</h5>
+               	</div>
+           	</div>
+            <div class="col-dd">
+            	<div class="col-inner">
+                	<h3>{{business_category}}</h3>
+					<p><span class="ltxt80">{% trans 'Parent Category' %}:{{parent_category}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Sub Category' %}: {{sub_category}}</span></p>
+                    <a href="{% url 'admin_portal_business_category' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Categories' %}">{% trans 'Manage' %}</a>
+              	</div>                                                    
+			</div>
+		</li>
+		<li class="list-item-container group">
+        	<div class="col-dt">
+            	<div class="col-inner">
+                	<h5>{% trans 'Attribute Group' %}</h5>
+               	</div>
+           	</div>
+            <div class="col-dd">
+            	<div class="col-inner">
+                	<h3>{{business_attribute}}</h3>
+					<p><span class="ltxt80">{% trans 'Attribute' %}:{{business_attribute_key}}</span></p>
+                    <a href="{% url 'admin_portal_business_attribute_group' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Attribute Group' %}">{% trans 'Manage' %}</a>
+              	</div>                                                    
+			</div>
+		</li>
+		<li class="list-item-container group">
+        	<div class="col-dt">
+            	<div class="col-inner">
+                	<h5>{% trans "Listing Level" %}</h5>
+               	</div>
+           	</div>
+            <div class="col-dd">
+            	<div class="col-inner">
+					{% for level in payment_level %}
+						<p><span class="ltxt80">{{level.level_label}}</span></p>
+					{% endfor %}
+					<a href="{% url 'admin_portal_business_price' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Pricing' %}">{% trans 'Manage' %}</a>
+              	</div>                                                    
+			</div>
+		</li>
+    </ul>
+	<div class="fields vform no_head"> 
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                    <h3>{% trans 'Page Title (SEO)' %}</h3>
+                    <p class="ltxt80">{% trans 'Write a short page title. This title is used in the search results of search engines like Google.' %}</p> 
+                </div>  
+                <div class="field text-field">	
+                    <div class="value">
+                        <input class="fxl" title="{% trans 'Meta Title' %}" name="meta_title" id="id_meta_title" type="text" placeholder="{% trans 'Enter a short title' %}" {% if seo_form.errors %} value="{{seo_form.meta_title.data}}" {% else %}value="{{seo.seo_title}}" {% endif %}  >
+                    </div>	
+                </div>
+            </div>   
+        </div> 
+        <div class="fields vform no_head"> 
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                    <h3>{% trans 'Page Description (SEO)' %}</h3>
+                    <p class="ltxt80">{% trans 'In one or two short sentences to describe your page. This description is used in the search results of search engines like Google.' %}</p> 
+                </div>  
+                <div class="field text-field">	
+                    <div class="value">
+                        <textarea rows="8" id="id_meta_description" name="meta_description" class="fxl" placeholder="{% trans 'Enter description' %}" onkeyUp="txtarealimit(this,400);">{% if seo_form.errors %}{{seo_form.meta_description.data}}{% else %}{{seo.seo_description}} {% endif %}</textarea>
+                    </div>	
+                </div>
+            </div>   
+        </div>
+	{% include 'admin/portal/emailsettingsvalidate.html'%}
+		<section id="approval-requirements" class="section hidable">
+        	<div class="section-head">
+            	<h3 class="section-title">{% trans 'Business Approval Settings' %}</h3>
+           	</div>
+            <div class="section-content">
+            	<div class="section-explanation">
+                	<p class="ltxt80">{% trans 'Select the below options to approve the business when:' %}</p>
+               	</div>                                         
+                <ul class="cform-list">
+                	<li class="cform-input-section"><label><span class="cform-checkbox-container">{{approval_form.free}}<span class="cform-checkbox-element"></span></span> {% trans 'Someone adds a free business listing' %}</label></li>
+                    <li class="cform-input-section"><label><span class="cform-checkbox-container">{{approval_form.free_update}}<span class="cform-checkbox-element"></span></span> {% trans 'Someone updates a free business listing' %}</label></li>
+					<li class="cform-input-section"><label><span class="cform-checkbox-container">{{approval_form.paid}}<span class="cform-checkbox-element"></span></span> {% trans 'Someone adds a sponsored/featured business listing' %}</label></li>
+					<li class="cform-input-section"><label><span class="cform-checkbox-container">{{approval_form.paid_update}}<span class="cform-checkbox-element"></span></span> {% trans 'Someone updates a sponsored/featured business listing' %}</label></li>
+              	</ul>
+			</div>                                                                                                    
+     	</section> 
+        <section id="email-notification" class="section hidable">
+        	<div class="section-head">
+            	<h3 class="section-title">{% trans 'Automatic email notifications' %}</h3>
+           	</div>   
+            <div class="section-content">
+            	<div class="section-explanation">
+                	<p class="ltxt80">{% trans 'Select the below options to send automatic email notifications when:' %}</p>
+               	</div>                                                                                             			
+                <ul class="cform-list">
+                	<li class="cform-input-section">
+						<label><span class="cform-checkbox-container  checked"><input type="checkbox" id="on_add" {% if emailsettings.a_A %}checked="checked"{% endif %} class="cform-checkbox" name="on_add"><span class="cform-checkbox-element"></span></span> {% trans 'Someone adds a new business listing' %}</label>
+						<!--span style="display:block;margin-left:25px;"><input id="on_add_email"  name="on_add_email" value="{% if emailsettings.e_A %}{{emailsettings.e_A}}{% else %}{{request.user.email}}{% endif %}" type="text" style="width: 300px;{% if not emailsettings.a_A %}display:none;{% endif %}"></span-->
+					</li>
+                    <li class="cform-input-section">
+						<label><span class="cform-checkbox-container  checked"><input type="checkbox" id="on_update" {% if emailsettings.a_U %}checked="checked"{% endif %} class="cform-checkbox" name="on_update"><span class="cform-checkbox-element"></span></span> {% trans 'Someone updates an existing business listing' %}</label>
+						<span style="display:block;margin-left:25px;">
+							<input id="on_update_email"  maxlength='50' name="on_update_email" value="{% if emailsettings.e_U %}{{emailsettings.e_U}}{% else %}{{emailsettings.e_A}}{% endif %}" type="text" style="width: 300px;{% if not emailsettings.a_U and not emailsettings.a_A %}display:none;{% endif %}">
+						</span>
+					</li>
+					<li class="cform-input-section">
+						<label>
+							<span class="cform-checkbox-container  checked">
+								<input type="checkbox" id="on_claim" {% if emailsettings.a_C %}checked="checked"{% endif %} class="cform-checkbox" name="on_update">
+								<span class="cform-checkbox-element"></span>
+							</span> {% trans 'Someone Claim or Unsubscribe a business listing' %}
+						</label>
+						<span style="display:block;margin-left:25px;">
+							<input id="on_claim_email" maxlength='50' name="on_claim_email" value="{% if emailsettings.e_C %}{{emailsettings.e_C}}{% else %}{{request.user.email}}{% endif %}" type="text" style="width: 300px;{% if not emailsettings.a_C %}display:none;{% endif %}">
+						</span>
+					</li>
+               	</ul>                                                
+			</div>                                                    
+       	</section> 
+		<section id="claim_setting" style="" class="section hidable">
+        	<div class="section-head">
+            	<h3 class="section-title">{% trans 'Claiming a Business Settings' %}</h3>
+           	</div> 
+            <div class="section-content">
+            	<div class="section-explanation">
+                	<p class="ltxt80">{% trans 'Specify the below options to incorporate in the business module.' %}</p>
+               	</div>
+            	<ul class="cform-list">
+                	<li class="cform-input-section"><label><span class="cform-checkbox-container">{{claim_form.allow_claim}}<span class="cform-checkbox-element"></span></span> {% trans 'Enable the option to claim any business listing' %}</label></li>
+					<li style="display: none;" class="cform-input-section"><label><span class="cform-checkbox-container">{{claim_form.allow_free_buz_claim}}<span class="cform-checkbox-element"></span></span> {% trans 'Enable the option to claim a Free business listing' %}</label></li>
+				</ul> 
+			</div>                 
+    	</section>
+    	<section id="auto_approval_setting" style="" class="section hidable">
+        	<div class="section-head">
+            	<h3 class="section-title">{% trans 'Claim Approval Settings' %}</h3>
+           	</div> 
+            <div class="section-content">
+            	<div class="section-explanation">
+                	<p class="ltxt80">{% trans 'Claim auto approval setings.' %}</p>
+               	</div>
+            	<ul class="cform-list">
+					<li class="cform-input-section"><label><span class="cform-checkbox-container">{{claim_form.auto_aprove_free_buz_claim}}<span class="cform-checkbox-element"></span></span> {% trans 'Auto approve when a business is claimed' %}</label></li>
+					<li style="display: none;" class="cform-input-section"><label><span class="cform-checkbox-container">{{claim_form.auto_aprove_paid_buz_claim}}<span class="cform-checkbox-element"></span></span> {% trans 'A Sponsored/Featured business listing is claimed' %}</label></li>
+					<li style="display: none;" class="cform-input-section"><label><span class="cform-checkbox-container">{{claim_form.after_failed_payment}}</span><span> {% trans 'on payment failed' %}<span></label></li>
+				</ul> 
+			</div>                 
+    	</section>  
+        <section class="form-submit trp-bg">
+        	<button role="button" class="cform-button prime right" type="button" onclick="save_approval()"><span class="cform-button-text">{% trans 'Save Changes' %} </span></button>
+		</section>                                             
+	</form>                                       	   
+</div>

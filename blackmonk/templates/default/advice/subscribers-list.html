@@ -1,0 +1,10 @@
+{% load i18n thumbnail %}
+<hr>
+<h6><span class="cLr-gRy"><strong class="cLr-dRk">{{subscribers_list.count}}</strong> {% trans 'people are following this question.' %}</span></h6>
+<ul class="tMbS pDfX pDmNiX mRb0 cLrFx">
+    {% for subscriber in subscribers_list %}
+        {% with subscriber.users.all.0 as subuser %}
+        <li><a class="aVtR-28" href="{% url 'user_profile' subuser.profile_slug %}" title="{{subuser.display_name}}"><img class="aVtR" src="{% if subuser.profile.image %}{% thumbnail subscriber.users.all.0.profile.image 36x36 crop %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}"></a></li>
+        {% endwith %}
+    {% endfor %}
+</ul>

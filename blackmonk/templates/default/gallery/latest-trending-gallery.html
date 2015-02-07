@@ -1,0 +1,96 @@
+{% load truncate_filter %}
+{% load i18n %}
+{% load ds_utils %}
+{% load bm_gallerytags %}
+{% load thumbnail %}
+<div>
+    <section class="sCn mDa-lT-mNi">
+        {% get_latest_gallery category=album.category album_obj=album limit=5 as latest_galleries %}
+        <div class="sCn-tTl sCn-tTl-bR pDb0">
+            <h3 class="clearfix oFl">
+                <span class="ib pLlT">{% trans 'Galleries' %}</span>
+                <ul class="nav nav-tabs mRb0 pLrT" id="id_tabs_ul">
+                    {% if latest_galleries %}
+                    <li class="active bm-tabs-li">
+                        <a href="javascript:void(0);" id="id_latest">                                            
+                            <i aria-hidden="true" class="bUi-iCn-tMe-aLt-16"></i>
+                            <span>{% trans 'Latest' %}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="{% if not latest_galleries %}active{% endif %} bm-tabs-li">
+                        <a href="javascript:void(0);" id="id_trending">
+                            <i aria-hidden="true" class="bUi-iCn-dRp-16"></i>
+                            <span>{% trans 'Trending' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </h3>
+        </div>
+        <ul class="mDa-lT mDa-oT-lT bm-tabs-content" id="id_latest_contents">
+            {% for gallery in latest_galleries %}
+            <li class="mDa" itemscope itemtype="http://schema.org/ImageGallery">
+                <input type="hidden" id="fbids" name="fbids" class="bids" value="{{gallery.id}}">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                        <a class="bUi-tMb-wPr bUi-tMb-110 tMb-65 fLxiMgW bS-bRdR" href="{{gallery.get_absolute_url}}" itemprop="url">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="{% if gallery.album_photos.all.0.photo %}{% thumbnail gallery.album_photos.all.0.photo 300x0 %}{% else %}{{gallery.album_photos.all.0.photo_url}}{% endif %}" alt="{{gallery.title}}" itemprop="image">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="mDa-bDy">
+                        <span class="mRb0 mRt-4" itemprop="genre"><a href="{{gallery.category.get_absolute_url}}" class="fS11 uC cLr-lTbLu">{{gallery.category}}</a></span>
+                        <h5 class="mDa-hD" title="{{gallery.title}}" itemprop="name"><a href="{{gallery.get_absolute_url}}" itemprop="url">{{gallery.title}}</a></h5>
+                        <div class="mDa-dTa mRt4 clearfix">
+                               <span class="fS11 cLr-lTgRy mRb0 pLlT">{{gallery.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span><meta itemprop="datePublished" content="{{ gallery.published_on|get_iso_time_format }}">
+                               <a href="javascript:void(0);" title="{{gallery.most_viewed}} {% trans 'views' %}" class="fS12 cLr-lTgRy pLrT iM lH1"><i aria-hidden="true" class="bUi-iCn-vEw-16 ib lH1"></i> <span class="ib">{{gallery.most_viewed}}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% get_trending_gallery album_obj=album limit=5 as trending_galleries %}
+        <ul class="mDa-lT mDa-oT-lT bm-tabs-content {% if latest_galleries %}hide{% endif %}" id="id_trending_contents">
+            {% for gallery in trending_galleries %}
+            <li class="mDa"  itemscope itemtype="http://schema.org/ImageGallery">
+                <input type="hidden" id="fbids" name="fbids" class="bids" value="{{gallery.id}}">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                        <a class="bUi-tMb-wPr bUi-tMb-110 tMb-65 fLxiMgW bS-bRdR" href="{{gallery.get_absolute_url}}" itemprop="url">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="{% if gallery.album_photos.all.0.photo %}{% thumbnail gallery.album_photos.all.0.photo 300x0 %}{% else %}{{gallery.album_photos.all.0.photo_url}}{% endif %}" alt="{{gallery.title}}" itemprop="image">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="mDa-bDy">
+                        <span class="mRb0 mRt-4" itemprop="genre"><a href="{{gallery.category.get_absolute_url}}" class="fS11 uC cLr-lTbLu">{{gallery.category}}</a></span>
+                        <h5 class="mDa-hD" title="{{gallery.title}}" itemrop="name"><a href="{{gallery.get_absolute_url}}">{{gallery.title}}</a></h5>
+                        <div class="mDa-dTa mRt4 clearfix">
+                               <span class="fS11 cLr-lTgRy mRb0 pLlT">{{gallery.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span><meta itemprop="datePublished" content="{{ gallery.published_on|get_iso_time_format }}">
+                               <a href="javascript:void(0);" title="{{gallery.most_viewed}} {% trans 'views' %}" class="fS12 cLr-lTgRy pLrT iM lH1"><i aria-hidden="true" class="bUi-iCn-vEw-16 ib lH1"></i> <span class="ib">{{gallery.most_viewed}}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>

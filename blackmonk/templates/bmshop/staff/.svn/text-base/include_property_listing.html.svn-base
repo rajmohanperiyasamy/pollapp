@@ -1,0 +1,35 @@
+{% load ds_utils %}
+{% load i18n %}		
+		<input type="hidden" value="{% url 'staff_bmshop_ajax_property' %}" name="id_listarticle_url" id="id_listarticle_url">
+        <input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+        <input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+        
+		{% if prpty_objs %}
+		<ol class="data-table table-lists-container" id="ajax_content_list">
+			{% for pty_obj in prpty_objs %}	
+			<li class="table-list" id="li_{{pty_obj.id}}">
+			        <div class="table-list-container group">
+			            <div class="item-info relative-block">
+			                <h3 class="title"><a href="">{{pty_obj.name}}</a></h3>
+			                <p class="ltxt80">{% if pty_obj.filterable %}{% trans 'Filterable' %}<span class="divider12">|</span>{% endif %}{% if pty_obj.display_on_product %}{% trans 'Display on product' %}<span class="divider12">|</span>{% endif %} {% trans 'By' %} <a href="">{{pty_obj.created_by.display_name}}</a> <span class="divider12">|</span>{{pty_obj.created_on|date:"M d, Y"}}</p>
+			                                                                      
+			            </div>
+			            <div class="action-buttons">
+			                <div class="relative-block">
+			                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{pty_obj.id}}" onclick="display_settings({{pty_obj.id}});"><span class="action-icon icon-manage"></span></span>
+			                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{pty_obj.id}}" style="display:none">
+										<li><a  title="{% trans 'Edit Property' %}" href="{% url 'staff_bmshop_edit_property' pty_obj.id %}">{% trans 'Edit' %}</a></li>
+										<li><span class="line-break"></span></li>			                       	
+								    	<li><a onclick="if(confirm(gettext('Are you sure you want to delete the selected property?'))){filter_content({{pty_obj.id}});return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+			                    </ul>
+							</div>                                                              	                                                         
+			            </div>
+			        </div>
+			    </li> 
+			{% endfor %}
+			</ol>
+			{% include 'common/pagination_ajax.html'%}  
+			{% else %}
+				<div class="no-data"> <p>{% trans 'Sorry , No properties found !' %}</p></div>
+         	{% endif %}
+				 

@@ -1,0 +1,72 @@
+{% load i18n %}
+{% load thumbnail %}
+<div id="ajax_content_loading" style="display:none;padding-top:150px;text-align:center;">
+    <img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Updating Photo Caption...' %}</p>
+</div>
+<div id="ajax_content" class="edit-gallery">
+    <form id="id_form_update_caption" action="/staff/photos/ajaxupdatephotocaption/{{photo.id}}" method="post">
+        <div class="fields">
+            <div class="field-group">              
+                <div class="group">
+                    <div class="fields-left">                    
+                        <!--div class="field text-field" style="margin-top:0;">    
+                            <div class="label"><label>{% trans 'Title' %}</label></div>    
+                            <div class="value">
+                                <input type="text" id="id_title" onkeyup="txtarealimit(this,150)" title="{% trans 'Photo Title' %}" value="{{photo}}" maxlength="250" name="title">
+                            </div>    
+                        </div-->
+                        <div class="field text-field">    
+                            <div class="label"><label>{% trans 'Caption '%}</label></div>    
+                            <div class="value"><textarea  id="id_caption" onkeyup="txtarealimit(this,400)" style="max-height: 100px;" title="{% trans 'Photo Caption' %}" name="caption" rows="6">{% if photo.caption %}{{photo.caption}}{% endif %}</textarea></div>    
+                        </div>
+                    </div> <!--/--> 
+                   <div class="img-container group" style="padding:10px 15px;">
+                        <div class="thumb-wrap">
+                            <span class="inline-block">
+                                <img alt="{% if photo.caption %}{{photo.caption}}{% endif %}" src="{% thumbnail photo.photo 213x0 %}">
+                            </span>
+                        </div>   
+                    </div> <!--/-->          
+                </div>                        
+            </div> 
+        </div>   
+        <div class="form-submit right group">
+           <button class="cform-button" roll="button" type="button" onclick="$.colorbox.close()"><span class="cform-button-text">CANCEL</span></button>
+           <button role="button" class="cform-button prime" type="button" onclick="update_caption({{photo.id}})"><span class="cform-button-text">UPDATE</span></button>
+        </div>          
+    </form>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/inline.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){setTimeout(function(){$.colorbox.resize();},500);});
+
+function txtarealimit(txtobj,len){
+    var txtvalue = txtobj.value;
+    var the_len = txtvalue.length;
+    if (the_len > len){
+        txtobj.value = txtvalue.substring(0,len);
+    }
+    txtobj.scrollTop=txtobj.scrollHeight;
+}
+
+function update_caption(id){
+  $('#ajax_content').hide();                          
+  $('#ajax_content_loading').show();
+  $.ajax({
+    type: "POST",
+    url: $('#id_form_update_caption').attr('action'),
+    data: 'caption='+encodeURIComponent($('#id_caption').val()),
+    dataType:'JSON',
+    success: function(data){
+            if(data.status){
+               $('#ajax_content_loading').hide();
+               setTimeout(function(){$.colorbox.close();show_msg(gettext(data.msg),data.mtype);},500); 
+            }
+            else{
+                $('#ajax_content').empty().html(data.html);
+                show_msg(data.msg,data.mtype);
+            }
+        }
+    });
+}
+</script>

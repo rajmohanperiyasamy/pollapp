@@ -1,0 +1,35 @@
+{% load i18n %}
+<div id="banner_payment_div" class="group">
+    <form action="{% url 'admin_configuration_banners_banner_payment_settings' %}" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+        <div class="fields hform">
+            <div class="field text-field">    
+                <div class="value title">
+                    <div class="fd-cols mrb0 group">
+                        <!--span class="pdr20">{% trans 'Price per Year' %}({{globalsettings.currency}})</span-->
+                        <span class="pdr20">{% trans 'Impressions' %}</span>
+                        <span class="pdr20">{% trans 'Price per Impressions' %}({{globalsettings.currency}})</span>
+                     </div> 
+                </div>    
+            </div>
+            {{ banner_payment_forms.management_form }}
+            {% for form in banner_payment_forms.forms %}    
+            <div class="field text-field">    
+                <div class="label"><label>{{form.instance.level}}<span class="required-field">*</span></label></div>    
+                <div class="value">
+                    <div class="fd-cols mrb0 group">
+                        <!--span class="pdr20">{{form.price_year}}</span-->
+                        <span class="pdr20">{{form.impressions}}</span>
+                        <span >{{form.price_impressions}}</span>
+                     </div> 
+                </div>    
+            </div>
+            {% for hid in form.hidden_fields %} 
+               {{ hid }}
+            {% endfor %} 
+            {% endfor %}
+        </div>    
+        <div class="modal-base form-submit group trp-bg">
+               <button role="button" class="cform-button prime right" type="submit"><span class="cform-button-text">{% trans 'UPDATE' %}</span></button>
+        </div>           
+    </form>
+</div>   

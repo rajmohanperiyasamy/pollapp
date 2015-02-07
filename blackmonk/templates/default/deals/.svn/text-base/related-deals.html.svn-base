@@ -1,0 +1,45 @@
+{% load i18n thumbnail bm_dealtags %}
+
+{% get_related_deals category=deal.category deal=deal limit=6 as related_deals %}
+{% if related_deals %}
+<div>
+    <section class="sCn pD15">
+        <div class="sCn-tTl mRb15">
+            <h3><span>{% trans 'More Deals' %}</span><a href="{% url 'deals_category_listing' deal.category.slug %}" class="tXt-lNk rGhT">View all</a></h3>
+        </div>
+        <div class="fTrD-bL mRb0 sLdR-sMl mDa-50 aDpTv tXt-cTr cTrL-dFt">
+            <div class="fTrD-bL-iN">
+                <ul id="mNi-sLdR" class="fTrD-iTmS" style="width:10000px;">
+                    {% for deal in related_deals %}
+                    <li class="fTrD-iTm" style="float:left;">
+                        <div class="fTrD-tXt fAd">
+                            <div class="vAlGn">
+                                <div class="fTrD-tXt-iN">                                                    
+                                    <h4 class="fTrD-hD uC mRb10 w100mP fS15Mp"><a href="{{deal.get_absolute_url}}">{{deal.title}}</a></h4>
+                                    <a href="{{deal.get_absolute_url}}" class="btn btn-danger sHw-hVr fS11 uC fW-bsLd">{% trans 'View Deal' %}</a>
+                   
+                                </div>
+                            </div>
+                        </div>  <!-- /.TrD-tXt -->
+                        <figure class="fTrD-mDa">
+                            <a class="bUi-tMb-wPr fLxiMgW" href="{{deal.get_absolute_url}}">
+                                <span class="bUi-tMb">
+                                    <span class="bUi-tMb-pRpL">
+                                        <span class="bUi-tMb-cLp">
+                                            <span class="bUi-tMb-cLp-iN">
+                                                <img class="mDa-oT" src="{% thumbnail deal.album.album_photos.all.0.photo 0x335 %}" alt="{{deal.title}}">
+                                                <span class="vRtL-aLn"></span>    
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                        </figure> <!-- /.TrD-mDa --> 
+                    </li> <!-- /.fTrD-iTm -->
+                    {% endfor %}
+                </ul> <!-- /.fTrD-iTms -->
+            </div> <!-- /.fTrD-bL-iN -->
+        </div> <!-- /.fTrD-bL -->
+    </section>
+</div>
+{% endif %}

@@ -1,0 +1,42 @@
+{% extends "home.html" %}
+{% block title %}Add Articles here{% endblock %}
+{% block content %}
+<p><blink><h1></>HI you can add Articles here !</h1></blink> </p>
+
+<form name="input" action="{% url 'add_article' %}" method="post">{% csrf_token %}
+	{% for field in form %}
+		{% if  field.errors%}
+		{%for error in field.errors%}
+		{%endfor%}
+		{% endif %}
+
+	{% endfor %}
+	{{ form.as_p }}
+   
+   <input type="submit" value="Submit">	
+</form>
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery UI Datepicker - Default functionality</title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script>
+
+$(function() {
+$( "#id_pub_date" ).datepicker();
+});
+</script>
+</head>
+<body>
+
+{% endblock %}
+
+{% block test %}
+
+{% endblock %}
+		

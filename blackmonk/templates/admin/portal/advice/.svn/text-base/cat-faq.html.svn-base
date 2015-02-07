@@ -1,0 +1,13 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+        <h5>{% trans 'FAQs' %}</h5>
+        <h6>{% trans 'Adding a Topic?' %}</h6>
+        <p>{% trans 'Enter the topic name which is logical.' %}</p>
+		<p>{% trans 'Make sure the topic added is related to the community module.' %}</p>
+		<p>{% trans 'Example: Health and Wellness, Sports, Food & Dining' %}</a>.</p>
+        <hr>
+        <h6>{% trans 'Updating a Topic?' %}</h6>
+        <p>{% trans 'Update an existing topics if you wish to modify.' %}</p>
+	</div>                                    
+</div>     

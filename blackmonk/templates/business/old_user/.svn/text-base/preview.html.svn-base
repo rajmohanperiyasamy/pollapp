@@ -1,0 +1,273 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "business" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Preview - Business' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+	<div class="header-bar has-preview-head">
+        <a href="{% url 'user_manage_business' %}"><h2 style="cursor:pointer;">	<span class="go_back"></span> 
+Business</h2></a>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+            	{% if business.featured_sponsored == 'F' %}
+        			<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+				{% else %}
+					{% if business.featured_sponsored == 'S' %}
+	        			<span class="list-type sponsored-item"><a class="tttxt" original-title="{% trans 'Item listed as sponsored' %}" href="javascript:void(0);">{% trans 'sponsored' %}</a></span>
+			 		{% endif %}
+				{% endif %}
+                <div class="item-title">
+                    <h1>{{ business }}</h1>
+                    <p class="ltxt80">By <a href="#">{{business.created_by.display_name}}</a> <span class="divider12">|</span> {{business.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+                <ul class="status-tabs group">
+                	 <li> <a href="javascript:void(0)">{{business.most_viewed}}<span class="meta">{% trans 'views' %}</span></a> </li>
+                    <!--li> <a href="#">4<span class="meta">{% trans 'comments' %}</span></a> </li-->
+                </ul>                                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap">
+                <div id="article-preview" class="preview-center group">
+                    <div class="preview-items">
+                        <div class="preview-group">  
+                        	<div class="preview-items-head">
+                                <div class="right-item"><div class="cform-button"><a href="{% url 'user_update_business' business.id %}"><span>{% trans 'Edit' %}</span></a></div></div>
+                            	<h3 style="vertical-align:top">{% trans 'Business Details' %}</h3>
+                            </div>            
+                            <div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Name' %}</h4></div>
+                                <div class="value">{{ business }}</div>
+                            </div> 
+							{% if business.logo %}
+							<div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Logo' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                            <li class="inline-block">
+                                                <div class="photos-preview"><img src="{% thumbnail business.logo.logo 110x0 %}"><a class="icon-view preview-item" title="{% trans 'Large preview' %}" href="#"></a></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+								</div>
+                            </div>
+							{% endif %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Category' %}</h4></div>
+                                <div class="value">
+                                	{% for cat in business.categories.all %}
+										{% if forloop.first %}{{ business.get_parent_cat }}&nbsp;&rarr;&nbsp;{% endif %}
+                                		{% if cat.parent_cat %}
+											{{ cat }}
+											{% if not forloop.last %}{% if cat.parent_cat %},{% endif %}{% endif %}
+										{% endif %}
+									{% endfor %}
+								</div>
+                            </div>
+							{% if business.description %}
+							<div class="preview-item title">
+                                <div class="label"><h4>{% trans 'Description' %}</h4></div>
+                                <div class="value">{% autoescape off %}{{ business.description }}{% endautoescape %}</div>
+                            </div>
+							{% endif %}
+                            {% if business.getaddress %}                                           
+                            <div class="preview-item address map">
+                                <div class="label"><h4>{% trans 'Address' %}</h4></div>
+                                <div class="value">
+									<div class="inline-block map-preview"  style="width: 190px; height: 150px;" id="map"></div>                                             
+                                	<div class="inline-block valign-top" style="width:324px;">
+										{% for addr in business.getaddress %}
+										<div> 
+	                                        <span class="address-name"><strong>{{ addr.address1 }}</strong></span>                             
+	                                        <span class="address-details">{{addr.zip}}{% if addr.address2 %},{{ addr.address2 }}{% endif %}</span>                             
+	                                       	{% if addr.email %}<span class="address-number">Email: {{ addr.email }}</span>{% endif %} 
+											{% if addr.website %}<span class="address-number">Website: {{ addr.website }}</span>{% endif %} 
+										    {% if addr.telephone1 %}<span class="address-number">Phone: {{ addr.telephone1 }}</span>{% endif %} 
+											{% if addr.mobile %}<span class="address-number">Mobile: {{ addr.mobile }}</span>{% endif %}
+											{% if addr.city %}<span class="address-number">City: {{ addr.city }}{% if addr.zip %} - {{ addr.zip }}{% endif %}</span>{% endif %} 
+										</div> 
+										<script type='text/javascript'>total_address={{ forloop.counter }};</script>
+										{% endfor %} 
+									</div>   
+                                </div>
+                            </div>
+							{% endif %} 
+							{% if business.get_attribute_values %}
+                            <div class="preview-item price">
+                                <div class="label"><h4>{% trans 'Attributes' %}</h4></div>
+                                <div class="value">
+                                	{% for atr in business.get_attribute_values %}
+										{% ifchanged atr.key.attribute_group %}
+											<span><h5>{{atr.key.attribute_group}}</h5></span>
+										{% endifchanged %}
+										
+										{% if atr.key.type == 'C' %}
+											{% if atr.textbox_value %}
+											<span>{{atr.key}}&nbsp;&rarr;&nbsp;{{atr.textbox_value}}</span>
+											{% endif %}
+										{% else %}
+											<span>
+												{{atr.key}}&nbsp;&rarr;&nbsp;
+												{% for value in atr.value.all %}{{value}}{% if not forloop.last %},{% endif %}{% endfor %}
+											</span>
+										{% endif %}
+									{% endfor %}
+								</div>
+                            </div> 
+							{% endif %}
+							{% if business.operating_hours and business.workinghours.status == 'P' %}
+                            <div class="preview-item price">
+                                <div class="label"><h4>{% trans 'Working Hours' %}</h4></div>
+                                <div class="value">
+                                	{% if business.workinghours.mon_start or business.workinghours.mon_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Monday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.mon_start %}{{business.workinghours.mon_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.mon_end %}{{business.workinghours.mon_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+									{% if business.workinghours.tue_start or business.workinghours.tue_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Tuesday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.tue_start %}{{business.workinghours.tue_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.tue_end %}{{business.workinghours.tue_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+									{% if business.workinghours.wed_start or business.workinghours.wed_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Wednesday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.wed_start %}{{business.workinghours.wed_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.wed_end %}{{business.workinghours.wed_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+									{% if business.workinghours.thu_start or business.workinghours.thu_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Thursday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.thu_start %}{{business.workinghours.thu_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.thu_end %}{{business.workinghours.thu_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+									{% if business.workinghours.fri_start or business.workinghours.fri_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Friday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.fri_start %}{{business.workinghours.fri_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.fri_end %}{{business.workinghours.fri_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+									{% if business.workinghours.sat_start or business.workinghours.sat_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Saturday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.sat_start %}{{business.workinghours.sat_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.sat_end %}{{business.workinghours.sat_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+									{% if business.workinghours.sun_start or business.workinghours.sun_end %}
+									<span style="font-weight:bold">
+										<span style="float:left;width:80px !important;">{% trans 'Sunday' %}</span>:&nbsp;
+										{% trans 'From' %}{% if business.workinghours.sun_start %}{{business.workinghours.sun_start}}{% else %}--{% endif %}
+										{% trans 'to' %}&nbsp;{% if business.workinghours.sun_end %}{{business.workinghours.sun_end}}{% else %}--{% endif %}
+									</span>
+									{% endif %}
+								</div>
+                            </div> 
+							{% endif %}
+							{% if business.get_photos %}  
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Photos' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                        	{% for photo in business.get_photos %}
+                                            <li class="inline-block">
+                                                <div class="photos-preview"><img src="{% thumbnail photo.photo 110x0 %}"><a class="icon-view preview-item" title="{% trans 'Large preview' %}" href="#"></a></div>
+                                            </li>
+											{% endfor %}
+                                        </ul>
+                                    </div>
+								</div>
+                            </div>
+							{% endif %} 
+							{% if business.get_files %}  
+                            <div class="preview-item medias">
+                                <div class="label"><h4>{% trans 'Brochure/Menu' %}</h4></div>
+                                <div class="value">
+                                    <div class="item-photos">
+                                        <ul>
+                                        	{% for files in business.get_files %}
+                                            <li class="inline-block">
+												<a target="_blank" title="{% trans 'Download file' %}" href="{{globalsettings.website_url}}{{MEDIA_URL}}{{files.file}}">{{files.title}}</a>
+                                            </li>
+											{% endfor %}
+                                        </ul>
+                                    </div>
+								</div>
+                            </div>
+							{% endif %}
+							{% if business.paymentoptions.all %}  
+                            <div class="preview-item tags">
+                                <div class="label"><h4>{% trans 'PaymentOption' %}</h4></div>
+                                <div class="value">
+                                	<span class="note">{% for popt in business.paymentoptions.all %}<a href="javascript:void(0)">{{ popt }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+								</div>
+                            </div> 
+							{% endif %}  
+							{% if business.tags.all %}  
+                            <div class="preview-item tags">
+                                <div class="label"><h4>{% trans 'Tags' %}</h4></div>
+                                <div class="value">
+                                	<span class="note">{% for tag in business.tags.all %}<a href="javascript:void(0)">{{ tag.tag }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+								</div>
+                            </div> 
+							{% endif %}                                                                                       
+                        </div>   
+                    </div>                                            
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+        	<div class="preview-aside-meta group">
+                <ul class="side-navigation">
+                    <li class="active"><a href="{% url 'user_preview_business' business.id %}">Business Details</a></li>
+					<li><a href="{% url 'user_business_images' business.id %}">Images</a></li>
+                    <li><a href="{% url 'user_business_product' business.id %}">Product</a></li>
+                    <li><a href="{% url 'user_business_coupon' business.id %}">Coupons</a></li>
+                </ul>
+			</div>       
+              {#% include 'business/user/faq.html' %#}   
+        </div>                            
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+{% if business.getaddress %}
+	<script type="text/javascript">
+		var markers=[];
+		$(document).ready(function(){
+			{% for addr in business.getaddress %}
+				var marker = new Object();
+				marker["lat"] = {{addr.lat}};
+				marker["lng"] = {{addr.lon}};
+				marker["zoom"] = {{addr.zoom}};
+				marker["name"] = "{{ business.name }}";
+				marker["address"] = "{{ addr.address1|escape|linebreaks }}{{ addr.city }} - {{addr.zip }}";
+				markers.push(marker);
+			{% endfor %}
+			//load_multi_marker('map',{{ business.biz_address.all.0.pointer_lat }}, {{business.biz_address.all.0.pointer_lng }}, {{business.biz_address.all.0.map_zoom }},markers)
+{% for bb in business.getaddress %}
+load_multi_marker('map',{{ bb.lat }}, {{bb.lon }}, {{bb.zoom }},markers);
+{% endfor %}
+	</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,176 @@
+{% load i18n %}
+<div id="business-add" class="group">
+    <div id="add-new-business">
+			<div class="contentpricing group">
+						<form method="post" id="mform" name="mform" action="{% url 'user_classified_upgrade_listing_type' classifieds.id %}">{% csrf_token %}
+                             <div class="table_data">
+                                <div class="table_wrap group">
+								<div class="col_feature price-column1">
+                                        <ul>
+                                            <li class="col_head column"></li>
+                                            <li class="column"><span class="feature_label">Exposure & Response</span></li>
+                                            <li class="column"><span class="feature_label">Images</span></li>
+                                            <li class="column"><span class="feature_label">Comments</span> </li>
+                                            <li class="column"><span class="feature_label">Share Buttons</span> </li>
+                                            <li class="column"><span class="feature_label">Newsletter Promotion</span> </li>
+                                            <li class="column"><span class="feature_label">Social Media Promotion</span> </li>
+                                        </ul>
+										<input type="hidden" name="payment_level" id="payment_level" value="">
+                                    </div>
+									{% for cls_price in classifieds_price_objects %}
+									<div id="select_button_top_{{cls_price.level}}" class="col_108 price-column{% if forloop.count == 1 %}2{% else %}{% if forloop.count == 2 %}3{% else %}4{% endif %}{% endif %} select_button_top {% if classifieds.payment %}{% if classifieds.listing_type == 'B' %}{% if cls_price.level == 'level0' %}disabled{% endif %}{% else %}{% if classifieds..listing_type == 'S' %}{% if cls_price.level == 'level0' or cls_price.level == 'level1'  %}disabled{% endif %}{% endif %}{% endif %}{% endif %}">
+                                        <ul>
+                                            <li class="col_head column">
+                                                <h2>{{cls_price.level_label}}</h2>
+												{% if cls_price.level != 'level0' %}
+													<h1>
+														{% if cls_price.level == 'level1' %}
+															{{ globalsettings.currency }}{{ sp_price }}
+														{% else %}
+															{{ globalsettings.currency }}{{ cls_price.price }}
+														{% endif %}
+														<span>/&nbsp;{{cls_price.contract_period}} {% trans 'Month(s)' %}</span>
+													</h1>
+												{% else %}
+													<h1 class="free">FREE</h1>
+												{% endif %} 
+                                                <a class="btn-txt-blue sponsored-business" id="btn_{{cls_price.level}}" href="javascript:show_contents('{{cls_price.level}}')"><span class="btn-txt">Select</span></a> 
+                                            </li>  
+                                            <li class="column">
+                                            	<span class="feature_label">{{cls_price.get_exposure}}</span>
+                                            </li>                                             
+                                            <li class="column">
+                                            	{% if cls_price.images == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li> 
+                                            <li class="column">
+                                            	{% if cls_price.comments == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li> 
+                                            <li class="column">
+                                            	{% if cls_price.share_buttons == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li>
+                                            <li class="column">
+                                            	{% if cls_price.newsletter == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li> 
+                                            <li class="column">
+                                            	{% if cls_price.social_media == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li>
+                                        </ul>
+                                    </div> 
+						{% endfor %}
+						</div>
+						</div>
+						{% for cls_price in classifieds_price_objects %}
+							<div id="level_{{cls_price.level}}" class="fields hformstyle" style="
+					{% if classifieds.payment %}
+						{% if classifieds.listing_type == 'B' %}
+							{% if cls_price.level != 'level1' %}display:none;{% endif %}
+						{% else %}
+							{% if classifieds.listing_type == 'S' %}
+								{% if cls_price.level != 'level2' %}display:none;{% endif %}
+							{% else %}
+								{% if cls_price.level != 'level0' %}display:none;{% endif %}
+							{% endif %}
+						{% endif %}
+					{% else %}
+						{% if cls_price.level != 'level0' %}display:none;{% endif %}
+					{% endif %}">
+								<div class="field-group"  id="levels_{{cls_price.level}}">
+									{% if cls_price.level == 'level0'  %}
+	                                    <div class="field text-field">	
+	                                        <div class="label"></label></div>	
+											<div class="value">
+										 		<p>{% trans 'Your classifieds Ad will be set as' %} <b>{{cls_price.level_label}}</b>.</p>
+											</div>
+										</div>
+									{% endif %}
+									{% if cls_price.level != 'level0' %}
+										<div class="field text-field">	
+											<div class="label"><label>{% trans 'Total Price' %}</label></div>	
+											<div class="value">
+												{% if cls_price.level == 'level1' %}
+													{{ globalsettings.currency }}{{ sp_price }}
+												{% else %}
+													{{ globalsettings.currency }}{{ cls_price.price }}
+												{% endif %}
+									/&nbsp;{{cls_price.contract_period}} {% trans 'Month(s)' %}
+											</div>
+										</div>
+										<div class="field text-field">	
+											<div class="label"><label>{% trans 'Payment Mode' %}</label></div>	
+											<div class="value">
+												{% if payment_settings.invoice_payment %}
+												<span>
+													<input type="radio" name="payment_mode{{cls_price.id}}" value="offline" {% if not payment_settings.online_payment %}checked="checked"{% endif %}>{% trans 'Offline' %}
+												</span>
+												{% endif  %}
+												{% if payment_settings.online_payment %}
+												<span>
+													<input type="radio" name="payment_mode{{cls_price.id}}" value="online" checked="checked">{% trans 'Online' %}
+												</span>
+												{% endif  %}
+											</div>
+										</div>
+									{% endif %}
+								</div>
+								</div>
+							{% endfor %}
+							<div class="form-submit right group">
+               <button class="cform-button" roll="button" type="button" onclick="$.colorbox.close()"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+			   <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'SUBMIT' %}</span></button>
+            </div>
+			  </div>   
+		</form>
+	</div>																	                                        
+</div> <!-- end table --> 
+<script type="text/javascript">
+function show_contents(level){
+	$('.select_button_top').removeClass('active');
+	$('#select_button_top_'+level).addClass('active');
+	$('#payment_level').val(level);
+	if(level=='level2'){
+		$('#level_level2').show();
+		$('#level_level1').hide();
+		$('#level_level0').hide();
+	}
+	else if(level == 'level0'){
+		$('#level_level0').show();
+		$('#level_level1').hide();
+		$('#level_level2').hide();
+	}
+	else{
+		$('#level_level1').show();
+		$('#level_level2').hide();
+		$('#level_level0').hide();
+	}
+	$.colorbox.resize();
+}
+{% if classifieds.payment %}
+	{% if classifieds.listing_type == 'B' %}
+		$('#level_level0').remove();
+		$('#btn_level0').click(function() { return false; });
+		$('#payment_level').val('level1');
+	{% else %}
+		{% if classifieds.listing_type == 'S' %}
+			$('#level_level0').remove();
+			$('#level_level1').remove();
+			$('#btn_level0').click(function() { return false; });
+			$('#btn_level1').click(function() { return false; });
+			$('#payment_level').val('level2');
+		{% else %}
+			$('#payment_level').val('level2');
+		{% endif %}
+	{% endif %}
+{% else %}
+	$('#payment_level').val('level0');
+{% endif %}
+</script> 

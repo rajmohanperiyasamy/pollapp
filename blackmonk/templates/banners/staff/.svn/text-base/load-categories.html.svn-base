@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load ds_banners %}
+{% if channels %}
+<option value="0">Select a Category</option>
+    {% for cat in categories %}
+       <!--option class="{% if cat.getChildCategory %}parent{% endif %}" value="{{cat.id}}" {% if cat|to_class_name == banner_obj.content_object|to_class_name %}{% if banner_obj.object_id == cat.id or selected_category.id == cat.id %} selected="selected" {% endif %}{% endif %}>{{cat.name}}</option-->
+       <option value="{{cat.id}}" {% if banner_obj.object_id == cat.id and cat|to_class_name == banner_obj.content_object|to_class_name or selected_category|to_class_name == cat|to_class_name and selected_category.id == cat.id %} selected="selected" {% endif %} >{{cat.title}}</option>
+    {% endfor %}
+{% else %}
+   <option value="0">Select a Category</option>
+    {% for cat in categories %}
+       <!--option class="{% if cat.getChildCategory %}parent{% endif %}" value="{{cat.id}}" {% if cat|to_class_name == banner_obj.content_object|to_class_name %}{% if banner_obj.object_id == cat.id or selected_category.id == cat.id %} selected="selected" {% endif %}{% endif %}>{{cat.name}}</option-->
+       <option class="{% if cat.getChildCategory %}parent{% endif %}" value="{{cat.id}}" {% if banner_obj.object_id == cat.id and cat|to_class_name == banner_obj.content_object|to_class_name or selected_category|to_class_name == cat|to_class_name and selected_category.id == cat.id %} selected="selected" {% endif %} >{{cat.name}}</option>
+       {% for subcat in cat.getChildCategory %}
+           <option class="child" value="{{subcat.id}}" {% if banner_obj.object_id == subcat.id or selected_category.id == subcat.id %} selected="selected" {% endif %}>{{subcat}}</option>
+       {% endfor %} 
+    {% endfor %}
+{% endif %}

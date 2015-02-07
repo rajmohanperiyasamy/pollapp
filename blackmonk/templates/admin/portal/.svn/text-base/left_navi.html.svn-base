@@ -1,0 +1,252 @@
+{% load tabs %}
+{% load i18n %}
+{% load available_apps %}
+{% load_availableapps_obj%}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.expand_span').live("click",function(event){
+		event.preventDefault();
+		if($(this).hasClass('nav-collaps')){
+			$('.left-nav-container').removeClass('selected-child');
+			$(this).parent('a').parent('li').addClass('selected-child');
+			$('.nav-expand').addClass('nav-collaps').removeClass('nav-expand');
+			$(this).removeClass('nav-collaps').addClass('nav-expand');	
+		}else{
+			$(this).parent('a').parent('li').toggleClass('selected-child');
+			$(this).toggleClass('nav-collaps').toggleClass('nav-expand');
+		}
+	});
+});
+</script>
+<div class="left-nav-list modules col_3">
+    <ul>
+		{% if aa_community.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "advice" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_advice' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="advice"></span>
+                <span class="display-name">{% trans 'Community' %}</span><span class="expand_span {% ifactivetab "leftnav" "advice" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+            	  <li><a href="{% url 'admin_portal_advice_approval' %}" class="{% ifactivetab "leftnavsub" "adv_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+	              <li><a href="{% url 'admin_portal_advice_category' %}" class="{% ifactivetab "leftnavsub" "adv_cat" %}selected{% endifactivetab %}">{% trans 'Topics' %}</a></li>
+            </ul>                                                      
+        </li>
+		{% endif %}
+		{% if aa_articles.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "articles" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_articles_approval' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="articles"></span>
+                <span class="display-name">{% trans 'Articles' %}</span><span class="expand_span {% ifactivetab "leftnav" "articles" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+            	  <li><a href="{% url 'admin_portal_articles_approval' %}" class="{% ifactivetab "leftnavsub" "art_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+	              <li><a href="{% url 'admin_portal_articles_category' %}" class="{% ifactivetab "leftnavsub" "art_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+				  <li><a href="{% url 'admin_portal_articles_price' %}" class="{% ifactivetab "leftnavsub" "art_price" %}selected{% endifactivetab %}">{% trans 'Pricing' %}</a></li>	
+            </ul>                                                      
+        </li>
+		{% endif %}
+		{% if aa_attractions.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "attraction" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_portal_attraction' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="attractions"></span>
+              <span class="display-name">{% trans 'Attractions' %}</span> <span class="expand_span {% ifactivetab "leftnav" "attraction" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+            	  <li><a href="{% url 'admin_portal_attraction_settings' %}" class="{% ifactivetab "leftnavsub" "attraction_overview" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_attraction_category' %}" class="{% ifactivetab "leftnavsub" "attraction_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+            </ul>                                                         
+        </li>
+		{% endif %}
+		{% if aa_bookmarks.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "bookmarks" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_bookmarks_approval' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="bookmarks"></span>
+                <span class="display-name">{% trans 'Bookmarks' %}</span><span class="expand_span {% ifactivetab "leftnav" "bookmarks" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+            	  <li><a href="{% url 'admin_portal_bookmarks_approval' %}" 	class="{% ifactivetab "leftnavsub" "bkmrk_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+	              <li><a href="{% url 'admin_portal_bookmarks_category' %}" 	class="{% ifactivetab "leftnavsub" "bkmrk_cat" %}selected{% endifactivetab %}">{% trans 'Category' %}</a></li>
+            </ul>                                                      
+        </li>
+		{% endif %}
+		{% if aa_business.status == 'A' %}
+		<li class="left-nav-container  {% ifactivetab "leftnav" "business" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_portal_business_approval' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="business"></span>
+              <span class="display-name">{% trans 'Business' %}</span><span class="expand_span {% ifactivetab "leftnav" "business" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+          </a>
+            <ul class="sub-items">
+	        	  <li><a href="{% url 'admin_portal_business_approval' %}" class="{% ifactivetab "leftnavsub" "bus_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+	              <li><a href="{% url 'admin_portal_business_category' %}" class="{% ifactivetab "leftnavsub" "bus_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+				  <li><a href="{% url 'admin_portal_business_attribute_group' %}" class="{% ifactivetab "leftnavsub" "bus_atr_gup" %}selected{% endifactivetab %}">{% trans 'Attribute Group' %}</a></li>
+				  <li><a href="{% url 'admin_portal_business_attributes' %}" class="{% ifactivetab "leftnavsub" "bus_atr" %}selected{% endifactivetab %}">{% trans 'Attributes' %}</a></li>
+				  <li><a href="{% url 'admin_portal_business_paymentoptions' %}" class="{% ifactivetab "leftnavsub" "bus_popt" %}selected{% endifactivetab %}">{% trans 'Payment Options' %}</a></li>
+				  <li><a href="{% url 'admin_portal_business_price' %}" class="{% ifactivetab "leftnavsub" "bus_price" %}selected{% endifactivetab %}">{% trans 'Pricing' %}</a></li>
+            </ul>                                                       
+        </li>
+		{% endif %}
+		{% if aa_buzz.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "buzz" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_api_twitter_configuration' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="buzz"></span>
+                <span class="display-name">{% trans 'Buzz' %}</span><span class="expand_span {% ifactivetab "leftnav" "articles" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+			<ul class="sub-items">
+	              <li><a class="{% ifactivetab "leftnavsub" "twitter" %}selected{% endifactivetab %}" href="{% url 'admin_api_twitter_configuration' %}">{% trans 'Settings' %}</a></li>	
+	              <li><a class="{% ifactivetab "leftnavsub" "buzz_cat" %}selected{% endifactivetab %}" href="{% url 'adminportal_buzz_categories' %}">{% trans 'Categories' %}</a></li>
+				  <li><a class="{% ifactivetab "leftnavsub" "buzz_list" %}selected{% endifactivetab %}" href="{% url 'adminportal_buzz_twitter_lists' %}">{% trans 'Twitter List' %}</a></li>	
+            </ul>
+        </li>
+		{% endif %}
+		{% if aa_classifieds.status == 'A' %}
+		<li class="left-nav-container  {% ifactivetab "leftnav" "classifieds" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_portal_classifieds_approval' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="classifieds"></span>
+              <span class="display-name">{% trans 'Classifieds' %}</span><span class="expand_span {% ifactivetab "leftnav" "classifieds" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+          </a>
+            <ul class="sub-items">
+                 <li><a href="{% url 'admin_portal_classifieds_approval' %}" class="{% ifactivetab "leftnavsub" "cls_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_classifieds_category' %}" class="{% ifactivetab "leftnavsub" "cls_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+				  <li><a href="{% url 'admin_portal_classifieds_attribute' %}" class="{% ifactivetab "leftnavsub" "cls_atr" %}selected{% endifactivetab %}">{% trans 'Attributes' %}</a></li>
+				  <li><a href="{% url 'admin_portal_classifieds_price' %}" class="{% ifactivetab "leftnavsub" "cls_price" %}selected{% endifactivetab %}">{% trans 'Pricing' %}</a></li>
+            </ul>                                                       
+        </li>
+		{% endif %}
+		{% if aa_deals.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "deals" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_portal_deals_approval' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="deals"></span>
+              <span class="display-name">{% trans 'Deals' %}</span> <span class="expand_span {% ifactivetab "leftnav" "deals" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_deals_approval' %}" class="{% ifactivetab "leftnavsub" "deal_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_deals_category' %}" class="{% ifactivetab "leftnavsub" "deal_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+				  <li><a href="{% url 'admin_portal_deals_how' %}" class="{% ifactivetab "leftnavsub" "deal_how" %}selected{% endifactivetab %}">{% trans 'How it Works' %}</a></li>
+				  <li><a href="{% url 'admin_portal_deals_faq' %}" class="{% ifactivetab "leftnavsub" "deal_faq" %}selected{% endifactivetab %}">{% blocktrans %}FAQ's{% endblocktrans %}</a></li>
+            </ul>                                                        
+        </li>
+		{% endif %}
+		
+		{% if aa_events.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "events" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_portal_event_approval' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="events"></span>
+              <span class="display-name">{% trans 'Events' %}</span><span class="expand_span {% ifactivetab "leftnav" "events" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+          </a>
+            <ul class="sub-items">
+				  <li><a href="{% url 'admin_portal_event_approval' %}" class="{% ifactivetab "leftnavsub" "events_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_event_category' %}" class="{% ifactivetab "leftnavsub" "events_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+                  <li><a href="{% url 'admin_portal_event_price' %}" class="{% ifactivetab "leftnavsub" "events_price" %}selected{% endifactivetab %}">{% trans 'Pricing' %}</a></li>
+				  
+            </ul>                                                   
+        </li>
+       	{% endif %}
+		{% if aa_movies.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "movies" %}selected-child{% endifactivetab %}"">
+            <a href="{% url 'admin_portal_movies_settings' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="movies"></span>
+                <span class="display-name">{% trans 'Movies' %}</span><span class="expand_span {% ifactivetab "leftnav" "movies" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_movies_settings' %}" class="{% ifactivetab "leftnavsub" "movies_overview" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_movies_genre' %}" class="{% ifactivetab "leftnavsub" "movies_gen" %}selected{% endifactivetab %}">{% trans 'Genre' %}</a></li>
+				  <li><a href="{% url 'admin_portal_movies_criticsource' %}" class="{% ifactivetab "leftnavsub" "movies_cric" %}selected{% endifactivetab %}">{% trans 'Critic Source' %}</a></li>
+				  <li><a href="{% url 'admin_portal_movies_language' %}" class="{% ifactivetab "leftnavsub" "movies_lang" %}selected{% endifactivetab %}">{% trans 'Language' %}</a></li>
+            </ul>                                                       
+        </li>
+		{% endif %}
+		{% if aa_news.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "news" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_portal_news_settings' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="news"></span>
+              <span class="display-name">{% trans 'News' %}</span> <span class="expand_span {% ifactivetab "leftnav" "news" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_news_settings' %}" class="{% ifactivetab "leftnavsub" "news_overview" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_news_category' %}" class="{% ifactivetab "leftnavsub" "news_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+				  <li><a href="{% url 'admin_portal_news_provider' %}" class="{% ifactivetab "leftnavsub" "news_pro" %}selected{% endifactivetab %}">{% trans 'Provider' %}</a></li>
+            </ul>                                                        
+        </li>
+		{% endif %}
+		{% if aa_photos.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "photos" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_gallery_approval' %}" class="left-nav">
+                  <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="photos"></span>
+                  <span class="display-name">{% trans 'Photos' %}</span><span class="expand_span {% ifactivetab "leftnav" "photos" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_gallery_approval' %}" class="{% ifactivetab "leftnavsub" "photos_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_gallery_category' %}" class="{% ifactivetab "leftnavsub" "photos_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+            </ul>
+        </li>
+		{% endif %}
+		{% if aa_polls.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "polls" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_polls' %}" class="left-nav">
+                  <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="polls"></span>
+                  <span class="display-name">{% trans 'Polls' %}</span><span class="expand_span {% ifactivetab "leftnav" "polls" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_polls' %}" class="{% ifactivetab "leftnav" "polls" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+            </ul>
+        </li>
+		{% endif %}
+		{% if aa_restaurants.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "restaurants" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_restaurants_approval' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="restaurants"></span>
+                <span class="display-name">{% trans 'Restaurants' %}</span><span class="expand_span {% ifactivetab "leftnav" "restaurants" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+             <ul class="sub-items">
+            	  <li><a href="{% url 'admin_portal_restaurants_approval' %}" class="{% ifactivetab "leftnavsub" "res_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+	              <li><a href="{% url 'admin_portal_restaurants_category' %}" class="{% ifactivetab "leftnavsub" "res_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>	
+            	  <li><a href="{% url 'admin_portal_restaurants_mealtypes' %}" class="{% ifactivetab "leftnavsub" "res_mea" %}selected{% endifactivetab %}">{% trans 'Meal Types' %}</a></li>
+            	  <li><a href="{% url 'admin_portal_restaurants_cuisines' %}" class="{% ifactivetab "leftnavsub" "res_cui" %}selected{% endifactivetab %}">{% trans 'Cuisines' %}</a></li>
+            	  <li><a href="{% url 'admin_portal_restaurants_feature' %}" class="{% ifactivetab "leftnavsub" "res_fea" %}selected{% endifactivetab %}">{% trans 'Features' %}</a></li>
+            	  <li><a href="{% url 'admin_portal_restaurants_payment' %}" class="{% ifactivetab "leftnavsub" "res_pay" %}selected{% endifactivetab %}">{% trans 'Payment Option' %}</a></li>
+            	  <li><a href="{% url 'admin_portal_restaurants_price' %}"   class="{% ifactivetab "leftnavsub" "res_price" %}selected{% endifactivetab %}">{% trans 'Pricing' %}</a></li>
+            </ul>   
+        </li>
+		{% endif %}
+		{% if aa_shop.status == 'A' %}
+		<li class="left-nav-container {% ifactivetab "leftnav" "bmshop" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_bmshop_main_settings' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="shop"></span>
+                <span class="display-name">{% trans 'Shop' %}</span><span class="expand_span {% ifactivetab "leftnav" "bmshop" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+            	  <li><a href="{% url 'admin_bmshop_main_settings' %}" 	class="{% ifactivetab "leftnavsub" "main_settings" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+	              <li><a href="{% url 'admin_bmshop_category_settings' %}" 	class="{% ifactivetab "leftnavsub" "bm_cat" %}selected{% endifactivetab %}">{% trans 'Category' %}</a></li>
+				  <li><a href="{% url 'admin_bmshop_manufactures' %}" 	class="{% ifactivetab "leftnavsub" "manufactures" %}selected{% endifactivetab %}">{% trans 'Manufacturers' %}</a></li>
+				  <li><a href="{% url 'admin_bmshop_delivery_time' %}" 	class="{% ifactivetab "leftnavsub" "delivery_tm" %}selected{% endifactivetab %}">{% trans 'Delivery Time' %}</a></li>
+				  <li><a href="{% url 'admin_bmshop_payment_settings' %}" 	class="{% ifactivetab "leftnavsub" "bm_payment" %}selected{% endifactivetab %}">{% trans 'Payment Gateways' %}</a></li>
+				  <li><a href="{% url 'admin_bmshop_shipping_settings' %}" 	class="{% ifactivetab "leftnavsub" "shipping" %}selected{% endifactivetab %}">{% trans 'Shipping' %}</a></li>
+            </ul>                                                      
+        </li>
+		{% endif %}
+		{% if aa_sweepstakes.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "sweepstakes" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_sweepstakes' %}" class="left-nav">
+                  <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="sweepstakes"></span>
+                  <span class="display-name">{% trans 'Sweepstakes' %}</span><span class="expand_span {% ifactivetab "leftnav" "sweepstakes" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+            </a>
+            <ul class="sub-items">
+                  <li><a href="{% url 'admin_portal_sweepstakes' %}" class="{% ifactivetab "leftnavsub" "settings" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+				  <li><a href="{% url 'admin_portal_sweepstakes_qanda' %}" class="{% ifactivetab "leftnavsub" "qanda" %}selected{% endifactivetab %}">{% trans 'Q and A' %}</a></li>
+            </ul>
+        </li>
+		{% endif %}
+		{% if aa_videos.status == 'A' %}
+        <li class="left-nav-container {% ifactivetab "leftnav" "videos" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_portal_videos_approval' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="videos"></span>
+                <span class="display-name">{% trans 'Videos' %}</span><span class="expand_span {% ifactivetab "leftnav" "videos" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+            <ul class="sub-items">
+                 <li><a href="{% url 'admin_portal_videos_approval' %}" class="{% ifactivetab "leftnavsub" "videos_set" %}selected{% endifactivetab %}">{% trans 'Settings' %}</a></li>
+                  <li><a href="{% url 'admin_portal_videos_category' %}" class="{% ifactivetab "leftnavsub" "videos_cat" %}selected{% endifactivetab %}">{% trans 'Categories' %}</a></li>
+            </ul>                                                      
+        </li>
+        {% endif %}
+    </ul> 
+</div>

@@ -1,0 +1,152 @@
+{% extends "admin_base.html" %}
+{% load modulotag %}
+{% load ds_utils %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "roles" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Admin | Manage Group Roles{% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/base.js"></script>
+<script>
+$(function($){
+// code.
+});
+
+	function selectall(m,id){
+		var check_ = window.document.getElementById(m);
+		$(function($){
+			if(check_.checked){
+			$(".perm_"+id).attr("checked","true");
+			}
+			if(!check_.checked){
+			$(".perm_"+id).removeAttr("checked");
+			}
+		});
+	}
+
+</script>
+<script type="text/javascript">
+
+	validate = function(){
+		var role = window.document.getElementById('id_group_name');
+		if(trim(role.value)==''){
+			alert('Oops!! Role Name is missing');
+			role.value='';
+			role.focus();
+			return false;
+		}
+		return true;
+	}
+
+</script>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+{% endblock %}
+{% block content %}
+    	<div class="container group">
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="/admin/listgrouprole/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Roles</a></li>
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Add new Role</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Add new Role</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="/admin/listgrouprole" class="side_menu">Manage Roles</a></li>  
+                        <li><a href="/admin/addgrouprole/" class="side_menu">Add new Role</a></li>  
+                        <li><a href="/admin/searchrole/" class="side_menu on">Search Role</a></li> 
+                        <li><a href="{%url 'admin_add_seo' %}" class="side_menu">Manage SEO</a></li>                         
+                    </ul>
+                </div> 	
+ <div class="main_col">
+ 				{% if message %}
+            		<div class="message">{{message}}</div>
+            	{% endif %}
+					<div id="formContainer" class="clearfix" style="border:none;padding:0px;">
+
+        	  	  		<form action="/admin/savegrouprole/" name="mform" id="mform" method="post" class="clearfix coloumn" style="background:none;border:none;" onsubmit="return validate();">{% csrf_token %}
+                        
+                        				<fieldset style="padding:0; margin-top:10px;">
+                                        <div class="title"><h2>Create new Role</h2></div>
+                   					<dl class="horizontal">
+                                 <dt>
+                                    
+                                </dt>
+                                <dd>
+                                <h3 style="font:bold 16px/16px arial, sans-serif; color:#222; margin:0 0 5px 0; padding:0;">Role Name</h3>
+                                <div class="tip" style="font-size:12px; padding-bottom:10px;">
+                                    <p>Please enter a role name.</p>
+                                </div>
+                                </dd>
+                          				<dt><label for="id_group_name"><b>Role Name: </b></label></dt>
+                          				<dd><input class="textField normal" id="id_group_name" name="group_name" type="text" style="padding:3px 1px;">                                         <span class="tip">Example: Editor, Marketing Executive, etc...</span>
+                                        </dd>
+ 										
+						    
+                                </dl>
+                                <dl class="vertical" style="padding:0;"> 
+                                <dt>&nbsp;</dt>
+                            			<dd><div class="divider" style="">&nbsp;</div></dd>                                
+                                 <dt>
+                                    
+                                </dt>
+                                <dd>
+                                <h3 style="font:bold 16px/16px arial, sans-serif; color:#222; margin:0 0 5px 0; padding:0;">Grant Permission</h3>
+                                <div class="tip" style="font-size:12px; padding-bottom:10px;">
+                                    <p>Here you have the liberty to assign multiple permissions for a particular role. </p>
+                                </div>
+                                </dd>                           
+                      			
+																<dt></dt>
+                          					<dd>
+                          					{% for model in allmod %}	
+                                            	<table style="background-color:#f4f4f4; padding:5px 5px 10px 5px; display:block; margin-bottom:10px; width:100%; line-height:14px;">
+                                                	<colgroup>
+                                                    	<col width="250" />
+                                                        <col width="250" />
+                                                    	<col width="250" />
+                                                   	</colgroup>
+												
+													<tr>
+                                                    	<th style="padding:5px;border-bottom:1px solid #ddd;text-align:left;" colspan="3"><span class="cform-checkbox-container"><input name="chkbox" id="{{model.mname}}" value="{{model.id}}" type="checkbox" onclick="selectall('{{model.mname}}',{{model.id}});" style="vertical-align:top;"><span class="cform-checkbox-element"></span></span>&nbsp;&nbsp;<h3 style="font:bold 14px/14px Arial, sans-serif; display:inline">{{model.mname}}</h3></th>
+                                                	</tr>
+                                            			<tr>
+	                                            			{% for role in model.p %}
+		                                            			{% ifmodulo forloop.counter 2 1 %}
+											                    </tr><tr>
+											                	{% endifmodulo %}
+	                                                    	<td style="padding:10px 5px 0 5px;"><span class="cform-checkbox-container"><input class="perm_{{model.id}}" name="chk" value="{{role.id}}" type="checkbox" style="vertical-align:top;"><span class="cform-checkbox-element"></span></span>&nbsp;&nbsp;<label style="display:inline">{{role.name|cut:"Can "|capfirst}}</label></td>
+	                                                        {% endfor %}
+	                                                	</tr>
+                                                
+                                                
+                                                </table>
+                                                {% endfor %}
+                                            </dd>
+
+					    		<dt></dt>
+                      			<dd><br />
+                                    <input name="goback" value="Submit" class="inputsubmit on" type="submit" />
+                                <input name="continue" value="Cancel" class="inputsubmit off" type="button" onclick="location.replace('/admin/listgrouprole/')" />
+
+                                    
+                      			</dd>
+							</dl>                                                        
+                    </fieldset>                    			      
+						</form>
+					</div>
+
+
+                </div> 
+                <hr />
+            </div>
+        </div>
+{% endblock %}

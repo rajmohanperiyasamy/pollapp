@@ -1,0 +1,58 @@
+<style>
+#map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+}
+</style>
+
+	<div id="enlargemap" class="modal hide fade mW70" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">Map</h3>
+		</div>
+		<div class="modal-body hT400">
+			<div id="map-canvas">
+                <div class="tBl-bLk pDt0" style="height: 390px">
+                    <div class="tBl-cEl">
+                        <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+                    </div>
+                </div>
+            </div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
+    <div id="loading_image" style="display:none;">
+        <div class="tBl-bLk pDt0" style="height: 390px">
+            <div class="tBl-cEl">
+                <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+            </div>
+        </div>
+    </div>
+
+<!-- script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script -->
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript">
+    $.fn.emulateTransitionEnd = function(duration) {
+      return true;
+    };
+    var loaded_enlarge_map = false;
+    $(document).ready(function(){
+        $('#enlargemap').on('shown.bs.modal', function (e) {
+            if (loaded_enlarge_map == false){
+                var lat=$("a[href=#enlargemap]").attr('lat');
+                var lon=$("a[href=#enlargemap]").attr('lon');
+                if (typeof lat != 'undefined' && typeof lon != 'undefined')
+                {
+                    var zoom=parseInt($("a[href=#enlargemap]").attr('zoom'));
+                    var pointername=$("a[href=#enlargemap]").attr('pointername');
+                    load("map-canvas",lat,lon,zoom,pointername,"")
+                }
+                loaded_enlarge_map = true;
+            }
+        });
+    });
+</script>

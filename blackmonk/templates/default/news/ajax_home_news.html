@@ -1,0 +1,93 @@
+{% load truncate_filter %}
+{% load i18n %}
+{% load thumbnail %}
+{% load mptt_comments_tags %}
+{% load ds_utils %}
+    <div class="tLbR mRt20">
+        <div class="tLbR-iR">
+            <div class="sCn-tTl pLlT mRb0">
+                <h2><a href="/news">News Updates</a><span class="fS12 mRl10 cLr-gRy">Updated: {{updated|ds_site_timeformat}}</span></h2>
+            </div>                              
+            <div class="pLrT mRr10">
+                <select data-link="true" class="bUiSlCtbtn-link tXt-sMl">
+                    <option {% ifequal cat 'all' %}selected="selected"{% endifequal %} data-location="/news/">{% trans 'All Categories' %}</option>
+                    {% with category as news_category %}
+                    {% for category in news_category %}
+					{% ifequal cat.name 'others'  %}
+					{% else %}   
+                    <option {% ifequal cat category.slug %}selected="selected"{% endifequal %} data-location="/news/{{category.slug}}">{% ifequal category.name 'headline' %}{{category.name}}s{% else %}{{category.name}}{% endifequal %}</option>
+					{% endifequal %} 
+                    {% endfor %}
+                    {% endwith %}
+                </select>
+            </div> 
+        </div>
+    </div>
+    <ul class="modulesBrowseData fOcL {% if view_type == 'grid' %}mDa-gD mDa-oT-tP pDfX{% else %}mDa-lT {% endif %}">
+        {% if news %}
+            {% for news in news %}
+            <li class="mDa">
+                <input type="hidden"  name="fbids" class="bids" value="{{ news.id }}">
+                <div class="mDa-iN">
+                    <div class="mDa-bDy">
+                        <h4 class="mDa-hD tRnCt0 mR50 rLvE h65" title="{{news.title}}"><a target="_blank" href="{{news.get_absolute_url}}">{{news.title}}</a></h4>
+                        <p class="fS12 cLr-gRy hD-gD">{{news.summary}}</p>
+                        <div class="mDa-dTa mRt4">
+							<span class="fS11 cLr-lTgRy">{{ news.provider.name|truncatechars:25 }}</span>
+                           <span class="fS11 cLr-lTgRy">{{ news.created_on|timesince }} {% trans 'ago' %}</span>
+                        </div>                                            
+                        <!--div class="mDa-hVr"><a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="#"><i class="BUI-icon-63"></i>Share</a></div-->
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        {% else %}
+            <div class="hT600 rLvE sCn">
+                <div class="tBl-bLk pDt0">
+                    <div class="tBl-cEl">
+                        <span class="iCn-bRdR80 oP25"><i class="bUi-iCn-aRtL-24 fS42-1 cLr-gRy ib" aria-hidden="true"></i></span>
+                        <p class="bLk mRt20 fS16 cLr-lTgRy oP75">No News feed found.</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </ul>
+    {% if is_paginated %}
+    <div class="pGn pGn-bX pGn-cTr">
+        <ul>
+            {% if has_previous %}
+                    <li><a href="{{url}}?page={{ prev }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr" id="{{ prev }}"><i class="bUi-iCn-aNg-lT-12"></i></a></li>
+            {% endif %}
+            {% if not in_leading_range %}
+                {% for num in pages_outside_trailing_range %}
+                    {% ifequal num current_page %}
+                         <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                    {% else %}
+                         <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }} </a></li>
+                    {% endifequal %}
+                {% endfor %}
+                <li><span>...</span></li>
+            {% endif %} 
+            {% for num in page_numbers %}
+                {% ifequal num current_page %}
+                     <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                {% else %}
+                    <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+                {% endifequal %}
+            {% endfor %}
+            {% if not in_trailing_range %}
+                <li><span>...</span></li>
+                {% for num in pages_outside_leading_range reversed %}
+                    {% ifequal num current_page %}
+                         <li class="aCtV"><span title="{% trans 'Page' %} {{ num }} ">{{ num }}</span></li>
+                    {% else %}
+                        <li><a title="{% trans 'Page' %} {{ num }} " href="{{url}}?page={{ num }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" class="bm_pgntn_anchr">{{ num }}</a></li>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
+            {% if has_next %}
+                <li><a  href="{{url}}?page={{ next }}{% if search %}&q={{kw}}{% endif %}&view={{view_type}}" id="{{next}}" class="bm_pgntn_anchr"><i class="bUi-iCn-aNg-rT-12"></i></a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}

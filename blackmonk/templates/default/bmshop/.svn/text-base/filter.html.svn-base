@@ -1,0 +1,348 @@
+{% extends base %}
+{% load modulotag %}
+{% load comparison %}
+{% load tabs %}
+{% load i18n %}
+{% load currency %}
+{% load thumbnail %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Shop' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Shop' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+	<script src="{{STATIC_URL}}js/jquery-ui-1.10.3.custom-slider.min.js"></script>
+	<script src="{{STATIC_URL}}js/fleximage.js"></script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+<div id="content-container">
+        <div class="container-fluid">
+        	<!-- Module Search -->
+        	{% include 'default/bmshop/part-search.html' %}	
+			<!-- Module Search -->
+			<ul class="bRdCrB">
+                <li>
+                    <a href="{%url 'bmshop_product_home' %}">Shop</a>
+                    <span class="sPrTr"></span>
+                </li>
+                {%for parent_cat in cat_obj.get_parents %}
+	                <li>
+	                    <a href="{{parent_cat.get_absolute_url}}">{{parent_cat.name}}</a>
+	                    <span class="sPrTr"></span>
+	                </li>
+                {%endfor%}
+                <li class="aCtV">
+                     {{cat_obj.name}}
+                </li>
+            </ul>
+			<div class="row-fluid">
+				<div class="main">
+					<div class="row-fluid">
+						<div class="span3 sP12mX767">
+							<section class="sCn pD200">
+                        		<ul class="nav nav-list fS12">
+                                    <!--li class="nav-header"><a href="#" class="pD0 mR0" style="color: rgb(173, 177, 183);">Category</a></li>
+                                    <ul class="nav nav-list cMpCt pD0 mXh250A">
+                                        
+                                        <li><a href="#"><i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 fW-bLd " style="color:#3B3F44 !important"></i> Apartments - For Sale </a>
+                                            <ul class="nav nav-list cMpCt">
+                                                <li><a href="#" class="cLr-dRk"><i class="bUi-iCn-aNg-b-aLt-12 fW-bLd" aria-hidden="true" style="color:#3B3F44 !important"></i> Category</a>
+                                                    <ul class="nav nav-list cMpCt">
+                                                        <li><a class="cLr-dRk" href="#category-filter" data-toggle="collapse">
+                                                                <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 fW-bLd" style="color:#3B3F44 !important"></i> <span>Sub Category</span></a>
+                                                            <ul id="category-filter" class="unstyled mRl25 collapse in">
+                                                                <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                                <li><a href="#" class="fW-bLd">sub category</a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul-->
+                                    {%if manufactures%}
+                                    <li class="nav-header mRt10">
+                                        <span class="pD0 mR0">
+                                            <span class="pLlT" style="color: rgb(173, 177, 183);">Brand 
+                                                <span class="close ib mRl5 oP50 lH05">×</span>
+                                            </span>
+                                            <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter2" data-toggle="collapse">
+                                                <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                    <ul id="filter2" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 mXh250A collapse in">
+                                        {%for man_obj in manufactures%}
+                                        	<li><label><input type="checkbox" value="{{man_obj.id}}" id="id_brand_{{man_obj.id}}" onclick="filter_product()" class="mRt-4 brand"> {{man_obj.name}}</label></li>
+                                        {%endfor%}
+                                    </ul>
+                                    {%endif%}
+                                    {%if price_options%}
+                                    <li class="nav-header mRt10">
+                                        <span class="pD0 mR0">
+                                            <span class="pLlT" style="color: rgb(173, 177, 183);">Price 
+                                                <span class="close ib mRl5 oP50 lH05">×</span>
+                                            </span>
+                                            <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter2" data-toggle="collapse">
+                                                <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                    <ul id="filter2" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 mXh250A collapse in">
+                                        {%for item in price_options%}
+                                        	<li><label><input type="checkbox" value="{{item.min}}-{{item.max}}" id="id_price_filter" onclick="filter_product()" class="mRt-4 price_filter"> {{item.min|floatformat:0|moneyfmt}} - {{item.max|floatformat:0|moneyfmt}} ({{item.quantity}})</label></li>
+                                        {%endfor%}
+                                    </ul>
+                                    {%endif%}
+                                    
+                                    {% if choice_properties %}
+	                                    {%for pty in choice_properties%}
+	                                    <li class="nav-header mRt10">
+	                                        <span class="pD0 mR0">
+	                                            <span class="pLlT" style="color: rgb(173, 177, 183);">{{pty.title}} 
+	                                                <span class="close ib mRl5 oP50 lH05">×</span>
+	                                            </span>
+	                                            <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter2" data-toggle="collapse">
+	                                                <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+	                                            </a>
+	                                        </span>
+	                                    </li>
+	                                    <ul id="filter2" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 mXh250A collapse in">
+	                                        {%for opt in pty.choices %}
+	                                        	<li><label><input type="checkbox" value="{{pty.id}}-{{opt.id}}" id="id_pty_val_filter_{{pty.id}}_{{opt.id}}" onclick="filter_product()" class="mRt-4 property_choice_ft"> {{opt.name}} ({{opt.count}})</label></li>
+	                                        {%endfor%}
+	                                    </ul>
+	                                    {%endfor%}
+                                    {%endif%}
+                                    
+                                    {%if property_objs%}
+                                    <li class="nav-header mRt10">
+                                        <span class="pD0 mR0">
+                                            <span class="pLlT" style="color: rgb(173, 177, 183);">Features 
+                                                <span class="close ib mRl5 oP50 lH05">×</span>
+                                            </span>
+                                            <a class="pLrT" data-toggle-icon="bUi-iCn-pLs-12" href="#filter2" data-toggle="collapse">
+                                                <i class="bUi-iCn-mNs-12" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                    <ul id="filter2" class="nav nav-list cMpCt fOmX767 pDfX pD0  w100mN768 mXh250A collapse in">
+                                        {%for pty in property_objs%}
+                                        	<li><label><input type="checkbox" value="{{pty.id}}" id="id_property_filter_{{pty.id}}" onclick="filter_product()" class="mRt-4 property_ft"> {{pty.title}}</label></li>
+                                        {%endfor%}
+                                    </ul>
+                                    {%endif%}
+                                    
+                                    
+                                    
+                                </ul>
+
+                    		</section>
+						</div>
+						<div class="span9 sP12mX767">
+							<section class="sCn">
+								<div class="sCn-tTl sCn-tTl-bR mRb10 cLrFx">
+                                    <div class="cLrFx">
+                                        <h2 class="pLlT">
+                                            <span>Casual Shoes</span>
+                                        </h2>
+                                        <form class="form-search mRb0 pLrT" action="#">
+                                            <div class="input-append iNsD">
+                                                <input type="text" style="" placeholder="Search within Casual Shoes" id="" class="search-query fS12 pD510 w240">
+                                                <button role="button" class="btn btn-link pD510 pDt9 cLr-gRy" type="submit"><i class="bUi-iCn-sRh-16 fS14 mRt4 ib" aria-hidden="true"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="cLrFx">
+                                        <ul class="unstyled cLr-dRk fS13 mRb0">
+                                            <li class="ib">
+                                                <b>Brand :</b>
+                                                <span class="cLr-gRy fS13 mRl5"> Puma</span>
+                                                <a href="#" class="close ib mRl5 oP50">×</a>
+                                            </li>
+                                            <li class="ib sPrTr vEr">
+                                                <b>Type :</b>
+                                                <span class="cLr-gRy fS13 mRl5"> Loafers</span>
+                                                <a href="#" class="close ib mRl5 oP50">×</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="tLbR mRb40 hP">
+		                            <div class="tLbR-iR">
+                                        <span class="fS12 mRt8 ib cLr-gRy"> Showing {{product_count}} products </span>
+		                            	<div class="pLrT">
+			                            	<select class="bUiSlCtbtn-link tXt-sMl" onchange="filter_product()" id="id_sorting">
+	                                            <option value="default">Popularity</option>
+                                                <option value="high_to_low">Price -- High to Low</option>
+                                                <option value="low_to_high">Price -- Low to High</option>
+                                                <option value="default">Discount</option>
+                                                <option value="default">Newest First</option>
+	                                        </select>
+		                            	</div>
+		                            </div>
+		                        </div>
+		                        <input type="hidden" value="{{cat_obj.id}}" name="category" id="id_category">
+								<input type="hidden" value="1" name="page_val" id="id_page_val">     
+								<input type="hidden" value="{{has_next}}" name="has_next" id="id_has_next">     
+								<input type="hidden" value="true" name="has_load" id="id_has_load">  
+		                        <div id="product_content">
+                                	{% include 'default/bmshop/include-filter.html' %}
+                                </div>
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+<script src="{{STATIC_URL}}themes/js/jquery-ui-1.10.3.custom-slider.min.js"></script>
+<script src="{{STATIC_URL}}themes/js/fleximage.js"></script>
+<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+<script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script> 
+<script>	
+		
+		
+		function filter_product(page){
+		var dataString='';
+		var manufacture_ids=[];
+		var cat_ids=[];
+		var price_range_ids=[];
+		var property_ids=[];
+		var property_choice_ids=[]
+		
+	
+		cat_ids.push($('#id_category').val());
+		
+		dataString+="cat_id="+cat_ids;
+		
+		dataString+="&sort="+$('#id_sorting').val()
+		
+		$('.brand:checked').each(function(){
+			manufacture_ids.push($(this).val());
+		});
+		dataString+="&manufacture="+manufacture_ids;
+		$('.price_filter:checked').each(function(){
+			price_range_ids.push($(this).val());
+		});
+		dataString+="&price_range="+price_range_ids;
+		$('.property_ft:checked').each(function(){
+			property_ids.push($(this).val());
+		});
+		dataString+="&property="+property_ids;
+		
+		$('.property_choice_ft:checked').each(function(){
+			property_choice_ids.push($(this).val());
+		});
+		dataString+="&property_choice="+property_choice_ids;
+		
+		//alert(dataString);
+		/*
+		if(page){
+			dataString+="&page="+page;
+			$('#id_has_load').val(false);
+			$('#ajax_more_loading').css('display','block');
+		}else{
+			$('#product_content').hide();	
+			$('#ajax_content_loading').css('display','block');
+		}	
+		*/
+		$.ajax({
+		type: "GET",
+		url: '{% url 'bmshop_product_filter_products' %}',
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+			/*
+				if(page){
+					alert(data.html);
+					$('#ajax_more_loading').hide();
+					$('#id_has_next').val(data.has_next);
+					$('#product_content').append(data.html);
+					$('#id_has_load').val(true);
+				}else{
+					*/
+					$('#ajax_content_loading').hide();
+					$('#product_content').empty().html(data.html);
+					$('#product_content').show();	
+					$('.count').empty().html(data.product_count);
+					
+				//}
+				$('#id_page_val').val(data.page);
+				//window.history.pushState({},"", '?'+dataString);
+				
+			}
+		});	
+	
+     }
+		
+		
+		
+	</script>
+<script type="text/javascript">
+    var tMbpGrpRwpGr;
+    var tMbpGrpRw;
+    tMbpGrpRwpGr = $('#tMbpGr').bUiSlider({
+        slideWidth: 56,
+        minSlides: 1,
+        maxSlides: 8,
+        slideMargin: 6,
+        infiniteLoop: false,
+        hideControlOnEnd: true,
+
+    });
+    $('#tMbpGrpRw').bUiSlider({
+        pagerCustom: '#tMbpGr',
+        animatepager: true,
+        infiniteLoop: false,
+        pagerSl:tMbpGrpRwpGr,
+        hideControlOnEnd: true,
+    });
+
+
+    $('.sTr-rT-rD').raty({
+        readOnly: true, 
+        score: 3.6, 
+        //precision: true,
+        //target    : '#rw0001',
+        //targetKeep: true,
+        size      : 16
+    });
+    $(document).ready(function() {
+        var width = $('#shopByPCatCont').width()-230;
+        $('#shopByPCat').find('.dropdown-menu').css({'width':width+'px','min-width':width+'px'});
+        var $dropdown = $('#shopByCat');
+        var $dropdownCh = $dropdown.parent().find('.hS-dRpDwN');
+        var $dropdownChF = $dropdownCh.first();
+        var activeOver = false;
+        $dropdown.on('click',function() {
+            $('body').toggleClass('eNoverlay');
+            $dropdownChF.addClass('hover');
+        });
+        $(document).on('click', function() {
+            if( this.id != 'shopByCat') {
+                $('body').removeClass('eNoverlay');
+            }
+        });
+        $dropdownCh.mouseover(function() {
+            if($dropdownChF.hasClass('hover')){
+                $dropdownChF.removeClass('hover');
+            }
+        });
+        $('#shopByPCat').mouseout(function() {
+            $dropdownChF.addClass('hover');
+        });
+
+    });
+    
+    
+    
+    
+</script>
+{% endblock %}    		

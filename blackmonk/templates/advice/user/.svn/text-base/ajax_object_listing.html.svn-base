@@ -1,0 +1,97 @@
+{% load thumbnail %}
+{% load bm_community_tags %}
+{% load mptt_comments_tags %}
+<input type="hidden" value="{% url 'ajax_list_advice' %}" name="id_hidden_url" id="id_hidden_url">
+<input type="hidden" value="{% url 'ajax_advice_action' %}" name="id_action_url" id="id_action_url">
+<input type="hidden" value="community" name="module" id="id_module">
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="{{msg}}" name="id_action_msg" id="id_action_msg">
+<input type="hidden" value="{{entry_type}}" name="id_entry_type" id="id_entry_type">
+
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+<input type="hidden" value="" name="id_action" id="id_action">
+{% if advice %}
+<ul class="modulesBrowseData dSrS480 mDa-lT mDa-oT-lT oVrfLw-vSbL">
+	{% for add in advice %}
+    <li class="mDa mDa-sTtS-iN">
+        <div class="mDa-iN">
+            <div class="mDa-bDy mRr0mP">
+				{% if add.entry_type == "Q" or add.entry_type == "P" %}
+                	<h5 class="mDa-hD tRnCt0 mR50 rLvE h65 h65" title="{{add.title|truncatechars:70}}"><a href="{{add.get_absolute_url}}">{% if add.entry_type == "Q" %}Question: {% else %}Post: {% endif %}{{add.title|truncatechars:70}}</a></h5>
+				{% else %}
+					<h5 class="mDa-hD tRnCt0 mR50 rLvE h65 h65" title="{{add.title|truncatechars:70}}"><a href="{{add.question.get_absolute_url}}#id_answ_{{add.id}}"><p class="fS13 mRb5 cLr-gRy">Answer added to: {{add.question.title|truncatechars:70}}</p> <p class="mRb5">Answer: {{add.content|striptags|truncatechars:70}}</p></a></h5>
+				{% endif %}
+                <p class="fS12 cLr-gRy"><span class="fS11 cLr-lTgRy">{{add.created_on|date:"F d, Y f A"}}</span></p>
+                <div class="clearfix">
+                	<div class="btn-group pLlT iM">
+                        <a onclick="if(confirm('Are you sure you want to delete the selected question?')){filter_action({{add.id}},'DEL');return false;}" href="javascript:void(0)" title="Delete" class="btn btn-light btn-small"><span id="id_del_{{add.id}}"><i aria-hidden="true" class="bUi-iCn-rCyL-16 ib"></span></i><span id="id_lod_{{add.id}}" style="display:none;"><i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i></span></a>
+                        <!--button class="h27 btn btn-light btn-small dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    	</button>
+                        <ul class="dropdown-menu mNi pLrT dSpL">
+                            <li><a title="Edit" href="#">Edit</a></li>
+							<li><a onclick="if(confirm('Are you sure you want to delete the selected question?')){filter_action({{add.id}},'DEL');return false;}" href="javascript:void(0)">Delete</a></li>
+                        </ul-->
+                    </div>
+                    <div class="pLrT mRr10 iM" style="cursor:pointer;">
+                        <i  {% if add.status == 'P' %}class="bUi-iCn-pPiE-24 cLr-pUb" title="Published"{% endif %}
+							{% if add.status == 'R' %}class="bUi-iCn-rGt-24 cLr-rEj" title="Rejected"{% endif %}
+							{% if add.status == 'N' %}class="bUi-iCn-pNdG-24 cLr-pEn" title="Pending"{% endif %}
+							{% if add.status == 'D' %}class="bUi-iCn-dRaT-24 cLr-dRf" title="Drafted"{% endif %}
+							{% if add.status == 'B' %}class="bUi-iCn-bLk-24 cLr-bLoK" title="Blocked"{% endif %} aria-hidden="true"></i>
+                    </div>	
+                </div>
+                <div class="mDa-lT-sTtS aBsLt tR0 StCmP tXt-rTp bGtRp">
+                   <span class="fS11 cLr-lTgRy mRr10 bLk" style="cursor:pointer;" title="Views"><i aria-hidden="true" class="bUi-iCn-vEw-12"></i> {{add.viewed}}</span>
+				   {% get_mptt_comment_count for add as comment_count %}
+                   <span class="fS11 cLr-lTgRy mRr10 bLk" style="cursor:pointer;" title="Comments"><i aria-hidden="true" class="bUi-iCn-bBl-12 fS11"></i> {{comment_count}}</span>
+				   {% if not add.entry_type == "A"%}
+				   <span class="fS11 cLr-lTgRy mRr10 bLk" style="cursor:pointer;" title="Answers"><i aria-hidden="true" class="bUi-iCn-rVeW-12"></i> {{add.get_answer_count}}</span>
+				   {% endif %}
+				   <!--span class="fS11 cLr-lTgRy mRr10 bLk"><i aria-hidden="true" class="bUi-iCn-hRt-16 fS11"></i> 102</span-->
+                </div> 
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+	<!-- No data -->
+	<div class="hT600 rLvE">
+ 		<div class="tBl-bLk pDt0">
+			<div class="tBl-cEl">
+				<span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-cMnT-24 fS42-1 cLr-lTgRy ib"></i></span>
+				{% if search %}
+					<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You haven't submitted any content with keyword "{{search_keyword}}"</p>
+				{% else %}
+					{% if status == "P" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no published content.</p>
+					{% elif status == "N" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no pending content.</p>
+					{% elif status == "R" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no rejected content.</p>
+					{% elif status == "D" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no draft content.</p>
+					{% elif status == "E" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no expired content.</p>
+					{% elif status == "B" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no blocked content.</p>
+					{% elif listing_type == "B" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no free content.</p>
+					{% elif listing_type == "F" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no featured content.</p>
+					{% elif listing_type == "S" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">You have no sponsored content.</p>
+					{% elif listing_type == "all" %}
+						<p class="bLk mRt20 fS16 cLr-lTgRy oP75">There is no content here.</p>
+						<!-- p class="mRt15"><a href="article-add-lightbox.html" class="btn btn-danger fS12 fW-bLd">Post to community</a></p -->
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<!-- /No data -->
+{% endif %}
+{% include 'usercp_pagination.html' %}

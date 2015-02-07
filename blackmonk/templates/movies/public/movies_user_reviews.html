@@ -1,0 +1,32 @@
+{% load truncate_filter %}
+{% load i18n %}
+
+                	<div class="user_review">
+                    	<h2 class="section_title"><a href="#">{% trans 'Recent reviews' %}</a></h2>
+                        <ul class="review_list">
+                           {% for review in reviews %}
+                            <li>
+                                <div class="user">
+                                	
+                                    <a title="{{ review.name }}" class="author" href="{%if review.created_by%}{{ review.created_by.get_absolute_url}}{%else%}#{%endif%}">
+                                    
+                                    <img class="" title="{{ review.name }}" alt="{{ review.name }}" />
+								    <strong class="as_uname_ie_fix">{{ review.name }}</strong>
+									
+                                    </a>
+                                </div>
+                                <div class="review">
+                                	<!--p class="review_rating_trans"><span class="star stars_4-5">Rob gave  a <strong>4/5</strong> star rating</span></p-->
+                                    <h5 class="title"><a title="{{ review.movie.title }}" href="/movies/{{ review.movie.slug }}.html">{{ review.movie.title }}</a></h5>
+                                    <p class="description">{{ review.comment|truncate_chars:130 }}</p>
+                                    <p id="out_{{review.id}}" class="comment_footer out_report">
+	                                    <a name="{{ review.id }}" class="id_like_comment_{{ review.id }} click_pvnt" href="#" title="{{ review.name }}'s Review"  onclick="like_comment('{{ review.id }}',this)" >{% trans 'Like' %} ({{ review.like_count }})</a>
+										<a name="{{ review.id }}" class="id_abuse_comment_{{ review.id }} click_pvnt" href="#" title="{{ review.name }}'s Review" onclick="abuse_comment('{{ review.id }}',this);" >{% trans 'Report Abuse' %}</a>
+									</p>
+                                </div>
+                                <div class="clear"></div>     
+                            </li>
+                            {% endfor %}    
+                        </ul>
+                        <div class="clear"></div>
+                    </div>                    

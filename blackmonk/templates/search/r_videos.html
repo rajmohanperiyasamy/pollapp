@@ -1,0 +1,48 @@
+{% load i18n thumbnail mptt_comments_tags ds_utils %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> 
+        	<a class="bUi-tMb-wPr tMb-50 fLxiMgW bUi-tMb-210" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="http://i2.ytimg.com/vi/{{object.video_id}}/hqdefault.jpg" alt="">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a>
+            <a class="mDa-hVr cVr" href="{{object.get_absolute_url}}"><span class="s-50 cTr"><i aria-hidden="true" class="bUi-iCn-pLy-aLt-24 hT-aTo fS42-1 pLy-iCn"></i></span></a>
+        </div>
+        <div class="mDa-bDy pD0 mRt10">	
+        	<span class="fS11 uC cLr-lTbLu">{{object.category}}</span>
+            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{object.title}}"><a href="{{object.get_absolute_url}}">{{object.title}}</a></h5>
+            
+            <div class="mDa-dTa mRt4">
+               <img src="static/img/icons/vimeo.png" class="mRr5 ib mRb0"><span class="fS11 cLr-lTgRy ib mRb0">{{object.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+               <a class="fS12 cLr-lTgRy sPrTr mRb0 pLrT" href="{{object.get_absolute_url}}#comments"><i aria-hidden="true" class="bUi-iCn-bBlS-12"></i> {% get_mptt_comment_count for object as comment_count %} {{comment_count}}</a>
+            </div>                                             
+        </div>
+    </div>
+</li>
+   <!--td class="added_on">
+    <h5 class="module_title video">Video</h5>
+    <span>Posted On<br>{{object.created_on|date:"d M, Y"}}</span>
+</td>
+<td class="video">
+    <div class="item group">
+    	<div class="gallery_114">
+          
+             <a href="{{ object.get_absolute_url }}" class="gallery_114_image rel_block" title="{{object.title}}" style="background:#000 url({{object.get_thumb}}) no-repeat 0 0;">
+                                        				<img width="114" height="70" class="overlay fix_ie6png" alt="" src="{{ STATIC_URL }}themes/green/images//global/video_overlay_114.png" style="width: 114px; height:70px;">
+                                                        </a>
+		</div>                                                        
+        <div class="detail">
+        	<h4 class="title"><a style="" href="{{ object.get_absolute_url }}">{{object.title}}</a></h4>
+                <div class="sub_title"><span class="by_line">By <a href="/profile/{{ object.created_by}}">{{ object.created_by}}</a></div>
+                <div class="summary">{{object.summary}}</div>
+         </div>                                                  
+        <div class="footer"></div>    
+    </div>                                    	
+</td-->

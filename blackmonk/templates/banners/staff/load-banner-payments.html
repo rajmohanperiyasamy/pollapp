@@ -1,0 +1,28 @@
+<!-- Hidden Inputs -->
+<input type="hidden" id="id_total_amount" name="total_amount" value="{% if banner_obj.total_amount %}{{banner_obj.total_amount}}{% elif total_amount %}{{total_amount}}{% else %}0{% endif %}">
+<input type="hidden" name="total_impression" id="id_total_impression" value="{% if banner_obj.impressions %}{{banner_obj.impressions}}{% elif total_impression %}{{total_impression}}{% else %}0{% endif %}">
+<!-- Hidden Inputs -->
+{% if selected_zone %}
+<div class="fields-head"></div>                                            
+<div class="field text-field">   
+        {% for bp in banner_payments %} 
+        {% if selected_zone.get_slot_display == bp.level %}<input type="hidden" name="payment" id="id_paymente" value="{{bp.id}}">{% endif %}
+        <div {% if selected_zone.get_slot_display == bp.level %} style="display:block;" {% else %} style="display:none;" {% endif %}>
+            <div class="label has-fd-icon">{{bp.level}} Banner : </div>    
+            <div class="value"><span class="inline-block">{{globalsettings.currency}} {{bp.price_impressions}} per {{bp.impressions}} impressions</span>
+                    <span style="margin-left: 10px;" class="inline-block">
+                        <select class="select-menu bnr-slct" style="width:100px;" onchange="calculate_total_price($(this).val(),'{{bp.price_impressions}}','{{bp.impressions}}');" data-placeholder="Select">
+                            <option value="0">Select</option>
+                            {% for imp in impressions %}
+                            <option value="{{imp}}" {% if banner_obj.impressions == imp or total_impression == imp or bp.impressions == imp %} selected="selected" {% endif %}>{{imp}}</option>
+                            {% endfor %}
+                        </select>
+                    </span>
+            </div>
+        <div class="value" style="margin-top: 10px;">
+            <span class="inline-block"><strong style="font-weight: bold;">Total price :</strong><span class="bnr_total_span"> {{globalsettings.currency}} {% if banner_obj.total_amount %}{{banner_obj.total_amount}}{% elif total_amount %}{{total_amount}}{% else %}{{bp.price_impressions}}{% endif %}</span></span>
+        </div>  
+      </div>
+      {% endfor %}         
+</div>
+{% endif %}

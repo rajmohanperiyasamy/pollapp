@@ -1,0 +1,148 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'user' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% if group_obj %}{% trans 'Update Role' %}{% else %}{% trans 'Add New Role' %}{% endif %}{% endblock %}
+{% block head %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#add_roles").validate({
+			highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass('error');},
+			unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass('error');},
+			errorPlacement: function(error, element){},
+		   	rules:{
+				name:"required",	
+				focusInvalid: true		
+		   	}
+		});
+	});
+</script>
+<style type="text/css">
+.vertical
+{
+    writing-mode: tb-rl;
+    filter: flipH flipV;
+}
+</style>
+{% endblock %}
+{% block content %}
+			
+			{% if form.errors %}
+				<div class="messageerror" >
+					<strong>{% trans 'There is a problem with your submission' %}</strong>
+		            <ul style="list-style:square;margin-left:20px;">
+		           		{% for field in form %}
+		           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+		          	 	{% endfor %}
+					</ul>
+			 	</div>
+			{% endif %}
+
+            <div id="admin_wrapper">
+                <div id="admin-platform" class="group">
+                    <div class="header-bar">
+                    </div>
+					<div id="core-wraper" class="group">
+                        <div class="admin-main col_12">
+							<div class="page-wrap">
+                                <div class="page-head br_0">
+                                    <h2>{% if group_obj %}{% trans 'Update Role' %}{% else %}{% trans 'Add New Role' %}{% endif %}</h2>
+                                    <p class="ltxt80">{% trans 'Roles represent a group of staff who may access particular modules.Choose a role which corresponds to the module for example: Editor for articles, content editor for events.' %}</p>   
+								</div>
+								<div id="add-new-role" class="modal-form">
+								    <form name="add_roles" id="add_roles" method="post" action="{% url 'admin_add_role' %}{% if group_obj %}?gid={{group_obj.id}}{% endif %}">{% csrf_token %}
+								    	<div class="fields hform">
+								            <div class="field-group">              
+								                <div class="field text-field fd-title">
+								                    <div class="label"><label>{% trans 'Role Name' %}<span class="required-field">*</span></label></div>
+								                    <div class="value">{{form.name}}<span id="cat_span" class="tip">Eg: Sub-Editor</span></div>
+								                </div> 
+								            </div>
+								            <bR />            
+								            <div class="field-group">
+												<div class="fields-head">
+								                	<h3>{% trans 'Staff Permissions' %}</h3>
+								                    <p class="ltxt80">{% trans 'Please check the boxes where the Staff Member can be granted permissions in the below modules.' %}</p> 
+												</div>   
+								                <div class="permissions-matrix">
+								                	<ul>
+								                		<li class="permission-head">
+								                        	<div class="row-inner group">
+								                                <span class="column module-name">
+								                                	<strong>{% trans 'Modules/Sections' %}</strong>
+								                                    <small style="font-size:11px; font-weight:normal;display:block; margin:5px 0 0;color:#888; line-height:13px;">{% trans 'Check the sections you can configure the properties of a role.' %}</small>
+								                                </span>
+								                                <span class="column permission-title add">{% trans 'Add' %}</span>
+								                                <span class="column permission-title edit">{% trans 'Edit' %}</span>
+								                                <span class="column permission-title delete">{% trans 'Delete' %}</span>
+								                                <span class="column permission-title publisher">{% trans 'Publish' %}</span>
+								                                <span class="column permission-title promoter">{% trans 'Promote' %}</span>
+																<span class="column permission-title select_all">{% trans 'Select All' %}</span>
+															</div>                                
+								                        </li>
+													{% for model in allmod %}	
+								                        <li class="permission-row">
+								                        	<div class="row-inner group">
+								                                <span class="column module-name">{{model.mname}}</span>
+																{% for role in model.p %}
+									                                <span class="column role_of_{{model.mname}} {% if permissions %}{% for per in permissions %}{% ifequal per.id role.id %}checked{% endifequal %}{% endfor %}{% endif %}">
+																		<span class="cform-checkbox-container"><input class="tick_role_of_{{model.mname}}" type="checkbox" name="selected_roles" {% if permissions %}{% for per in permissions %} {% ifequal per.id role.id %} checked="checked" {% endifequal %}{% endfor %}{% endif %} value="{{role.id}}" onclick="if($(this).attr('checked')){$(this).parent('span').parent('.column').addClass('checked');}else{$(this).parent('span').parent('.column').removeClass('checked');}"/><span class="cform-checkbox-element"></span></span>
+																	</span>
+                      											{% endfor %}
+{% if model.p.count < 5 %}
+<span class="column disabled">
+	<span class="cform-checkbox-container"><input class="" type="checkbox" disabled="disabled" name="selected_roles" /><span class="cform-checkbox-element"></span></span>
+</span>
+{% if model.p.count == 3 %}
+<span class="column disabled">
+	<span class="cform-checkbox-container"><input class="" type="checkbox" disabled="disabled" name="selected_roles" /><span class="cform-checkbox-element"></span></span>
+</span>
+{% endif %}
+{% endif %}
+																<span class="column right">
+																	<span class="cform-checkbox-container"><input class="right" type="checkbox" value="{{role.id}}" onclick="if($(this).attr('checked')){$(this).parent('span').parent('.column').addClass('checked');$('.tick_role_of_{{model.mname}}').attr('checked','checked');$('.role_of_{{model.mname}}').addClass('checked');}else{$(this).parent('span').parent('.column').removeClass('checked');$('.tick_role_of_{{model.mname}}').removeAttr('checked');$('.role_of_{{model.mname}}').removeClass('checked');}"/><span class="cform-checkbox-element"></span></span>
+																</span>
+																<!-- button role="button" class="cform-button right" onclick="if($(this).html() == 'Select All'){$('.tick_role_of_{{model.mname}}').attr('checked','checked');$('.role_of_{{model.mname}}').addClass('checked');$(this).html('Deselect All');}else{$('.tick_role_of_{{model.mname}}').removeAttr('checked');$('.role_of_{{model.mname}}').removeClass('checked');$(this).html('Select All');}" type="button" ><span class="cform-button-text">Select All</span></button -->					
+															</div>
+								                        </li>
+													{% endfor %}
+								                    </ul>
+								                </div>
+								            </div>            
+										</div>    
+								        <div class="form-submit right group trp-bg">
+								           <button class="cform-button " roll="button" type="button" onclick="window.location.replace('{% url 'admin_display_staff' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+								           <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% if group_obj %}{% trans 'UPDATE' %}{% else %}{% trans 'ADD' %}{% endif %}</span></button>
+								        </div>           
+								    </form>
+								</div>                                
+							</div>                                                       
+                        </div>                            
+                        <div id="aside" class="side-bar col_4">
+							{% include 'admin/usermgmt/admin-roles-faq.html' %}
+                        </div> 
+                           
+					</div>                                                    
+				</div>
+			</div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+{% endblock %}
+<script type="text/javascript">
+function select_toggle(){
+if($(this).html() == 'Select All'){
+	$('.tick_role_of_{{model.mname}}').attr('checked','checked');
+	$('.role_of_{{model.mname}}').addClass('checked');
+	$(this).html('Deselect All')
+}
+else{
+	$('.tick_role_of_{{model.mname}}').attr('checked','checked');
+	$('.role_of_{{model.mname}}').addClass('checked');
+	$(this).html('Select All')
+}	
+}
+</script>
+	

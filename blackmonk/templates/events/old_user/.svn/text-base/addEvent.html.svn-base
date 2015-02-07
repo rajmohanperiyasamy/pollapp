@@ -1,0 +1,586 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "events" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Events - Add New Event' %} {% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+
+{% endblock %}
+{% block content %}
+ <div id="userHub-platform" class="group">
+                    <div class="header-bar {% if event %}has-preview-head{% endif %}">
+                    	<h2><a href="{% url 'events_dash_board' %}"><span class="go_back"></span></a>{%if event.id%}{% trans 'Edit Event' %}{%else%}{% trans 'Add Event' %}{%endif%}</h2>
+                        {% if event %}
+                        <section class="sub-header-bar">
+							<div class="preview-head">
+                                {% ifequal event.listing_type 'F'%}
+				        		<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+						 		{% else %}
+								{% ifequal event.listing_type 'S' %}
+									<span class="list-type sponsored-item"><a class="tttxt" original-title="{% trans 'Item listed as sponsored' %}" href="javascript:void(0);">{% trans 'Sponsored' %}</a></span>
+						  		{% endifequal %}
+						 		{% endifequal %}
+								<div class="item-title">
+                                    <h1>{{ event.title }}</h1>
+                                    <p class="ltxt80">By <a href="#">{{event.created_by.profile.get_full_name}}</a> <span class="divider12">|</span> {{event.created_on|date:"M d, Y"}}</p>
+								</div>                                   
+                                <ul class="status-tabs group">
+                                     <li>{{event.visitors}}<span class="meta">{% trans 'views' %}</span> </li>
+                                    <!--li> <a href="#"> 4 <span class="meta">{% trans 'comments' %}</span></a> </li-->
+                                </ul>                                
+                            </div>      
+                        </section>                           
+						{% endif %}
+					</div>
+                    <div id="core-wraper" class="group">
+                        <div class="userHub-main">
+                            <div class="page-wrap">
+                                <div id="events-add" class="group">
+                                    <div id="add-new-event">
+                                    	{% if form.errors %}
+											<div class="messageerror" style="background:#FCF4F4;padding:10px;color:#FF9902; box-shadow:0 0 2px rgba(0, 0, 0, 0.1);border-bottom:1px solid #e1e1e1">
+												<strong style="font-weight:bold;">{% trans 'There is a problem with your submission' %}</strong>
+											    <ul style="list-style:square;margin-left:20px;">
+											   		{% for field in form %}
+											   			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+											  	 	{% endfor %}
+												</ul>
+											</div>
+										{% endif %}
+                                         <form action="{% url 'events_addevent' %}{%if event%}?eid={{event.id}}{%endif%}" name="mform1" id="mform1" method="post" class="add_venue">{% csrf_token %}
+                                            <div class="fields hform">
+                                                <div class="field-group">              
+                                                    <div class="field text-field fd-title">
+                                                        <div class="label"><label for="-button">{% trans 'Event Name' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value">
+                                                            {{ form.title }}
+                                                        </div>
+                                                    </div> 
+                                                    <div class="field text-field fd-dt">
+                                                        <div class="label"><label for="-button">{% trans 'Date' %} &amp; {% trans 'Time' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value">
+                                                            <div class="fd-cols group">
+                                                                <span>
+                                                                    {{ form.start_date }}
+																	{{ form.start_time }}
+                                                                </span>
+                                                                <span>{% trans 'to' %}</span>
+                                                                <span>
+                                                                	{{ form.end_time }}
+                                                                    {{ form.end_date }}
+                                                                </span>
+                                                            </div>
+                                                            <div class="fd-cols group">
+                                                                <span>
+																	<span class="cform-checkbox-container"><input type="checkbox" onclick="enble_dsble_timing();" name="event_timing" id="id_all_day"><span class="cform-checkbox-element"></span></span>
+																	<label for="all-day">{% trans 'All day' %}</label>
+																</span>
+                                                                <span >
+																	<span class="cform-checkbox-container"><input type="checkbox" name="event_timing_repeat" id="id_repeat" onclick="show_repeat_timing();" {% if event.is_reoccuring %}checked="checked"{% endif %} ><span class="cform-checkbox-element"></span></span>
+																	<label for="repeat">{% trans 'Repeat' %} </label>
+																</span>
+																<span id="display_repeat_smry" style="font-weight:bold;">{% if event.repeat_summary %}{{event.repeat_summary}}{% endif %}</span>
+                                                                <span id="id_edit_btn" style="display:none;"><a href="javascript:void(0);" onclick="show_repeat_timime_editing();">Edit</a></span>
+																<input type="hidden" value="{%if event.repeat_summary %}{{event.repeat_summary}}{% endif %}" name="repeat_summary" id="id_repeat_summary">
+																<input type="hidden" value="{%if event.rule.repeat %}{{event.rule.repeat}}{% endif %}" name="repeat_store" id="id_repeat_store">
+																<input type="hidden" value="{%if event.rule.repeat_every %}{{event.rule.repeat_every}}{% endif %}" name="repeat_every_store" id="id_repeat_every_store">
+																<input type="hidden" value="{%if event.rule.repeat_on_wk %}{{event.rule.repeat_on_wk}}{% endif %}" name="repeat_on_wk_store" id="id_repeat_on_wk_store">
+																<input type="hidden" value="{%if event.rule.repeat_on_mnth %}{{event.rule.repeat_on_mnth}}{% endif %}" name="repeat_on_mnth_store" id="id_repeat_on_mnth_store">
+																<input type="hidden" value="{%if event.rule.ends %}{{event.rule.ends}}{% endif %}" name="ends_store" id="id_ends_store">
+																<input type="hidden" value="{%if event.rule.ends_occurence %}{{event.rule.ends_occurence}}{% endif %}" name="ends_occurence_store" id="id_ends_occurence_store">
+																<input type="hidden" value="{%if event.rule.ends_on %}{{event.rule.ends_on|date:"d/m/Y"}}{% endif %}" name="ends_on_store" id="id_ends_on_store">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field text-field">
+                                                        <div class="label"><label for="-button">{% trans 'Where' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value has-fd-icon">
+                                                        	<div class="group" id="evnt_vnu" {% if venue %}style="display: none;"{% endif %}>
+	                                                        	<div class="fd-cols">
+		                                                            <input type="text" class="fl" id="id_event_venue" name="event_venue" value="" placeholder="{% trans 'Type venue name to search.' %}">
+		                                                            <span><img class="fd-icon" id="id_search_icon" src="{{STATIC_URL}}ui/images/icons/b/87.png" alt=""></span>
+																</div>	                                                            
+	                                                            <span>
+	                                                            	<span class="tttxt-fw tool-tip" title="{% blocktrans %}Search for venue which has enabled auto-suggest feature.If you don't find the venue, Please click on Add a new Venue.{% endblocktrans %}">?</span>
+																	<a href="{% url 'staff_events_ajax_add_venue' %}" title="{% trans 'Add New Venue' %}" class="add-venue txt-button">{% trans 'Add a new Venue' %}</a>                                                            	
+	                                                            </span>
+															</div>
+															<div style="padding:5px 0 0; display: none"  id="ajax_venue_loading">
+																<img src="{{STATIC_URL}}ui/images/global/loading-s.gif">
+															</div> 
+		                                                    <div class="field text-field" id="address_info">
+		                                                    	{% if venue %}
+		                                                    			{% include 'events/staff/display_address.html' %}        
+																{% endif %}
+		                                                    </div> 
+                                                        </div>
+                                                    </div>                                                                                                        
+                                                </div>   
+												<div class="field-group">
+                                                    <div class="fields-head"></div>
+                                                    <div class="field text-field">
+                                                        <div class="label"><label for="-button">{% trans 'Email' %} &amp;{% trans 'Phone' %}</label></div>
+                                                        <div class="value">
+                                                        	<div class="fd-cols mrb0 group">
+                                                        		<span class="pdr6">{{ form.contact_email }}</span>
+                                                                <span>{{ form.phone }}</span>
+															</div> 
+                                                        </div>
+                                                    </div> 
+                                                    <div class="field text-field">
+                                                        <div class="label">{% trans 'Website' %}</div>
+                                                        <div class="value">{{form.event_website}}</div>
+                                                    </div>
+                                                    <div class="field text-field media_url">
+                                                        <div class="label">{% trans 'Media URL' %}</div>
+														<div class="value" id="facebook" style="margin-top:10px;{% if not event.facebook %}display:none;{% endif %}">
+															<img src="{{STATIC_URL}}ui/images/icons/favicons/facebook.png">
+															{{form.facebook}}
+															<a href="javascript:hide('facebook')" title="{% trans 'Remove' %}" class="icon-remove o3 tttxt-w" style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;">X</a>
+	                                  					</div>
+														<div class="value" id="googleplus" style="margin-top:10px;{% if not event.googleplus %}display:none;{% endif %}">
+															<img src="{{STATIC_URL}}ui/images/icons/favicons/gplus.jpeg">
+															{{form.googleplus}}
+															<a href="javascript:hide('googleplus')" title="{% trans 'Remove' %}" class="icon-remove o3 tttxt-w" style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;">X</a>
+					                                    </div>
+														<div class="value" style="margin-top:10px;">
+					                                        <div class="group">
+					                                        	<span id="i_facebook" {% if event.facebook %}style="display:none;"{% endif %}>
+																	<img src="{{STATIC_URL}}ui/images/icons/favicons/facebook.png">
+																	<span class="cform-checkbox-container"><input type="checkbox" id="c_facebook" onclick="show('facebook')"><span class="cform-checkbox-element"></span></span>
+
+																</span>
+					                                        	<span id="i_googleplus" {% if event.googleplus %}style="display:none;"{% endif %}>
+																	<img src="{{STATIC_URL}}ui/images/icons/favicons/gplus.jpeg">
+																	<span class="cform-checkbox-container"><input type="checkbox" id="c_weburl" onclick="show('googleplus')"><span class="cform-checkbox-element"></span></span>
+
+																</span>
+					                                        </div>
+					                                    </div>
+                                                    </div>                                                                                                      	
+                                                </div>
+                                                <div class="field-group" id="meta-tags">
+                                                    <div class="fields-head"></div>                                            
+                                                    <div class="field text-field">	
+                                                        <div class="label"><label for="-button">{% trans 'Price' %} ({{globalsettings.currency}})</label></div>	
+                                                        <div class="value">
+                                                        	<div class="fd-cols mrb0 group">
+                                                        		<span>{{ form.tkt_prize }}</span>
+                                                                <span class="cr_wmr"><span class="cform-checkbox-container"><input type="checkbox" name="free_event" onclick="free_event1();" id="id_free_Event" {% ifequal event.tkt_prize "FREE" %}checked{% endifequal %}{{free_event_checked}} class="checkbox"><span class="cform-checkbox-element"></span></span><label for="free-event">Is this a FREE event?</label></span>
+															</div>                                                                
+														</div>	
+                                                    </div>
+                                                    <div class="field text-field">	
+                                                        <div class="label"><label for="-button">{% trans 'Online Ticket' %}</label></div>	
+                                                        <div class="value">
+                                                        	<div class="fd-cols mrb0 group">
+                                                        		<span class="pdr6">{{ form.ticket_site }}</span>
+                                                                <span>{{ form.tkt_phone }}</span>
+															</div>                                                          
+														</div>	
+                                                    </div>
+                                                </div>
+                                                <div class="field-group" id="meta-tags">
+                                                    <div class="fields-head"></div>
+                                                    <div class="field select-field">
+                                                        <div class="label"><label>{% trans 'Event Categories' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value">
+                                                            {{ form.category }}                                
+                                                        </div>
+                                                    </div>
+                                                    <div class="field text-field">	
+                                                        <div class="label"><label for="-button">{% trans 'Description' %}<span class="required-field">*</span></label></div>	
+                                                        <div class="value">{{ form.event_description }}</div>	
+                                                    </div>
+                                                    <div class="field text-field">	
+                                                        <div class="label"><label for="-button">{% trans 'Tags' %}</label><span class="tool-tip tttxt-fs" original-title="Add multiple tags separated by comas ',' or use 'tab' key">?</span></div>
+                                                        <div class="value has-fd-icon">
+                                                        	<input id='tags' type="hidden" class='tags' name="tags"  value="" >
+                                                        	<!--img class="fd-icon" src="{{STATIC_URL}}ui/images/icons/b/66.png" alt=""-->
+                                 							<ul id="mytags" class="fl"></ul>
+                                                        	
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="field-group" id="meta-tags">
+                                                <div class="fields-head"></div>	
+                                                	
+                                                <div class="field select-field">
+                                                      <div class="label"><label for="-button"></label></div>
+                                                      <div class="value">
+                                                            <div id="fileupload" >
+														
+					 										<div class="fileupload-content">
+					    									<ul class="files bm-uploader-list"></ul>
+															</div><div class="clear"></div>
+			    											<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+			            									{% csrf_token %}<div class="clear"></div>
+			           									 	<div class="upload-button-wrapper">
+			               									 <a class="upload-button">{% trans 'Add Images' %}</a>
+			                    							 <div class="fileinput-button">
+			                        							 <input type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+			                    							 </div>
+			               								 	</div>
+														</div>                  
+                                                      </div>
+                                                 </div>
+    											
+												</div>                                                                                                             
+                                            </div> 
+                                            <div class="form-submit right group">
+                                               <button class="cform-button" type="button" onclick="location.replace('{% url 'events_dash_board' %}')" roll="button"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+                                               <button role="button" name="save_button" value="save" class="cform-button prime" type="submit"><span class="cform-button-text">{% if eventobj %}{% trans 'Update' %}{% else %}{% trans 'Next' %}{% endif %}</span></button>
+                                            </div>                                                
+                                        </form>
+                                        
+                                    </div>																	                                        
+                                                                            
+                                </div> <!-- end table -->                                    
+                            </div><!-- end page wrap -->
+                        </div>  <!-- end main-col -->                            
+                        <div id="aside" class="side-bar">
+                            {% include 'events/user/event-faq-addpge.html' %}                                       
+                        </div>                            
+					</div>                                                    
+				</div>
+
+{% endblock %}
+{% block footer_include%}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/Event/events_user.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript">
+var edt;
+$(document).ready(function(){
+	file_upload('{% url 'events_ajax_upload_photos' %}{%if event.id%}?id={{event.id}}{%endif%}',5);
+	{% if not event %}
+	{% if new_pic %}
+		get_images('{% url 'events_ajax_get_default_photos' %}?ids={% for np in new_pic %}{{np}}{% if not forloop.last %},{% endif %}{% endfor %}')
+	{% endif %}
+	{% endif %}
+						
+	$( "#id_event_venue" ).autocomplete({
+			source: '{% url 'events_auto_suggest' %}',
+		   	select: function(event, ui) {
+     			display_auto_sgtd_addres(ui.item.id);
+     	 	}
+	});
+	$('#c_weburl').attr('CHECKED',false);
+	$('#c_facebook').attr('CHECKED',false);
+	$("#mytags").tagit({
+		singleField: true,
+		allowSpaces:true,
+	    singleFieldNode: $('#tags'),
+		tagSource: function( request, response ) {
+		  $.ajax({
+	        url: '{% url 'events_auto_suggest_tag' %}',
+	        data: { term:request.term },
+	        dataType: "json",
+	        success: function( data ) {
+	       	 response( $.map( data, function( item ) {
+	       	 return {label: item.label, value: item.value }
+	       	 }));
+	        }
+	      });
+		} 
+	});
+	{% if event.tkt_prize == 'FREE' or free_event_checked %}free_event1(){% endif %}
+	{% if event %}
+		$('.form-submit').addClass('form-submit-original');
+		easy_form_submit();
+	{% endif %}
+	{% if event_tags %}
+		  {% for tag in event_tags %}
+			$("#mytags").tagit("createTag", '{{tag}}');
+		{% endfor %}
+	{% endif %}
+	{%if event.repeat_summary %}show_repeat_timing();{% endif %}
+		$.validator.addMethod("desc_required", function(value, element) {  
+	    	$('#id_event_description').val(edt.getData());
+			if($('#id_event_description').val()!=''){return true;}
+			else{return false;}
+		},"Please enter a description.");
+		$("#mform1").validate({
+			ignore:'',
+			highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass("error");},
+			unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass("error");},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	title: "required",
+		    	start_date: "required",
+		    	end_date: "required",
+		    	{% if not venue %}event_venue:"required",{% endif %}
+				event_description:"desc_required",
+		    	category:"required"	,
+		    	ticket_site: {url: true},
+				event_website: {url: true},
+				facebook: {url: true},
+				googleplus: {url: true},
+		    	contact_email: {email: true}
+		   	}	
+		});
+		$('.select-menu').bind("change", function(){
+			$("#mform1").validate().element($(this));
+		});
+		CKEDITOR.on( 'instanceCreated', function( e ){
+                               e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+             });
+		edt=CKEDITOR.replace( 'id_event_description',
+	        {                   
+	            customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+	            toolbar : 'Basic',
+	           	width:500,height:130
+	     });
+		 edt.on('key', function(event) {updateTextArea();});
+});
+function updateTextArea(){
+    CKEDITOR.tools.setTimeout( function(){ 
+        $('#id_event_description').val(edt.getData());
+        $("#id_event_description").trigger('keyup');
+    }, 0);  
+}
+</script>
+<script type="text/javascript">	
+		
+		function save_venue(){
+			var flag = $('#mform').validate().form();
+			if(flag==true){
+				var dataString='venue='+escape($('#id_venues').val());
+				dataString+='&address1='+$('#id_address1').val();
+				dataString+='&address2='+escape($('#id_address2').val());
+				dataString+='&zip='+escape($('#id_zip').val());
+				dataString+='&type='+escape($('#id_type').val());
+				dataString+='&telephone='+escape($('#id_telephone').val());
+				dataString+='&email='+escape($('#id_email').val());
+				dataString+='&website='+escape($('#id_website').val());
+				dataString+='&description='+escape($('#id_description').val());
+				try{
+		    	dataString+= "&lat_lng="+ marker.getPosition();
+				dataString+= "&map_zoom="+ map.getZoom();
+				}catch(e){}
+				$('#add_venue').hide();
+				$('#ajax_content_loading').show();
+				//alert(dataString);
+				$.ajax({
+				type: "POST",
+				url: "{% url 'events_ajax_add_venue' %}",
+				data: dataString,
+				dataType:'JSON',
+				success: function(data){
+						$('#ajax_content_loading').html(data.msg);
+						$('#add_venue_overall').empty();
+						if(data.status){
+								show_msg(data.msg,data.mtype);
+								$.colorbox.close();
+								$('#id_event_venue').val('venue');
+								display_auto_sgtd_addres(data.id);
+						}
+						$('#ajax_content_loading').hide();
+						$('#add_venue_overall').html(data.lightbox_html);
+						$('#add_venue_overall').show();
+						$('.modal-form .select-menu').selectmenu({style:'dropdown', maxHeight: 160});
+			  			$('.field-group [title]').tipsy({trigger: 'focus', gravity: 'w',ftip:true});
+						$.colorbox.resize();
+					}
+				});
+			}
+		}
+</script>
+<script type="text/javascript">	
+		/// EVENT TIMING / RECURRING EVENTS 
+		function enble_dsble_timing(){
+			if($("#id_all_day").prop("checked")){
+				$('#id_start_time').attr('disabled','disabled');
+				$('#id_start_time').val('');
+				$('#id_end_time').attr('disabled','disabled');
+				$('#id_end_time').val('');
+			}else{
+				$('#id_start_time').removeAttr('disabled','disabled');
+				$('#id_end_time').removeAttr('disabled','disabled');
+			}
+		}
+		function show_repeat_timing(){
+			if($('#id_repeat_summary').val()==''){	
+				if($("#id_repeat").prop("checked")){
+					if($('#id_start_date').val()==""){
+						alert(gettext("Please select a start date"));
+						$("#id_repeat").removeAttr('checked','checked');	
+					}else{
+						$.colorbox({width: "550",initialWidth: "550",title: "Repeat", top:"60", initialHeight: "200", href:'{% url 'events_time_repeat' %}?edit=no',onClosed:function(){ $("#id_repeat").removeAttr('checked','checked'); }});
+					}	
+				}
+			  }else{
+			  		if($("#id_repeat").prop("checked")){
+						$('#display_repeat_smry').show();
+						$('#id_edit_btn').show();
+					}else{
+						$('#display_repeat_smry').hide();
+						$('#id_edit_btn').hide();
+					}	
+			  }	
+		}
+		function show_repeat_timime_editing(){
+			$.colorbox({width: "550",initialWidth: "550", top:"60", title: "Repeat", initialHeight: "200", href:'{% url 'events_time_repeat' %}?edit=yes'});
+		}
+			
+		function save_repeat() {
+			var chkkk_days = []
+			var dataString = 'repeat='+$('#id_repeats').val();
+			$('#id_repeat_store').val($('#id_repeats').val());
+			dataString+= '&rpt_evry='+$('#id_repeat_every').val();
+			$('#id_repeat_every_store').val($('#id_repeat_every').val());
+			if($('#id_repeats').val()=='2'){
+				$('#id_repeat_on_wk_store').val('');
+				if($('#id_repeat_on_monthly_:checked').val()=='M'){
+					dataString+='&rpt_on=M'
+					$('#id_repeat_on_mnth_store').val('M');
+				}else{
+					dataString+='&rpt_on=W'
+					$('#id_repeat_on_mnth_store').val('W');
+				}
+			}else if($('#id_repeats').val()=='1'){
+				$('#id_repeat_on_mnth_store').val('');
+				$('.repeat_chkbx:checked').each(function(){
+					chkkk_days.push($(this).attr('name'));
+				});
+				if(chkkk_days.length=='0'){
+					dataString+='&rpt_dates='+blank_day();
+					$('#id_repeat_on_wk_store').val(blank_day());
+				}else{
+					dataString+='&rpt_dates='+chkkk_days
+					$('#id_repeat_on_wk_store').val(chkkk_days);
+				}
+			}else{
+				$('#id_ends_occurence_store').val('');
+				$('#id_repeat_on_wk_store').val('');
+			}
+			dataString+= '&ends='+$('#id_chk_ends:checked').val();
+			$('#id_ends_store').val($('#id_chk_ends:checked').val());
+			if($('#id_chk_ends:checked').val()=='AFT'){
+				$('#id_ends_on_store').val('');
+				dataString+='&ends_occurence='+$('#id_ends_occurences').val();
+				$('#id_ends_occurence_store').val($('#id_ends_occurences').val());
+			}else{
+				$('#id_ends_occurence_store').val('');
+				dataString+='&ends_date='+$('#id_ends_on_date').val();
+				$('#id_ends_on_store').val($('#id_ends_on_date').val());
+				$('#id_end_date').val($('#id_ends_on_date').val());
+			}
+			
+			$('#id_repeat_timing_ids').val(dataString);
+			$('#display_repeat_smry').text($('#id_display_summary').text());
+			$('#id_repeat_summary').val($('#id_display_summary').text());
+			$('#id_edit_btn').show();
+			$.colorbox.close();
+			
+		}
+		function blank_day(){
+			var start_date=$('#id_start_date').val();
+			var mydates = start_date.split('/')
+			var mynewdate = new Date(mydates[2],mydates[1]-1,mydates[0])
+			each_day=mynewdate.getDay()
+			return $('#id_'+each_day).val();
+		}
+</script>
+<script type="text/javascript">			
+	function show(id){
+		$('#'+id).slideDown();
+		$('#i_'+id).fadeOut('fast');
+	}
+	function hide(id){
+			$('#'+id).slideUp();
+			$('#'+id).find('input[type=text]').val('');
+			$('#i_'+id).find('input[type=checkbox]').attr('CHECKED',false);
+			$('#i_'+id).fadeIn('fast');
+	}
+	function showhttp(vl){
+		/*if(vl=='1'){
+			if($('#id_event_website').val()==""){
+				$('#id_event_website').val('http://');
+			}	
+		}else if(vl=='2'){
+			if($('#id_facebook').val()==""){
+				$('#id_facebook').val('https://www.facebook.com/');
+			}
+		}
+		else if(vl=='3'){
+			if($('#id_googleplus').val()==""){
+				$('#id_googleplus').val('https://plus.google.com/');
+			}
+		}else{
+			if($('#id_ticket_site').val()==""){
+				$('#id_ticket_site').val('http://');
+			}
+		}*/
+		  
+	}
+	function hidehttp(vl){
+		if(vl=='1'){
+			if($('#id_event_website').val()=='http://'){$('#id_event_website').val('');
+			var element=$('#id_event_website');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+			}
+		}else if(vl=='2'){
+			if($('#id_facebook').val()=='https://www.facebook.com/'){$('#id_facebook').val('');
+			var element=$('#id_facebook');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+			}
+		}else if(vl=='3'){
+			if($('#id_googleplus').val()=='https://plus.google.com/'){$('#id_googleplus').val('');
+			var element=$('#id_googleplus');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+			}
+		}else{
+			if($('#id_ticket_site').val()=='http://'){$('#id_ticket_site').val('');
+			var element=$('#id_ticket_site');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+			}
+		}
+		
+	}	
+</script>		
+<script type="text/javascript">	
+		function clear_venue() {
+			$('#id_event_venue').val('');
+			$('#id_ven_address').remove();
+			$('#evnt_vnu').fadeIn();
+		}
+		function display_auto_sgtd_addres(ven){
+				$('#evnt_vnu').hide();
+				$('#ajax_venue_loading').show();
+				$.ajax({
+					   type: "GET",
+					   url: '{% url 'staff_events_display_address' %}',
+					   data:'venue_id='+ven,
+					   dataType:'JSON',
+					   success: function(data){	
+					   			if(data.status){
+					   				$('#ajax_venue_loading').hide();
+									$('#address_info').html(data.html);
+								}else{show_msg(data.msg,data.mtype);}
+								$(".add-venue").colorbox({width: "770",initialWidth: "800", top:"60", initialHeight: "200"});
+						}
+				});	
+			}	
+		
+		
+		
+</script>
+{% endblock %}

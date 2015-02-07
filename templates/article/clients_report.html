@@ -1,0 +1,61 @@
+{% extends "home.html" %}
+{% block title %}Report{% endblock %}
+{% block content %}
+
+<div>
+	<center><b></>clients report</b></center>
+</div>	
+{% if cleint_rep_data%}
+<div>
+
+	<table style="width:99%" border="1" cellpadding="2">
+  <tr>
+  	<b><td color="red">Name</td></b>
+    <b><td color="red">Account</td></b>
+    <b><td>Total acc</td></b>		
+    <b><td>completed</td></b>
+	<b><td>Pending</td></b>
+   <b><td>Payment</td></b>
+	<b><td>added_date</td></b>		
+  </tr>
+{%for data in cleint_rep_data%}
+<!--div>
+	<strong>Aaccount : {{client.account}} </strong>
+</div>	
+	<div>
+		<br>
+	Total acc:{{client.total}}
+	</div>
+		<div>
+	completed:{{client.completed}}
+	</div>
+		<div>
+	Pending:{{client.pending}}
+	<div>
+		<div>
+	Payment:{{client.status}}
+	</div>
+		<div>
+	Date:{{client.added_date}}-->
+	
+
+  <tr>
+  	<td>{{data.name}}</td>
+	<td>{{data.account}}</td>
+    <td>{{data.total}}</td>
+	<td>{{data.completed}}</td>		
+    <td>{{data.pending}}</td>
+	<td>{{data.status}}</td>
+    <td>{{data.added_date}}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</div>
+{% else %}
+<div>
+	<strong>OOps!! sorry no more clients data!!!</strong>
+</div>
+{% endif %}
+	
+{% endblock %}

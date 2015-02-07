@@ -1,0 +1,44 @@
+{% load i18n %}
+{% load upload_tags %}
+<!-- CROPPER -->
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/cropper.css">
+	<style>
+		.cropper-preview img{
+			max-width:none;
+		}
+	</style>
+<!-- xxxxxxx -->
+<!-- CROPPER -->
+<div class="field text-field">
+	<div class="label">
+		<label for=""></label>
+	</div>
+	<div class="value">
+		<input type="hidden" id="cover_height" name="cover_height">
+		<input type="hidden" id="cover_width" name="cover_width"> 
+		<input type="hidden" id="cover_x1" name="cover_x1"> 
+		<input type="hidden" id="cover_x2" name="cover_x2"> 
+		<input type="hidden" id="cover_y1" name="cover_y1"> 
+		<input type="hidden" id="cover_y2" name="cover_y2">
+		<label class="control-label"></label>
+		<div id="fileuploadcover">
+			<div class="fileupload-content">
+				<ul class="files bm-uploader-list"></ul>
+			</div>
+			<div class="clear"></div>
+			<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+			{% csrf_token %}
+			<div class="clear"></div>
+			<div class="upload-button-wrapper">
+				<a class="upload-button">{% trans 'Cover Photo' %}</a>
+				<div class="fileinput-button">
+					<input type="file" style="cursor: pointer;" title="Cover Photo" size="1" name="photo" id="id_photo" multiple="" accept="image/*" tabindex="-1">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- xxxxxxx -->
+<!-- CROPPER -->
+	{% cover_upload_js %}
+<!-- xxxxxxx -->

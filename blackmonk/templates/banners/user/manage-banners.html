@@ -1,0 +1,83 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{% trans 'Banner Ads' %}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/ads/user_banner.js"></script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "leftnav" "banners" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<div class="span10 sP9mX979 sP12mX767">
+        <div class="row-fluid">
+			<div class="main span9">
+				<section class="sCn pD0">
+					<div class="cLrFx pD2015">
+						<div class="pLlT w100mP">
+							<h3 class="mR0 tRnCt">Banners <span class="lBl dRk lRg lRg-bRdR fS12 ib fW-bLd" title="Total Banners" id="total_count">{{total}}</span></h3>
+						</div>
+                        <div class="clearfix pLlTmP mRt10mX480">
+                        	<div class="pLrT w100pSmP mRt10SmP mRl10">
+                                <a href="{% url 'user_banners_add_banner' %}" title="Add Banner" class="btn fS12 btn-danger fW-bLd"><i aria-hidden="true" class="bUi-iCn-pLs-12"></i></a>
+                            </div>
+                            <div class="pLrT">
+                                <form class="form-search mRb0" action="#">
+                                    <div class="input-append iNsD">
+                                        <input class="search-query fS13 pD510 h34" onkeydown="if (event.keyCode == 13) document.getElementById('search_content_id').click();" onkeyup="if($(this).val().length > 2){$('#id_search').val('true');hm_sort();}if($(this).val().length == 0){clear_search();}" name="search_keyword" id="id_search_keyword" type="text" placeholder="Search Banners" maxlength="100">
+                                        <button type="button" onclick="$('#id_search').val('true');hm_sort();" id="search_content_id" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14 ib"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+					</div>
+					<div class="pD150">
+						<div class="tLbR mRb5 pD015">
+                            <div class="tLbR-iR">
+                            	<div class="pLrT">
+                            		<span class="pLlT fS11 pDt7 cLr-gRy">View:  </span>
+	                            	<select class="bUiSlCtbtn-link tXt-sMl pLrT" id="filter_by" onchange="call_the_filter()">
+										<option value="-created_on" selected="selected">Newest</option>
+										<option value="created_on">Oldest</option>
+										<option data-divider="true"></option>
+										<option value="N" onclick="" >Pending</option>
+										<option value="P">Published</option>
+										<option value="D">Draft</option>
+										<option value="R">Rejected</option>
+										<option value="B">Blocked</option>
+										<option value="E">Expired</option>
+                                    </select>
+                            	</div>
+                            </div>
+                        </div>
+                        <hr class="mRb12 mRt0">
+						<div class="hT600 rLvE" id="ajax_content_loading" style="display:none;">
+	                         <div class="tBl-bLk pDt0">
+	                            <div class="tBl-cEl">
+	                                <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+	                            </div>
+	                        </div>
+	                    </div>
+						<div id="id_content_listing">
+							{% include 'banners/user/ajax_object_listing.html' %}
+						</div>
+					</div>
+				</section>
+			</div> <!-- /.main -->
+			<aside class="sD-bR span3">
+				<div>
+					<section class="tXt-cTr pD0 bNr-aD"> 
+                       
+                    </section>
+				</div>
+			</aside>
+		</div>  <!-- /.row-fluid -->
+	</div>  <!-- /.span10 -->
+{% endblock %}

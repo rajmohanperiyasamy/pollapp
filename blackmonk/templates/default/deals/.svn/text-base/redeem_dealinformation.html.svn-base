@@ -1,0 +1,210 @@
+{% load currency %}
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{ globalsettings.domain }}-{% trans 'Deal Voucher Verification' %}</title>
+
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+
+<style type="text/css">
+ul, h1, h2{ margin:0; padding:0;}
+ul{ list-style-type:none;}
+h1.logo{margin:80px 0 0; background:url({{ globalsettings.logo.url }}) no-repeat scroll center center transparent; text-indent:999em; overflow:hidden;}
+h2.title{color: rgb(83, 83, 83); margin: 50px 0pt 0pt; font-size: 22px; font-weight: normal;}
+h4.disc{color: #999999;font-size: 14px;font-weight: normal;line-height: 22px; margin-top:5px; font-family:'pt sans',arial,helvetica,sans-serif;}
+body{background:#F6F6F6; font-family:Arial, Helvetica, sans-serif;}
+.container{width:100%; margin-top:40px;}
+.container-inner{width:460px; margin:0 auto 100px; text-align:center;}
+.form-container{background:white; border-radius:5px; box-shadow:0 2px 5px rgba(0, 0, 0, 0.15); width:420px; position:relative; margin:25px auto 20px;}
+form {position: relative; text-align: left; padding: 40px 65px 67px;}
+form h2{font-size:14px; color:#535353; margin-bottom:15px}
+form ul{color:#444; font-size:12px; margin-bottom:25px;}
+form ul li{margin-bottom:10px;}
+form ul li .column-1{color: #9A9A9A;float: left;  padding-right: 5px; text-align: right; width: 130px;}
+form ul li .column-2{float:left; width: 155px;}
+.form-submit{background: none repeat scroll 0% 0% rgb(249, 249, 249); border-radius: 0pt 0pt 5px 5px; border-top: 1px solid rgb(230, 230, 230); padding: 15px 20px; margin-top: 5px; text-align: center; position:absolute; bottom:0;left: 0; width: 380px;}
+.group:after {
+	content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+    }
+.button {
+	background:url(../images/ie-fix/cform-button.png);
+	border-radius:3px;
+	background-color: #E9E9E9;
+	background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#E9E9E9));
+	background: -webkit-linear-gradient(top,  #FFFFFF,  #E9E9E9);
+	background: -moz-linear-gradient(top,  #FFFFFF,  #E9E9E9);
+	background: -o-linear-gradient(top,  #FFFFFF,  #E9E9E9);
+	background: -ms-linear-gradient(top,  #FFFFFF,  #E9E9E9);
+	border-color:#D2D2D2 #C8C8C8 #B1B1B1;
+	border-style:solid;
+	border-width:1px;
+	color:#999;
+	cursor:pointer;
+	text-transform:none;
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	line-height:12px;
+	margin:0;
+	overflow:visible;
+	padding:8px 14px 7px;
+	width:auto;
+	-webkit-box-shadow:0 1px 0px rgba(0,0,0,.08), 0 18px 2px rgba(255,255,255,0.265) inset, 0 0px 2px rgba(0,0,0,0.115) inset, 0 1px 0px rgba(255,255,255,1) inset;
+	   -moz-box-shadow:0 1px 0px rgba(0,0,0,.08), 0 18px 2px rgba(255,255,255,0.265) inset, 0 0px 2px rgba(0,0,0,0.115) inset, 0 1px 0px rgba(255,255,255,1) inset;
+		 -o-box-shadow:0 1px 0px rgba(0,0,0,.08), 0 18px 2px rgba(255,255,255,0.265) inset, 0 0px 2px rgba(0,0,0,0.115) inset, 0 1px 0px rgba(255,255,255,1) inset;
+			box-shadow:0 1px 0px rgba(0,0,0,.08), 0 18px 2px rgba(255,255,255,0.265) inset, 0 0px 2px rgba(0,0,0,0.115) inset, 0 1px 0px rgba(255,255,255,1) inset;
+}
+.button:hover, .button:focus {
+	border-color:#B2B2B2 #A8A8A8 #919191;
+	color:#666;
+	text-decoration:none;
+}
+.button:active{
+	background: none repeat 0 0 scroll #f5f5f5;
+	text-shadow:none;
+	color:#444;
+	-webkit-box-shadow:0 1px 1px rgba(0,0,0,.118), 0 35px 0px rgba(0,0,0,0.0075) inset, 0 0px 1px rgba(255,255,255,1) inset;
+	   -moz-box-shadow:0 1px 1px rgba(0,0,0,.118), 0 35px 0px rgba(0,0,0,0.0075) inset, 0 0px 1px rgba(255,255,255,1) inset;
+		 -o-box-shadow:0 1px 1px rgba(0,0,0,.118), 0 35px 0px rgba(0,0,0,0.0075) inset, 0 0px 1px rgba(255,255,255,1) inset;
+			box-shadow:0 1px 1px rgba(0,0,0,.118), 0 35px 0px rgba(0,0,0,0.0075) inset, 0 0px 1px rgba(255,255,255,1) inset;
+}
+
+.blue-btn{
+	background:url(../images/ie-fix/btn-txt-blue.png);
+	background-color: #3a75c9;
+	background-repeat: repeat-x;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#3e7acf), to(#3772c5));
+	background: -webkit-linear-gradient(top , #3e7acf, #3772c5);
+	background: -moz-linear-gradient(center top , #3e7acf, #3772c5);
+	background: -ms-linear-gradient(top , #3e7acf, #3772c5);
+	background: -o-linear-gradient(top , #3e7acf, #3772c5);
+	border:1px;
+	border-style:solid;
+	border-color:#2a60ac #275ead #1b4e97 #275ead;
+	-webkit-box-shadow:1px 1px 0px rgba(255,255,255,0.25) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 0px rgba(0, 0, 0, 0.15);
+	   -moz-box-shadow:1px 1px 0px rgba(255,255,255,0.25) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 0px rgba(0, 0, 0, 0.15);
+		 -o-box-shadow:1px 1px 0px rgba(255,255,255,0.25) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 0px rgba(0, 0, 0, 0.15);
+			box-shadow:1px 1px 0px rgba(255,255,255,0.25) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 0px rgba(0, 0, 0, 0.15);
+	color: #FFFFFF;
+	border-radius: 3px 3px 3px 3px;
+	cursor: default;
+	outline: 0 none;
+    padding: 6px 10px 5px;
+	display: inline-block;
+	position: relative;
+	font-family:Arial, Helvetica, sans-serif
+}	
+.blue-btn:hover{
+	background:url(../images/ie-fix/btn-txt-blue-hover.png);
+    background-color: #306bc5;
+	background-repeat: repeat-x;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#336ec9), to(#2d66be));
+	background: -webkit-linear-gradient(top , #336ec9, #2d66be);
+	background: -moz-linear-gradient(center top , #336ec9, #2d66be);
+	background: -ms-linear-gradient(top , #336ec9, #2d66be);
+	background: -o-linear-gradient(top , #336ec9, #2d66be);
+	border-color:#2154a3 #1e52a4 #14428d;
+	-webkit-box-shadow:1px 1px 1px rgba(255,255,255,0.3) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 1px rgba(0, 0, 0, 0.35);
+	   -moz-box-shadow:1px 1px 1px rgba(255,255,255,0.3) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 1px rgba(0, 0, 0, 0.35);
+		 -o-box-shadow:1px 1px 1px rgba(255,255,255,0.3) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 1px rgba(0, 0, 0, 0.35);
+			box-shadow:1px 1px 1px rgba(255,255,255,0.3) inset, -1px -1px 0px rgba(0,0,0,0.1) inset, 1px 1px 1px rgba(0, 0, 0, 0.35);
+	}
+.blue-btn span{
+	color: #FFFFFF;
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.12);
+}
+</style>
+</head>
+
+<body>
+	<div class="container">
+        <div class="container-inner">
+        	<h1 class="logo"><a href="{{ globalsettings.website_url }}">{{ globalsettings.domain }}</a></h1>
+            <h2 class="title">{% trans 'Redeem' %} {{ globalsettings.domain }} {% trans 'Deal' %}</h2>
+            <h4 class="disc">{% trans 'You can verify the validity of deal voucher code and corresponding customer details here' %}</h4>
+            <div class="form-container">
+            	<form class="group" action="{% url 'deal_confirm_redeem' %}?dr={{ deal_pymnt.id }}" onsubmit="if(!confirm(gettext('Are you sure you want to redeem this deal?'))){return false;}" method="post" id="as_form">{% csrf_token %}
+                	<div class="group">
+                		{% if deal_pymnt %}
+                    	<h2>{% trans 'Deal Details' %}</h2>
+                        <ul>
+                        	<li class="group">
+                            	<div class="column-1">{% trans 'Deal Name :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.deal.title }}</div>
+                            </li>
+                            <li class="group">
+                            	<div class="column-1">{% trans 'Voucher Valid Date :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.deal.voucher_valid }}</div>
+                            </li>
+                            <li class="group">
+                            	<div class="column-1">{% trans 'Voucher Code :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.dealkey }}</div>
+                            </li>
+                            <li class="group">
+                            	<div class="column-1">{% trans 'Quantity :' %} </div>
+                                <div class="column-2">{{ deal_pymnt.quantity }}</div>
+                            </li>
+                            <li class="group">
+                            	<div class="column-1">{% trans 'Total Price :' %} </div>
+                                <div class="column-2">{{ deal_pymnt.total_price }}</div>
+                            </li>
+                        </ul>
+						{% if deal_pymnt.gift_addr %}
+						<h2>{% trans 'Gifted Coupen' %}</h2>
+						<ul>
+							<li class="group">
+                            	<div class="column-1">{% trans 'Gifted to :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.gift_addr.g_name }}</div>
+                            </li>
+							<li class="group">
+                            	<div class="column-1">{% trans 'Mobile :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.gift_addr.g_mobile }}</div>
+                            </li>
+						</ul>
+						{% endif %}	
+                        <h2>{% trans 'Buyer Details' %}</h2>
+                        <ul>
+                        	<li class="group">
+                            	<div class="column-1">{% trans 'Name :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.name }}</div>
+                            </li>
+                            <li class="group">
+                            	<div class="column-1">{% trans 'Address :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.created_by.address1 }}</div>
+                            </li>
+							{% if deal_pymnt.created_by.city %}
+                            <li class="group">
+                            	<div class="column-1">{% trans 'City  :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.created_by.city }}</div>
+                            </li>
+							{% endif %}
+                            {% if deal_pymnt.mobile %}
+                            <li class="group">
+                            	<div class="column-1">{% trans 'Mobile :' %} </div>
+                                <div class="column-2"> {{ deal_pymnt.mobile }}</div>
+                            </li>
+                            {% endif %}
+                        </ul>
+						{% endif %}	
+                    </div>
+	                <div class="group form-submit">
+		                <button type="button" onclick="location.replace('{% url 'deal_redeem' %}')" class="button" style=""><span>{% trans 'Cancel' %}</span></button>
+		            	<button type="submit" class="blue-btn" style=""><span>{% trans 'Claim' %}</span></button>
+		            </div>
+				</form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

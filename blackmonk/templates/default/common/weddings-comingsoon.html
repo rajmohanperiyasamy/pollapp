@@ -1,0 +1,695 @@
+{% extends base %}
+{% load i18n %}
+{% load tabs %}
+{% block pagetitle %}{{globalsettings.city}} {% trans 'Weddings' %} | {{globalsettings.domain}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{globalsettings.city}} {% trans 'Weddings' %}" />
+	<meta name="keywords" content="{{globalsettings.city}} {% trans 'Weddings' %}" />
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/wedding.css">
+	<style>
+	div.coming-soon {
+    -moz-transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+    color: rgba(254, 139, 62, 0.7);
+	*color:#e2915b;
+    font-size: 90px;
+    font-weight: bold;
+    left: 185px;
+    position: absolute;
+    top: 198px;
+    z-index: 9999;
+	}
+    </style>
+
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "weddings" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+
+	<div class="group" style="position:relative;">
+        <div style="*background:#FFFFFF; background:rgba(250,250,250,0.64); filter: alpha(opacity = 64); position:absolute; width:100%; height:100%; z-index:9999;"></div>
+        	<div class="coming-soon">Coming Soon !</div>
+        <div id="wedding_hdr_bar" class="group">
+                <h4>Weddings</h4>
+                <ul class="nav">
+                    <li><a href="#" class="active">Home</a></li>
+                    <li class="we_ser"><a class="tab" href="#">Wedding Services</a></li>
+                    <li class="bri"><a class="tab" href="#">Reception Sites</a></li>  
+                    <li><a href="#">Bridal Events</a></li>
+					<li><a href="#">Wedding Stories</a></li> 
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Specials</a></li>
+                    <li class="prom"><a href="#">My Account</a></li>                    
+                </ul>
+                        
+                <div id="nav_right" class=""></div>                
+            </div>       
+        		<h2 class="section_title"><a href="#">wedding reception sites</a></h2>
+            	<div id="wedding_slider" class="group">
+                        <div class="wedding_slider_mask">   
+						<div class="stepcarousel" id="galleryc" style="overflow:hidden;">
+						<div class="belt">  
+                            <ul>
+                                <li class="pages">
+                                    <div class="page">
+                                        <div id="fb_list">
+			                            <ul class="bnnr_list">
+											
+											
+											<div class="panel" style="float: none; position: absolute; left: 0px;">
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/gifts/">Gifts</a><a href="http://173.192.176.37/weddings/vendors/simply-stamped-by-stacey.html"><img width="100" style="margin-top:5px;" height="80" title="Simply Stamped By Stacey" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/zoomw.jpg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/simply-stamped-by-stacey.html">Simply Stamped By Stacey</a></h4>
+                                                    
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/ceremony-sites/">Ceremony Sites</a><a href="http://173.192.176.37/weddings/vendors/cavender-castle.html"><img width="100" style="margin-top:5px;" height="80" title="Cavender Castle" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/logo1.jpg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/cavender-castle.html">Cavender Castle</a></h4>
+                                                    <h6>Georgia</h6>
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/reception-sites/">Reception Sites</a><a href="http://173.192.176.37/weddings/vendors/farmhouse-inn.html"><img width="100" style="margin-top:5px;" height="80" title="Farmhouse Inn" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/logo2.jpg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/farmhouse-inn.html">Farmhouse Inn</a></h4>
+                                                    <h6>Georgia </h6>
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/rental-services/">Rental Services</a><a href="http://173.192.176.37/weddings/vendors/i-thee-wed.html"><img width="100" style="margin-top:5px;" height="80" title="I Thee Wed" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/avis.jpg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/i-thee-wed.html">I Thee Wed</a></h4>
+                                                    <h6>Georgia</h6>
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/cakes-catering/">Cakes &amp; Catering</a><a href="http://173.192.176.37/weddings/vendors/bakers-man-inc.html"><img width="100" style="margin-top:5px;" height="80" title="Baker&#39;s Man Inc." src="http://173.192.176.37/site_media/images/weddings/vendor/logo/logo5.jpg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/bakers-man-inc.html">Baker&#39;s Man Inc.</a></h4>
+                                                    <h6>Alpharetta</h6>
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/bridal-fashions/">Bridal Fashions</a><a href="http://173.192.176.37/weddings/vendors/pure-airbrush-makeup.html"><img width="100" style="margin-top:5px;" height="80" title="Pure Airbrush Makeup" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/britney.jpeg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/pure-airbrush-makeup.html">Pure Airbrush Makeup</a></h4>
+                                                    
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/bridal-fashions/">Bridal Fashions</a><a href="http://173.192.176.37/weddings/vendors/dw-photography.html"><img width="100" style="margin-top:5px;" height="80" title="D.W. Photography" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/harris.png"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/dw-photography.html">D.W. Photography</a></h4>
+                                                    <h6>Maryland</h6>
+                                                </li>
+                                           
+										   		
+										   
+										   
+											  
+                                                <li class="first">
+                                                  <h5><a href="http://173.192.176.37/weddings/vendors/reception-sites/">Reception Sites</a><a href="http://173.192.176.37/weddings/vendors/reception.html"><img width="100" style="margin-top:5px;" height="80" title="Reception" src="http://173.192.176.37/site_media/images/weddings/vendor/logo/creatib3ads38.jpg"></a></h5>
+                                                    <h4><a href="http://173.192.176.37/weddings/vendors/reception.html">Reception</a></h4>
+                                                    <h6>Marietta</h6>
+                                                </li>
+                                           
+										   </div>
+										   
+										   
+										</ul>
+			                        </div><!--/fb_list -->                                   
+                                    </div>
+                                </li>
+                            </ul>
+						</div>    
+						</div>    
+						</div>                                                                                                           
+                        <div class="slider_ctrls"><a class="prev_btn" href="javascript:stepcarousel.stepBy('galleryc', -1)">&lt;</a><a class="next_btn" href="javascript:stepcarousel.stepBy('galleryc', 1)">&lt;</a></div>
+                 </div><!--end of slider-->
+             <div class="group">    
+                 <div class="col_11">
+                     <div id="Locality" class="ppt_browse_list group">
+                            <h2 class="section_title">Browse by Category</h2>
+                                <div id="localities" style="min-height:225px;">
+                                        <div id="as_initial_loc">
+										   
+										   
+										    <ul>
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/accessories/">Accessories</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/accommodations/">Accommodations</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/aisle-runners/">Aisle Runners</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/alterations/">Alterations</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/bachelorette-parties/">Bachelorette Parties</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/bachelor-parties/">Bachelor Parties</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/bakeries/">Bakeries</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/balloon-designers/">Balloon Designers</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/bands/">Bands</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/bartenders/">Bartenders</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/beaches/">Beaches</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/beach-wedding-favors/">Beach Wedding Favors</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/beauty-health/">Beauty &amp; Health</a></li>
+										   
+										   		
+										   	
+										   
+										    
+
+
+										   
+										   
+										   </ul>
+										   		
+										   	
+										   
+										   
+										    <ul>
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/caterers/">Caterers</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/cellists/">Cellists</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/ceremony-musicians/">Ceremony Musicians</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/ceremony-sites/">Ceremony Sites</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/chair-covers/">Chair Covers</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/chapels/">Chapels</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/churches/">Churches</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/convention-visitors/">Convention &amp; Visitors</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/cosmetic-dentistry/">Cosmetic Dentistry</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/cosmetic-surgery/">Cosmetic Surgery</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/cross-favors/">Cross Favors</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/crystal-favors/">Crystal Favors</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/dance-lesson/">Dance Lesson</a></li>
+										   
+										   		
+										   	
+										   
+										    
+
+										   
+
+										   
+										   
+										   </ul>
+										   		
+										   	
+										   
+										   
+										    <ul>
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/gifts/">Gifts</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/guitarists/">Guitarists</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/hair-stylists/">Hair Stylists</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/harpists/">Harpists</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/heritage-sites/">Heritage Sites</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/hill-stations/">Hill Stations</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/honeymoon-travel/">Honeymoon / Travel</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/horse-carriage/">Horse &amp; Carriage</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/hotels/">Hotels</a></li>
+										   
+
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/ice-sculptures/">Ice Sculptures</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/invitations-calligraphy/">Invitations / Calligraphy</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/jazz-musicians/">Jazz Musicians</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/jewelers/">Jewelers</a></li>
+										   
+										   		
+										   	
+										   
+										    
+
+										   
+										   		
+										   	
+										   
+										    
+										   
+										   
+										   </ul>
+										   		
+										   	
+										   
+										   
+										    <ul>
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/professional-services/">Professional Services</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/reception-facilities/">Reception Facilities</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/reception-sites/">Reception Sites</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/reception-venues/">Reception Venues</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/rehearsal-dinners/">Rehearsal Dinners</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/rental-companies/">Rental Companies</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/rental-services/">Rental Services</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/resorts/">Resorts</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/showers-and-parties/">Showers and Parties</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/string-quartets/">String Quartets</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/tanning/">Tanning</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/tent-rentals/">Tent Rentals</a></li>
+										   
+										   		
+										   	
+										   
+										    
+										   		<li><a href="http://173.192.176.37/weddings/vendors/test-category/">Test Category</a></li>
+										   
+
+
+										   
+										   </ul>
+										   	
+										   	
+                                        </div><!--as_initial_loc-->
+                                <div class="clear"></div>
+                                </div> <!--end of localities-->
+                    </div><!--end of list-->
+                    <div class="group">
+						
+						<div class="wedding_article col_6">
+	                    	<h2 class="section_title"><a href="/weddings/real-weddings/">Real Wedding</a></h2>
+	                        <ul class="lst group">
+	                            
+								<li class="offer_rule group">
+	                                	
+										
+											<a class="pic" href="http://173.192.176.37/article/1111/lifestyle-portraits.html"><img width="114" height="70" alt="Sherlock Holmes" src="http://www.stevenbrooksphotographer.co.uk/media/img/gallery/wedding-collection-3/28-1117-wedding-collection-3.full.jpg"></a>	
+										
+												
+	                                <h4><a class="url" href="http://173.192.176.37/article/1111/lifestyle-portraits.html">Lifestyle Portraits</a></h4>
+	                                <p class="desc">Timechanges many things, but a photograph is an indelible...</p>
+	                            </li><!-- /offer_rule -->
+	                            
+								<li class="offer_rule group">
+	                                	
+										
+											<a class="pic" href="http://173.192.176.37/article/1111/best-wedding.html"><img width="114" height="70" alt="Sherlock Holmes" src="http://www.stevenbrooksphotographer.co.uk/media/img/gallery/new-oo-hampton-court-palace/22-893-new-oo-hampton-court-palace.full.jpg"></a>	
+										
+												
+	                                <h4><a class="url" href="http://173.192.176.37/article/1111/best-wedding.html">Best Wedding</a></h4>
+	                                <p class="desc">My developed style allows you to be photographed in a relaxed way...</p>
+	                            </li><!-- /offer_rule -->
+	                            
+								<li class="offer_rule group">
+	                                	
+										
+											<a class="pic" href="http://173.192.176.37/article/1111/london-jazz-festival-saxophone-shows-its-star-appeal.html"><img width="114" height="70" alt="Sherlock Holmes" src="http://static.guim.co.uk/sys-images/Users/Help/screenshots/2011/11/13/1321197817860/London-Jazz-Festival-2011-007.jpg"></a>	
+										
+												
+	                                <h4><a class="url" href="http://173.192.176.37/article/1111/london-jazz-festival-saxophone-shows-its-star-appeal.html">London Jazz Festival: saxophone shows its star appeal</a></h4>
+	                                <p class="desc">Steve Coleman, Steve Williamson and Chris Potter reveal...</p>
+	                            </li><!-- /offer_rule -->
+	                            
+								<li class="last"><p class="more_link"><a href="/weddings/real-weddings/">See all articles</a></p></li>
+	                        </ul>                        
+	                    </div><!--end wedding article-->
+	                	
+						<div class="events_list col_5 mr_0">
+	                    	<h2 class="section_title"><a href="/weddings/events/">Bridal Events</a></h2>
+	                        <ul class="lst group">
+	                            
+								<li class="offer_rule group">
+	                                <a class="pic" href="http://173.192.176.37/events/georgia-bridal-show.html">
+	                                		
+	                                		
+												<img width="54" height="54" alt="Georgia Bridal Show" src="http://localengine.smugmug.com/photos/1587258300_xN6T7bW-Ti.jpg"></a>
+												
+												
+									<h4><a class="url" href="http://173.192.176.37/events/georgia-bridal-show.html">Georgia Bridal Show</a></h4>
+	                                <p>at <span class="location"><a href="/events/venue/?ven=NYCB Theatre">NYCB Theatre</a></span></p> 
+	                                <p class="desc">YOUR dream wedding . . . begins HERE! Brides are able to mee...</p>
+	                            </li><!-- /offer_rule -->
+	                            
+								<li class="offer_rule group">
+	                                <a class="pic" href="http://173.192.176.37/events/wedding-at-san-jose.html">
+	                                		
+	                                		
+												<img width="54" height="54" alt="Wedding at San Jose" src="http://localengine.smugmug.com/photos/1585774570_wzX25JS-Ti.jpg"></a>
+												
+												
+									<h4><a class="url" href="http://173.192.176.37/events/wedding-at-san-jose.html">Wedding at San Jose</a></h4>
+	                                <p>at <span class="location"><a href="/events/venue/?ven=New Amsterdam Theatre">New Amsterdam Theatre</a></span></p> 
+	                                <p class="desc">t's crucial that you feel comfortable and confident in your...</p>
+	                            </li><!-- /offer_rule -->
+	                            
+								<li class="offer_rule group">
+	                                <a class="pic" href="http://173.192.176.37/events/lila-downs-at-carnegie-hall.html">
+	                                		
+	                                		
+												<img width="54" height="54" alt="Lila Downs at Carnegie Hall" src="http://localengine.smugmug.com/photos/1585292104_XLkQxnq-Ti.jpg"></a>
+												
+												
+									<h4><a class="url" href="http://173.192.176.37/events/lila-downs-at-carnegie-hall.html">Lila Downs at Carnegie Hall</a></h4>
+	                                <p>at <span class="location"><a href="/events/venue/?ven=Carnegie Hall">Carnegie Hall</a></span></p> 
+	                                <p class="desc">Lila Downs is a Mexican-American singer-songwriter. She...</p>
+	                            </li><!-- /offer_rule -->
+	                            
+	                            <li class="last"><p class="more_link"><a href="/weddings/events/">See all events</a></p></li>
+	                        </ul>                        
+	                    </div><!--end of event_list-->
+					</div>					
+                 
+				 			
+					<div class="mod_672 mr_0 thick_divider" style="width:678px; border-top:#ccc solid 1px; padding-bottom:10px;">
+					<h2 class="section_title">Take The Wedding Poll:</h2>  		
+                     	<div class="content group" id="quick_vote"> <!--  Poll Start -->	
+                                <h4 class="v_title">v<br>o<br>t<br>e</h4>							
+                                <form id="poll_form" name="poll_form" type="POST" action="#">
+                                    
+									<input type="hidden" value="single" id="mode" name="mode">
+                                    <input type="hidden" value="1" id="pid" name="pid">
+                                    <input type="hidden" value="notvoted" id="status" name="status">
+                                    
+									<div class="qv_topic">
+                                        <h5>Where did you meet your life partner? </h5>
+                                    </div>	
+									
+									
+									
+																					
+											<div id="poll_container" class="result">
+											<ul class="poll_results group">
+												
+       												 <li class="poll_result_group"><label for="poll_result_01" class="poll_result_label"><span class="poll_result_text">College</span></label><div id="poll_result_01" class="poll_result_feedback"><div style="width: 50%;" class="poll_result_feedback_bar"></div></div><span class="poll_result_votes">(1)</span><span class="poll_result_per">50%</span><div class="clear"></div></li>
+												
+       												 <li class="poll_result_group"><label for="poll_result_01" class="poll_result_label"><span class="poll_result_text">Workplace</span></label><div id="poll_result_01" class="poll_result_feedback"><div style="width: 50%;" class="poll_result_feedback_bar"></div></div><span class="poll_result_votes">(1)</span><span class="poll_result_per">50%</span><div class="clear"></div></li>
+												
+       												 <li class="poll_result_group"><label for="poll_result_01" class="poll_result_label"><span class="poll_result_text">Pub</span></label><div id="poll_result_01" class="poll_result_feedback"><div style="width: 0%;" class="poll_result_feedback_bar"></div></div><span class="poll_result_votes">(0)</span><span class="poll_result_per">0%</span><div class="clear"></div></li>
+												
+											</ul>
+   										 	<p class="poll_total_votes">Total Votes: 2</p>  
+ 											</div>   
+										
+										
+									      	
+												
+                                </form>
+                                <div class="clear"></div>
+                        </div>  <!--  Poll Ends --> 
+                    </div><!--end of pol-->
+				 
+                </div><!--end of col11-->
+                
+				<div class="weddinghome_secondary">
+                	<div class="advt ad_300x250">
+                        <span class="declare">Advertisement</span>
+                        <div class="no_display_ad_"><img src="http://i-cdn.servedbyopenx.com/273/2732b2df3db1100300d49e826d822014ea3e23e2/fc2/fc2aa203b573c1864d5e68bf729065f4.jpg">
+                        </div>
+                    </div><!--end of advt-->
+                    <div class="cler"></div>
+                    <div class="qa_list">
+                    	<h2 class="section_title"><a href="/weddings/advice/">Wedding Advice / FAQ's</a></h2>
+                       
+						<ul class="lst group">
+                            <li class="offer_rule latest_offers group">
+                              <a class="pic_q" href="javascript:void(0);"><img width="40" height="40" src="/static/images/weddings/qa-default-icon-jpg"></a>
+                                <h4><a class="url" href="http://173.192.176.37/advice/weddings/which-is-the-best-cuisine-for-a-wedding-party.html">Which is the best cuisine for a wedding party?</a></h4>
+                                  <div class="sub_title_q">Asked by <a class="cat" href="/profile/admin/">Admin</a> ~ <span>0 answers</span></div>
+                          </li><!-- /offer_rule -->
+                        </ul> 
+					   
+						<ul class="lst group">
+                            <li class="offer_rule latest_offers group">
+                              <a class="pic_q" href="javascript:void(0);"><img width="40" height="40" src="/static/images/weddings/qa-default-icon-jpg"></a>
+                                <h4><a class="url" href="http://173.192.176.37/advice/weddings/which-is-the-best-hotel-to-stay-in-new-york2.html">Which is the best hotel to stay in New York?</a></h4>
+                                  <div class="sub_title_q">Asked by <a class="cat" href="/profile/admin/">Admin</a> ~ <span>0 answers</span></div>
+                          </li><!-- /offer_rule -->
+                        </ul> 
+					   
+						<ul class="lst group">
+                            <li class="offer_rule latest_offers group">
+                              <a class="pic_q" href="javascript:void(0);"><img width="40" height="40" src="/static/images/weddings/qa-default-icon-jpg"></a>
+                                <h4><a class="url" href="http://173.192.176.37/advice/weddings/where-to-rent-a-linen-suit-in-long-island2.html">Where to rent a linen suit in Long Island?</a></h4>
+                                  <div class="sub_title_q">Asked by <a class="cat" href="/profile/admin/">Admin</a> ~ <span>0 answers</span></div>
+                          </li><!-- /offer_rule -->
+                        </ul> 
+					   	
+                    </div><!--end of qa list--> 
+                    <div class="clear"></div>
+                    
+                    <!-- Facebook likebox starts -->
+                        {% include 'default/likebox.html' %}
+						<!-- Facebook likebox ends -->
+                    <div class="clear"></div>
+                </div><!--end of weddinghome_secondary-->
+            </div><!--end of group-->
+            <div class="clear"></div>
+            </div><!--group-->
+{% endblock %}

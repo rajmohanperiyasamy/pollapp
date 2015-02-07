@@ -1,0 +1,30 @@
+{% load ds_utils %}
+<a class="bUi-tMb-wPr{% if image|is_portrait or default_img|is_portrait %} fLxiMgH{% else %} fLxiMgW{% endif %} {{class}}" href="{{ url }}">
+    <span class="bUi-tMb">
+        <span class="bUi-tMb-pRpL">
+            <span class="bUi-tMb-cLp">
+                <span class="bUi-tMb-cLp-iN">
+					{% with image as image %}
+					{% if image or default_img %}
+						<span data-class="mDa-oT" data-picture data-alt="{{title}}" data-title="{{title}}">
+                        <span class="gEtSrC" data-src="{% if image %}{{ MEDIA_URL }}{{thumb_img1}}{% else %}{{ default_img }}{% endif %}"></span>
+                        <span data-class="gEtSrC" data-src="{% if image %}{{ MEDIA_URL }}{{thumb_img2}}{% else %}{{ default_img }}{% endif %}" data-media="(min-width: 512px)"></span>
+						<span data-class="gEtSrC" data-src="{% if image %}{{ MEDIA_URL }}{{thumb_img3}}{% else %}{{ default_img }}{% endif %}" data-media="(min-width: 768px) and (min-device-pixel-ratio: 2.0)"></span>
+						<span data-class="gEtSrC" data-src="{% if image %}{{ MEDIA_URL }}{{thumb_img4}}{% else %}{{ default_img }}{% endif %}" data-media="(min-width: 1000px)"></span>
+						<span data-class="gEtSrC" data-src="{% if image %}{{ MEDIA_URL }}{{thumb_img5}}{% else %}{{ default_img }}{% endif %}" data-media="(min-width: 1000px) and (min-device-pixel-ratio: 2.0)"></span>
+                    
+                        <!--[if (lt IE 10) & (!IEMobile)]>
+                        	<span data-class="gEtSrC" data-src="{{ MEDIA_URL }}{{thumb_img4}}"></span>
+                        <![endif]-->
+                        
+                   		</span>
+					{% else %}
+					<span class="iCn-bRdR50 oP25" title="{{ title }}"><i aria-hidden="true" class="{{ icon_class }} cLr-gRy ib"></i></span>
+					<div class="vRtL-aLn"></div>
+					{% endif %}
+					{% endwith %}
+                </span>
+            </span>
+        </span>
+    </span>
+</a>

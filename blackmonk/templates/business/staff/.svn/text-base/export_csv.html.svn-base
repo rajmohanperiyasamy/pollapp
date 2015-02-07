@@ -1,0 +1,150 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+   {% activetab "selmodule" "business" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Business' %} - {% trans 'Export To CSV' %} {% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+{% endblock %}
+{% block content %}
+<div id="staff-platform" class="group">
+	<div class="header-bar">
+    	<a href="{% url 'staff_manage_business' %}"><h2><span class="go_back"></span>{% trans 'Business' %}</h2></a>
+	</div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main col_12">
+            <div class="page-wrap group">
+                <div class="page-head br_0" style="padding:20px;">
+                    <h2>{% trans 'Exporting Business' %}</h2>
+                    <p class="ltxt80">{% trans 'You can export your existing business from the website by selecting the date range,listing type and order of which the user database you would like to export.' %}</p>
+                </div>
+                <div id="member-account-list" class="cat-list group">
+                    <div id="id_users_csv">      
+						{% if error_msg %}
+                            <div class="messageerror" >
+                            	<strong>{{error_msg}}</strong>
+                        	</div>
+                        {% endif %}
+						<form id="mform" name="mform" onsubmit="return validate();" action="{% url 'staff_business_export_csv' %}" enctype="multipart/form-data" method="post">{% csrf_token %}
+	                        <div class="fields hform">
+	                            <div class="field-group">    
+	                                <div class="fields-head">
+	                                    <p class="ltxt80">{% trans "Select filters to fetch business" %}</p> 
+	                                </div> 
+	                                <div class="field text-field">
+	                                    <div class="label"><label>{% trans 'From' %}</label></div>
+	                                    <div class="value">
+	                                    	<input type="text" id="id_start_date"  style="height:30px;width:150px;" class="tttxt-w" placeholder="From" maxlength="70" autocomplete="off"  value="{% if start_date %}{{start_date|date:'d/m/Y'}}{% endif %}" name="start_date" original-title="From">
+	                                        <label style="margin:0 10px;">{% trans 'To' %}</label><input type="text" id="id_end_date"  style="height:30px;width:150px;" class="tttxt-w" placeholder="To" maxlength="70" autocomplete="off" value="{% if end_date %}{{end_date|date:'d/m/Y'}}{% endif %}" name="end_date" original-title="To">
+											<span class="tip">{% trans "Note:Ignore this if you want to select all date." %}</span> 
+	                                    </div>
+	                                </div> 
+									<div class="field text-field">    
+	                                    <div class="label"><label>{% trans 'Listing Type' %}</label></div>    
+	                                    <div class="value">
+	                                        <select data-placeholder="{% trans 'Select Listing Type'%}" id="id_ltype" name="ltype" style="width:354px;" multiple="multiple" class="select-menu">
+	                                            <option value="F" {% if ltype == 'F' %}selected="selected"{% endif %}>{% trans "Featured" %}</option>
+	                                            <option value="S" {% if ltype == 'S' %}selected="selected"{% endif %}>{% trans "Sponsored" %}</option>
+	                                            <option value="B" {% if ltype == 'B' %}selected="selected"{% endif %}>{% trans "Free" %}</option>
+	                                         </select>
+											 <span class="tip">{% trans "Note:Ignore this if you want to select all Listing Type." %}</span> 
+	                                    </div>    
+	                                </div>
+									<div class="field text-field">    
+	                                    <div class="label"><label>{% trans 'Status' %}</label></div>    
+	                                    <div class="value">
+	                                        <select data-placeholder="{% trans 'Select Status'%}" id="id_status" name="status" style="width:354px;" multiple="multiple" class="select-menu">
+	                                            <option value="P" {% if 'P' in status %}selected="selected"{% endif %}>{% trans "Published" %}</option>
+	                                            <option value="N" {% if 'N' in status %}selected="selected"{% endif %}>{% trans "Pending" %}</option>
+												<option value="R" {% if 'R' in status %}selected="selected"{% endif %}>{% trans "Rejected" %}</option>
+	                                            <option value="B" {% if 'B' in status %}selected="selected"{% endif %}>{% trans "Blocked" %}</option>
+	                                            <!--option value="D" {% if 'D' in status %}selected="selected"{% endif %}>{% trans "Drafted" %}</option-->
+	                                         </select>
+											 <span class="tip">{% trans "Note:Ignore this if you want to select all Status." %}</span> 
+	                                    </div>    
+	                                </div>
+									<div class="field text-field">    
+	                                    <div class="label"><label>{% trans 'Category' %}</label></div>    
+	                                    <div class="value">
+	                                        <select data-placeholder="{% trans 'Select Category'%}" id="id_category" name="category" style="width:354px;" multiple="multiple" class="select-menu">
+												{% for cat in categorys %}
+	                                            	<option value="{{cat.id}}" {% if cat.id in category %}selected="selected"{% endif %}>{{cat}}</option>
+												{% endfor %}
+	                                         </select>
+											 <!--span class="tip">{% trans "Note:If you didnt select any option system will fetch all the Listing Type." %}</span--> 
+	                                    </div>    
+	                                </div>
+	                                <div class="field text-field">    
+	                                    <div class="label"><label>{% trans 'Order' %}</label></div>    
+	                                    <div class="value">
+	                                        <select data-placeholder="{% trans 'Select Order'%}" id="id_order" name="order" style="width:158px;" class="select-menu"  onchange="loadsubcategory()">
+	                                            <option value="id" {% if order == 'id' %}selected="selected"{% endif %}>Oldest</option>
+	                                            <option value="-id" {% if order == '-id' %}selected="selected"{% endif %}>Newest</option>
+	                                            <option value="name" {% if order == 'name' %}selected="selected"{% endif %}>By Name (Alphabetical)</option>
+	                                         </select> 
+	                                    </div>    
+	                                </div>
+	                            </div> <!--/field-group--> 
+	                        </div> <!--/fields-->
+	                        <div class="form-submit right group trp-bg">
+	                           <button class="cform-button" roll="button" type="button" onclick="window.location.replace('{% url 'staff_manage_business' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+	                           <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'EXPORT' %}</span></button>
+	                        </div>                                                
+						</form>
+					</div>  
+				</div>
+			</div>                                                       
+		</div>
+	    <div id="aside" class="side-bar col_4">
+			<div class="section">
+				<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/1qSud3JD7RY5ybuy5vj2Es2lSQmb2Iuwcu8SpHlb5b1Y/edit#bookmark=id.7s8bgjxewai3" target="_blank"><span class="icon">?</span>Quick help</a><hr>
+			</div>
+        	{#% include 'admin/usermgmt/export-biz-csv-faq.html' %#}
+		</div>
+	</div>                                                    
+</div>
+{% endblock %}  
+{% block footer_include %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    if($("#id_start_date").length){
+        $("#id_start_date").datepicker({ dateFormat: "dd/mm/yy", 
+            onSelect: function(){
+                enddate = $(this).val();
+                splittedval = enddate.split('/');
+                var date = new Date(splittedval[2], splittedval[1]-1, splittedval[0]);
+                date.setDate(date.getDate() + 1);
+                $("#id_end_date").datepicker( "option", "minDate", date );
+            }
+        });
+    }
+    if($("#id_end_date").length){
+        $("#id_end_date").datepicker({ dateFormat: "dd/mm/yy", });
+    }
+});
+function validate(){
+  var success = true;                  
+  if(!$.trim($("#id_start_date").val())==''){
+      if($.trim($("#id_end_date").val())==''){
+          $("#id_end_date").addClass('error');
+          $("#id_end_date").parent('div').addClass('field-error');
+          success=false;
+        }
+    }
+    if(!$.trim($("#id_end_date").val())==''){
+      if($.trim($("#id_start_date").val())==''){
+          $("#id_start_date").addClass('error');
+          $("#id_start_date").parent('div').addClass('field-error');
+          success=false;
+        }
+    }
+    if(success){return true;}
+    else{return false;}                
+}
+</script>
+{% endblock %}    

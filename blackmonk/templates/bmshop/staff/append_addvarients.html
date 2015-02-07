@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="field text-field ">
+	<div class="label"><label>{{vr_obj.name}}</label></div>	
+	<div class="value">
+		{% for val in varients%}
+			<input type="checkbox" onclick="chk_var_val($(this).val())" id="val_chk_bx_{{val.id}}" name="variant_val_chk_bx-{{val.id}}" value="{{val.id}}" {% if val.is_product %}checked="checked"{% else %}{% if val.is_active %}checked="checked"{% endif %}{% endif %}> {{val.name}}
+		{% endfor %}
+	</div>
+</div>
+{% for val in varients %}
+	<div class="field text-field " {% if not val.is_product %}{% if not val.is_active %}style="display: none;"{% endif %}{% endif %} id="val_id_div_{{val.id}}">
+		<div class="value">
+			<span style="font-weight: bold;width: 175px; display: inline-block;">{{vr_obj.name}} : {{val.name}}</span>	
+			<span style="display: inline-block; width: 140px;"> Price <input type="text" class="fm class_variant_price" style="width:70px;" value="{{val.price}}" name="variant_price_{{val.id}}"  id="id_varient_price_{{val.id}}"></span>
+			<span style="display: inline-block; width: 170px;">Stock Items <input type="text" class="fm all_select_options" style="width:70px;" value="{{val.quantity}}" name="variant_stock_{{val.id}}" id="id_varient_stock_{{val.id}}"></span>
+		</div>
+	</div>
+{% endfor %}

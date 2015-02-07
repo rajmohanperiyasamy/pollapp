@@ -1,0 +1,201 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "payment" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Edit Payment{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+			<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="/staff/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff Home</a></li>
+                        <li><a href="/admin/portal/articles/category/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Manage Price</a></li>
+					</ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="float:left; display:block;width:300px; margin:0; padding-left:10px; line-height:normal">Manage Price</h2>           
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	
+				{% activetab "leftnav" "price" %}
+				{% include 'payment/staff/part_left_nav.html' %}
+
+				
+				<div class="main_col">
+					<div id="formContainer" class="add_cat clearfix"> 
+						<form action="/staff/payment/manageprice/" name="mform" id="mform" method="post" class="add_category">
+							<fieldset>
+                	    		
+								{% if message %}
+									 <div class="message">{{ message }}</div>
+								 {% endif %}
+								{% if form.errors %}
+									<div class="messageerror" >
+										<span style="font-size:1.2em;font-weight:250;"><strong>There is a problem with your submission</strong></span>
+				                        <ul>
+				               			 {% for field in form %}
+				               			 	{% if field.errors %}
+				               	            	<li>{% for error in field.errors %}{{ error }}{% endfor %}</li>
+				           	             	{% endif %}
+				              	 		 {% endfor %}
+										</ul>
+             		 		 		 </div>
+								{% endif %}
+								
+								<div class="title"><h2>Article</h2>(Set price per Article Type)</div>
+               					<dl class="horizontal">
+                      				
+									<div style="margin-left:148px;padding-bottom:4px;font-size:13px;"><b>Advertorial</b></div>
+                                    <dt><label for="cat_name"><b>Featured price: </b></label></dt>
+									<dd>
+                                        {{ form.advt_featured_price }}<em>daily price</em>
+                                    </dd>
+									
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+									<dd>
+                                        {{ form.advt_sponsored_price }}<em>daily price</em>
+                                    </dd>
+									
+									<div style="margin-left:148px;padding-bottom:4px;padding-top:6px;font-size:13px;"><b>Press Release</b></div>
+                                    <dt><label for="cat_name"><b>Featured price: </b></label></dt>
+									<dd>
+                                        {{ form.press_featured_price  }}<em>daily price</em>
+                                    </dd>
+									
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+									<dd>
+                                        {{ form.press_sponsored_price }}<em>daily price</em>
+                                    </dd>
+									
+									<div style="margin-left:148px;padding-bottom:4px;padding-top:6px;font-size:13px;"><b>Request a Story</b></div>
+                                    <dt><label for="cat_name"><b>Featured price: </b></label></dt>
+									<dd>
+                                        {{ form.request_featured_price }}<em>daily price</em>
+                                    </dd>
+									
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+									<dd>
+                                        {{ form.request_sponsored_price }}<em>daily price</em>
+                                    </dd>
+									
+									<div style="margin-left:148px;padding-bottom:4px;padding-top:6px;font-size:13px;"><b>Own Article</b></div>
+                                    <dt><label for="cat_name"><b>Featured price: </b></label></dt>
+									<dd>
+                                        {{ form.article_featured_price }}<em>daily price</em>
+                                    </dd>
+									
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+									<dd>
+                                        {{ form.article_sponsored_price }}<em>daily price</em>
+                                    </dd>
+									
+									
+									
+									<!--dt><label for="cat_name"><b>Press Release price: </b></label></dt>
+                                    <dd>
+                                        {{ form.article_press_price }}<em>daily price</em>
+                                    </dd>
+									
+									<dt><label for="cat_name"><b>Request a Story price: </b></label></dt>
+                                    <dd>
+                                        {{ form.article_request_price }}<em>daily price</em>
+                                    </dd>
+									
+									<dt><label for="cat_name"><b>Own Article price: </b></label></dt>
+                                    <dd>
+                                        {{ form.article_own_price }}<em>daily price</em>
+                                    </dd>
+									
+									<div class="title" style="padding-top:5px;"><h2 style="font-size:12px;"><b>Listing Prices</b></h2>(Set price per Article Type)</div>
+									<dt><label for="cat_name"><b>Featured price: </b></label></dt>
+                                    <dd>
+                                        {{ form.article_featured_price }}<em>daily price</em>
+                                    </dd>
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+                                    <dd>
+                                        {{ form.article_sponsored_price }}<em>daily price</em>
+                                    </dd-->
+								</dl>
+								
+								<div class="title" style="padding-top:40px;"><h2>Events</h2>(Set price per day)</div>
+               					<dl class="horizontal">
+                      				<dt><label for="cat_name"><b>Featured price: </b></label></dt>
+                                    <dd>
+                                        {{ form.event_price }}<em>daily price</em>
+                                    </dd>
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+                                    <dd>
+                                        {{ form.event_sponsored_price }}<em>daily price</em>
+                                    </dd>
+								</dl>
+								
+								<div class="title" style="padding-top:40px;"><h2>Classified</h2>(Set price per day)</div>
+               					<dl class="horizontal">
+									<dt><label for="cat_name"><b>Featured price: </b></label></dt>
+                                    <dd>
+                                        {{ form.classified_price }}<em>daily price</em>
+                                    </dd>
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+                                    <dd>
+                                        {{ form.classified_sponsored_price }}<em>daily price</em>
+                                    </dd>
+								</dl>
+								
+								<div class="title" style="padding-top:40px;"><h2>Business</h2>(Set price per month)</div>
+               					<dl class="horizontal">
+									<dt><label for="cat_name"><b>Featured price: </b></label></dt>
+                                    <dd>
+                                        {{ form.business_price }}<em>monthly price</em>
+                                    </dd>
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+                                    <dd>
+                                        {{ form.business_sponsored_price }}<em>monthly price</em>
+                                    </dd>
+								</dl>
+								
+								<div class="title" style="padding-top:40px;"><h2>Photo Gallery</h2>(Set price per month)</div>
+               					<dl class="horizontal">
+                      				<dt><label for="cat_name"><b>Featured price: </b></label></dt>
+                                    <dd>
+                                        {{ form.gallery_featured_price }}<em>daily price</em>
+                                    </dd>
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+                                    <dd>
+                                        {{ form.gallery_sponsored_price }}<em>daily price</em>
+                                    </dd>
+								</dl>
+								
+								<div class="title" style="padding-top:40px;"><h2>Property</h2>(Set price per month)</div>
+               					<dl class="horizontal">
+									<dt><label for="cat_name"><b>Featured price: </b></label></dt>
+                                    <dd>
+                                        {{ form.property_price }}<em>monthly price</em>
+                                    </dd>
+									<dt><label for="cat_name"><b>Sponsored price: </b></label></dt>
+                                    <dd>
+                                        {{ form.property_sponsored_price }}<em>monthly price</em>
+                                    </dd>
+									
+									<!--dt><label for="cat_name"><b>Job price: </b></label></dt>
+                                    <dd>
+                                        {{ form.job_price }}<em></em>
+                                    </dd-->
+									
+									<dt>&nbsp;</dt>
+                                    <dd>
+                                    	<div class="buttons" style="padding-top: 10px;">
+											<input class="inputsubmit on" id="" name="save" value="Save" type="submit"> <input class="inputsubmit off" value="Re-set" type="button" onclick="window.location.replace('/staff/payment/manageprice/')"/>
+										</div>
+                                    </dd>
+								</dl>                                                        
+							</fieldset> 
+						</form>
+                	</div>
+                </div> 
+                <hr />
+            </div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Settings' %}</p>
+</div>
+<div id="ajax_content" class="group">
+	<form action="{% url 'admin_portal_polls_settings' %}" name="mform" id="mform" method="post">{% csrf_token %}
+	<ul class="overview-list group">
+			<li class="list-item-container group">
+            	<div class="col-dt">
+                	<div class="col-inner">
+                    	<h5>{% trans 'Polls listed' %}</h5>
+                    </div>
+				</div>
+                <div class="col-dd">
+                	<div class="col-inner">
+                    	<h3>{{polls}}</h3>
+						<p><span class="ltxt80">{% trans 'Published' %}:{{published}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Pending' %}: {{pending}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Expired' %}: {{expired}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Blocked' %}: {{blocked}}</span></p>
+                        <a href="{% url 'staff_polls_polls_list' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Polls' %}">{% trans 'Manage' %}</a>
+                   	</div>                                                    
+              	</div>
+			</li> 
+        </ul>
+		<div class="fields vform no_head"> 
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                    <h3>{% trans 'Page Title (SEO)' %}</h3>
+                    <p class="ltxt80">{% trans 'Write a short page title. This title is used in the search results of search engines like Google.' %}</p> 
+                </div>  
+                <div class="field text-field">	
+                    <div class="value">
+                        <input class="fxl" title="{% trans 'Meta Title' %}" maxlength="190" name="meta_title" id="id_meta_title" type="text" placeholder="{% trans 'Enter a short title' %}" {% if seo_form.errors %} value="{{seo_form.meta_title.data}}" {% else %}value="{{seo.seo_title}}" {% endif %}  >
+                    </div>	
+                </div>
+            </div>   
+        </div> 
+        <div class="fields vform no_head"> 
+            <div id="meta-tags" class="field-group">
+                <div class="fields-head">
+                    <h3>{% trans 'Page Description (SEO)' %}</h3>
+                    <p class="ltxt80">{% trans 'In one or two short sentences to describe your page. This description is used in the search results of search engines like Google.' %}</p> 
+                </div>  
+                <div class="field text-field">	
+                    <div class="value">
+                        <textarea rows="8" id="id_meta_description" maxlength="390" name="meta_description" class="fxl" placeholder="{% trans 'Enter description' %}" onkeyUp="txtarealimit(this,400);">{% if seo_form.errors %}{{seo_form.meta_description.data}}{% else %}{{seo.seo_description}} {% endif %}</textarea>
+                    </div>	
+                </div>
+            </div>   
+        </div>
+        <section class="form-submit trp-bg">
+        	<button role="button" class="cform-button prime right" type="button" onclick="save_approval()"><span class="cform-button-text">{% trans 'Save Changes' %} </span></button>
+		</section>                                             
+	</form>                                       	   
+</div>

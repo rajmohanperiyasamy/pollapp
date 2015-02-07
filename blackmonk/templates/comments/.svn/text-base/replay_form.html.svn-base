@@ -1,0 +1,41 @@
+{% load comment_config %}
+{% load thumbnail %}
+{% load_comment_config_obj object %}
+{% load comments i18n %}
+<div id="reply_ajax_content_loading" style="display:none;padding-top:10px;padding-bottom:10px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Loading...' %}</p>
+</div>
+<div id="reply_ajax_content"  class="dev-cRDiv">
+	<div class="cMnT-pSt cLdRn">
+        <div class="cMnT-pSt-iN">
+            <form class="cMnT-fRm mRb0 dev-cForm">
+                <div class="vCrD pLlT">
+                    <span class="bBl-aRw">
+                        <span class="aRwa1"></span>
+                        <span class="aRwa2"></span>
+                    </span>
+                    {% if user %}
+          				<a href="{% url 'user_profile' user.username %}">
+          					<img class="aVtR" src="{% if user.image %}{% thumbnail user.image 48x48 %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}">
+          				</a>
+					{% else %}
+            			<a href="#"><img class="aVtR" src="{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg"></a>
+            		{% endif %}
+                </div>
+                <div class="cMnT-bDy">
+                    <div class="cMnT-bDy-iN">
+                        <div class="cMnT-tXtArA-wRp">
+							{{ form.comment }}
+             				{% for field in form %}{% if field.is_hidden %}<p>{{ field }}</p>{% endif %}{% endfor %}
+                   		</div>
+                        {% if user.is_authenticated %}<p class="fS11 cLr-gRy pLlT">Replying as <a href="{% url 'user_profile' user.username %}" class="cLr-lTbLu">{{user.get_full_name}}</a></p>{% endif %}
+                        <div class="cMnT-pSt-bTn pLrT">
+                            <!--button type="button" class="btn disabled dev-postBtn reply_save_button" data_id="{{comment_id}}" data-onclick="save_replay_comment({{comment_id}});return false;" disabled="disabled">Post</button-->
+							<button type="button"  class="btn disabled dev-postBtn reply_save_button pLrT" disabled="disabled" id="id_post_cmnt_btn">Post</button> &nbsp; <span class="as_comment_loading"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+</div>

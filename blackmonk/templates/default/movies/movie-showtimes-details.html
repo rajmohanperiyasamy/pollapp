@@ -1,0 +1,258 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load bm_movie_tags %}
+{% load mptt_comments_tags %}
+{% load thumbnail %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% block pagetitle %}{% seo_format_tag module='Movies' title=movie.seo_title code='DT' category=category.name as seo_meta_title %}{{seo_meta_title}} {% endblock %}
+{% block meta %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="{{movie.title}} movie in {{ globalsettings.city }} Theatres, {{movie.title}} show times.Includes {{movie.title}} movie reviews, cast & crew details and more" />
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "movies" %}
+    {{ block.super }}
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/ios-orientationchange-fix.js"></script>
+    <script src="{{STATIC_URL}}themes/js/fxslider.js"></script>
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script src="{{STATIC_URL}}themes/js/jquery.calendarPicker.js"></script> 
+    <script src="{{STATIC_URL}}themes/js/bm-date-format.js"></script>   
+    <script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script>
+    <script>
+        $(document).ready(function(e) {
+            // Calendar 
+            var calendarPicker1 = $("#dTpKr").calendarPicker({
+                monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                years:0,
+                reYe:true,
+                months:0,
+                days:4,
+                showDayArrows:false,
+                disablePrvDate:true,
+                //useWheel:true,
+                colWidth: 37,
+                
+                callback:function(cal){
+                   retreive_showtimes_by_date(cal.currentDate.format("yyyy-mm-dd"));         
+                }                                              
+                
+            });    
+                   
+            try{$(".fxslider").fxslider();}
+            catch(e){}    
+            
+            {% if movie.ratings != 0 %}
+                $('#id_rating_{{movie.id}}').raty({number: 5, readOnly: true, score: {{movie.ratings}}, size: 12});
+            {% endif %}                       
+
+        });
+        
+        function retreive_showtimes_by_date(sdate){
+            $('#id_showtimes_append_div').addClass('oP50');
+            $.ajax({
+                type: "get",
+                url: '{% url 'movies_get_showtimes_by_date' %}?mid={{movie.id}}',
+                data: 'sdate='+sdate,
+                dataType:'json',
+                success: function(data){
+                        if(data.status){
+                            if(!data.show_screens){$('#id_map_canvas_div').hide();}
+                            else{$('#id_map_canvas_div').show();}   
+                            $('#id_showtimes_append_div').empty().html(data.html);
+                            $('#id_showtimes_append_div').removeClass('oP50');
+                            $('html, body').animate({
+                                 scrollTop: $('#dTpKr').offset().top-20
+                             }, 500);
+                        }
+                    }
+            });
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <ul class="bRdCrB" itemscope itemtype="http://schema.org/WebPage">
+            <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb">
+                <a itemprop="url" href="{% url 'movies_home_page' %}"><span itemprop="title">{% trans 'Movies' %}</span></a>
+                <span class="sPrTr"></span>
+            </li>
+            <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb" class="aCtV"><span itemprop="title">{% trans 'Showtimes' %}</span></li>
+        </ul>
+        <div class="row-fluid">
+            <div class="main span8 mRb0mX769">
+                <section class="sCn pD15">
+                    <div class="row-fluid">
+                        <div class="pG-hD mRb0 rLvE">
+                            <h3 class="pLlT iM">Showtimes</h3>
+                            <div class="pStN-rT mRt10 span4 hMp">
+                                <div id="dTpKr" class="cLnDr-hR x-mNi mNt0 pLrT mRt-20"></div>
+                            </div>
+                            <div class="pLrT iM w50P vOp">
+                                <select class="bUiSlCtbtn-light pLrT fS12 tXt-rT" onchange="retreive_showtimes_by_date($(this).val());">
+									{% for dt in dateList %}
+                                    <option value="{{ dt|date:'Y-m-d' }}">{{ dt|date:'l, M j' }}</option>
+									{% endfor %}
+								</select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <ul class="nav nav-tabs tB-cStM pLlT pD015">
+                            <li><a href="{% url 'movies_movie_showtimes' %}" class="fW-nRmL fS12 cLr-lTbLu b0H"><i aria-hidden="true" class="bUi-iCn-aRw-l-16 ib fS12 mRr5"></i>Back to all movies</a></li>
+                        </ul>
+                    </div>
+                    <hr class="oTsT-hRz mRb15 mRt0">
+                    <div class="row-fluid">
+                        <div class="mDa-wPr span2 dSsP sP3mX480"> 
+                            <a class="bUi-tMb-wPr tMb-150 fLxiMgH" href="{{movie.get_absolute_url}}">
+                                <span class="bUi-tMb">
+                                    <span class="bUi-tMb-pRpL">
+                                        <span class="bUi-tMb-cLp">
+                                            <span class="bUi-tMb-cLp-iN"> 
+                                                <img class="mDa-oT" src="{% if movie.image %}{{movie.image.url}}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{movie.title}}">
+                                                <span class="vRtL-aLn"> </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="mDa-bDy span10 dSsP sP9mX480">
+                            <h4 class="mDa-hD tRnCt mRt4 mRb0 rLvE" title="{{movie.title}}"><a href="{{movie.get_absolute_url}}" class="fW-bLd pLlT w100mP">{{movie.title}}</a>
+                            {% if movie.movie_url %} <div class="fxslider"><a data-src="http://www.youtube.com/watch?v={{movie.movie_url}}" href="#" class="btn fS11 pD612 pLrT cLr-wHt mRb25mX480 mRt10mX480 pLlTmP hSmP mV-tRlR">Watch Trailer</a></div>{% endif %}
+                            </h4>
+                            <div class="mDa-dTa fS11 cLr-gRy">
+                                <div class="hSmP">
+                                    <span class="bDg bRdR-gRy mRr10">{{movie.certification|default:"NR"}}</span>
+                                    {% if movie.duration_hours %}<span class="hD-gD">{{movie.duration_hours}}</span>{% endif %}
+                                    <span class="sPrTr hD-gD">{% for gnr in movie.movie_type.all %}{{gnr.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+                                    <span class="sPrTr hD-gD">{{movie.release_date|ds_site_dateformat}}</span>
+                                </div>
+                                {% if movie.ratings %}
+                                <div class="sTr-rT mR50 mNi sTtC mRt-5mP mRb15mP mRt5SmP">
+                                    <span class="rT-oVrL-sCr ib fS12 mRr5"><strong class="cLr-dRk">{{movie.ratings|floatformat}}</strong>/5</span> 
+                                    <span class="sTr-wPr sTr-rT-mNi iCn16 oRg fV-sTr hSmP" id="id_rating_{{movie.id}}"></span>
+                                    <a href="{{movie.get_absolute_url}}#comments" class="cLr-lTbLu sPrTr mRt4 ib">{% get_mptt_comment_count for movie as comment_count %}{{comment_count}} {% trans 'reviews' %}</a>
+                                </div>
+                                {% endif %}
+                                <p class="fS12 cLr-gRy hMp">{{movie.synopsis|striptags|truncate_chars:190}}</p>
+                                <dl class="dl-horizontal mNi tXt-lFt fS11">
+                                    {% if movie.director %}
+                                    <dt><span class="dT-iN">{% trans 'Director' %}</span></dt>
+                                    <dd class="mRl60SmP"><span>{{movie.director|striptags}}</span></dd>
+                                    {% endif %}
+                                    {% if movie.cast %}
+                                    <dt><span class="dT-iN">{% trans 'Stars' %}</span></dt>
+                                    <dd class="mRl60SmP"><span>{{movie.cast}}</span> </dd>
+                                    {% endif %}
+                                </dl>
+                            </div>                                            
+                        </div>                                
+                    </div>
+                    <div id="id_showtimes_append_div">
+                        <hr class="oTsT-hRz mRb10 mRt15">
+                        <div class="tLbR mRb10">
+                            <div class="tLbR-iR">
+                                <div class="pLlT fS11 mRt4">
+                                    <span class="uC cLr-lTgRy">Today, July 21</span><span class="cLr-lTgRy sPrTr">94 theaters playing near you.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="showtimeData mDa-lT  mDa-oT-lT" id="id_showtimes_ul">
+							{% for thr in movie.get_theatres %}
+	                            {% if thr.get_shows_user %}
+			                        {% with thr.theatre as theater %}
+			                        <li class="mDa">
+			                            <div class="mDa-iN wLl mRb0 pD10">                                        
+			                                <div class="mDa-bDy pD0">
+			                                    <span class="pLlT mRr10 hMp"><i aria-hidden="true" class="bUi-iCn-mP-mKr-16 cLr-rEd mRt10 fS24 ib"></i></span>
+			                                    <div class="cLr-lT">
+			                                        <h5 class="mDa-hD tRnCt mR50 rLvE" title=""><a href="{{theater.get_absolute_url}}" class="fW-bLd">{{theater.name}}</a></h5>
+			                                        <div class="mDa-dTa fS12 cLr-gRy">
+			                                            <span>{{theater.address.address1}}{% if theater.address.address2 %}, {{theater.address.address2}}{% endif %}{% if theater.address.city %}, {{theater.address.city}}{% endif %}{% if theater.address.zip %} {{theater.address.zip}}{% endif %}</span>{% if theater.address.phone %}<span class="sPrTr">{{theater.address.phone}}</span>{% endif %}
+			                                        </div> 
+			                                        {% if theater.tkt_url %}<a href="{{theater.tkt_url}}" target="_blank" class="btn btn-warning fS11 pD612 cLr-wHt pStN-rT">{% trans 'Get Tickets' %}</a>{% endif %}
+			                                        <div class="cLrFx mRt10 mRb30">
+			                                            <div class="tMlN hRz">
+			                                                <ol class="inline tMs">
+			                                                    {% for show in thr.get_shows_user %}
+			                                                        {% for st in show.show_times|get_showtime_format %}
+			                                                            <li><a href="#" class="tM-gD" style="left:{{st.position}}%" target="_blank"><span class="dOt"></span><span class="tM"><span class="aRw"></span> {{st.showtime}}</span></a></li>
+			                                                        {% endfor %}
+			                                                    {% endfor %}    
+			                                                </ol>
+			                                            </div>
+			                                        </div> 
+			                                    </div> 
+			                                </div>
+			                            </div>
+			                        </li>
+			                        {% endwith %}
+	                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>   
+                    <!--div class="pGn pGn-cTr">
+                        <ul>
+                            <li class="dSbLd">
+                                <a href="#"><i aria-hidden="true" class="bUi-iCn-aRw-l-16 fS12"></i></a>
+                            </li>
+                            <li>
+                                <a href="#">1</a>
+                            </li>
+                            <li class="aCtV">
+                                <span>
+                                    2
+                                </span>
+                            </li>
+                            <li>
+                                <a href="#">3</a>
+                            </li>
+                            <li>
+                                <a href="#">4</a>
+                            </li>
+                            <li>
+                                <a href="#">5</a>
+                            </li>
+                            <li>
+                                <span>
+                                    ...
+                                </span>
+                            </li>
+                            <li>
+                                <a href="#">23</a>
+                            </li>
+                            <li>
+                                <a href="#"><i aria-hidden="true" class="bUi-iCn-aRw-r-16"></i></a>
+                            </li>
+                        </ul>
+                    </div-->
+                </section>
+            </div>
+            <aside class="sD-bR span4 oF3mN768 sP9mN768">
+                <div>
+                    <section class="tXt-cTr pD15 bNr-aD" id="banner_placement_right"></section>
+                </div>
+                <div>
+                    <section class="sCn pD15" id="id_map_canvas_div">
+                        <div id="map-canvas" style="height:250px"></div>
+                    </section>
+                </div>
+                <div>
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}themes/js/gmap-markerwithlabel.js"></script>    
+    
+    
+{% endblock %}        

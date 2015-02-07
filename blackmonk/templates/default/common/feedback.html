@@ -1,0 +1,30 @@
+{% load i18n %}
+<p>
+<table>
+	<tr>
+		<td>{% trans 'Name' %}</td>
+		<td><strong>{{ fdbk_name }}</strong></td>
+	</tr>
+	
+	<tr>
+		<td>{% trans 'Email' %}</td>
+		<td><strong>{{ fdbk_to_email }}</strong></td>
+	</tr>	
+
+	<tr>
+		<td>{% trans 'Type' %}</td>
+		<td><strong>{{ type }}</strong></td>
+	</tr>
+
+	<tr>
+		<td>{% trans 'Topic' %}</td>
+		<td><strong>{{ topic }}</strong></td>
+	</tr>
+
+	<tr>
+		<td>{% trans 'Message' %}</td>
+		<td><strong>{{ fdbk_msg }}</strong></td>
+	</tr>
+</table>
+</p><br/><br/>
+<p><strong>{% trans 'This Informaition is mailed by' %} <a href="{{globalsettings.website_url}}">{{globalsettings.domain}}</a></strong></p>

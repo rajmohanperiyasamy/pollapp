@@ -1,0 +1,89 @@
+ol.tweets{
+	color:#454545;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	font-size:14px;
+}
+ol.tweets li.tweet{
+	line-height:17px;
+	position:relative;
+	border-bottom:1px solid #EEEEEE;
+	padding:8px 0 8px 10px;
+}
+*html ol.tweets li.tweet{position:static;}
+ol.tweets li.tweet:hover {
+	background-color:#f4f6fe;
+	}
+ol.tweets .author_thumb {
+	display:block;
+	height:48px;
+	left:10px;
+	margin:0 10px 0 0;
+	border:1px solid #e6e6e6;
+	background-color:#f6f6f6;	
+	overflow:hidden;
+	position:absolute;
+	width:48px;
+	z-index:10;
+	padding:4px;
+	-moz-border-radius:6px;
+}	
+*html ol.tweets .author_thumb{position:static;float:left;margin-right:6px;}
+ol.tweets .author_thumb img {
+	height:48px;
+	width:48px;
+}	
+ol.tweets div.tweet_body {
+	display:block;
+	margin-left:68px;
+	min-height:58px;
+	overflow:hidden;
+	width:500px;
+}
+ol.tweets .twt_meta {
+	color:#999;
+	display:block;
+	font-size:11px;
+}
+ol.tweets .twt_meta a{
+	color:#999
+	}
+ol.tweets .twt_actions{
+	bottom:8px;
+	overflow:visible;
+	padding-right:10px;
+	position:absolute;
+	float:right;
+	font-size:11px;
+	right:0;
+	visibility:hidden;
+	}
+ol.tweets .twt_actions li{
+	display:block;
+	float:left;
+	padding:0 5px 0 5px;	
+	}
+ol.tweets li.tweet:hover .twt_actions{
+	visibility:visible !important
+	}
+
+.secondary ol.tweets {
+	font-size:11px !important;
+	
+	color:#4d4d4d;
+	
+	}
+.secondary ol.tweets .author_thumb{
+	left:6px !important;
+	margin:0 6px 0 0 !important;
+	}
+	
+.secondary ol.tweets .tweet_body {
+	display:block;
+	margin-left:60px;
+	min-height:58px;
+	overflow:hidden;
+	width:220px;
+	line-height:13px !important;
+}

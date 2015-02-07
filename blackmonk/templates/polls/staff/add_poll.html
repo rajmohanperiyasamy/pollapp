@@ -1,0 +1,233 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "polls" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% if poll %}{% trans 'Edit Poll' %}{% else %}{% trans 'Poll - Add New Poll' %}{% endif %} {% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+	
+{% endblock %}
+{% block content %}
+  <div id="staff-platform" class="group">
+                    <div class="header-bar {% if polls %}has-preview-head{% endif %}">
+                    	<h2><a href="{% url 'staff_polls_polls_list' %}"><span class="go_back"></span></a>{% if poll %}{% trans 'Edit Poll' %}{% else %}{% trans 'Add Poll' %}{% endif %}</h2>
+                      	{% if polls %}
+                        <section class="sub-header-bar">
+							<div class="preview-head">
+                                <div class="item-title">
+                                    <h1>{{ polls.title }}</h1>
+                                    <p class="ltxt80">{% trans 'By' %} <a href="#">{{polls.created_by.get_full_name}}</a> <span class="divider12">|</span> {{pollss.created_on|date:"M d, Y"}}</p>
+								</div>                                   
+                                <ul class="status-tabs group">
+                                    <li>{{polls.most_voted}}<span class="meta">{% trans 'votes' %}</span> </li>
+                                </ul>                                
+                            </div>  
+                        </section>                           
+						{% endif %}
+					</div>
+                    <div id="core-wraper" class="group">
+                        <div class="staff-main">
+                            <div class="page-wrap">
+                                <div id="Polls-add" class="group">
+                                    <div id="add-new-Poll">
+                                    	{% if form.errors %}
+										<div class="messageerror" style="background:#FCF4F4;padding:10px;color:#FF9902; box-shadow:0 0 2px rgba(0, 0, 0, 0.1);border-bottom:1px solid #e1e1e1">
+											<strong style="font-weight:bold;">{% trans 'There is a problem with your submission' %}</strong>
+										    <ul style="list-style:square;margin-left:20px;">
+										   		{% for field in form %}
+										   			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+										  	 	{% endfor %}
+											</ul>
+										</div>
+										{% endif %}
+                                         <form action="{% url 'staff_polls_add_poll' %}{% if poll %}?pid={{poll.id}}{% endif %}" name="mform1"  id="mform1" method="post" class="add_poll" onsubmit="return validate()">{% csrf_token %}
+                                            <div class="fields hform">
+                                                <div class="field-group">  
+                                                    <div class="field text-field fd-title">
+                                                        <div class="label"><label for="">{% trans 'Title' %}<span class="required-field">*</span></label></div>
+                                                         <div class="value" >
+                                                        	{{ form.title }}
+														</div>
+                                                    </div>
+                                                </div>
+												
+
+													<div class="field-group">
+                                                	<div class="fields-head"></div> 
+													<div id="id_poll_choices"><! -- extra div starts -->
+					<!-- choice edit -->	    	{% if poll.choices %}
+													{% for ch in poll.choices.all %}
+													
+													<input type="hidden" value="{{ch.id}}" name="choiceids" id="id_choice">
+													
+													
+                                                    <div class="field select-field">
+                                                        {% if forloop.first %}<div class="label"><label for="">{% trans 'Choices' %}<span class="required-field">*</span></label></div>{% endif %}
+                                                        <div class="value">
+                                                        <input type="text" id="id_choice1" class="tttxt dev-choice required fs" value="{{ch.choice}}" maxlength="200" name="choices" autocomplete="off" original-title="">
+														<a style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;" id="{{ch.id}}" class="icon-remove o3" onclick="remove_choice($(this));" href="javascript:void(0)">X</a>                                     
+                                                        </div>
+                                                    </div>
+													{% endfor %}
+													{% else %}
+													
+													<div class="field select-field">
+                                                        <div class="label"><label for="">{% trans 'Choices' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value">
+                                                            <input type="text" id="id_choice1" value="" class="tttxt dev-choice required fs" maxlength="200" name="choices" autocomplete="off" original-title="">                                     
+                                                        </div>
+                                                    </div>
+													
+													<div class="field select-field">
+                                                        <div class="value">
+                                                            <input type="text" id="id_choice2" value="" class="tttxt dev-choice fs" maxlength="200" name="choices" autocomplete="off" original-title="">
+															<a style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;" ></a>                                     
+                                                        </div>
+                                                    </div>
+													{% endif %}
+													</div><! -- extra div ends -->
+													
+													<div class="field select-field">
+                                                        <div class="value">
+                                                            <span>
+																<a class="txt-button" title="Add New Choice" onclick="add_new_choice();" href="javascript:void(0);">Add more</a>                                                            	
+                                                   			</span>                                     
+                                                        </div>
+                                                    </div>
+													
+													
+													
+													<div class="field select-field" style="margin-top:0;">
+                                                        <div class="label"><label for="">{% trans 'Question type' %}<span class="required-field">*</span></label></div>
+														<div class="value">
+                                                            <span>
+                                                            {{form.is_single}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                    
+													
+													
+
+													<div class="field select-field">
+                                                        <div class="label"><label for="">{% trans 'Expiry Date' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value">
+                                                            {{form.expiry_date}}                                     
+                                                        </div>
+                                                    </div>
+													
+                                                    
+													
+                                                </div>
+                                                                                                                                                            
+                                            </div> 
+                                            <div class="form-submit right group">
+                                               <button class="cform-button" type="button" roll="button" onclick="location.replace('{% url 'staff_polls_polls_list' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+											   <button role="button" value="save" name="save_button" class="cform-button prime id_poll_submit" type="submit"><span class="cform-button-text">{% trans 'SAVE' %}</span></button>
+                                            </div>                                                
+                                        </form>
+                                        
+                                        
+                                    </div>																	                                        
+                                                                            
+                                </div> <!-- end table -->                                    
+                            </div><!-- end page wrap -->
+                        </div>  <!-- end main-col -->                            
+                        <div id="aside" class="side-bar">
+                        	{% if polls %}
+                        	<div class="preview-aside-meta group">
+                                <ul class="side-navigation">
+                                    <li class="active"><a href="javascript:void(0);">{% trans 'Poll Details' %}</a></li>
+                                </ul>
+								<div class="preview-item-stats">
+									<a href="{% url 'staff_polls_preview' %}?aid={{polls.id}}" class="btn-txt-blue" style="display:block; text-align:center"><span class="btn-txt">{% trans 'Preview this Poll' %}</span></a>
+                                </div>                                
+							</div> 
+							{% endif %}
+                            {% include 'polls/staff/faq.html' %}                                            
+                        </div>                            
+					</div>                                                    
+				</div>
+{% endblock %}
+{% block footer_include%}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/polls/poll_staff.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+<script type="text/javascript">
+
+function add_new_choice(){
+	var html='<div class="field select-field">';
+    html+='<div class="value">';
+	html+='<input type="text" id="id_choice1" class="tttxt fs dev-choice" maxlength="200" name="choices" autocomplete="off" original-title="">';
+	html+='<a style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;" onclick="remove_choice($(this));" id="0" class="icon-remove o3" href="javascript:void(0);">X</a>';
+    html+='</div></div>';
+    $('#id_poll_choices').append(html);
+        
+}
+function remove_choice(hobj){
+	var count = $('#id_poll_choices input[type=text]').length;
+	if (count > 2){
+		var cid=$(hobj).attr('id');
+		$(hobj).parent('div').parent('div').remove();
+	}
+	else{alert('Need to have atleast two choices');}
+	if(cid!='0'){
+		$.ajax({
+			type: "GET",
+			url: '{% url 'staff_polls_ajax_delete_choice' %}',
+			data: 'cid='+cid+'&pid={{poll.id}}',
+			dataType:'JSON',
+			success: function(data){}
+		});
+	}
+	return false;
+}
+function validate(){
+	$("#mform1").validate().form();
+	var sux=true;
+	$('.dev-choice').each(function(){
+		if($(this).val()==''){add_error_class($(this));sux=false;}
+		else{remove_error_class($(this));}
+	});
+	return sux;
+}
+$(document).ready(function(){
+	if($("#id_expiry_date").length){$("#id_expiry_date").datepicker({ dateFormat: "dd/mm/yy",minDate: new Date() });}
+	$("#mform1").validate({
+		ignore: "",
+		highlight: function(element, errorClass){ //alert("hello"); 
+		add_error_class(element)},
+		unhighlight: function(element, errorClass){ //alert("bye"); 
+		remove_error_class(element)},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	title: "required",
+			expiry_date:"required"
+	   	},
+		submitHandler: function(form) {
+			$('.id_poll_submit').attr('disabled','disabled');
+			$('.id_poll_submit').css('opacity',0.5);
+			form.submit();
+		}
+	});
+	$( ".id_poll_submit" ).click(function(event){
+		setTimeout(function(){
+			$('.id_poll_submit').removeAttr('disabled');
+			$('.id_poll_submit').css('opacity',1);
+		},3000);
+	});
+	$('#id_expiry_date').bind("change", function(){
+		$("#mform1").validate().element($(this));
+	});
+});	
+</script>
+{% endblock %}			

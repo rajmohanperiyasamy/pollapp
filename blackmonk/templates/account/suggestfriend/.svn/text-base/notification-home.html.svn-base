@@ -1,0 +1,125 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "notification" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Notifications' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+ <div id="userHub-platform" class="group">
+                  	<div class="header-bar has-sub">
+					<h2>{% trans 'Notifications' %}</h2>
+                        <section class="sub-header-bar">
+                            <div class="group">
+                                  <div class="filter-view-tabs">
+                                        <ul class="left">
+                                            <li><label>{% trans 'View:' %}</label></li>
+                                            <li class="view-tab" id="filter_a">
+                                            	<a title="{% trans 'View All' %}" 	 name="all" id="listing_all"  class="view-both tttxt-n active first" href="javascript:void(0)"><span>All</span></a>
+                                                <a title="{% trans 'Unread Only' %}" name="N" 	id="listing_new"  class="view-pending tttxt-n"  href="javascript:void(0)"><span>Pending</span></a>
+												<a title="{% trans 'Readed Only' %}" name="R" 	id="listing_read" class="view-rejected tttxt-n" href="javascript:void(0)"><span>Rejected</span></a>
+											</li>
+                                            <li><label class="inline-block">{% trans 'Sort by:' %}</label><li>
+											<li>
+	                                            <select id="orderSelect" onchange="get_sorted_by($(this).val());" style="width:140px;" class="select-menu">
+	                                                  <option value="-modified_on" selected="">{% trans 'Newest' %}</option>
+	                                                  <option value="modified_on">{% trans 'Oldest' %}</option>
+	                                            </select>                                                    
+	                                        </li>
+										</ul>
+                                  </div>
+                                  <div class="add-section-right">
+                                        
+                                  </div> 
+                            </div>
+                        </section>                          
+                 		</div>
+						<div id="core-wraper" class="group">
+                        	<div class="userHub-main">
+                              	<div class="page-wrap">
+									<div id="favorites" class="group notification">
+										<span id="ajax_content_loading" class="load-list-items" style="display:none">
+										 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+										</span>
+										<div id="content_ajax" class="group">
+											{% include module_template %}
+											{# include 'account/suggestfriend/ajax-notification-list.html' #}
+										</div>	                                       
+                                    </div> <!-- end table -->
+                              </div>  <!-- end page wrap -->
+                        </div>  <!-- end main-col -->
+                        <div id="aside" class="side-bar">
+							<div class="preview-aside-meta group">
+                                    <ul class="side-navigation">
+                                        <li class="contrib_tab event">			<a onclick="goto_module('{% url 'ajax_notification_list' 'event' %}','event','all',1,'-modified_on',1)" 			href="javascript:void(0)">{% trans 'Events' %}</a></li>
+                                    	<li class="contrib_tab article">		<a onclick="goto_module('{% url 'ajax_notification_list' 'article' %}','article','all',1,'-modified_on',1)" 		href="javascript:void(0)">{% trans 'Articles' %}</a></li>
+										<li class="contrib_tab photoalbum">		<a onclick="goto_module('{% url 'ajax_notification_list' 'photoalbum' %}','photoalbum','all',1,'-modified_on',1)" 	href="javascript:void(0)">{% trans 'Photos' %}</a></li>
+										<li class="contrib_tab videos">			<a onclick="goto_module('{% url 'ajax_notification_list' 'videos' %}','videos','all',1,'-modified_on',1)" 			href="javascript:void(0)">{% trans 'Videos' %}</a></li>
+										<li class="contrib_tab movies">			<a onclick="goto_module('{% url 'ajax_notification_list' 'movies' %}','movies','all',1,'-modified_on',1)" 			href="javascript:void(0)">{% trans 'Movies' %}</a></li>
+										<li class="contrib_tab attraction">		<a onclick="goto_module('{% url 'ajax_notification_list' 'attraction' %}','attraction','all',1,'-modified_on',1)" 	href="javascript:void(0)">{% trans 'Attractions' %}</a></li>
+										<li class="contrib_tab classifieds">	<a onclick="goto_module('{% url 'ajax_notification_list' 'classifieds' %}','classifieds','all',1,'-modified_on',1)"href="javascript:void(0)">{% trans 'Classifieds' %}</a></li>
+										<li class="contrib_tab business">		<a onclick="goto_module('{% url 'ajax_notification_list' 'business' %}','business','all',1,'-modified_on',1)" 		href="javascript:void(0)">{% trans 'Business' %}</a></li>
+									</ul>
+                            </div>
+                        </div>                            
+					</div>                                                    
+				</div>
+{% endblock %}			
+{% block footer_include%}
+<script type="text/javascript" src="{{STATIC_URL}}js/user_notification.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#filter_a a').click(function(){
+		var module=$('#current_display_module').val();
+		var display_mode=$(this).attr('name');
+		
+		$('#id_status').val($(this).attr('name'));
+		if(!$(this).hasClass('active')){
+			$('#filter_a a').removeClass('active');
+			$(this).addClass('active');
+			goto_module("/user/notifications/"+module,module,display_mode,0,"-modified_on");
+		}
+	});
+});
+
+function get_sorted_by(sort_by){
+	var module=$('#current_display_module').val();
+	var display_mode=$('#current_display_mode').val();
+	goto_module("/user/notifications/"+module,module,display_mode,0,sort_by,1);
+}
+
+function goto_list(page){
+	var module=$('#current_display_module').val();
+	var display_mode=$('#current_display_mode').val();
+	var sort_by=$('#current_sort_by_mode').val();
+	goto_module("/user/notifications/"+module,module,display_mode,0,sort_by,page);
+}
+
+function goto_module(url,module,display_mode,filter_flag,sort_by,page){
+	if(filter_flag!=0){
+		display_mode='all';
+		$('#filter_a a').removeClass('active');
+		$('#listing_all').addClass('active');
+	}
+	$('.contrib_tab').removeClass('active');
+	$('#aside li.'+module).addClass('active');
+	$("#profile-preview").hide();
+	$('#content_ajax').hide();
+	$('#ajax_content_loading').show();
+	$.ajax({
+		type: "GET",
+		data: "display_mode="+display_mode+"&sort_by="+sort_by+"&page="+page,
+		url:url,
+		success: function(list_content){
+			$('#content_ajax').show();
+			$('#ajax_content_loading').hide();
+			$('#content_ajax').empty().html(list_content);
+		}
+	});	
+}
+
+</script>
+{% endblock %}					

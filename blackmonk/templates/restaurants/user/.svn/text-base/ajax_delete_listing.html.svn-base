@@ -1,0 +1,82 @@
+{% load i18n %}		
+{% load thumbnail %}
+{% if restaurant %} 
+	{% for rest in restaurant %}	
+	{% for ni in new_id %}
+	{% ifequal ni rest.id %}
+   <li class="table-list" id="li_{{rest.id}}">
+			<div class="table-list-container check-item has-thumb110 group">
+		 	{% if rest.featured_sponsored == 'F' %}
+		 		<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+			{% else %}
+				{% if rest.featured_sponsored == 'S' %}
+		 			<span class="list-type sponsored-item"><a class="tttxt" title="{% trans 'Item listed as sponsored' %}" href="#">{% trans 'Sponsored' %}</a></span>
+				{% endif %}
+			{% endif %}
+		 	<span class="checkbox-wrap">
+				<span class="cform-checkbox-container"><input type="checkbox" value="{{rest.id}}" id="id_event_action" name="artCulture" class="check-overflow cbox"><span class="cform-checkbox-element"></span></span>
+			</span>
+            <div class="item-media">
+            	<a href="{% url 'user_preview_restaurant' rest.id %}" class="inline-block">
+                    <span class="item-thumb thumb-110">
+                        <span class="thumb-in">
+                            <span class="thumb"><img src="{% if rest.logo.logo %}{% thumbnail rest.logo.logo 110x0 %}{% else %}{{ rest.get_default_image }}{% endif %}" alt="{{gal.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                        </span>
+                    </span>
+				</a>                                                            
+            </div> 
+			<div class="item-info relative-block">
+                <h3 class="title"><a href="{% url 'user_preview_restaurant' rest.id %}">{{rest.name}}</a></h3>
+                <p class="ltxt80">
+                	{% for cat in rest.categories.all %}
+					{{cat}}{% if not forloop.last %},{% endif %}
+					{% endfor %}
+				</p> 
+				<p class="ltxt80">
+					{% trans 'By' %} <a href="{% url 'user_profile' rest.created_by.profile_slug %}">{{rest.created_by.display_name}}</a> 
+					<span class="divider12">|</span>{{rest.created_on|date:"M d, Y"}}
+				</p>
+                <ul class="quick-stats group">
+                    <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{rest.most_viewed}}</a></li>
+                    <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span>46</a></li-->
+                </ul>
+                <div class="item-status no-options dev_hide_list_status">
+                	<span class="status-inside inline-block" id="id_span_chge_sts_{{rest.id}}">
+						<span title="{{rest.get_status|capfirst}}" name="{{rest.status}}" id="id_estatus_{{rest.id}}" class="inline-block tttxt status-idty icon-{{rest.get_status}}"></span>	 
+                    </span>
+					
+                </div>                                                        
+            </div>
+            <div class="action-buttons {% if forloop.counter == 1 %}tip tip6{% endif %}">
+                <div class="relative-block">
+                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{rest.id}}" onclick="display_settings({{rest.id}});"><span class="action-icon icon-manage"></span></span>
+                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{rest.id}}" style="display:none">
+						{% if rest.status == 'P' and rest.featured_sponsored != 'F' %}
+							<li><a title="{% trans 'Upgrade ListingType' %}" href="{% url 'user_restaurant_upgrade_listing_type' rest.id %}" class="bm-restaurant-listing">{% trans 'Upgrade Listing Type' %}</a></li>
+							<li><span class="line-break"></span></li>
+						{% else %}
+							{% if rest.status == 'D' %}
+							<li><a title="{% trans 'Send for Approval' %}" href="{% url 'user_restaurant_upgrade_listing_type' rest.id %}" class="bm-restaurant-listing">{% trans 'Send for Approval' %}</a></li>
+							<li><span class="line-break"></span></li>
+							{% endif %}
+						{% endif %}
+						<li><a title="{% trans 'Edit this Restaurant' %}" href="{% url 'user_update_restaurant' rest.id %}">{% trans 'Edit' %}</a></li>
+						<li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'user_seo_restaurant' rest.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+        	            <li><span class="line-break"></span></li>
+						<li><a title="{% trans 'Manage Menus' %}" href="{% url 'user_restaurant_menu' rest.id %}">{% trans 'Manage Menus' %}</a></li>
+						<li><a title="{% trans 'Manage Images' %}" href="{% url 'user_restaurant_image' rest.id %}">{% trans 'Manage Images' %}</a></li>
+						<li><a title="{% trans 'Manage Videos' %}" href="{% url 'user_restaurant_video' %}?rid={{rest.id}}">{% trans 'Manage Videos' %}</a></li>
+						<li><a title="{% trans 'Stats' %}" href="{% url 'common_get_modules_elements_views' rest.id 'restaurants' %}" class="bm-add-gadget light_box">{% trans 'View Stats' %}</a></li>
+						<li><span class="line-break"></span></li>
+            	        <li><a onclick="if(confirm(gettext('Are you sure you want to delete the Restaurant ?'))){filter_action({{rest.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+                    </ul>
+				</div>                                                              	                                                         
+            </div>
+        </div>
+    </li> 
+	{% endifequal %}
+ {% endfor %}
+  {% endfor %}
+ {% else %}
+  <div class="no-data"><p>{% trans 'Sorry , No Restaurant found !' %}</p></div>
+ {% endif %}  

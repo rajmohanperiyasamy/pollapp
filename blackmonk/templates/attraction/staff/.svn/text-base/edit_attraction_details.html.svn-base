@@ -1,0 +1,171 @@
+{% extends "staff_base.html" %}
+{% load upload_tags %}
+{% load comparison %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "attraction" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Update Attraction Images & Videos{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/lightbox.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/general/lightbox.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/base.js"></script>
+<script>
+function validate(){
+	return true;
+}
+function show_image(url){
+	$('#ajax_content_ajax').html('');
+	var display_html="<img src='"+url+"'>";
+	$('#ajax_content_ajax').html(display_html);
+	show_content('show_lightbox');
+}
+function show_box(id){
+	var display_html="<embed width='750' height='450' src='http://www.youtube.com/v/"+id+"?autoplay=1' type='application/x-shockwave-flash'></embed>";
+	$('#ajax_content_ajax').html('');
+	$('#ajax_content_ajax').html(display_html);
+	show_content('show_lightbox')
+}
+</script>
+{% endblock %}
+{% block content %}
+<!-- Lightbox code begin -->   
+<div class="lightbox_outer" >
+	<div class="lightbox_content_holder">
+		<a href= "#1" class="call_lightbox lb_close fix_ie6png enlarge click_pvnt"></a>
+		<div class="lightbox_content">
+			<!-- Put all your contents only inside this "lightbox_content" div -->
+			<!--Payment Calc Code Start -->
+			<div style="overflow-y:auto;" class="allhide" id="show_lightbox">
+				<div id="ajax_content_ajax"></div>
+			</div>	
+			<!--Payment Calc Code Ends -->
+			<!-- put your contents only iside "lightbox_content" div -->		
+		</div>			
+	</div>
+</div>
+<div class="lightbox_background"></div>
+<!-- Lightbox code end -->
+<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+	<div class="bread-crumb clearfix">
+        <ul>
+            <li><a href="/staff/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff Home</a></li>
+            <li><a href="{% url 'staff_manage_attraction' %}" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Attraction</a></li>
+            <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Images & Videos</li>
+		</ul>
+    </div> 
+</div>
+<div class="main" style="margin-bottom:20px;">
+<div class="main_col">
+<div id="panel_tabs" class="clearfix">
+    <ul class="inline">
+    	<li class="clearfix">
+    		<a href="{% url 'staff_edit_attraction' %}?id={{attraction.id}}" class="clearfix"> 
+    			<span class="step_count clearfix">1</span> 
+    			<span class="step_label clearfix">Basic&nbsp;Information</span> 
+    		</a>
+    	</li>
+        <li class="clearfix"> 
+        	<a href="{% url 'staff_edit_details_attraction' %}?id={{attraction.id}}" class="clearfix active"> 
+        		<span class="step_count clearfix">2</span> 
+        		<span class="step_label clearfix">Photos&nbsp;&amp;&nbsp;Videos</span>
+        	</a>
+        </li>
+    </ul>                
+   <div class="clear"></div>                
+</div>	
+<div style="border-top:1px solid #ccc;"></div>               
+<div id="formContainer" class=" clearfix"> 
+<form action="{% url 'staff_edit_details_attraction' %}?id={{attraction.id}}" method="post" enctype="multipart/form-data" onsubmit="return validate()" name="f_addclassifiedthird" id="f_addclassifiedthird" class="clearfix coloumn" style="margin-top:20px; width:740px">{% csrf_token %}
+	<div class="left_col">
+		<h3>Options</h3>
+		<ul class="side_menus">
+			<li><a href="javascript:load_image()" id="sys" class="side_menu on">From Computer</a></li>
+			<li><a href="javascript:load_flikersearch()" id="flk" class="side_menu">From Flicker</a></li>
+			<li><a href="javascript:load_youtubesearch()" id="ytube" class="side_menu">Youtube Search</a></li>
+			<li><a href="javascript:load_youtubeurl()" id="url" class="side_menu">Enter Url</a></li>
+		</ul>
+    </div>
+	<input type="hidden" name="id" value="{{ attraction.id }}" />
+	<div style="padding:100px;text-align:center;display:none;" id="ajax_loading">
+		<img src="{{STATIC_URL}}images/loading.gif">
+	</div>
+	<div id="ajax_content">
+		{% include 'attraction/staff/ajax_image.html' %}
+	</div>
+    <fieldset class="base">
+		<dl class="horizontal base">
+    		<dt></dt>
+  			<dd>
+                <input name="goback" value="Back" class="inputsubmit off" type="button" onclick="window.location.replace('{% url 'staff_edit_attraction' %}?id={{attraction.id}}')"/> 
+                <input name="continue" value="Finish" class="inputsubmit on" type="submit" /> 
+  			</dd>
+		</dl>                                                        
+    </fieldset>                                                                            
+	</form>
+</div> 
+<hr/></div>	
+<script type="text/javascript">
+function load_image(){
+	$('#ajax_loading').show();
+	$('#ajax_content').empty();
+	$('.side_menu').removeClass('on');
+	$('#sys').addClass('on');
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_load_image_attraction' %}",
+		data: "id={{attraction.id}}",
+		success: function(data){
+			$('#ajax_loading').hide();
+			$('#ajax_content').html(data);
+		}
+	});
+}
+function load_flikersearch(){
+	$('#ajax_loading').show();
+	$('#ajax_content').empty();
+	$('.side_menu').removeClass('on');
+	$('#flk').addClass('on');
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_load_flickersearch_attraction' %}",
+		data: "id={{attraction.id}}",
+		success: function(data){
+			$('#ajax_loading').hide();
+			$('#ajax_content').html(data);
+		}
+	});
+}
+function load_youtubeurl(){
+	$('#ajax_loading').show();
+	$('#ajax_content').empty();
+	$('.side_menu').removeClass('on');
+	$('#url').addClass('on');
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_load_url_attraction' %}",
+		data: "id={{attraction.id}}",
+		success: function(data){
+			$('#ajax_loading').hide();
+			$('#ajax_content').html(data);
+		}
+	});
+}
+function load_youtubesearch(){
+	$('#ajax_loading').show();
+	$('#ajax_content').empty();
+	$('.side_menu').removeClass('on');
+	$('#ytube').addClass('on');
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_load_youtube_search_attraction' %}",
+		data: "id={{attraction.id}}",
+		success: function(data){
+			$('#ajax_loading').hide();
+			$('#ajax_content').html(data);
+		}
+	});
+}
+</script>	
+{% endblock %}

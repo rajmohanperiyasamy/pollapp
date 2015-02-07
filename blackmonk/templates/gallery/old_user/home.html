@@ -1,0 +1,676 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "photos" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Photos' %} {% endblock %}
+{% block head %}
+<!-- TAGS -->
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css" />
+<!-- TAGS -->
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+  	<div class="header-bar has-sub">
+	<h2>{% trans 'Gallery' %}</h2>
+        <section class="sub-header-bar">
+            <div class="group">
+                  <div class="filter-view-tabs">
+                        <ul class="left">
+                              <li><label>{% trans 'View:' %}</label></li>
+                              <li class="view-tab tip tip1" id="filter_a">
+                                    <a title="{% trans 'View All' %}" name="all" id="listing_all" class="view-both tttxt-n active first" href="javascript:void(0)"><span>All</span></a>
+                                    <a title="{% trans 'Pending Only' %}" name="N" id="listing_pending" class="view-pending tttxt-n" href="javascript:void(0)"><span>Pending</span></a>
+                                    <a title="{% trans 'Published only' %}"  name="P" id="listing_published" class="view-published tttxt-n" href="javascript:void(0)"><span>Published</span></a>
+                                    <a title="{% trans 'Draft only' %}"  name="D" id="listing_drafted" class="view-expired tttxt-n" href="javascript:void(0)"><span>Draft</span></a>
+									<a title="{% trans 'Rejected only' %}" name="R" id="listing_rejected" class="view-rejected tttxt-n" href="javascript:void(0)"><span>Rejected</span></a>
+									<a title="{% trans 'Blocked only' %}" name="B" id="listing_blocked" class="view-withdrawn tttxt-n last" href="javascript:void(0)"><span>{% trans 'Blocked' %}</span></a>     
+                              </li>
+                              <li class="view-tab tip tip2" id="filter_b">
+                                    <a title="{% trans 'View All' %}" name="all" class="view-both tttxt-n active first" href="javascript:void(0)"><span>{% trans 'All' %}</span></a>
+                                    <a title="{% trans 'Show Featured' %}" name="1" class="view-featured tttxt-n" href="javascript:void(0)"><span>{% trans 'Featured' %}</span></a>
+                                    <a title="{% trans 'Show Basic' %}" name="0" class="view-free tttxt-n last" href="javascript:void(0)"><span>{% trans 'Basic' %}</span></a>
+                              </li>
+                        </ul>
+                        <form action="#" id="article-search-form" class="module-search tip tip3">
+                            <button role="button" class="cform-button search-button" type="button" onclick="$('#id_search').val('true'),sort_search();"><span class="search-icon">{% trans 'Search' %}</span></button>
+                            <div class="inline-block relative-block">
+                            	<!--span onclick="clear_search();" class="reset txt-button tttxt" id="close_search" title="{% trans 'Clear Search' %}" style="{% if not search %}display:none;{% endif %}">Clear search</span-->
+                                <input type="text" placeholder="{% trans 'Search gallery' %}" onkeyup="$('.search_adv2').val(this.value);" name="search_keyword" id="id_search_keyword" class="search-list-items search_adv1">
+                                <div class="call-advanced-search">
+                                    <span class="arrow-down tttxt" title="{% trans 'Show search options' %}"></span>
+                                </div> 
+                                <div id="advanced-search-options" style="display: none;">
+                                	<div class="search-head">
+                                    	<!-- h5>Search</h5 -->
+                                    	<span class="inline-block icon-close close-this"></span>
+                                    </div>
+                                    <div class="advanced-search-fields">
+                                		<dl class="vertical">
+                                			<dt><label>{% trans 'Search' %}</label></dt>
+                                			<dd>
+                                            	<input type="text" class="search_adv2" onkeyup="$('.search_adv1').val(this.value);" placeholder="{% trans 'keywords' %}" name="search_keyword" id="id_search_keyword" style="width:161px;height:25px;">
+                                			</dd>                                                        
+                                			<dt></dt>
+                                			<dd>
+                                            	<select style="width: 165px;" class="select-menu" id="search_type">
+                                                    <option value="">{% trans 'All' %}</option>
+			                                        <option value="title">&nbsp;{% trans 'Title' %}</option>
+                                                    <option value="description">&nbsp;{% trans 'Description' %}</option>
+                                				</select>
+                                			</dd>
+											<dt></dt>
+                                			<dd>
+                                            	<select style="width: 165px;" class="select-menu" id="search_category">
+													 <option value=""> {% trans 'All Categories' %} </option>
+	                                                   {% for cat in categories %}
+		                   									<option value="{{ cat.id }}">{{ cat.name }}</option>
+		                   								{% endfor %}
+                                                </select>
+											</dd>
+                                		</dl>
+									</div>                                                        
+                                	<div class="form-submit"><button type="button" class="btn-txt-blue small advnc_search" onclick="$('#id_search').val('true'),sort_search();" role="button"><span class="btn-txt">{% trans 'Search' %}</span></button></div>
+                                </div> 
+                                                                                                                         
+							</div>                                                
+                        </form>
+                  </div>
+                  <div class="add-section-right">
+                        <a href="{% url 'user_add_gallery' %}" class="btn-txt-prime bm-create-gallery" title="{% trans 'Add New Gallery' %}"><span class="btn-txt">{% trans 'Add New Gallery' %}</span></a>
+                  </div> 
+            </div>
+        </section>                          
+ 		</div>
+		<div id="core-wraper" class="group">
+        	<div class="userHub-main">
+              	<div class="page-wrap">
+					<div id="articles" class="group">
+                        <section class="toolbars">
+                            <div class="group">
+                                <ul class="toolbar left">
+                                    <li class="master-check tool">
+										<span class="cform-checkbox-container"><input type="checkbox" value="true"  id="master_check" name="master-check"><span class="cform-checkbox-element"></span></span>
+									</li>
+                                    <li class="tool tip tip4">
+                                        <select id="actionSelect" data-placeholder="{% trans 'Actions' %}" class="select-menu" onchange="$('#id_action').val($(this).val()),action();" style=" width:140px;">
+                                          <option value=""></option>
+                                          <option value="DEL">{% trans 'Delete' %}</option>
+                                        </select>
+                                    </li>
+                                    <li class="tool tip tip5">                                                       
+                                        <label class="inline-block">{% trans 'Sort by:' %}</label>
+                                        <select id="orderSelect" onchange="$('#id_sort').val($(this).val()),sort_search();" style="width:150px;" class="select-menu">
+                                              <option value="-created_on" selected="">{% trans 'Newest' %}</option>
+                                              <option value="created_on">{% trans 'Oldest' %}</option>
+											  <option value="-most_viewed">{% trans 'Most Viewed' %}</option>
+                                        </select>                                                    
+                                    </li>
+                                </ul>
+                                {% include 'common/pagination_top.html'%} <!-- pagination top -->  
+                            </div>
+                        </section>
+						<span id="ajax_content_loading" class="load-list-items" style="display:none">
+						 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+						</span>
+						<div style="display:none;" class="info-bar" id="top_info_bar"></div>
+						<div id="ajax_content_cls" class="group">
+                    	{% include 'gallery/user/ajax_listing.html'%} 
+                   		</div>	                                       
+                                    </div> <!-- end table -->
+                              </div>  <!-- end page wrap -->
+                        </div>  <!-- end main-col -->                            
+                        <div id="aside" class="side-bar">
+                        	<div id="module-stats" class="section">
+                            	<div class="group">
+                                    <h5>{% trans 'State' %}</h5>
+									<span id="ajax_loading" class="loading-stats"  style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" align="..."></span>
+								</div>
+                            	<ol class="stats-summary" id="id_module_state_listing">
+			                 	{% include 'gallery/user/ajax_sidebar.html' %} 
+                </ol>		
+            </div>
+           {% include 'gallery/user/faq.html' %}
+        </div>                            
+	</div>                                                    
+</div>
+{% endblock %}			
+{% block footer_include %}
+<!-- TAGS -->
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+<!-- TAGS -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+<script type="text/javascript">
+var selected_video_ids=[];
+function save_description(){
+	var dataString='';
+	$('input[name=ids]').each(function(){
+		id=$(this).val();
+		dataString+='&title_'+id+'='+$('#title_'+id).val();
+		dataString+='&description_'+id+'='+$('#description_'+id).val();
+	});
+	$('#ajax_content_gallery').hide();
+	$('#ajax_content_loading_gallery').show();
+	$.ajax({
+	type: "POST",
+	url: $('#descmform').attr('action'),
+	data: dataString,
+	dataType:'JSON',
+	success: function(data){
+			window.location.reload(true);
+			$.colorbox.close();
+			show_msg(data.msg,data.mtype);
+		}
+	});
+}
+function save_photo(){
+	var dataString='&selected_id='+selected_video_ids;
+	$('#ajax_content_gallery_photo').hide();
+	$('#ajax_content_loading_gallery_photo').show();
+	$.ajax({
+	type: "POST",
+	url: $('#photomform').attr('action'),
+	data: dataString,
+	success: function(data){
+				selected_video_ids=[];
+				try{
+					$('#ajax_content_loading_gallery').hide();
+					$('#ajax_content_gallery').show();
+				}
+				catch(e){}
+				$('#ajax_content_loading_gallery_photo').hide();
+				$('#ajax_content_gallery_photo').empty().html(data);//lightbox_html
+				$('#ajax_content_gallery_photo').show();
+				$.colorbox.resize({width: "880", height:"auto", top:"5%"});
+				$.colorbox.resize();
+				$('#bmTitle').html(gettext('Update Caption'));
+		}
+	});
+}
+function save_updated_album(){
+	var flag=$('#galleryeditform').validate().form();
+	if(flag){
+		var dataString='title='+$('#id_title').val();
+		dataString+='&summary='+$('#id_summary').val();
+		dataString+='&category='+$('#id_category').val();
+		dataString+='&tags='+$('input[name=tags]').val();	
+		$('#ajax_content_gallery_update').hide();
+		$('#ajax_content_loading_update_gallery').show();
+		$.ajax({
+		type: "POST",
+		url: $('#galleryeditform').attr('action'),
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+			if(data.status){
+				window.location.reload(true);
+			}else{
+				$('#ajax_content_loading_update_gallery').hide();
+				$('#ajax_content_gallery_update').empty().html(data.html);
+				$('#ajax_content_gallery_update').show();
+				$.colorbox.resize();
+			}
+			}
+		});
+	}
+}
+function save_album(){
+	var flag = $('#mform').validate().form()
+	if(flag){
+		var dataString='title='+$('#id_title').val();
+		dataString+='&summary='+$('#id_summary').val();
+		dataString+='&category='+$('#id_category').val();
+		dataString+='&tags='+$('input[name=tags]').val();		
+		$('#ajax_content_gallery').hide();
+		$('#ajax_content_loading_gallery').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'user_add_gallery' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+					$('#ajax_content_loading_gallery').hide();
+					$('#ajax_content_gallery').empty().html(data.html);
+					$('#ajax_content_gallery').show();
+					$.colorbox.resize();
+			},
+		error:function(data){
+					$('#ajax_content_loading_gallery').hide();
+					$('#ajax_content_gallery').empty().html(data.responseText);//lightbox_html
+					$('#ajax_content_gallery').show();
+					$.colorbox.resize({width: "880", height:"630", top:"5%"});
+					$('#bmTitle').html(gettext('Upload Photos'));
+			}
+		});
+	}
+}
+function search_filter(sort){
+	$('.strong_disp').hide();
+	$('.a_link').show();
+	$('#a_'+sort).hide();
+	$('#s_'+sort).show();
+	SORT=sort;
+	PAGE=1;
+	$("#images").html('');
+	getPhotos();
+}
+function load_more(){
+	PAGE=PAGE+1;
+	var text = document.getElementById("id_title").value;
+	strRE = new RegExp( );
+	strRE.compile( '^[\s ]*$', 'gi' );
+	if(strRE.test(text)==true){alert("Please enter photo title?");}
+	else{
+	$('#default_text').hide();
+	$("#ajax_content_loading_flicker_search").show();
+	var url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ gallery_settings.flickr_api_key }}";
+	url += "&safe_search=1";
+	url += "&per_page=30"
+	url += "&page="+PAGE;
+	url += "&sort="+SORT;
+	url += "&text="+text;
+	$.getJSON(url + "&format=json&jsoncallback=?", function(data){
+	$("#ajax_content_loading_flicker_search_page").hide();
+		if(data.photos.photo==null || data.photos.photo=='')
+		{ 
+		$("#mform").hide();
+		alert("No search result found try another keyword.");
+		}
+		else{ 
+		    $.each(data.photos.photo, function(i,item){
+			    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+				var l_img = src + ".jpg";
+				var s_img = src + "_s.jpg";
+				src += "_t.jpg";
+				var html ="<li onclick='select_photo(\""+item.id+"\")' class='photos-selectable inline-block' id='image_"+item.id+"'>";
+	            html +="<div class='photos-selectable-area inline-block'><input type='hidden' id='src_s_"+item.id+"' value='"+s_img+"'><input type='hidden' id='src_l_"+item.id+"' value='"+l_img+"'>";
+	            html += "<div class='photos-selectable-preview'><img src='"+src+"'><a href='#' title='Large preview' class='icon-view'></a></div>";
+				html += "</div>";                              
+				html += "<p class='photos-selectable-meta'>"+item.title+"</p>";    
+				html += "</li>";
+				
+				$("#images").append(html);
+		    });
+		}
+	});
+	}
+}
+var flag=false;
+function getPhotos(){
+	flag=true;
+	$('#ajax_content_loading_flicker_search_page').hide();
+	var text = document.getElementById("id_title").value;
+	strRE = new RegExp( );
+	strRE.compile( '^[\s ]*$', 'gi' );
+	if(strRE.test(text)==true){alert("Please enter photo title?");}
+	else{
+	$("#images").html('');
+	$('#default_text').show();
+	$('#default_text').find('.tip').hide();
+	$("#ajax_content_loading_flicker_search").show();
+	var url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ gallery_settings.flickr_api_key }}";
+	url += "&safe_search=1";
+	url += "&per_page=30"
+	url += "&page="+PAGE;
+	url += "&sort="+SORT;
+	url += "&text="+text;
+	$.getJSON(url + "&format=json&jsoncallback=?", function(data){
+	$("#ajax_content_loading_flicker_search").hide();
+		if(data.photos.photo==null || data.photos.photo=='')
+		{ 
+		$("#mform").hide();
+		alert("No search result found try another keyword.");
+		}
+		else{ 
+		    $.each(data.photos.photo, function(i,item){
+			    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+				var l_img = src + ".jpg";
+				var s_img = src + "_s.jpg";
+				src += "_t.jpg";
+				var html ="<li onclick='select_photo(\""+item.id+"\")' class='photos-selectable inline-block' id='image_"+item.id+"'>";
+	            html +="<div class='photos-selectable-area inline-block'><input type='hidden' id='src_s_"+item.id+"' value='"+s_img+"'><input type='hidden' id='src_l_"+item.id+"' value='"+l_img+"'>";
+	            html += "<div class='photos-selectable-preview'><img src='"+src+"'><a href='#' onclick='view_large_image(event,\""+l_img+"\")' title='Large preview' class='icon-view preview-item''></a></div>";
+				html += "</div>";                              
+				html += "<p class='photos-selectable-meta'>"+item.title+"</p>";    
+				html += "</li>";
+				$("#images").append(html);
+				if(jQuery.inArray(item.id,selected_video_ids)>=0){$('#image_'+item.id).addClass('checked');}
+		    });
+		}
+	});
+	}
+}
+function view_large_image(ev,src){
+	ev.stopPropagation();
+	$('#large_image').attr('src',src);
+	$(".item-preview-wrapper").show();
+}
+var load_url="{{STATIC_URL}}ui/images/global/loading-s.gif";
+function select_photo(id){
+	if(jQuery.inArray(id,selected_video_ids)<0){
+		$('#selected_default_text').hide();
+		$('#image_'+id).addClass('checked');
+		var src=$('#src_s_'+id).val();
+		var html ="<li class='photos-selectable inline-block' id='simage_"+id+"' style='min-width:75px;min-height:75px;background:url("+load_url+") no-repeat center transparent;'>";
+		html+="<div class='photos-selectable-area inline-block'>";
+		html+="<div class='photos-selectable-preview'><img src='"+src+"'><a class='icon-remove' title='Remove' href='javascript:deselect_photo(\""+id+"\")'></a>";
+		html+="<a href='#' onclick='view_large_image(event,\""+$('#src_l_'+id).val()+"\")' title='Large preview' class='icon-view preview-item''></a></div></div></li>";
+		$('#selected_images').prepend(html);
+		selected_video_ids.push(id);
+		$('#photo_count').html(selected_video_ids.length);
+	}
+}
+function deselect_photo(id){
+	$('#simage_'+id).remove();
+	$('#image_'+id).removeClass('checked');
+	selected_video_ids.splice( $.inArray(id, selected_video_ids), 1 );
+	if(selected_video_ids.length==0){
+		$('#selected_default_text').show();
+	}
+	$('#photo_count').html(selected_video_ids.length);
+}
+</script>
+<script type="text/javascript">
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+function clear_adv_srchfields(){
+	$('select#search_type').val("").trigger("liszt:updated");
+	$('#search_category').val("").trigger("liszt:updated");
+	$('#search_status').val("").trigger("liszt:updated");
+}
+function submit_for_publish(gid){
+	$.ajax({
+		type: "GET",
+		url: "{% url 'user_gallery_submit' %}",
+		data: "gid="+gid,
+		dataType:'JSON',
+		success: function(data){
+			$('#id_estatus_'+gid).removeClass('icon-drafted');
+			$('#id_estatus_'+gid).addClass('icon-pending');
+			show_count('all');
+		}
+	});
+}
+function filter_action(ids,action){
+	var all_ids=[];
+	var dataString='';
+	
+	dataString+="sort="+$('#id_sort').val();
+	dataString+="&listing="+$('#id_listing_type').val();
+	dataString+="&created="+$('#id_created').val();
+	if($('#id_status').val()!='' && $('#id_status').val()!=null){
+			dataString+="&status="+$('#id_status').val();
+		}
+	if($('#id_pagentn').val()!='' && $('#id_pagentn').val()!=null){
+		dataString+="&page="+$('#id_pagentn').val();
+	}
+	if($('#id_item_per_page').val()!='' && $('#id_item_per_page').val()!=null){
+		dataString+="&item_perpage="+$('#id_item_per_page').val();
+	}
+	if($('#id_search').val()!='' && $('#id_search').val()!=null){
+		dataString+="&search=true";
+		dataString+="&kwd="+$('#id_search_keyword').val();
+		dataString+="&type="+$('#search_type').val();
+		dataString+="&cat="+$('#search_category').val();
+		if($('#search_status').val()!='' && $('#search_status').val()!=null){
+			dataString+="&search_status="+$('#search_status').val();
+		}
+	}
+	if(action=='#'){
+		dataString+="&action="+$('#id_action').val();
+		if(ids==0){
+			var ids=[];
+			$('.cbox:checked').each(function(){
+				ids.push($(this).val());
+			});
+		}
+	}else{dataString+="&action="+action;}
+	$('.cbox').each(function(){
+		all_ids.push($(this).val());
+	});
+	dataString+="&ids="+ids;
+	dataString+="&all_ids="+all_ids;
+	$('#ajax_action_loading').show();
+	hide_top_info_bar();
+	$.ajax({
+	type: "GET",
+	url: "{% url 'user_ajax_gallery_action' %}",
+	data: dataString,
+	dataType:'JSON',
+	success: function(data){
+			show_top_info_bar('Photos');
+			$("#master_check").attr('checked',false);
+			$('#ajax_action_loading').hide();
+			$('#actionSelect').val('').trigger("liszt:updated");
+			try{for(i=0;i<ids.length;i++){$('#li_'+ids[i]).remove();}$('#li_'+ids).remove();}
+			catch(e){$('#li_'+ids).remove();}
+			$('#ajax_content_list').append(data.html);
+			$('#pagenation').empty().html(data.pagenation);
+			show_msg(data.msg,data.mtype);
+			
+			if(data.search){$('#close_search').show();}
+			if(data.count){
+				if(data.next){$('#top_pge_next').removeClass('inactive');}
+				else{$('#top_pge_next').addClass('inactive');}
+				if(data.previous){$('#top_pge_previous').removeClass('inactive');}
+				else{$('#top_pge_previous').addClass('inactive');}
+				$('#id_from_to').html(data.pagerange);
+				$('#top_item_count').html("&nbsp;&nbsp;"+data.count);
+			}else{
+				$('#top_pge_next').addClass('inactive');
+				$('#top_pge_previous').addClass('inactive');
+				$('#id_from_to').html('0-0');
+				$('#top_item_count').html('0');
+			}
+			$('.light_box').colorbox({width: "560",initialWidth: "560", top:"5%", initialHeight: "200"});
+			$(".bm-update-gallery").colorbox({width: "660", initialWidth: "660",initialHeight: "200", top:"5%",title:function(){return getLBTitle($(this));}});
+			$(".add-photo-gallery").colorbox({width: "880", height:"630", top:"5%",title:function(){return getLBTitle($(this));}});
+			$('.statefltr').each(function(){
+				if($(this).hasClass('active')){
+					show_count($(this).attr('value'));
+				}
+			})
+			
+		}
+	});
+}
+function filter_content(){
+	var ids=[]
+	var dataString='';
+	
+	dataString+="sort="+$('#id_sort').val();
+	dataString+="&listing="+$('#id_listing_type').val();
+	dataString+="&created="+$('#id_created').val();
+	if($('#id_status').val()!='' && $('#id_status').val()!=null){
+			dataString+="&status="+$('#id_status').val();
+		}
+	if($('#id_pagentn').val()!='' && $('#id_pagentn').val()!=null){
+		dataString+="&page="+$('#id_pagentn').val();
+	}
+	if($('#id_item_per_page').val()!='' && $('#id_item_per_page').val()!=null){
+		dataString+="&item_perpage="+$('#id_item_per_page').val();
+	}
+	if($('#id_search').val()!='' && $('#id_search').val()!=null){
+		dataString+="&search=true";
+		dataString+="&kwd="+$('#id_search_keyword').val();
+		dataString+="&type="+$('#search_type').val();
+		dataString+="&cat="+$('#search_category').val();
+		if($('#search_status').val()!='' && $('#search_status').val()!=null){
+			dataString+="&search_status="+$('#search_status').val();
+		}
+	}
+	if($('#id_action').val()!='0' && $('#id_action').val()!=''){
+		$('.cbox:checked').each(function(){
+			ids.push($(this).val());
+		});
+		dataString+="&action="+$('#id_action').val();
+		dataString+="&ids="+ids;
+	}
+	$('#ajax_content_cls').hide();
+	$('#ajax_content_loading').show();
+	hide_top_info_bar();
+	$.ajax({
+	type: "GET",
+	url: "{% url 'user_ajax_list_gallery' %}",
+	data: dataString,
+	dataType:'JSON',
+	success: function(data){
+			show_top_info_bar('Photos');
+			$('#id_pagentn').val('');
+			$('#id_action').val('');
+			$('#ajax_content_loading').hide();
+			$('#ajax_content_cls').empty().html(data.html);
+			$('#ajax_content_cls').show();
+			
+			if(data.search){$('#close_search').show();}
+			
+			if(data.count){
+				if(data.next){$('#top_pge_next').removeClass('inactive');}
+				else{$('#top_pge_next').addClass('inactive');}
+				if(data.previous){$('#top_pge_previous').removeClass('inactive');}
+				else{$('#top_pge_previous').addClass('inactive');}
+				$('#id_from_to').html(data.pagerange);
+				$('#top_item_count').html("&nbsp;&nbsp;"+data.count);
+			}else{
+				$('#top_pge_next').addClass('inactive');
+				$('#top_pge_previous').addClass('inactive');
+				$('#id_from_to').html('0-0');
+				$('#top_item_count').html('0');
+			}
+			$('.light_box').colorbox({width: "560",initialWidth: "560", top:"5%", initialHeight: "200"});
+			$(".bm-update-gallery").colorbox({width: "660", initialWidth: "660",initialHeight: "200", top:"5%",title:function(){return getLBTitle($(this));}});
+			$(".add-photo-gallery").colorbox({width: "880", height:"630", top:"5%",title:function(){return getLBTitle($(this));}});
+		}
+	});
+}
+function show_count(value){
+	$('#ajax_loading').show();
+	$.ajax({
+	type: "GET",
+	url: "{% url 'user_ajax_gallery_state' %}",
+	data: 'status='+value,
+	dataType:'JSON',
+	success: function(data){
+			$('#ajax_loading').hide();
+			$('#id_pend').html(data.pending);
+			$('#id_pub').html(data.published);
+			$('#id_rej').html(data.rejected);
+			$('#id_blk').html(data.blocked);
+			$('#id_dft').html(data.drafted);
+			$('#id_tot').html(data.total);
+		}
+	});
+}
+function clear_search(){
+	$('#id_search').val('');
+	$('#id_search_keyword').val('');
+	$('#close_search').hide();
+	$('#id_pagentn').val('1');
+	$("#search_status option:first").attr('selected','selected')
+	filter_content();
+}
+function sort_search(){
+	clear_for_search();
+	sort_content()
+}
+function sort_content(){
+	$('#id_pagentn').val('1')
+	filter_content();
+}
+function action(){
+	var flag=false;
+	var flag_action=false;
+	if($('#id_action').val()!='0'){
+		$('.cbox:checked').each(function(){
+			flag=true;
+		});
+		if(flag){
+			if($('#id_action').val()=='DEL'){
+				if(confirm(gettext('Are you sure you want to delete album(s) ?'))){flag_action=true;}
+			}
+			if(flag_action){filter_action(0,'#');}
+		}else{
+			alert('Please select album(s)')
+		}
+	}
+}
+$(document).ready(function(){
+	$('#filter_a a').click(function(){
+		$('#id_status').val($(this).attr('name'));
+		if(!$(this).hasClass('active')){
+			$('#filter_a a').removeClass('active');
+			$(this).addClass('active');
+		}
+		filter_content();
+	});
+	$('#filter_b a').click(function(){
+		$('#id_listing_type').val($(this).attr('name'));
+		if(!$(this).hasClass('active')){
+			$('#filter_b a').removeClass('active');
+			$(this).addClass('active');
+		}
+		filter_content();
+	});
+	$('#master_check').click(function(){
+		if($("#master_check").is(':checked')){$(".cbox").attr('checked',true);}
+		else{$(".cbox").attr('checked',false);}
+	});
+	var show="{{show}}";
+	if(show != ''){
+		$('#filter_a a').removeClass('active');
+		if(show == 'P'){$('#listing_published').addClass('active');}
+		if(show == 'N'){$('#listing_pending').addClass('active');}
+		if(show == 'R'){$('#listing_rejected').addClass('active');}
+		if(show == 'B'){$('#listing_blocked').addClass('active');}
+		if(show == 'D'){$('#listing_drafted').addClass('active');}
+	}
+});
+function save_seo(option){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag==true){
+		var dataString='&slug='+encodeURIComponent($('#id_slug').val());
+		dataString+='&seo_title='+encodeURIComponent($('#id_seo_title').val());
+		dataString+='&seo_description='+encodeURIComponent($('#id_seo_description').val());
+		$('#ajax_content_seo').hide();
+		$('#ajax_content_loading_seo').show();
+		$.ajax({
+		type: "POST",
+		url: $("#mform").attr("action"),
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#ajax_content_loading_seo').html(data.msg);
+				if(data.status){
+					show_msg(data.msg,data.mtype);
+					$.colorbox.close();
+				}else{
+					$('#ajax_content_loading_seo').hide();
+					$('#ajax_content_seo').empty().html(data.lightbox_html);
+					$('#ajax_content_seo').fadeIn(2000);
+				}
+			}
+		});
+	}
+}
+</script>
+<ul class="tour_link">
+    <li class="tool-tip tttxt-t1"><a class="link1" href="/bmt/tour/gallery/user/status.html"></a></li>
+    <li class="tool-tip tttxt-t2"><a class="link2" href="/bmt/tour/gallery/user/listing_type.html"></a></li>
+    <li class="tool-tip tttxt-t3"><a class="link3" href="/bmt/tour/gallery/user/search.html"></a></li>
+    <li class="tool-tip tttxt-t4"><a class="link4" href="/bmt/tour/gallery/user/actions.html"></a></li>
+    <li class="tool-tip tttxt-t5"><a class="link5" href="/bmt/tour/gallery/user/sorting.html"></a></li>
+    <li class="tool-tip tttxt-t6"><a class="link6" href="/bmt/tour/gallery/user/settings.html"></a></li>
+</ul>
+{% endblock %}	
+				

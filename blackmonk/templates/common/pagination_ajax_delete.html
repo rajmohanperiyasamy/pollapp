@@ -1,0 +1,55 @@
+{% load i18n %}	
+{% if comments or attraction or eventsdisplay or articles or deals or gallery or classified or business or videodisplay or moviedisplay or theatredisplay or profiles or sweepstakes %} 		
+	<input type="hidden" value="{{current_page}}" name="id_pagentn" id="id_pagentn">
+	<input type="hidden" value="{{from_range}} - {{to_range}}" name="id_from_to_range" id="id_from_to_range">
+	<input type="hidden" value="{{count}}" name="id_count" id="id_count">
+	<input type="hidden" value="{{has_next}}" name="id_has_next" id="id_has_next">
+	<input type="hidden" value="{{has_previous}}" name="id_has_previous" id="id_has_previous">
+       {% if is_paginated %}
+      <div class="base-page-nav">
+            <ul class="page-nav">
+	              	{% if has_previous %}
+						<li class="val_previous"><a href="javascript:void(0)" id="{{ prev }}" onclick="$('#id_pagentn').val({{ prev }}),filter_content();" ><span class="inline-block icon-prev">&lsaquo;</span></a></li>
+	                {% else %}
+						 <li class="val_previous"><a href="javascript:void(0)" id="{{ prev }}" class="inactive"><span class="inline-block icon-prev">&lsaquo;</span></a></li>
+	                {% endif %}
+	                
+	                {% if not in_leading_range %}
+						{% for num in pages_outside_trailing_range %}
+							{% ifequal num current_page %}
+								 <li><span title="{% trans 'Page' %} {{ num }} " class="active">{{ num }}</span></li>
+							{% else %}
+								 <li><a title="{% trans 'Page' %} {{ num }} " onclick="$('#id_pagentn').val({{ num }}),filter_content();" href="javascript:void(0)">{{ num }}</a></li>
+							{% endifequal %}
+						{% endfor %}
+							...
+				    {% endif %} 
+	                 
+	                {% for num in page_numbers %}
+						{% ifequal num current_page %}
+							 <li><span title="{% trans 'Page' %} {{ num }} " class="active">{{ num }}</span></li>
+						{% else %}
+							<li><a title="{% trans 'Page' %} {{ num }} " onclick="$('#id_pagentn').val({{ num }}),filter_content();" href="javascript:void(0)">{{ num }}</a></li>
+						{% endifequal %}
+					{% endfor %}
+	                 
+	                {% if not in_trailing_range %}
+						...
+						{% for num in pages_outside_leading_range reversed %}
+							{% ifequal num current_page %}
+								 <li><span title="{% trans 'Page' %} {{ num }} " class="active">{{ num }}</span></li>
+							{% else %}
+								<li><a title="{% trans 'Page' %} {{ num }} " onclick="$('#id_pagentn').val({{ num }}),filter_content();" href="javascript:void(0)">{{ num }}</a></li>
+							{% endifequal %}
+						{% endfor %}
+					{% endif %}
+					
+					{% if has_next %}
+						<li class="val_next"><a href="javascript:void(0)" id="{{next}}" onclick="$('#id_pagentn').val({{ next }}),filter_content();"><span class="inline-block icon-next">&rsaquo;</span></a></li>
+					{% else %}
+						 <li class="val_next"><a href="javascript:void(0)" id="{{next}}" class="inactive"><span class="inline-block icon-next">&rsaquo;</span></a></li>
+					{% endif %}
+			  </ul>
+        	</div>   
+         {% endif %}
+{% endif %}

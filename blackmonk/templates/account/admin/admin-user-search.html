@@ -1,0 +1,61 @@
+{% extends "admin_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "users" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Admin | Search User{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+{% endblock %}
+{% block content %}
+    	<div class="container group">
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="{%url 'admin_users' %}" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Manage User</a></li>
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Search User</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Search User</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="{%url 'admin_users' %}" class="side_menu">Manage Users</a></li>  
+                        <li><a href="{%url 'admin_createuser' %}" class="side_menu">Add User</a></li>  
+                        <li><a href="{%url 'admin_searchuser' %}" class="side_menu on">Search User</a></li>
+                        <li><a href="{%url 'admin_add_seo' %}" class="side_menu">Manage SEO</a></li>                       
+                    </ul>
+                </div> 	
+            	<div class="main_col" style="min-height:350px;">
+					<div id="formContainer" class="add_cat clearfix"> 
+        	  	  		<form action="/admin/searchuserresult/" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+ 							<fieldset style="padding-top:0; margin-top:10px;">
+                	    		<div class="title"><h2>Search</h2></div>
+                   					<dl class="vertical">
+                          				<dt><label for="keyword"><b>Keyword: </b></label></dt>
+                                            <dd><input name="keyword" id="keyword" class="textField normal" type="text" style="padding:3px;">  
+                                                <select name="type" id="type" class="textField" style="padding:2px;">
+                                                    <option value="">-- All -- </option>
+                                                    <option value="uname">&nbsp;Username</option>
+                                                    <option value="email">&nbsp;Email</option>
+                                                    <option value="name">&nbsp;Name</option>
+                                                </select> <em></em>
+                                            </dd>
+                                            <dt>&nbsp;</dt>
+                                                <dd><div class="buttons" style="padding-top: 10px;"><input class="inputsubmit on" value="Search" type="submit"> <input class="inputsubmit off" value="Clear" type="button" onclick="window.document.mform.reset();"></div>
+                                                </dd>                                            
+                   			 </fieldset>                              
+						</form>
+                	</div>
+
+                </div> 
+                <hr />
+            </div>
+        </div>
+{% endblock %}

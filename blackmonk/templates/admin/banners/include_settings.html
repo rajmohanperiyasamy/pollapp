@@ -1,0 +1,74 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Settings' %}</p>
+</div>
+<div id="ajax_content" class="group">
+	<form action="{% url 'admin_configuration_banner_settings' %}" name="mform" id="mform" method="post">{% csrf_token %}
+	<ul class="overview-list group">
+			<li class="list-item-container group">
+            	<div class="col-dt">
+                	<div class="col-inner">
+                    	<h5>{% trans 'Banners listed' %}</h5>
+                    </div>
+				</div>
+                <div class="col-dd">
+                	<div class="col-inner">
+                    	<h3>{{banners}}</h3>
+						<p><span class="ltxt80">{% trans 'Published' %}:{{published}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Pending' %}: {{pending}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Drafted' %}: {{drafted}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Rejected' %}: {{rejected}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Blocked' %}: {{blocked}}</span></p>
+                        <a href="{% url 'staff_banners_manage_banners' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Banners' %}">{% trans 'Manage' %}</a>
+                   	</div>                                                    
+              	</div>
+			</li> 
+			<li class="list-item-container group">
+            	<div class="col-dt">
+                	<div class="col-inner">
+                    	<h5>{% trans 'Banner Zones' %}</h5>
+                   	</div>
+               	</div>
+                <div class="col-dd">
+                	<div class="col-inner">
+                    	<h3>{{zone}}</h3>
+                        <a href="{% url 'admin_configuration_mange_banner_zones' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Categories' %}">{% trans 'Manage' %}</a>
+                  	</div>                                                    
+				</div>
+			</li>
+        </ul>
+		<section id="approval-requirements" class="section hidable">
+        	<div class="section-head">
+            	<h3 class="section-title">{% trans 'Banner Approval Settings' %}</h3>
+           	</div>
+            <div class="section-content">
+            	<div class="section-explanation">
+                	<p class="ltxt80">{% trans 'Select the below options to approve the banner automatically when:' %}</p>
+               	</div>                                         
+                <ul class="cform-list">
+					<li class="cform-input-section"><label><span class="cform-checkbox-container">{{approval_form.paid}}<span class="cform-checkbox-element"></span></span> {% trans 'Someone adds a Banner' %}</label></li>
+					<li class="cform-input-section"><label><span class="cform-checkbox-container">{{approval_form.paid_update}}<span class="cform-checkbox-element"></span></span> {% trans 'Someone updates an existing Banner' %}</label></li>
+              	</ul>
+			</div>                                                                                                    
+     	</section> 
+		<section id="email-notification" class="section hidable">
+        	<div class="section-head">
+            	<h3 class="section-title">{% trans 'Automatic email notifications' %}</h3>
+           	</div>   
+            <div class="section-content">
+            	<div class="section-explanation">
+                	<p class="ltxt80">{% trans 'Select the below options to send automatic email notifications when:' %}</p>
+               	</div>                                                                                             			
+                <ul class="cform-list">
+                	<li class="cform-input-section">
+						<label><span class="cform-checkbox-container  checked"><input type="checkbox" id="on_add" {% if emailsettings.a_A %}checked="checked"{% endif %} class="cform-checkbox" name="on_add"><span class="cform-checkbox-element"></span></span> {% trans 'Someone adds a new Banner' %}</label>
+						<!--span style="display:block;margin-left:25px;"><input id="on_add_email"  name="on_add_email" value="{% if emailsettings.e_A %}{{emailsettings.e_A}}{% else %}{{request.user.email}}{% endif %}" type="text" style="width: 300px;{% if not emailsettings.a_A %}display:none;{% endif %}"></span-->
+					</li>
+                    <li class="cform-input-section">
+						<label><span class="cform-checkbox-container  checked"><input type="checkbox" id="on_update" {% if emailsettings.a_U %}checked="checked"{% endif %} class="cform-checkbox" name="on_update"><span class="cform-checkbox-element"></span></span> {% trans 'Someone updates an existing Banner' %}</label>
+						<span style="display:block;margin-left:25px;"><input id="on_update_email"  name="on_update_email" value="{% if emailsettings.e_U %}{{emailsettings.e_U}}{% else %}{{request.user.email}}{% endif %}" type="text" style="width: 300px;{% if not emailsettings.a_U and not emailsettings.a_A %}display:none;{% endif %}"></span>
+					</li>
+               	</ul>                                                
+			</div>                                                    
+       	</section> 
+        <section class="form-submit trp-bg">
+        	<button role="button" class="cform-button prime right" type="button" onclick="save_approval()"><span class="cform-button-text">{% trans 'Save Changes' %} </span></button>
+		</section>                                             
+	</form>                                       	   
+</div>

@@ -1,0 +1,152 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% load modulotag %}
+{% load comparison %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Hotels' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Hotels' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+<meta name="Description" content="{{seo.seo_description}}">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/hotels.css">
+	<script>
+	var city_name = '{{expedia_api.city}}';
+	var customer_id = '{{expedia_api.customer_id}}';
+	var website_url = '{{globalsettings.website_url}}';
+	</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "hotels" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+            
+			{#% include 'default/hotels/top-search.html' %#} 
+            <div class="main_wraper">
+                <div class="group">    
+                    <div class="col_11">
+								{% include 'default/hotels/expedia-hotel-widget.html' %}
+                                <div class="thick_box" style="padding:0px;">
+                                    <div class="thick_box_core group">
+                                        <div class="hotel hotels_place_list">
+                                            <ul id="movie_status" class="thick_tabs by2">
+                                    			<li style="text-align:left;padding-left:10px;font-size:16px;line-height:40px;"><strong>{{globalsettings.city|title}} {% trans 'Hotels' %}</strong></li>
+												<li style="width:315px;line-height:40px;padding-right:10px;text-align:right;"><label for="hotel_sort" style="padding-right:5px;">{% trans 'Sort by' %} </label><select onchange="javascript:location.replace('{{url}}?sort='+$(this).val(){% if search %}+'&q={{q}}&location={{location}}'{% endif %});" id="hotel_sort" name="hotel_sort">
+                                                
+												 <option value="rating" {% if sort == 'rating' %} selected="selected" {% endif %} label="{% trans 'Star Rating' %}" selected="">{% trans 'Star Rating' %}</option>
+                                                 <option value="lh" {% if sort == 'lh' %} selected="selected" {% endif %} label="{% trans 'Price: Low to High' %}">{% trans 'Price: Low to High' %}</option>
+												 <option value="hl" {% if sort == 'hl' %} selected="selected" {% endif %} label="{% trans 'Price: High to Low' %}">{% trans 'Price: High to Low' %}</option>
+                                            </select></li>
+											</ul>
+                                            <div class="clear"></div>
+                                            <div class="hotels_list">
+										    {% if hotels %}
+											   {% for hotel in hotels %}
+                                                <div class="item group{% cycle '' ' alt' %}">
+                                                    <a class="pic" href="{{ hotel.get_absolute_url }}" style="height:92px; overflow:hidden;">
+                                                        <img width="140" alt="{{hotel.name|title}}" title="{{hotel.name|title}}" src="{% if hotel.hotel_images.all.0.image_big %}{{hotel.hotel_images.all.0.image_big}}{% endif %}" >
+                                                    </a>      
+                                                    <div class="detail">
+                                                        <h4 class="title">
+                                                            <a href="{{ hotel.get_absolute_url }}">{{hotel.name|title}}</a>
+															<!--span class="review_rating_trans" style="float:right"><img src="{{hotel.tripadvisor_rating_url}}"/></span-->
+															<span class="review_rating_trans" style="float:right"><span class="star stars_{{hotel.hotel_rating|get_rating}}"></span></span>
+                                                        </h4>
+                                                        <div class="summary" style="text-transform:lowercase;">
+                                                            {{ hotel.short_description|striptags|truncate_chars:350 }}  
+                                                        </div><!--/summary-->
+														{% if hotel.lowrate %}<h2 style="margin-top: 5px; color: rgb(68, 68, 68); font-weight: bold; font-size: 14px;"><span style="font-weight: normal; font-size: 12px; color: rgb(119, 119, 119);">{% trans 'From:' %}</span> {{hotel.currency_code|get_currency_format}}{{hotel.lowrate|floatformat}}</h2>{% endif %}
+                                                    </div><!--/detail--> 
+                                                </div><!--/item-->
+                                               {% endfor %}
+											{% else %}
+												<p class="global_message" style="padding:10px;">{% trans 'No Hotel Results.' %}</p>	
+ 											{% endif %}
+                                            </div><!--/hotels_list-->
+                                        </div><!--/hotels_place_list-->
+										
+									{% if is_paginated %}
+										<div id="thick_pagination" class="group">
+		                                <ul class="pagination_nav">
+											{% if has_previous %}
+												{% ifequal num current_page %}
+														<li class="selected_page"><a href="javascript:void(0);">{{ num }}</a></li>
+												{% else %}
+													<li class="prev"><a href="{{ url }}?page={{ prev }}&sort={{sort}}{% if search %}&q={{q}}&location={{location}}{% endif %}"  class="Prev" title="Previous Page"><strong>&laquo;</strong> {% trans 'Prev' %}</a></li> 
+												{% endifequal %}
+											{% endif %}
+										 
+											{% if not in_leading_range %}
+												{% for num in pages_outside_trailing_range %}
+													{% ifequal num current_page %}
+														<li class="selected_page"><a href="javascript:void(0);">{{ num }}</a></li>
+													{% else %}
+														<li><a href="{{ url }}?page={{ num }}&sort={{sort}}{% if search %}&q={{q}}&location={{location}}{% endif %}">{{ num }}</a></li>
+													{% endifequal %}
+												{% endfor %}
+												<li class="break">&hellip;</li>
+											{% endif %}
+											 
+											{% for num in page_numbers %}
+												  {% ifequal num current_page %}
+												    	<li class="selected_page"><a href="javascript:void(0);">{{ num }}</a></li>
+												  {% else %}
+												  		<li><a href="{{ url }}?page={{ num }}&sort={{sort}}{% if search %}&q={{q}}&location={{location}}{% endif %}">{{ num }}</a></li>
+												  {% endifequal %}
+											{% endfor %}
+											 
+											{% if not in_trailing_range %}
+												<li class="break">&hellip;</li>
+												{% for num in pages_outside_leading_range reversed %}
+													{% ifequal num current_page %}
+														<li class="selected_page"><a href="javascript:void(0);">{{ num }}</a></li>
+													{% else %}
+														<li><a href="{{ url }}?page={{ num }}&sort={{sort}}{% if search %}&q={{q}}&location={{location}}{% endif %}">{{ num }}</a></li>
+													{% endifequal %}
+												{% endfor %}
+											{% endif %}
+											 
+											{% if has_next %}
+												<li class="next br_0"><a href="{{ url }}?page={{ next }}&sort={{sort}}{% if search %}&q={{q}}&location={{location}}{% endif %}"  class="Next" title="Next Page">{% trans 'Next' %} <strong>&raquo;</strong></a></li>
+											{% endif %}
+										</ul>
+										</div>
+									{% endif %}   				
+
+                                    </div><!--/thick_box_core--> 
+                                </div><!--/thick_box-->
+                    </div><!--end of col11-->
+                        
+                    <div class="secondary">
+                        <div class="category_list">
+                        	<h2 class="section_title"><a href="{% url 'hotels_home' %}">{% trans 'Find Hotels by Type' %}</a></h2>
+                            {% for category in categories %}
+							{% ifmodulo forloop.counter remndr 1 %}	
+							<ul class="by2" style="width: 140px; float: left; margin-right: 10px;">
+							{% endifmodulo %} 
+								<!--{% if forloop.first %}<li><a href="{% url hotels_home %}" >{% trans 'All' %}</a></li>{% endif %} -->	
+								<li><a href="{{category.get_absolute_url}}" >{{category.name|title}}</a>&nbsp;({{ category.get_hotels_count }})</li>
+							{% if forloop.last %}
+							</ul>
+							{% else %}
+							{% ifmodulo forloop.counter remndr 0 %}
+							</ul>
+							{% endifmodulo %}
+							{% endif %}
+						    {% endfor %}
+                        	</ul> 
+                        	<div class="clear"></div>                                       
+                        </div>
+						<div id="banner_placement_right"></div><!-- Banner Placement -->
+
+                    </div><!--end of secondary-->
+                </div><!--end of group-->
+            </div>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/jquery.autocomplete.js"></script>
+<script src="{{STATIC_URL}}js/hotels/expedia-widget.js" type="text/javascript"></script>
+
+{% endblock %}

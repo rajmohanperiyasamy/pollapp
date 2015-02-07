@@ -1,0 +1,74 @@
+{% load i18n %}
+<div id="add_venue_overall">
+<div id="add_venue" class="modal-form">
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+     <form action="{% url 'staff_article_select_type' %}" onsubmit='return validate()' name="mform" id="mform" method="post" class="add_venue">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="group">
+            		<div class="fields-left col400">                    
+				        <div class="group">
+		                 	<div style="padding:10px 20px;border-bottom:2px solid #e6e6e6; margin-bottom:10px;">
+			                    <h3 style="color:#999;font-size:22px; font-weight:normal;line-height:1; margin:0px 0 10px;">{% trans 'Non-Commercial' %}</h3>
+			                    <ul>
+			                    	<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;">
+										<h4 style="font-size:14px;line-height:1.8;font-weight:normal;">
+											<span style="display:block;padding:10px 0;width:240px;float:left;">
+												{% trans 'Submit Your Own Article' %} ({% if pricing.ownstory_is_paid %}{{ globalsettings.currency }}<input type="text" style="margin-left:10px;" id="price_FR" name="price_FR" class="price" size="3" value="{{ pricing.ownstory_price|floatformat }}">{% else %}{% trans 'Free' %}{% endif %})
+											</span>
+											<span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;">
+												<span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.ownstory_is_paid %}1{% else %}0{% endif %},'FR')" name="article_type"  checked="checked" value="FR" /><span class="cform-radio-element"></span></span>
+											</span>
+										</h4>
+									</li>
+								</ul>
+							</div>
+							<div style="padding:10px 20px;">
+								<h3 style="color:#999;font-size:22px; font-weight:normal;line-height:1; margin:0px 0 10px;">{% trans 'Commercial' %}</h3>
+								<ul>
+									<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Press Release' %} {% if pricing.pressrelease_is_paid %} {{ globalsettings.currency }}<input style="margin-left: 10px;" type="text" id="price_PR" name="price_PR" class="price" size="3" value="{{ pricing.pressrelease_price|floatformat }}" disabled="true">{% else %}{% trans 'Free' %}{% endif %}</span> <span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.pressrelease_price %}1{% else %}0{% endif %},'PR')" name="article_type"  value="PR" /><span class="cform-radio-element"></span></span></span></h4></li>
+									<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Advertorial' %} {% if pricing.advertorial_is_paid %} {{ globalsettings.currency }}<input style="margin-left: 10px;" type="text" id="price_A" name="price_A" class="price" size="3" value="{{ pricing.advertorial_price|floatformat }}" disabled="true">{% else %}{% trans 'Free' %}{% endif %}</span> <span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.advertorial_price %}1{% else %}0{% endif %},'A')" name="article_type"  value="A" /><span class="cform-radio-element"></span></span></span></h4></li>
+									<li class="group" style="display:block;padding:0; border-top:1px solid #e6e6e6;"><h4 style="font-size:14px;line-height:1.8;font-weight:normal;"><span style="display:block;padding:10px 0;width:240px;float:left;">{% trans 'Review Request' %} {% if pricing.requestreview_is_paid %} {{ globalsettings.currency }}<input style="margin-left: 10px;" type="text" id="price_RR" name="price_RR" class="price" size="3" value="{{ pricing.requestreview_price|floatformat }}" disabled="true">{% else %}{% trans 'Free' %}){% endif %}</span> <span style="float:right;display:block;width:65px;margin:10px; letter-spacing:-.05em;"><span class="cform-radio-container"><input type="radio" onchange="show_payment({% if pricing.requestreview_price %}1{% else %}0{% endif %},'RR')" name="article_type"  value="RR" /><span class="cform-radio-element"></span></span></span></h4></li>
+			                    </ul>
+	                		</div>
+       					 </div>
+					</div> <!--/--> 
+            	</div>            
+            </div>                        
+		</div>    
+        <div class="modal-base form-submit group">
+           <button role="button" class="cform-button prime right"  type="submit"><span class="cform-button-text">{% trans 'Next' %}</span></button>
+        </div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+	<script type="text/javascript">
+		function show_payment(flag,id){
+			$('.price').each(function(){remove_error_class($(this))})
+			$('.price').attr('disabled',true);
+			if(flag==1){
+				$('#price_'+id).attr('disabled',false);
+			}
+		}
+		function validate(){
+			$('.price').each(function(){remove_error_class($(this))})
+			var flag=true;
+			var id=$('input[name=article_type]:checked').val();
+			if(id=='FR'){
+				{% if pricing.ownstory_is_paid %}if(!/^[0-9]+$/.test($('#price_FR').val())){flag=false;add_error_class($('#price_FR'));}{% endif %}
+			}
+			else if(id=='PR'){
+				{% if pricing.pressrelease_is_paid %}if(!/^[0-9]+$/.test($('#price_PR').val())){flag=false;add_error_class($('#price_PR'));}{% endif %}
+			}
+			else if(id=='A'){
+				{% if pricing.advertorial_is_paid %}if(!/^[0-9]+$/.test($('#price_A').val())){flag=false;}{% endif %}
+			}
+			else if(id=='RR'){
+				{% if pricing.requestreview_is_paid %}if(!/^[0-9]+$/.test($('#price_RR').val())){flag=false;}{% endif %}
+			}
+			else{return false;}
+			return flag;
+		}
+		$(document).ready(function(){$('.price').keyup(function(){ if(!/^[0-9]+$/.test($(this).val())){add_error_class($(this))}else{remove_error_class($(this))} })})
+	</script>
+</div>
+</div>

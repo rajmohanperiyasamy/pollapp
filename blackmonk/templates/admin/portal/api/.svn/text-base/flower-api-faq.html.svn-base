@@ -1,0 +1,14 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+		<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.9eamwpbmfuvc" target="_blank"><span class="icon">?</span>Quick help</a>
+		<hr>
+		<h5>{% trans 'Floristone Affiliate Program' %}</h5>
+		<p>{% trans 'Sign Up with <a href="http://www.floristone.com/" target="_blank">FloristOne</a> Affiliate Program' %}</p>
+		<p>{% trans 'Fetch the API key and password in the text box provided.' %}</p>
+		
+        <!--h6>{% trans 'Sign Up' %}</h6>
+        <p>{% trans "Signup with <a href='http://expediaaffiliate.com'>Expedia</a> and <a href='http://developer.ean.com'>Expedia Affiliate Network</a>" %}</p>
+		<p>{% trans 'Fill the API Key, Customer ID and Trip Advisor Affiliate ID in the fields provided.' %}</p-->
+	</div>                                    
+</div>  

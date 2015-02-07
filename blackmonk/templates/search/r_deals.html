@@ -1,0 +1,34 @@
+{% load i18n thumbnail currency %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> 
+            <a class="bUi-tMb-wPr tMb-100 t65 fLxiMgW bUi-tMb-aRtCl" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% thumbnail object.album.album_photos.all.0.photo 260x0 %}" title="{{object.title}}" alt="{{object.title}}">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a>
+        </div>
+        <div class="mDa-bDy">
+            <span class="cLr-lTbLu fS12 mRb0 tRnCt">{{object.title}}</span>
+            <h4 class="mDa-hD tRnCt0 fW200 mR50 rLvE h65 h65" title="{{object.title}}"><a href="{{object.get_absolute_url}}">{{object.title}}</a></h4>
+            <div class="mDa-dTa mRt4 cLrFx">
+               {% with object.address.all.0.city as deal_location %}
+                    {% if deal_location %}<span class="fS12 cLr-lTgRy pLlT mRb0"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i> {{deal_location}}</span>{% endif %}
+               {% endwith %}
+               <div class="pLrT">
+                    <span class="ib">
+                      <span class="lN-tRg fW200 cLr-lTgRy fS16">{{ object.original_price|floatformat:0|moneyfmt }}</span>
+                      <span class="cLr-gRn fW-bLd fS16">{{ object.discount_price|floatformat:0|moneyfmt }}</span>
+                    </span>
+                    <a href="{{object.get_absolute_url}}" class="btn btn-success fS11 uC fW-bsLd hD-gD mRl10">{% trans 'View Deal' %}</a>
+                </div>
+            </div>                                            
+        </div>
+    </div>
+</li>

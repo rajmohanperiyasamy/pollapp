@@ -1,0 +1,124 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'config' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Comment Settings' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#mform").validate({
+		highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass('error');},
+		unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass('error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			email: "required email",
+			google_analytics_script:"required",
+			key_file:{
+				required:false,
+				accept:"p12"
+			}
+	   	}
+	});
+});
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+					<li><a href="{% url 'admin_configuration_analytics' %}" style="z-index:7">{% trans 'Analytics' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'config' %}
+					{% activetab 'leftnav' 'analytics' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Analytics Settings' %}</h2>
+                            <!--p class="ltxt80">{% trans 'Tick the check box to integrate Disqus commenting system in your website.' %}</p-->
+                        </div>
+                        <div id="comments_api_settings_div" class="group">
+							{% if form.errors %}
+								<div class="messageerror">
+									<strong>{% trans 'There is a problem with your submission' %}</strong>
+						            <ul style="list-style:square;margin-left:20px;">
+						           		{% for field in form %}
+						           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						          	 	{% endfor %}
+									</ul>
+							 	</div>
+							{% endif %}
+						    <form action="{% url 'admin_configuration_analytics' %}" name="mform" id="mform" method="post" class="add_category" enctype="multipart/form-data">{% csrf_token %}
+						    	<div class="fields hform">
+										<section id="signin-with-facebook" class="section">
+						                	<div class="section-head">
+												<h3 class="section-title">
+													{% trans 'Analytics Details' %}
+												</h3>
+						                   	</div>
+						                    <div class="section-content" >
+						                    	<div class="fields hform">
+												<div class="field-group">
+													<div class="field text-field">	
+									                	<div class="label" style="width:60px;"><label>{% trans 'Track ID' %}<span class="required-field">*</span></label></div>	
+									                	<div class="value" style="margin-left:90px;">
+															<input type="text" id="id_google_analytics_script" value="{{globalsettings.google_analytics_script}}" class="fl" placeholder="google analytics script" maxlength="100" name="google_analytics_script">
+														</div>	
+									                </div>
+						            			</div> 
+						            			<div class="field-group">
+													<div class="field text-field">	
+									                	<div class="label" style="width:60px;"><label>{% trans 'Email' %}<span class="required-field">*</span></label></div>	
+									                	<div class="value" style="margin-left:90px;">{{form.email}}</div>	
+									                </div>
+						            			</div>   
+												<div class="field-group">
+													<div class="field text-field">	
+									                	<div class="label" style="width:60px;"><label>{% trans 'Key File' %}<span class="required-field">*</span></label></div>	
+														<div style="margin-left:90px;" class="value">
+															Currently: <a href="javascript:void(0)">{{filename}}</a> <br>
+															Change: <input type="file" id="id_key_file" name="key_file">
+														</div>
+									                </div>
+						            			</div>                 
+											</div>
+											</div>                                                                  
+						    		</section> <!-- end section --> 
+								</div>    
+						    	<div class="modal-base form-submit group trp-bg">
+							  		<button role="button" class="cform-button prime right" type="submit"><span class="cform-button-text">{% trans 'UPDATE' %}</span></button>
+								</div>           
+						    </form>
+						</div> 
+
+	               	</div>
+	         	</div>                       
+	       	</div>
+			<div id="aside" class="side-bar col_4 D_faq ads_faq">
+			    <div class="section">
+			        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.yvlwj6tbr0ra" target="_blank"><span class="icon">?</span>Quick help</a>
+			        <hr>
+					<p>Google Analytics is the enterprise-class web analytics solution that gives you rich insights into your website traffic and marketing effectiveness.</p>
+					<p>Analytics generates tracking code for each web property you add to an account. The tracking code includes an ID for the web property.</p>
+			    </div>
+			</div>
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}

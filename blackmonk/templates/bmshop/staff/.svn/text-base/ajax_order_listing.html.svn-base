@@ -1,0 +1,123 @@
+{% load i18n %}
+{% load tz %}
+<ul class="cat-list-container">
+    <li class="cat-list-row hdr-rw">
+        <div class="cat-list-row-inner group">
+            <div class="cat-list-column transaction-id">
+            	{% trans 'Order No.' %}                                                
+            </div>
+            <div class="cat-list-column transaction-status">
+            	{% trans 'Status' %}
+            </div>
+            <div class="cat-list-column transaction-date">
+            	{% trans 'Date' %}
+            </div>
+            <div class="cat-list-column transaction-amount">
+            	{% trans 'Amount' %}
+            </div>
+            <div class="cat-list-column transaction-account">
+            	{% trans 'Customer' %}
+            </div>
+            <div class="cat-list-column transaction-system">
+            	{% trans 'Payment Method' %}
+            </div>
+		</div>
+	</li>       
+	{% if orders %}                              
+	    {% for order in orders %}
+		<li class="cat-list-row">
+	        <div class="cat-list-row-inner group">
+	            <div class="cat-list-column transaction-id">
+					<span class="id">{{order.order_number}}</span>
+	            </div>
+	            <div class="cat-list-column transaction-status">
+	                <span class="inline-block status-idty" style="font-weight: bold; color:{%if order.status == 1%}#73A568;{%else%} #444444;{%endif%}">{{order.get_status_display}}</span>	 
+	            </div>
+	            <div class="cat-list-column transaction-date">
+	            	<span class="date">{{order.created|date:'M-d Y'}}</span>
+	                <span class="time">{{order.created|localtime|time:"P"}}</span>
+	            </div>
+	            <div class="cat-list-column ovr-visible transaction-amount">
+	            	<span class="amount">{{globalsettings.currency}}{{order.price|floatformat:2}}</span>                                  
+	            </div>  
+	            <div class="cat-list-column ovr-visible transaction-account">
+	            	<span class="account">{{order.name}}</span>                                  
+	            </div>
+	            <div class="cat-list-column ovr-visible transaction-system">
+	            	<span class="system">{{order.get_payment_method_display}}</span>                                  
+	            </div> 
+	            <div class="cat-list-column item-view-toggle">
+	                 <a class="collapse-view" href="#">{% trans 'Expand View' %}</a>
+	             </div>                                                                                             
+			</div>
+	        <ul class="sub-cat-list-container" style="display:none;">
+	        	<li class="payment-detail-container group">
+	                 <ul class="payment-detail">
+	                 	<li class="group row">
+	                    	<div class="column-1">{% trans 'Transaction Id' %} : </div>
+	                        <div class="column-2">{%if order.transaction_id%}{{order.transaction_id}}{%else%}Payment not Recieved{%endif%}</div>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Tax Amount' %} : </div>
+	                        <div class="column-2">{{globalsettings.currency}}{{order.tax|floatformat:2}}</div>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Shipping Charges' %} : </div>
+	                        <div class="column-2">{{globalsettings.currency}}{{order.shipping_price|floatformat:2}}</div>
+	                    </li>
+	                 	<li class="group row">
+	                    	<div class="column-1">{% trans 'Delivery Status' %} : </div>
+	                        <div class="column-2" id="delivery_status_{{order.id}}">
+								{% include 'bmshop/staff/append_delivery_status.html' %}  
+							</div>
+							<span id="ajax_loading_{{order.id}}" class="loading-stats"  style="display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" align="..."></span>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Delivery Address' %} : </div>
+	                        <div class="column-2">
+								<span style=" display:block;">{{order.name}}</span>
+								<span style="color:#999; font-size: 11px;">{{order.address}}</span></br>
+								<span style="color:#999; font-size: 11px;">{{order.city}}, {{order.state}} - {{order.zip_code}}</span></br> 
+								<span style="color:#999; font-size: 11px;">Email : {{order.email}}, Phone : {{order.phone}}</span> 
+							</div>
+	                    </li>
+	                 	{%for item in order.get_order_items%}
+	                	<li class="group row" style="border-top: 1px solid rgb(238, 238, 238); margin-top: 15px; padding-top: 20px;">
+	                    	<div class="column-1"><h4>{% trans 'Product Name' %} :</h4></div>
+	                        <div class="column-2">{{item.product_name}}</div>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Product Id' %} : </div>
+	                        <div class="column-2">{{item.product_uid}}</div>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Unit Price' %} : </div>
+	                        <div class="column-2">{{globalsettings.currency}}{{item.price|floatformat:2}}</div>
+	                    </li>
+	                	<li class="group row">
+	                    	<div class="column-1">{% trans 'Quantity' %} : </div>
+	                        <div class="column-2">{{item.quantity|floatformat:0}}</div>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Total Price' %} : </div>
+	                        <div class="column-2">{{globalsettings.currency}}{{item.product_price|floatformat:2}}</div>
+	                    </li>
+						<li class="group row">
+	                    	<div class="column-1">{% trans 'Delivery Time' %} : </div>
+	                        <div class="column-2">{%if item.product.get_delivery_time%}{{item.product.get_delivery_time}}{%else%}Not Specified{%endif%}</div>
+	                    </li>
+						{%endfor%}
+	                </ul>
+	            </li>
+	        </ul>
+		</li>
+		{% endfor %}
+	{% else %}
+	<li>
+		<div class="no-data">
+			<p>{% trans 'No Order history found!!!' %}</p>	
+		</div>
+	</li>
+	{% endif %}
+</ul>
+{% include 'payments/staff/pagenation.html' %}   

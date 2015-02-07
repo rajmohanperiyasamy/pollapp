@@ -1,0 +1,13 @@
+{% load i18n %}
+<ul class="nav nav-pills">
+    <li {% ifequal day 'all' %}class="active" {% endifequal %}><a href="{% url 'events_home_event' %}?scroll=True">{% trans 'All' %}</a></li>
+    <li {% ifequal day 'today' %}class="active" {% endifequal %}><a href="/events/today.shtml/">{% trans 'Today' %}</a></li>
+    <li {% ifequal day 'tomorrow' %}class="active" {% endifequal %}><a href="/events/tomorrow.shtml/">{% trans 'Tomorrow' %}</a></li>
+    <li {% ifequal day 'this_week' %} class="active" {% endifequal %}><a href="/events/this_week.shtml/">{% trans 'This Weekend' %}</a></li>
+    <li {% ifequal day 'nxt_week' %} class="active" {% endifequal %}><a href="/events/nxt_week.shtml/">{% trans 'Next 7 Days' %}</a></li>
+    <li {% ifequal day 'nxt_month' %} class="active" {% endifequal %}><a href="/events/nxt_month.shtml/">{% trans 'Next 30 Days' %}</a></li>
+    <li {% ifequal day 'evdate' %} class="active" {% endifequal %}>
+        <a href="javascript: void(0);" style="padding-top: 4px; padding-right: 0px;"><span class="ib">On</span><input id="event_date" type="text" class="fade"  placeholder="select a date" value="{{evdate}}" style="margin-top: -7px; border: medium none; width: 16px; cursor: pointer; height: 20px; top: 12px; position: absolute;"/> <i class="bUi-iCn-cLdR-12 ib" aria-hidden="true" style="margin-top: -2px;"></i>{% if evdate %} <span class="ib">{{evdate}}</span>{% endif %}</a>
+    </li>
+</ul>
+

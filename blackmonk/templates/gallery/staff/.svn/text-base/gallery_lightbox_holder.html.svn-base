@@ -1,0 +1,7 @@
+{% load i18n %}
+<div id="ajax_content_loading_gallery" style="display:none;padding-top:222px;padding-bottom:350px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Please wait...' %}</p>
+</div>
+<div id="ajax_content_gallery">
+	{% include 'gallery/staff/create-gallery.html' %}
+</div>

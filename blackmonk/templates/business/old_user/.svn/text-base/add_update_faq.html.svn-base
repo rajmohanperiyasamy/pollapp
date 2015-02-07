@@ -1,0 +1,35 @@
+{% load i18n %}
+<div class="section">
+       <h5>{% trans 'FAQs' %}</h5>
+       <h6>{% trans 'Business Details' %}</h6>
+       <p>{% trans "Add descriptive info about the business.Upload logo which reflects the brand of the business.(This business name shows in the search results)" %}</p>
+       <hr>
+       <h6>{% trans "Categories & Attributes" %}</h6>
+       <p>{% trans "Select appropriate category of the business which displays the attributes based on the category selected." %}</p>
+	   <hr>
+       <h6>{% trans "Additional Details" %}</h6>
+       <p>{% trans "Enter additional details you want customers to know about the business." %}</p>
+	   <hr>
+       <h6>{% trans "Products & Coupons" %}</h6>
+       <p>{% trans "Products and coupons can be added while adding the business listing or while editing the same." %}</p>
+	   <hr>
+       <h6>{% trans "Payments" %}</h6>
+       <p>{% trans "Inform the customers how they can pay at the business for the service or products." %}</p>
+	   <hr>
+       <h6>{% trans "Hours Of Operation" %}</h6>
+       <p>{% trans "Specify the business hours and when it's closed." %}</p>
+	   <hr>
+       <h6>{% trans "Photos" %}</h6>
+       <p>{% trans "Add flair to the business listing by uploading photos of the service or products.You can add multiple photos." %}</p>
+	   <hr>
+       <h6>{% trans "Category Price" %}</h6>
+       <p>{% trans "Category price is the sponsored price which will change based on the category selected.Category price can be updated in the Admin CP." %}</p>
+	   <hr>
+       <h6>{% trans "Pricing" %}</h6>
+       <p>{% trans "The pricing chart of the business module can be updated in the Admin CP where the labels, duration and the prices can be set dynamically in the price chart." %}</p>
+	   <hr>
+       <h6>{% trans "Promote your Business" %}</h6>
+       <p>{% trans "You can promote your business listing by publishing the business as sponsored or featured listing.Sponsored businesses will be listed in the business homepage highlighted with a background color.Featured businesses are displayed in the business homepage with logos scrolling in a stream." %}</p>
+</div> 
+
+                

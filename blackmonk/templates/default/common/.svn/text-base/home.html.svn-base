@@ -1,0 +1,708 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load currency %}
+{% load modulotag %}
+{% load mptt_comments_tags %}
+{% load i18n %}
+{% load thumbnail %}
+{% load tabs %}
+{% load ds_utils  %}
+{% load compress %}
+{% load bm_eventstags bm_articletags bm_biztags bm_videostags bm_movie_tags bm_dealtags bm_newstags bm_gallerytags bm_classified_tags %}
+{% block pagetitle %}{% seo_format_tag title=seo.seo_title code='HT' as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{ seo.seo_description }}" />
+    <meta name='google-site-verification' content='{% get_misc_attribute 'GOOGLE_WEBM_TAG' %}'>
+    <meta name='msvalidate.01' content='{% get_misc_attribute 'BING_WEBM_TAG' %}'>
+{% endblock %}
+{% block head %}
+ {% compress js %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/polls/polls.js"></script>
+    <script src="{{STATIC_URL}}themes/js/jquery.calendarPicker.js"></script>   
+    <script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script>
+     {% endcompress %}
+    <script type="text/javascript">
+    function replaceLocation(){
+        url = $('.gv_overlay a.goto-article').attr("href");
+        location.replace(url);
+    }
+    </script>
+    <script>
+    var website_url = '{{globalsettings.website_url}}';
+    var event_url = '{% url 'events_ajax_get_events_by_date' %}';
+    </script>
+    <script type="text/javascript">
+        var pathname = window.location.pathname;
+        org_path=pathname;
+        $(document).ready(function(){
+        var bids=new Array();
+        var aids=new Array();
+        var eids=new Array();
+        var nids=new Array();
+        var dids=new Array();
+        var gids=new Array();
+        var vids=new Array();
+        var module=['/business/','/events/','/article/','/news/','/videos/','/gallery/','/deal/']
+        var category=new Array();
+        var category_name='';
+        
+         $('.bids').each(function(){
+                bids.push($(this).val());
+            });
+        
+         $('.eids').each(function(){
+                eids.push($(this).val());
+            });
+        
+         $('.aids').each(function(){
+                aids.push($(this).val());
+            });
+        
+         $('.vids').each(function(){
+                vids.push($(this).val());
+            });
+         $('.nids').each(function(){
+                nids.push($(this).val());
+            });
+        
+         $('.dids').each(function(){
+                dids.push($(this).val());
+            });
+         $('.gids').each(function(){
+                gids.push($(this).val());
+         });
+        reports_data(module[0],bids,category,org_path)
+        reports_data(module[1],eids,category,org_path)
+        reports_data(module[2],aids,category,org_path)
+        reports_data(module[3],nids,category,org_path)
+        reports_data(module[4],vids,category,org_path)
+        reports_data(module[5],gids,category,org_path)
+        reports_data(module[6],dids,category,org_path)
+        });
+        $(document).ready(function(){
+            $('#heroSlide').bUiSlider({
+                    pager:false,
+                    speed:1000,
+                    pause:6000,
+                    auto:true,
+                    adaptiveHeight: true,
+                    infiniteLoop: true,
+                    hideControlOnEnd: true,
+                    minSlides:1,
+                    maxSlides: 1,
+                    onSliderLoad:function(){
+                        $('.fLxiMgW').setrSpVWidth();
+                    }
+                });
+        });
+    </script>
+   
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "home" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span8">
+                {% get_featured_article limit=4 as featured_articles %}
+                {% if featured_articles %}
+                <div class="row-fluid">
+                    <section class="sCn pD0">
+                        <div class="span8 sP12mX767">
+                            <div class="fTrD-bL mRb0 sLdR-mDm mDa-75 aDpTv cTrL-rT">
+                                <div class="fTrD-bL-iN bDrRtLbL">
+                                    <ul id="tMbpGrpRw" class="fTrD-iTmS">
+                                        {% for article in featured_articles %}
+                                        <li class="fTrD-iTm bDrRtLbL" style="float:left">
+                                            <input type="hidden" id="fbids" name="fbids" class="aids" value="{{article.id}}">
+                                            <div class="fTrD-tXt sDw">
+                                                <div class="vAlGn">
+                                                    <div class="fTrD-tXt-iN">
+                                                        <h2 class="fTrD-hD w90"><a href="{{article.get_absolute_url}}">{{article.title}}</a></h2>
+                                                        <div class="fTrD-mTa mR50">
+                                                            <p><span class="fS12"><a href="{{article.get_absolute_url}}" class="fW200 mRr10"><i aria-hidden="true" class="bUi-iCn-aRw-r-16 ib fS12"></i> Read Story</a></span><span class="pPlT"><a href="{% url 'user_profile' article.created_by.username %}" class="uC fS11 fW200">{{article.created_by.display_name}}</a></span></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- /.TrD-tXt -->
+                                            <figure class="fTrD-mDa">
+                                               
+                                                <span class="bUi-tMb-wPr fLxiMgW" href="{{article.get_absolute_url}}">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    {% with article.get_featured_image as article_photo %}
+                                                                    <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if article_photo %}{% thumbnail article_photo 600x0 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{article.title}}">
+                                                                    {% endwith %}
+                                                                    <span class="vRtL-aLn"></span>    
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </figure> <!-- /.TrD-mDa --> 
+                                        </li> <!-- /.fTrD-iTm -->
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4 hMx767">
+                            <div class=" mDa-lT-mNi cRsL-lSt cRsL-sLcT fOrW">
+                                <h6 class="cRsL-lSt-tTl uC mRb20 cLr-lTgRy"><span>{% trans 'Top Stories' %}</span></h6>
+                                <ul id="tMbpGr" class="mDa-lT mDa-oT-lT">
+                                    {% for article in featured_articles %}
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <a href="{{article.get_absolute_url}}" title="{{article.title}}" data-slide-index="{{forloop.counter0}}">
+                                                <h5 class="mDa-hD mRb0" title="">{{article.title}}</h5>
+                                                <div class="mDa-dTa">
+                                                   <span class="fS11 cLr-lTgRy">{{article.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                {% endif %}
+                <div class="row-fluid">
+                    <section class="sCn">
+                        <!-- Module Search -->
+                        <div class="sRcHbR pD150 clearfix">
+                            <form class="form-search mR0" method="get" action="{% url 'business_home' %}">
+                                <input type="hidden" name="search" value="true" />
+                                <div class="mDl">
+                                    <h3 class="mDl-nM">
+                                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-16"></i>
+                                        <span class="ib">Business
+                                            <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+                                        </span>
+                                    </h3>
+                                </div>
+				                <div class="span5">
+				                    <input type="text"  id="id_find" autocomplete="off" class="" name="q" value="{{q}}" placeholder="{% trans 'Search for restaurants, hotels and more' %}">
+				                </div>
+				                <div class="span3">
+				                    <input type="text" autocomplete="off" name="location" value="{{ location }}" class="" id="id_location" placeholder="{% trans 'Location' %}">
+				                </div>
+                                <div class="ib sUb-bTn mRl12 bOt0 mRl0mP">
+                                    <button type="submit" class="btn btn-primary">
+                                    <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Module Search -->
+                        {% get_home_page_featured_business limit=20 as featured_business %}
+                        {% if featured_business %}
+                        <hr class="oTsT-hRz">
+                        <div class="fTrD-bL cRsL mDa-65 tXt-oTsD aDpTv cTrL-tR mRb0">
+                            <div class="fTrD-bL-iN">
+                                <ul class="fTrD-iTmS {% if featured_business.count > 4 %}fTrD-bSnS-cRsL{% else %}fOcL pDfX{% endif %}">
+                                    {% for business in featured_business %}
+                                    <li class="fTrD-iTm bDrR0" style="float:left">
+                                        <input type="hidden" id="fbids" name="fbids" class="bids" value="{{business.id}}">
+										<a href="{{business.get_absolute_url}}">
+	                                        <figure class="fTrD-mDa">
+	                                            <span class="bUi-tMb-wPr fLxiMgW" href="{{business.get_absolute_url}}">
+	                                                <span class="bUi-tMb">
+	                                                    <span class="bUi-tMb-pRpL">
+	                                                        <span class="bUi-tMb-cLp">
+	                                                            {% with business.logo.logo as businesslogo %}
+                                                                <span class="bUi-tMb-cLp-iN">
+	                                                                <img class="mDa-oT"  src="{{STATIC_URL}}/images/grey.gif" data-src="{% if businesslogo %}{% thumbnail businesslogo 226x0 %}{% endif %}" alt="{{business.name}}" title="{{business.nmae}}">
+	                                                                <span class="vRtL-aLn"></span>    
+	                                                            </span>
+                                                                {% endwith %}
+	                                                        </span>
+	                                                    </span>
+	                                                </span>
+	                                            </span>
+	                                        </figure>  <!-- /.TrD-mDa -->
+										</a>
+                                        <div class="fTrD-tXt">
+                                            <div class="vAlGn">
+                                                <div class="fTrD-tXt-iN mRt4 pD0">
+                                                    <span class="fS11"><a href="{{business.categories.all.0.get_absolute_url}}" class="cLr-lTgRy">{{business.categories.all.0.name}}</a></span>
+                                                    <h5 class="fTrD-hD uC mRt4"><a class="tRnCt" href="{{business.get_absolute_url}}">{{business.name}}</a></h5>
+                                                    <div class="fTrD-mTa fS11 pDt5">
+                                                         <div class="sTr-rT ib mRb0 mNi"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4 ftrdBsnsRty" data-rating="{{ business.ratings }}"></span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <!-- /.TrD-tXt -->                                           
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </section>
+                    {% get_latest_article number=6 as latest_articles %}
+                    {% if latest_articles %}
+                    <section class="sCn">
+                        <div class="sCn-tTl sCn-tTl-bR">
+                            <h3 class="clearfix oFl">
+                                <span class="ib pLlT">{% trans 'Latest Articles' %}</span>
+                                <a class="tXt-lNk rGhT" href="{% url 'article_list' %}">{% trans 'View all' %}</a>
+                            </h3>
+                        </div>
+                        <div class="row-fluid">
+                            <ul class="mDa-lT nOgD tWcL mDa-oT-lT pDfX">
+                                {% for article in latest_articles %}
+                                <li class="mDa">
+                                    <div class="mDa-iN">
+                                        <div class="mDa-wPr"> 
+                                            <a href="{{article.get_absolute_url}}" class="bUi-tMb-wPr bUi-tMb-110 tMb-75 fLxiMgH bS-bRdR">
+                                                <span class="bUi-tMb">
+                                                    <span class="bUi-tMb-pRpL">
+                                                        <span class="bUi-tMb-cLp">
+                                                            <span class="bUi-tMb-cLp-iN">
+                                                                {% with article.get_featured_image as article_photo %}
+                                                                    <img src="{{STATIC_URL}}/images/grey.gif" data-src="{% if article_photo %}{% thumbnail article_photo 260x0 %}{% elif article.get_img_from_html %}{{ article.get_img_from_html }}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{article.title}}" title="{{article.title}}">
+                                                                {% endwith %}    
+                                                                <span class="vRtL-aLn">
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div class="mDa-bDy pD0150">
+                                            <!--span class="mRb0 mRt-4"><a class="fS11 uC cLr-lTbLu" href=""></a></span-->
+                                            <h5 title="{{ article.title }}" class="mDa-hD tRnCt0 mRb0 mXw35"><a href="{{article.get_absolute_url}}">{{article.title}}</a></h5>
+                                            <div class="mDa-dTa mRt4 clearfix">
+                                               <span class="fS11 cLr-lTgRy mRb0 pLlT">{{article.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>    
+                        </div>
+                    </section>
+                    {% endif %}
+                    
+                    {% get_featured_albums as featured_albums_pack %}
+                    {% with featured_albums_pack.main_featured_album.0 as main_featured_album %}
+                    {% with featured_albums_pack.featured_albums as featured_albums %}
+                    {% if main_featured_album or featured_albums %}
+                    <section class="sCn">
+                            <div class="sCn-tTl mRb15">
+                               <h3 class="clearfix oFl">
+                                    <span class="ib pLlT">{% trans 'Featured Galleries' %}</span>
+                                    <a class="tXt-lNk rGhT" href="{% url 'gallery_home' %}">{% trans 'View all' %}</a>
+                               </h3>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                <div class="fTrD-bL tMbpGrpRw mRb0 sLdR-sMl mDa-75 cTrL-rT gLrY14">
+                                        <div class="fTrD-bL-iN">
+                                            <ul class="fTrD-iTmS mRl-5Mp">
+												{% if main_featured_album %}
+                                                <li class="fTrD-iTm span6 hMp">
+                                                    <div class="fTrD-tXt sTrP">
+                                                        <div class="vAlGn">
+                                                            <div class="fTrD-tXt-iN pD10">
+                                                                <h4 class="fTrD-hD uC"><a href="{{ main_featured_album.get_absolute_url }}">{{ main_featured_album.title }}</a></h4>
+                                                                <div class="fTrD-mTa pDt0">
+                                                                    <p><span class="fS12"><a href="{% url 'user_profile' main_featured_album.created_by.username %}" class="fW200 mRr10">{{ main_featured_album.created_by.display_name }}</a></span><span class="pPlT"><a href="javascript:void(0);" class="fS11 fW200">{{ main_featured_album.published_on|timesince|time_up_to:',' }} {% trans 'ago' %}</a></span></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <figure class="fTrD-mDa">
+                                                    <div class="fTrD-mDa-hVr tR">
+                                                            <div class="vAlGn t9r9">
+                                                                <ul class="iCnC-lSt iCn12 iCn-wHt iN-bLk fAd ib pD5 bS-bRdR">
+                                                                    <li class="iCnC-lSt-iTm lH1 pLlT mRr0">
+                                                                        <a href="{{ main_featured_album.get_absolute_url }}"><i class="bUi-iCn-pHt-12" aria-hidden="true"></i> {{ main_featured_album.album_photos.all.count }}</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <a class="bUi-tMb-wPr fLxiMgW" href="{{ main_featured_album.get_absolute_url }}">
+                                                            <span class="bUi-tMb">
+                                                                <span class="bUi-tMb-pRpL">
+                                                                    <span class="bUi-tMb-cLp">
+                                                                        <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if main_featured_album.album_photos.all.0.photo %}{% thumbnail main_featured_album.album_photos.all.0.photo 300x0 %}{% else %}{{main_featured_album.album_photos.all.0.photo_url}}{% endif %}" alt="{{ main_featured_album.title }}" />
+                                                                            <span class="vRtL-aLn"></span>
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </a>
+                                                    </figure>
+                                                </li>
+												{% endif %}
+                                                {% for album in featured_albums %}
+                                                <li class="fTrD-iTm span3 mRb12 sUb dSsP sP6mP pDl5mP mRb5Mp">
+                                                    <div class="fTrD-tXt sDw">
+                                                        <div class="vAlGn">
+                                                            <div class="fTrD-tXt-iN pD10">
+                                                                <h5 class="fTrD-hD w100P"><a href="{{ album.get_absolute_url }}">{{ album.title }}</a></h5>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="fTrD-cOnT">
+                                                    <figure class="fTrD-mDa">
+                                                            <a class="bUi-tMb-wPr fLxiMgH" href="{{ album.get_absolute_url }}">
+                                                                <span class="bUi-tMb">
+                                                                    <span class="bUi-tMb-pRpL">
+                                                                        <span class="bUi-tMb-cLp">
+                                                                            {% with album.album_photos.all.0 as albumimage %}
+                                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if albumimage %}{% thumbnail albumimage.photo 300x0 %}{% else %}{{albumimage.photo_url}}{% endif %}" alt="{{ album.title }}" />
+                                                                                <span class="vRtL-aLn"></span>
+                                                                            </span>
+                                                                            {% endwith %}
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                            </a>
+                                                        </figure>
+                                                    </div>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>
+                    </section>
+                    {% endif %}
+                    {% endwith %}
+                    {% endwith %}
+                    
+                    {% get_featured_videos_by_category limit=4 as featured_videos %}
+                    {% if featured_videos %}
+                    <section class="sCn pDb12">
+                         <div class="sCn-tTl mRb15">
+                             <h3 class="clearfix oFl">
+                                 <span class="ib pLlT">{% trans 'Featured Videos' %}</span>
+                                 <a class="tXt-lNk rGhT" href="{% url 'videos_videos_by_category' %}">{% trans 'View all' %}</a>
+                             </h3>
+                         </div>
+                         <div class="fTrD-bL cRsL mDa-65 tXt-oTsD aDpTv cTrL-tR mRb0">
+                            <div class="fTrD-bL-iN">
+                                <ul class="mDa-gD nObG fOcL pDfX dSgDwDt rLtD-cRsL hAtO">
+                                    {% for video in featured_videos %}
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr tMb-65 bUi-tMb-210 fLxiMgW" href="{{video.get_absolute_url}}">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{{video.get_video_hq_image}}" alt="{{video.title}}" title="{{video.title}}">
+                                                                    <span class="vRtL-aLn"> </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                                <div class="mDa-hVr cVr tR-hVr"><span class="bR5"><span title="{% trans 'duration' %}" class="lBl dRk mNi">{{video.duration}}</span></span></div>
+                                                <div class="mDa-hVr cVr tR-hVr"><a class="s-32 cTr" href="{{video.get_absolute_url}}"><i class="bUi-iCn-pLy-aLt-24 hT-aTo fS32-1 pLy-iCn" aria-hidden="true"></i></a></div>
+                                            </div>
+                                            <div class="mDa-bDy pD50 pDb0">
+                                                <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{video.title}}"><a href="{{video.get_absolute_url}}">{{ video.title }}</a></h5>
+												<div class="mDa-dTa mRt10 clearfix">
+                                                   <a href="javascript:void(0);" title="Views" class="fS11 cLr-lTgRy iM mR0 mRr10 ib ">
+                                                       <i aria-hidden="true" class="bUi-iCn-vEw-16 ib lH1"> </i>
+                                                       <span class="ib">{{video.video_view}}</span>
+                                                   </a>
+                                                   <span class="fS11 cLr-lTgRy ib mRb0 ">{{video.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    {% endif %}
+                    
+                    {% get_latest_classifieds limit=4 as latest_classifieds %}
+                    {% if latest_classifieds %}
+                    <section class="sCn rLvE">
+                        <ul class="nav nav-tabs bDr0 mRb0 pD015 pDb0 mRt-10" id="id_ul_tab">
+                            <li class="active">
+                                <a href="javascript:void(0);" id="classified"><i aria-hidden="true" class="bUi-iCn-cLfD-24 fS18 mRr5 ib"></i><span class="ib">Classifieds</span></a>
+                            </li>
+								<a class="aBsLt cLr-gRy fS12" href="{% url 'classified_home' %}" style="right: 15px; top: 19px;">View all</a>
+                        </ul>
+                        <hr class="mRb20 mRt0 bRdR-dRk">
+                        <div class="fTrD-bL cRsL mDa-65 tXt-oTsD aDpTv cTrL-tR mRb0 bM-tb-cNt" id="classified_contents">
+                            <div class="fTrD-bL-iN">
+                                <ul class="fTrD-iTmS fOcL pDfX">
+                                    {% for classified in latest_classifieds %}
+                                    <li class="fTrD-iTm bDrR0">
+                                        <figure class="fTrD-mDa">
+                                            <span class="bUi-tMb-wPr fLxiMgW bUi-tMb-cLsFd" href="{{ classified.get_absolute_url }}">
+                                                <span class="bUi-tMb">
+                                                    <span class="bUi-tMb-pRpL">
+                                                        <span class="bUi-tMb-cLp">
+                                                            <span class="bUi-tMb-cLp-iN">
+                                                                {% with classified.get_first_classified_photo as classifiedlogo %}
+                                                                {% if classifiedlogo %}
+																	<img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% thumbnail classifiedlogo 220x0 %}" alt="{{ classified.title }}">
+																{% else %}
+																	<img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{{STATIC_URL}}themes/img/no-image.png" alt="{{ classified.title }}" height="90" width="90" >
+																{% endif %}
+                                                                <span class="vRtL-aLn"></span>   
+                                                                {% endwith %} 
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </figure>  <!-- /.TrD-mDa -->
+                                        <div class="fTrD-tXt">
+                                            <div class="vAlGn">
+                                                <div class="fTrD-tXt-iN pD10-0-5">
+                                                    <h5 class="fTrD-hD"><a href="{{ classified.get_absolute_url }}">{{ classified.title }}</a></h5>
+                                                    <div class="mDa-dTa mRt4">
+                                                        <p class="cLr-gRy fS11 mRb0">{% trans 'by' %} <a href="{% url 'user_profile' classified.created_by.username %}" class="cLr-lTbLu">{{ classified.created_by.display_name }}</a><span class="sPrTr cLr-lTgRy">{{ classified.published_on|timesince|time_up_to:',' }} {% trans 'ago' %}</span></p>
+                                                    </div>     
+                                                </div>
+                                            </div>
+                                        </div> <!-- /.TrD-tXt -->                                           
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    {% endif %}
+                    
+                    {% get_home_page_movies as movie_pack %}
+                    {% with movie_pack.released_movies as released_movies %}
+					{% if released_movies %}
+                    <section class="sCn">
+                        <div class="sCn-tTl mRb15">
+                            <div class="sRcHbR mR0 clearfix">
+                                {% include 'default/movies/global-search-form.html' %}
+                            </div>
+                        </div>
+                        
+                        <div class="fTrD-bL cRsL mDa-150 tXt-oTsD aDpTv cTrL-tR mRb0">
+                            <div class="fTrD-bL-iN">
+                                <ul class="fTrD-iTmS {% if released_movies.count > 5 %}fTrD-HpMv-cRsL{% else %}fVcL pDfX{% endif %}" >
+                                    {% for movie in released_movies %}
+                                    <li class="fTrD-iTm bDrR0" style="float:left">
+                                        <figure class="fTrD-mDa">
+                                            <a class="bUi-tMb-wPr fLxiMgH" href="{{ movie.get_absolute_url }}">
+                                                <span class="bUi-tMb">
+                                                    <span class="bUi-tMb-pRpL">
+                                                        <span class="bUi-tMb-cLp">
+                                                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% thumbnail movie.image 0x219 %}" alt="{{movie.title}}">
+                                                                <span class="vRtL-aLn"></span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </figure>
+                                        <!-- /.TrD-mDa -->
+                                        <div class="fTrD-tXt">
+                                            <div class="vAlGn">
+                                                <div class="fTrD-tXt-iN pD10-0-0">
+                                                    <h5 class="fTrD-hD"><a class="tXt-oVrF"  href="{{ movie.get_absolute_url }}">{{ movie.title }}</a></h5>
+                                                    <div class="fTrD-mTa fS11 pDt5">
+                                                        <span class="bDg bRdR-gRy mRb0 mRr5">{{ movie.certification|default:"NR" }}</span>
+                                                        <span class="fS11 cLr-lTgRy">{{ movie.release_date|date:"F j" }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.TrD-tXt -->
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+					{% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div>
+                    <section class="sCn mDa-lT-mNi">
+                        <div class="sCn-tTl sCn-tTl-bR mRb0">
+                            <h3 class="clearfix oFl">
+                                <span class="ib pLlT">{% trans 'Upcoming Events' %}<a href="{% url 'events_home_event' %}" class="tXt-lNk rGhT">View all</a></span>
+                            </h3>
+                        </div>
+                        <div id="dTpKr" class="cLnDr-hR mNi mNt0"></div>
+                        <ul class="mDa-lT mDa-oT-lT" id="id_events_ul">
+                        </ul>
+                    </section>
+                </div>
+                <div>
+                    <section class="tXt-cTr sCn hide" id="banner_placement_right"></section>
+                </div>
+                
+                {% get_home_page_featured_deals as featured_deals %}
+                {% with featured_deals.0 as deal %}
+                {% if deal %}
+                <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown.js"></script>
+                <div>
+                    <section class="sCn mDa-lT-mNi">
+                        <div class="sCn-tTl mRb15">
+                            <h3><span>{% trans 'Deal of the Week' %}</span><a class="tXt-lNk rGhT" href="{% url 'deal_deals_home' %}">{% trans 'View all' %}</a></h3>
+                        </div>
+                        <div class="oTsT-hRz">
+                            <div class="fTrD-bL mRb0 sLdR-sMl mDa-75 cTrL-rT">
+                                <div class="fTrD-bL-iN">
+                                    <ul class="fTrD-iTmS">
+                                        <li class="fTrD-iTm">
+                                            <div class="fTrD-tXt sDw">
+                                                <div class="vAlGn">
+                                                    <div class="fTrD-tXt-iN">
+                                                        <h3 class="fTrD-hD w100P"><a href="{{deal.get_absolute_url}}">{{deal.title}}</a></h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <figure class="fTrD-mDa">
+                                                <a class="bUi-tMb-wPr fLxiMgW" href="{{deal.get_absolute_url}}">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+																	{% with deal.album.album_photos.all.0 as image %}
+																		{% if image.photo %}
+		                                                                    <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% thumbnail image.photo 0x335 %}" alt="{{deal.title}}">
+		                                                                    <span class="vRtL-aLn"></span>
+																		{% else %}
+																			<span class="iCn-bRdR50 oP25" title="{{deal.title}}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 cLr-gRy ib"></i></span><div class="vRtL-aLn"></div>
+																		{% endif %}
+																	{% endwith %}
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </figure>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="dSpLy-tBl bRdR tHcL tXt-cTr fS12">
+                                <span>{% trans 'Value:' %} <span class="fS16 fW200 mRl5">{{ deal.original_price|floatformat:0|moneyfmt }}</span></span>
+                                <span>{% trans 'Discount:' %} <span class="fS16 fW200 mRl5">{{ deal.get_discount }}%</span></span>
+                                <span>{% trans 'You Save:' %} <span class="fS16 fW200 mRl5">{{ deal.get_savings|moneyfmt }}</span></span>
+                            </div>
+                        </div>
+                        <div class="cLrFx mRt20">
+                            {% ifnotequal deal.get_count_total_sold deal.max_count %}
+                            <div class="pLlT hSmP defaultCountdown{{deal.id}}">
+                                <span class="fS18 fW200 ib mRt4 cLr-dRk" title="Time Left" id="id_time_left_{{deal.id}}"><i aria-hidden="true" class="bUi-iCn-tMe-aLt-16 fS18 mRr5 cLr-dRk hmm"></i></span>
+                            </div>
+                            {% endifnotequal %}            
+                            <input type="hidden" value="{{ deal.get_remaining_scnd }}" id="deal_time_left">
+                            <div class="pLrT">
+                                <span class="ib mRr10 lH1">
+                                    <span class="cLr-fRm fW200 fS24">{{ deal.discount_price|floatformat:0|moneyfmt }}</span>
+                                </span>
+                                <a href="{% url 'deal_confirmation' %}?did={{deal.id}}" class="btn btn-primary ib fS13 uC">{% trans 'Shop Now' %}</a> 
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                {% if poll %}
+                <div id="id_poll_div">
+                </div>
+                {% endif %}
+                <div>
+                    {% include 'default/likebox.html' %}
+				</div>
+				<div>
+					<section class="sCn">
+						<a class="twitter-timeline" href="{{globalsettings.twitter_url}}"  data-widget-id="{{globalsettings.twitter_widget_id}}" data-chrome="nofooter noborders transparent noscrollbar"></a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                    </section>
+                </div>
+            </aside>
+        </div>
+    </div>
+     {% compress js %}
+<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>  
+<script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>  
+<script src="{{STATIC_URL}}themes/js/bm-date-format.js"></script>      
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown.js"></script>    
+<script type="text/javascript" src="{{STATIC_URL}}js/home/home.js"></script>
+{% endcompress %}
+
+<script type="text/javascript">
+$(function () {
+    {% with featured_deals.0 as deal %}
+        {% if deal %}
+            $('.defaultCountdown{{deal.id}}').countdown({
+                until: +{{ deal.get_remaining_scnd }},
+                format: 'HMS',
+                layout: '<span class="fS18 fW200 ib mRt4 cLr-dRk" title="Time Left" id="id_time_left_{{deal.id}}"><i aria-hidden="true" class="bUi-iCn-tMe-aLt-16 fS18 mRr5 cLr-dRk hmm"></i>{hnn}:{mnn}:{snn}</span>'
+            });
+        {% endif %}
+    {% endwith %}
+    $('#id_find').typeahead({
+        ajax: { url: '{% url 'auto_suggest_business' %}',type: "GET",
+                triggerLength: 1 },
+		itemSelected:function(){
+				$('#sform').submit();
+		}
+    });
+    $('#id_location').typeahead({
+        ajax: { url: '{% url 'auto_suggest_business_address' %}',type: "GET",
+                triggerLength: 1 }
+    }); 
+    
+    
+    try{
+        $('.ftrdBsnsRty').raty({
+            readOnly: true, 
+            score: function() {return $(this).attr('data-rating');},
+            size: 16
+        });
+    }
+    catch(e){}
+    
+});
+
+{% if poll %}
+	$(document).ready(function(){
+		$.ajax({
+		    type:'get',
+			dataType:'json',
+		    url:'{% url 'ajax_load_poll_data' %}',
+		    success:function(data){
+				if(data.status){
+					$('#id_poll_div').html(data.html);
+				}else{
+					$('#id_poll_div').remove();
+				}
+			},
+		    error:function(data){
+			}
+		});
+	});
+{% endif %}
+
+</script>
+
+{% endblock %}                

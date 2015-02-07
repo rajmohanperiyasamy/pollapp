@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load thumbnail %}
+<li class="table-list-row manage-items has-thumb90" id="li_{{image.id}}">
+    <div class="table-list-row-inner group">
+        <div class="item-media">
+            <span class="item-thumb thumb-90">
+                <span class="thumb-in">
+					<span class="thumb"><img src="{% if image.photo %}{% thumbnail image.photo 110x0 %}{% else %}{{STATIC_URL}}themes/green/images/global/nophoto_90.jpg{% endif %}" alt="{{image.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                </span>
+            </span>
+        </div>   
+		<div class="item-detail">
+        	<h4>{{image.title}}</h4>
+ 			<p>{% autoescape off %}{{image.photo}}{% endautoescape %}</p>
+        </div>
+       	<div class="action-buttons">
+            <div>
+                <a href="{% url 'staff_restaurant_image_add' image.restaurant.id image.id %}" class="tttxt-w bm-add-image" original-title="{% trans 'Edit image' %} {{image}}"><span class="action-icon icon-edit"></span></a>
+                <a href="javascript:delete_image({{image.id}})" class="tttxt-w" original-title="Delete"><span class="action-icon icon-delete"></span></a>
+			</div>                                                            
+      	</div>
+    </div>
+</li>

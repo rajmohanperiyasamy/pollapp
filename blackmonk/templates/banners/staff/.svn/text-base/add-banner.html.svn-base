@@ -1,0 +1,358 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load upload_tags %}
+{% load i18n %}
+{% block navigation %}
+    {% activetab "selmodule" "banners" %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Banner Ads' %} {% endblock %}
+{% block head %}
+<style>
+    .bm_faded{opacity:0.5;pointer-events:none;}
+    .preview.preview_banner_zones > ul {
+        margin-bottom: 10px;
+    }
+    .preview.preview_banner_zones li {
+        color: #666666;
+        font-size: 12px;
+    }
+    .preview.preview_banner_zones li span {
+        display: inline-block;
+        font-weight: bold;
+        margin-right: 10px;
+        text-align: right;
+        width: 50px;
+    }
+</style>
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+{% endblock %}
+{% block content %}
+ <div id="staff-platform" class="group">
+    <div class="header-bar">
+        <a href="{% url 'staff_banners_manage_banners' %}"><h2><span class="go_back"></span>{% trans 'Banners' %}</h2></a>
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="business-add" class="group">
+                    <div id="add-new-business">
+                        {% if form.errors %}
+                            <div class="messageerror" >
+                                <span style="font-size:1.2em;font-weight:250;"><strong>{% trans "There is a problem with your submission" %}</strong></span>
+                                {% if form.errors %}
+                                <ul>{% for field in form %}
+                                     {% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+                                 {% endfor %}</ul>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <form id="mform" name="mform" action="{% url 'staff_banners_add_banner' %}{% if banner_obj %}?bid={{banner_obj.id}}{% endif %}" method="post"  enctype="multipart/form-data">{% csrf_token %}
+                            <div class="fields hform">
+                                <div class="field-group">              
+                                    <div class="field text-field fd-title">
+                                        <div class="label"><label for="">Caption<span class="required-field">*</span></label></div>
+                                        <div class="value">
+                                            {{form.caption}}
+                                        </div>
+                                    </div>
+                                    <div class="field text-field">
+                                        <div class="label"><label for="">Expiry Date</label></div>
+                                        <div class="value">{{form.expiry_date}}</div>
+                                    </div>
+                                </div> <!--/field-group--> 
+                               <div class="clear"></div>
+                                
+                                <div class="field-group cr_wmr">
+                                    <div class="field text-field">
+                                        <div class="label"><label for="">Modules<span class="required-field">*</span></label></div>
+                                        <div class="value">
+                                            {{form.section}}
+                                        </div>
+                                    </div>
+                                    <div class="field text-field bm_faded" id="id_section_categories" style="display:{% if bz_obz.object_id %}block{% else%}block{% endif %};"> 
+                                        <div class="label"><label>{% trans 'Categories:' %}</label></div> 
+                                        <div class="value">
+                                            <select id="id_category" class="select-menu fl" data-placeholder="Select a Category" name="category" autocomplete="off" original-title="Category">
+                                              {% include 'banners/staff/load-categories.html' %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div class="field select-field">
+                                        <div class="label"><label for="">Zone/Type<span class="required-field">*</span></label></div>
+                                        <div class="value">
+                                            {{form.zones}}
+                                            <!--select id="id_zones" class="select-menu fl" data-placeholder="Select a banner zone/type" name="zones" autocomplete="off" original-title="Zones">
+                                              {% include 'banners/staff/load-banner-zones.html' %}
+                                            </select-->
+                                            <span class="tip">{% trans 'Select a banner zone/type.' %}<span class="tool-tip" onclick="show_shaan();">?</span></span>
+                                        </div>
+                                    </div> 
+                                    
+                                    <div class="item-preview-wrapper photo-inside" id="available_zones_div">
+                                        <div class="preview preview_banner_zones" style="padding: 15px 20px;">
+                                            <h3 style="margin-bottom: 15px; text-align: center; font-size: 15px;">Available Zones</h3>
+                                            {% for bz in banner_zones %}
+                                            <ul>
+                                                <li><span>Name:</span>{{bz.name}}</li>
+                                                <li><span>Width:</span>{{bz.width}}px</li>
+                                                <li><span>Height:</span>{{bz.height}}px</li>
+                                            </ul>
+                                            {% endfor %}
+                                            <span class="icon-close distroy-preview inline-block"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field text-field">
+                                        <div class="label"><label for="">Open in a new window</label></div>
+                                        <div class="value">
+                                            {{form.is_new_tab}}
+                                            <!--span class="cform-radio-container">{{form.is_new_tab}}<span class="cform-radio-element"></span></span-->
+                                        </div>
+                                    </div>
+                                    <div class="field text-field">
+                                        <div class="label"><label for="">Destination URL</label></div>
+                                        <div class="value">
+                                            {{form.destination_url}}
+                                        </div>
+                                    </div>
+                                    <div class="field text-field">
+                                        <div class="label"><label for="">Upload Banner</label></div>
+                                        <div class="value">
+                                            {{form.is_script}}
+                                        </div>
+                                    </div>
+                                    <div id="id_upload_banner_div" style="display:{% if banner_obj and banner_obj.is_script %}none;{% else %}block;{% endif %}">
+                                        <div class="field text-field">
+                                            <div class="label"><label for="">:</label></div>
+                                            <div class="value">
+                                                <input type="hidden" value="{% if form.instance.image %}1{% else%}0{% endif %}" id="id_img_hidden_field">
+                                                {% if form.instance.image and not form.errors %}
+                                                    <div style="width:100px; position:relative;">
+                                                        <a href="javascript:void(0);" onclick="banner_image_large_preview('{% url 'staff_banners_banner_image_preview' %}?bid={{banner_obj.id}}','{{banner_obj.caption}}');" title="{% trans 'Large Preview' %}" ><img src="{{banner_obj.image.url}}"  width="100" /></a>
+                                                        <span onclick="if(confirm(gettext('Are you sure you want to delete the banner?'))){remove_uploaded_banner($(this),'{{banner_obj.id}}');return false;}" style="background:url('{{STATIC_URL}}ui/images/icons/c/97-C3.png') no-repeat scroll 50% center transparent; width:16px; height:16px; display:block;position:absolute; top:0; right:0; cursor:pointer;"></span>
+                                                    </div>
+                                                {% endif %}    
+                                                <div id="id_upload_imgae_div" {% if not form.errors and form.instance.image %}style="display:none;"{% endif %}>{{form.image}}</div>               
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="id_script_banner_div" style="display:{% if banner_obj and banner_obj.is_script %}block;{% else %}none;{% endif %}">
+                                        <div class="field text-field">
+                                            <div class="label"><label for="">Script Code</label></div>
+                                            <div class="value">
+                                                {{form.banner_script}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field-group" id="id_banner_payment_div">
+                                        {% include 'banners/staff/load-banner-payments.html' %}
+                                    </div>
+                                    
+                                </div>
+                                <div class="clear"></div>
+                            </div> <!--/fields-->
+                            <div class="form-submit right group">
+                               <button class="cform-button" roll="button" type="button" onclick="window.location.replace('{% url 'staff_banners_manage_banners' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+                               <button role="button" class="cform-button prime" name="draft" type="submit"><span class="cform-button-text">{% trans 'SAVE' %}</span></button>
+                            </div>                                                
+                        </form>
+                    </div>                                                                                                            
+                </div> <!-- end table -->                                    
+            </div><!-- end page wrap -->
+        </div>  <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+            {% include 'banners/staff/add_update_faq.html' %}
+        </div>        
+    </div>                            
+</div>
+{% endblock %}            
+{% block footer_include %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/ads/staff_banner.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+    $('#id_destination_url').focusin(function(){
+        if($('#id_destination_url').val()==""){
+                $('#id_destination_url').val('http://www.');
+        }
+          
+    });
+	$('#id_image').bind("change", function(){
+				$("#mform").validate().element($(this));
+		});
+    $('#id_destination_url').focusout(function(){
+    if($('#id_destination_url').val()=='http://www.'){
+                $('#id_destination_url').val('');
+            $(this).parent('div').parent('div').removeClass('field-error');$('#id_destination_url').removeClass("error");    
+            }
+    });
+    
+    $.validator.addMethod("img_required", function(value, element) {  
+        //if($('#id_is_script_1').is(':checked')){return false;}      
+        if($('#id_is_script_1').is(':checked')){if($('#id_img_hidden_field').val()=='0'){if($.trim($('#id_image').val())==''){return false;}else{return true;}}else{return true;}}                                                       
+        else{return true;}
+    },"Please upload image.");
+    $.validator.addMethod("script_required", function(value, element) {  
+        if($('#id_is_script_0').is(':checked')){if($.trim($('#id_banner_script').val())==''){return false;}else{return true;}}                                                                
+        else{return true;}
+    },"Please enter banner script.");
+    $.validator.addMethod("time", function(value, element) {  
+    return this.optional(element) || /^(([0]?[1-9])|([1][0-2])):([0-5]?[0-9])(:([0-5]?[0-9]))?\s([AP][M])$/i.test(value);},gettext("Please enter a valid time."));
+    $("#mform").validate({
+        ignore: "",
+        highlight: function(element, errorClass){add_error_class(element)},
+        unhighlight: function(element, errorClass){remove_error_class(element)},
+        errorPlacement: function(error, element){},
+           rules:{
+            caption: "required",
+            zones: "required",
+            section:"required",
+            image:"img_required",
+            banner_script:"script_required",
+            //expiry_date:"required",
+            destination_url:{required:false}
+           },
+        submitHandler:function(){
+            get_lat_lang();
+            form.submit();
+        }
+    });
+    
+    $('.select-menu').bind("change", function(){
+            $("#mform").validate().element($(this));
+    });
+    
+    /*$('#id_banner_script').bind("keyup", function(){
+            $(this).removeClass('error');$(this).parents('div').eq(2).removeClass('field-error');                        
+    });*/
+    
+    
+    if($("#id_expiry_date").length){
+        $("#id_expiry_date").datepicker({ dateFormat: "mm/dd/yy",minDate: new Date() });
+    }
+    
+    {% if banner_obj or form.errors %}load_categories();update_banner_pricing($('#id_zones').val());{% endif %}
+    {% if not banner_obj %} $('#id_zones option').remove();$('#id_zones').trigger("liszt:updated"); {% endif %}
+    {% if form.errors %} load_banner_zones(); {% endif %}
+    
+});
+
+function select_banner_upload_choice(value){
+   if(value=='False'){$('#id_script_banner_div').hide();$('#id_banner_script').val('');$('#id_upload_banner_div').fadeIn(300);}
+   else{$('#id_upload_banner_div').hide();$('#id_image').val('');$('#id_script_banner_div').fadeIn(300);}
+}
+
+function check_form_is_valid(){
+   //ev.preventDefault();                                
+   //evt.stopPropagation();                          
+   var success = $('#mform').validate().form();
+   if (success){return true;} 
+   else{return false;} 
+}
+function load_categories(){
+        $('#id_section_categories').addClass('bm_faded');
+        var datastring = 'module='+$("#id_section option:selected").text();
+        {% if banner_obj %}datastring+='&bid={{banner_obj.id}}';{% endif %}
+        {% if selected_category %}datastring+='&selected_category={{selected_category}}';{% endif %}
+        $.ajax({
+        type: "GET",
+        url: '{% url 'staff_banners_ajax_load_banner_categories' %}',
+        data: datastring,
+        dataType:'JSON',
+        success: function(data){
+            if(data.status){$('#id_section_categories').removeClass('bm_faded');$('#id_category').empty().append(data.html)}
+            else{$('#id_category').empty();}
+            $('#id_category').trigger("liszt:updated");
+            },
+            error: function(data){
+               $('#id_category').empty();                   
+               alert('Oops!! Cannot process your request.');
+            }
+        });
+}
+
+function load_banner_zones(){
+    var datastring = 'module='+$("#id_section").val();
+    {% if selected_zone %}datastring+='&selected_zone={{selected_zone}}';{% endif %}
+    $.ajax({
+    type: "GET",
+    url: '{% url 'staff_banners_ajax_load_banner_zones' %}',
+    data: datastring,
+    dataType:'JSON',
+    success: function(data){
+        if(data.status){$('#id_zones').empty().append(data.html)}
+        else{$('#id_zones').empty()}
+        $('#id_zones').trigger("liszt:updated");
+        },
+        error: function(data){
+           $('#id_zones').empty();                   
+           alert('Oops!! Cannot process your request.');
+        }
+    });
+                             
+}
+
+function update_banner_pricing(zid){
+    var datastring = 'zone='+zid;
+    {% if banner_obj %}datastring+='&bid={{banner_obj.id}}';{% endif %}
+    {% if total_impression %}datastring+='&total_impression={{total_impression}}';{% endif %}
+    {% if total_amount %}datastring+='&total_amount={{total_amount}}';{% endif %}
+    $.ajax({
+    type: "GET",
+    url: '{% url 'staff_banners_ajax_load_banner_payment' %}',
+    data: datastring,
+    dataType:'JSON',
+    success: function(data){
+        if(data.status){$('#id_banner_payment_div').empty().append(data.html)}
+        else{$('#id_banner_payment_div').empty()}
+        setTimeout(function() {$('.bnr-slct').chosen(); }, 500);
+        },
+        error: function(data){
+           $('#id_banner_payment_div').empty();                   
+           alert('Oops!! Cannot process your request.');
+        }
+    });
+}
+
+function calculate_total_price(selected,price,impressions){
+        var total;
+        if (selected == '0'){total = price;} 
+        else{total = (selected*price)/impressions;}
+        $('.bnr_total_span').html(total);
+        $('.bnr_total_span').empty().html(' {{globalsettings.currency}} '+total);  
+        $('#id_total_amount').val(total);  
+        $('#id_total_impression').val(selected);
+}
+
+function remove_uploaded_banner(hobj,bid){
+  $.get("{% url 'staff_banners_ajax_delete_banner_image' %}",{ bid: bid },function(data){
+         if(data=='1'){$(hobj).parent('div').fadeOut('slow').remove();$('#id_img_hidden_field').val('0');$('#id_upload_imgae_div').show();}
+         else{alert('Oops..!! error while deleting logo');}
+  });
+}
+
+function banner_image_large_preview(url,title){
+  $.colorbox({width: "800",initialWidth: "800", top:"5%", initialHeight: "200", href:url, title:title });                        
+}
+
+function show_shaan(){
+   $('#available_zones_div').fadeIn('slow');                
+}
+</script>
+
+{% endblock %}    
+                

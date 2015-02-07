@@ -1,0 +1,13 @@
+{% load i18n bm_advice_tags %}
+
+<section class="sCn pD200">
+    {% get_qna_categories as categories %}
+    <ul class="nav nav-list fS12">
+        <li class="nav-header">{% trans 'Topics' %}</li>
+        <ul class="nav nav-list cMpCt fOmX767 pDfX pD0 w100mN768 dRmN678">
+        {% for cat in categories %}
+            <li><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></li>
+        {% endfor %}    
+        </ul>
+    </ul>
+</section>

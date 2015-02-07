@@ -1,0 +1,39 @@
+{% load thumbnail %}
+{% load i18n %}
+{% load template_loop %}	
+	<div class="preview-items-head">
+     <h4>{% trans 'Favorite Classifieds' %}</h4>
+    </div>
+	{% if classifieds %}		   
+	<ol class="data-table table-lists-container" id="ajax_content_list">
+			{% for classified in classifieds %}	
+			<li class="table-list" id="li_{{classified.id}}">
+			        <div class="table-list-container has-thumb110 group">
+			            <div class="item-media">
+                        	<a href="{{ classified.get_absolute_url }}" class="inline-block">
+                                <span class="item-thumb thumb-110">
+                                    <span class="thumb-in">
+                                        <span class="thumb"><img src="{% if classified.get_first_photo_90 %}{% thumbnail classified.get_first_photo_90 110x0 %}{% else %}{{ classified.get_default_image }}{% endif %}" alt="{{ classified.title }}" class="inline-block"><span class="inline-block h100"></span></span>
+                                    </span>
+                                </span>
+							</a>                                                            
+                        </div> 
+						<div class="item-info relative-block">
+			                <h3 class="title"><a href="{{ classified.get_absolute_url }}">{{ classified.title }}</a></h3>
+			                <p class="ltxt80">{% trans 'On' %} {{classified.created_on|date:"d M, Y"}}</p>
+			                <ul class="quick-stats group">
+			                    <li class="cmnt">{% autoescape off %}{{ classified.description|truncatewords:30  }}{% endautoescape %}</li>
+			                </ul>
+			            </div>
+			        </div>
+			    </li> 
+			{% endfor %}
+			</ol>
+			<div id="pagenation">
+				{% include 'account/favorite/pagenation.html' %}      
+				<input type="hidden" id="url" value="{% url 'ajax_myfav_list' 'classifieds' %}">
+				<input type="hidden" id="module" value="classifieds">      
+			</div>  
+			{% else %}
+				<div class="no-data"> <p>{% trans 'Sorry , No favorite classifieds found' %}</p></div>
+         	{% endif %}

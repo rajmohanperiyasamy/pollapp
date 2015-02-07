@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load thumbnail ds_utils %}
+{% load truncate_filter %}
+<input type="hidden" class="dev_allids" value="{{profile.id}}">
+<li class="cat-list-row bm-profile-list" id="id_user_list_{{profile.id}}">
+			<span class="checkbox-wrap">
+				<span class="cform-checkbox-container"><input type="checkbox" value="{{profile.id}}" id="id_user_action" name="artCulture" class="check-overflow cbox"><span class="cform-checkbox-element"></span></span>
+			</span>
+	        <div class="cat-list-row-inner group">
+	            <div class="cat-list-column member-login">
+	            	<a href="{% url 'admin_ajax_user_profile' %}?uid={{profile.id}}" title="{% trans 'Profile Information' %}" class="bm-add-gadget light_box">
+	                	<div class="user-icon"><img src="{% if profile.image %}{% thumbnail profile.image 48x48 %}{% else %}{{STATIC_URL}}images/generic.gif{% endif %}" width="48" height="48" class="inline-block o3"></div>
+	                	<h5 class="username">{{profile.display_name}}</h5>
+	                	<span class="email" title="{{profile.useremail}}">{{profile.useremail|truncate_chars:28}}</span>
+					</a>                                                    
+	            </div>
+	            <div class="cat-list-column member-display-name">
+	            	<span class="display-name"><a href="#">{{profile.get_full_name|default:profile.display_name}}</a></span>
+	            </div>
+	            <div class="cat-list-column member-last-login">
+	            	<span class="time">{{profile.last_login|get_readable_time_format}} {% trans 'ago' %}</span>
+	            </div>
+	            <div class="action-buttons">
+	              	<div class="group">
+	                    <!--a title="{% trans 'Delete User Account' %}" class="tttxt-n" onclick="if(confirm(gettext('Are you sure you want to delete this user?'))){delete_content({{profile.id}});return false;}" href="javascript:void(0);"><span class="action-icon icon-delete"></span></a-->
+						<a href="{% url 'admin_ajax_delete_type' profile.id %}" target="_blank" class="btn-txt-prime bm-add-gadget" title="Delete"><span class="action-icon icon-delete"></span></a>
+	                    <a title="{% trans 'Update User Account' %}" id="id_update_link_{{profile.id}}" href="{% url 'admin_ajax_update_user' %}?uid={{profile.id}}" class="txt-button tttxt-n bm-add-gadget"><span class="action-icon icon-edit"></span></a>
+					</div>                                                            
+	            </div>
+	            <div class="member-status">
+	                <div class="relative-block dev_hide_list_status" onclick="change_status({{profile.id}});" id="id_change_status_div_{{profile.id}}">
+	                    <span class="status-inside inline-block" id="id_change_status_span_{{profile.id}}"><span class="inline-block status-idty {% if profile.status == 'A' %}icon-active-user{% else %}icon-inactive-user{% endif %}" id="id_change_status_span_icon_{{profile.id}}"></span><span class="arrow"></span></span>
+	                    <ul class="dropdown-list" id="id_change_status_ul_{{profile.id}}">
+	                        <li><strong>{% trans 'Update status to...' %}</strong></li>
+	                        <li><a href="javascript:void(0)" id="id_change_status_text_{{profile.id}}" onclick="save_status({{profile.id}});">{% if profile.status == 'A' %}{% trans 'Inactive' %}{% else %}{% trans 'Active' %}{% endif %}</a></li>
+	                        {% if profile.status == 'A' %}
+                               <li><a title='Promote to Staff' href="{% url 'admin_ajax_promote_user' profile.id %}" id="id_promote_link_{{profile.id}}" class="bm-add-gadget light_box">{% trans 'Promote' %}</a></li>
+                            {% endif %}
+	                    </ul>  	 
+	                </div>                                                     
+	            </div>                                                
+			</div>
+		</li> 
+		<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+		<script>
+			$(document).ready(function(){
+				$(".bm-add-gadget").colorbox({width: "560",initialWidth: "560", top:"5%",initialHeight: "200",title:function(){return getLBTitle($(this));}});
+			})
+		</script>

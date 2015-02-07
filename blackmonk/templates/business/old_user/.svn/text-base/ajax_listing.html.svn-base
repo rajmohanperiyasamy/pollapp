@@ -1,0 +1,88 @@
+{% load i18n %}	
+{% load thumbnail %}	
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{created}}" name="id_created" id="id_created">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="" name="id_action" id="id_action">
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+{% if business %} 
+<ol class="data-table table-lists-container" id="ajax_content_list">
+	{% for buz in business %}
+	<li class="table-list" id="li_{{buz.id}}">
+			<div class="table-list-container check-item has-thumb110 group">
+		 	{% if buz.featured_sponsored == 'F' %}
+		 		<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+			{% else %}
+				{% if buz.featured_sponsored == 'S' %}
+		 			<span class="list-type sponsored-item"><a class="tttxt" title="{% trans 'Item listed as sponsored' %}" href="#">{% trans 'Sponsored' %}</a></span>
+				{% endif %}
+			{% endif %}
+		 	<span class="checkbox-wrap">
+				<span class="cform-checkbox-container"><input type="checkbox" value="{{buz.id}}" id="id_event_action" name="artCulture" class="check-overflow cbox"><span class="cform-checkbox-element"></span></span>
+			</span>
+            <div class="item-media">
+            	<a href="{% url 'user_preview_business' buz.id %}" class="inline-block">
+                    <span class="item-thumb thumb-110">
+                        <span class="thumb-in">
+                            <span class="thumb"><img src="{% if buz.logo.logo %}{% thumbnail buz.logo.logo 110x0 %}{% else %}{{ buz.get_default_image }}{% endif %}" alt="{{gal.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                        </span>
+                    </span>
+				</a>                                                            
+            </div> 
+			<div class="item-info relative-block">
+                <h3 class="title"><a href="{% url 'user_preview_business' buz.id %}">{{buz.name}}</a></h3>
+                <p class="ltxt80">
+                	{% for cat in buz.categories.all %}
+					{{cat}}{% if not forloop.last %},{% endif %}
+					{% endfor %}
+				</p> 
+				<p class="ltxt80">
+					{% trans 'By' %} <a href="{% url 'user_profile' buz.created_by.profile_slug %}">{{buz.created_by.display_name}}</a> 
+					<span class="divider12">|</span>{{buz.created_on|date:"M d, Y"}}
+				</p>
+                <ul class="quick-stats group">
+                    <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{buz.most_viewed}}</a></li>
+                    <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span>46</a></li-->
+                </ul>
+                <div class="item-status no-options dev_hide_list_status">
+                	<span class="status-inside inline-block" id="id_span_chge_sts_{{buz.id}}">
+						<span title="{{buz.get_status|capfirst}}" name="{{buz.status}}" id="id_estatus_{{buz.id}}" class="inline-block tttxt status-idty icon-{{buz.get_status}}"></span>	 
+                    </span>
+					
+                </div>                                                        
+            </div>
+            <div class="action-buttons {% if forloop.counter == 1 %}tip tip6{% endif %}">
+                <div class="relative-block">
+                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{buz.id}}" onclick="display_settings({{buz.id}});"><span class="action-icon icon-manage"></span></span>
+                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{buz.id}}" style="display:none">
+                    	{% if buz.status == 'P' and buz.featured_sponsored != 'F' %}
+							<li><a title="{% trans 'Upgrade ListingType' %}" href="{% url 'user_business_upgrade_listing_type' buz.id %}" class="bm-business-listing">{% trans 'Upgrade Listing Type' %}</a></li>
+							<li><span class="line-break"></span></li>
+						{% else %}
+							{% if buz.status == 'D' %}
+							<li><a title="{% trans 'Send for Approval' %}" href="{% url 'user_business_upgrade_listing_type' buz.id %}" class="bm-business-listing">{% trans 'Send for Approval' %}</a></li>
+							<li><span class="line-break"></span></li>
+							{% endif %}
+						{% endif %}
+						<li><a title="{% trans 'Edit this Classified' %}" href="{% url 'user_update_business' buz.id %}">{% trans 'Edit' %}</a></li>
+						<li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'user_seo_business' buz.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+        	            <li><span class="line-break"></span></li>
+						<li><a title="{% trans 'Manage Product' %}" href="{% url 'user_business_product' buz.id %}">{% trans 'Manage Product' %}</a></li>
+						<li><a title="{% trans 'Manage Coupon' %}" href="{% url 'user_business_coupon' buz.id %}">{% trans 'Manage Coupon' %}</a></li>
+						<li><a title="{% trans 'Manage Images' %}" href="{% url 'user_business_images' buz.id %}">{% trans 'Manage Images' %}</a></li>
+						<li><span class="line-break"></span></li>
+            	        <li><a onclick="if(confirm(gettext('Are you sure you want to delete the Business ?'))){filter_action({{buz.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+                    </ul>
+				</div>                                                              	                                                         
+            </div>
+        </div>
+    </li> 
+	{% endfor %}
+	</ol>
+	<div id="pagenation">
+		{% include 'common/pagination_ajax.html'%}  
+	</div> 
+{% else %}
+		<div class="no-data"><p>{% trans 'Sorry , No Business found !' %}</p></div>
+{% endif %}   

@@ -1,0 +1,53 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:96px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading.gif"><br><p>{% trans 'Saving Advertisement Settings' %}</p>
+</div>
+<div id="id_banner_ads_div" class="group">
+    <form action="{% url 'admin_configuration_advertisement_update' %}" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+		<input type="hidden" name="module" id="id_module" value="{{add_obj.name}}">
+    	<div class="fields hform">
+				<section id="signin-with-facebook" class="section">
+                	<div class="section-head">
+						<h3 style="padding-left:10px;" class="section-title tttxt-e checkbox-left">
+							{{add_obj.name|title}}
+						</h3>
+                   	</div>
+                    <div class="section-content tgle">
+                    	<div class="field text-field">	
+					    	<div class="label"><label>{% trans 'Top Slot Banner' %}<span class="tip">{% trans '(468px * 60px) size' %}</span></label></div>	
+					    	<div class="value">
+								{{form.top}}
+					    	</div>	
+				        </div>
+						<div class="field text-field">	
+							<div class="label"><label>{% trans 'Right Slot Banner' %}<span class="tip">{% trans '(300px * 250px) size' %}</span></label></div>	
+					    	<div class="value">
+								{{form.right}}
+					    	</div>	
+				        </div>
+					</div>                                                                  
+    		   </section> <!-- end section --> 
+		</div>    
+    	<div class="modal-base form-submit group trp-bg">
+	  		<button role="button" class="cform-button prime right" type="button" onclick="save_ads_setting()"><span class="cform-button-text">{% trans 'Update' %}</span></button>
+		</div>           
+    </form>
+</div>  
+<script type="text/javascript">
+function save_ads_setting(){
+	var datastring='module='+$('#id_module').val()+'&top='+encodeURIComponent($('#id_top').val())+'&right='+encodeURIComponent($('#id_right').val());
+	$('#id_banner_ads_div').hide();
+	$('#ajax_content_loading').show();
+	$.ajax({
+	type: "POST",
+	url: "{% url 'admin_configuration_get_ads_content' %}",
+	data: datastring,
+	dataType:'JSON',
+	success: function(data){
+			show_msg(gettext(data.msg),data.mtype);
+			$('#ajax_content_loading').hide();
+			$('#id_banner_ads_div').fadeIn(800).html(data.html);
+		}
+	});
+}
+</script>

@@ -1,0 +1,18 @@
+{{ object.name  }}
+{{ object.summary  }}
+{% autoescape off %}{{ object.description }}{% endautoescape %}
+{% for cat in object.categories.all %}
+	{{cat.name}}
+{% endfor %}
+{% for mt in object.meal_types.all %}
+	{{mt.name}}
+{% endfor %}
+{% for cus in object.cuisines.all %}
+	{{cus.name}}
+{% endfor %}
+{% for f in object.features.all %}
+	{{f.name}}
+{% endfor %}
+{% for tag in object.tags.all %}
+	{{tag.tag}}
+{% endfor %}

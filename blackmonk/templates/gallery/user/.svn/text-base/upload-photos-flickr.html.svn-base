@@ -1,0 +1,316 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load upload_tags %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Photos' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Photos' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ui/js/jquery.endless.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#id_title").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#q").click();
+            $('#q').focus();
+        }
+    });
+    $('.flickr-result').endlessScroll({
+      fireOnce: true,
+      fireDelay: false,
+      callback: function(p){
+          if(flag){
+            $("#ajax_content_loading_flicker_search_page").show();
+              setTimeout(function(){load_more()},2000);
+        }
+      }
+    });
+});
+var flag=false;
+var PAGE=1;
+var SORT='relevance';
+
+function getPhotos(){
+    flag=true;
+    $('#ajax_content_loading_flicker_search_page').show();
+    var text = document.getElementById("id_title").value;
+    strRE = new RegExp( );
+    strRE.compile( '^[\s ]*$', 'gi' );
+    if(strRE.test(text)==true){alert("Please enter photo title?");}
+    else{
+        $('#no-data').parent('.flickr-result').addClass('vScRl');
+        $('#no-data').hide();
+        $("#images").html('');
+        var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ gallery_settings.flickr_api_key }}";
+        url += "&safe_search=1";
+        url += "&per_page=180"
+        url += "&page="+PAGE;
+        url += "&sort="+SORT;
+        url += "&text="+text;
+        $.getJSON(url + "&format=json&jsoncallback=?", function(data){
+            $("#ajax_content_loading_flicker_search").hide();
+            if(data.photos.photo==null || data.photos.photo=='')
+            { 
+                alert("No search result found try another keyword.");
+            }
+            else{
+                var append_html = '';
+                $.each(data.photos.photo, function(i,item){
+                    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+                    src += "_t.jpg";
+                    append_html += '   <li id="fimg_'+item.id+'">'
+                    append_html += '       <a href="javascript:select_photo(\''+item.id+'\', \''+src+'\')" class="bUi-tMb-wPr tMb-100 fLxiMgH">'
+                    append_html += '           <span class="bUi-tMb">'
+                    append_html += '               <span class="bUi-tMb-pRpL">'
+                    append_html += '                   <span class="bUi-tMb-cLp">'
+                    append_html += '                       <span class="bUi-tMb-cLp-iN">'
+                    append_html += '                           <img class="mDa-oT" src="'+src+'" alt="" xstyle="height: 167px;">'
+                    append_html += '                           <span class="vRtL-aLn">'
+                    append_html += '                           </span>'
+                    append_html += '                       </span>'
+                    append_html += '                   </span>'
+                    append_html += '               </span>'
+                    append_html += '           </span>'
+                    append_html += '           <div class="aBsLt bR10 lH1 tIc"><i class="bUi-iCn-oK-aLt-16 fS18 cLr-gRn " aria-hidden="true"></i></div>'
+                    append_html += '       </a>'
+                    append_html += '   </li>'
+                });
+                $('#ajax_content_loading_flicker_search_page').hide();
+                $("#images").html(append_html);
+            }
+        });
+    }
+}
+function search_filter(sort){
+    SORT=sort;
+    $('.sort option[value="'+sort+'"]').attr('selected', 'selected');
+    PAGE=1;
+    $("#images").html('');
+    getPhotos();
+}
+function load_more(){
+    PAGE=PAGE+1;
+    var text = document.getElementById("id_title").value;
+    strRE = new RegExp( );
+    strRE.compile( '^[\s ]*$', 'gi' );
+    if(strRE.test(text)==true){alert("Please enter photo title?");}
+    else{
+    $('#default_text').hide();
+    $("#ajax_content_loading_flicker_search").show();
+    var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ gallery_settings.flickr_api_key }}";
+    url += "&safe_search=1";
+    url += "&per_page=60"
+    url += "&page="+PAGE;
+    url += "&sort="+SORT;
+    url += "&text="+text;
+    $.getJSON(url + "&format=json&jsoncallback=?", function(data){
+    $("#ajax_content_loading_flicker_search_page").hide();
+        if(data.photos.photo==null || data.photos.photo=='')
+        { 
+        $("#mform").hide();
+        alert("No search result found try another keyword.");
+        }
+        else{ 
+            var append_html = '';
+                $.each(data.photos.photo, function(i,item){
+                    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+                    src += "_t.jpg";
+                    append_html += '   <li id="fimg_'+item.id+'">'
+                    append_html += '       <a href="javascript:select_photo(\''+item.id+'\', \''+src+'\')" class="bUi-tMb-wPr tMb-100 fLxiMgH">'
+                    append_html += '           <span class="bUi-tMb">'
+                    append_html += '               <span class="bUi-tMb-pRpL">'
+                    append_html += '                   <span class="bUi-tMb-cLp">'
+                    append_html += '                       <span class="bUi-tMb-cLp-iN">'
+                    append_html += '                           <img class="mDa-oT" src="'+src+'" alt="" xstyle="height: 167px;">'
+                    append_html += '                           <span class="vRtL-aLn">'
+                    append_html += '                           </span>'
+                    append_html += '                       </span>'
+                    append_html += '                   </span>'
+                    append_html += '               </span>'
+                    append_html += '           </span>'
+                    append_html += '           <div class="aBsLt bR10 lH1 tIc"><i class="bUi-iCn-oK-aLt-16 fS18 cLr-gRn " aria-hidden="true"></i></div>'
+                    append_html += '       </a>'
+                    append_html += '   </li>'
+                });
+                $('#ajax_content_loading_flicker_search_page').hide();
+                $("#images").append(append_html);
+        }
+    });
+    }
+}
+var load_url="{{STATIC_URL}}ui/images/global/loading-s.gif";
+function select_photo(id, imgsrc){
+    if($('#fimg_'+id).hasClass('selected')){
+        deselect(id);
+    }else{
+        deselect(id);
+        $('#fimg_'+id).addClass('selected')
+        var append_html = ''
+        append_html += '   <li class="rLvE selected-flickr-images" id="simg_'+id+'">'
+        append_html += '        <input type="hidden" name="flicker_id_list" value="'+id+'">'
+        append_html += '        <span class="aBsLt lH1 zI1" style="top: 4px; right: 4px;">'
+        append_html += '            <a href="javascript:deselect(\''+id+'\')" class="ib lH1"><i aria-hidden="true" class="bUi-iCn-rMv-aLt-16 cLs-iCn"></i></a></span><a class="bUi-tMb-wPr tMb-100 fLxiMgH" href="#">'
+        append_html += '            <span class="bUi-tMb">'
+        append_html += '                <span class="bUi-tMb-pRpL">'
+        append_html += '                    <span class="bUi-tMb-cLp">'
+        append_html += '                        <span class="bUi-tMb-cLp-iN">'
+        append_html += '                            <img class="mDa-oT" src="'+imgsrc+'" alt="">'
+        append_html += '                            <span class="vRtL-aLn">'
+        append_html += '                            </span>'
+        append_html += '                        </span>'
+        append_html += '                    </span>'
+        append_html += '                </span>'
+        append_html += '            </span>'
+        append_html += '        </a>'
+        append_html += '    </li>'
+        $('#selected-flickr-images').append(append_html);
+        $('#photo_count').text($('.selected-flickr-images').length);
+    }
+}
+function deselect(id){
+    $('#simg_'+id).remove();
+    $('#fimg_'+id).removeClass('selected')
+    $('#photo_count').text($('.selected-flickr-images').length);
+}
+</script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "leftnav" "photos" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+        <div class="span10 sP9mX979 sP12mX767">
+            <div class="row-fluid">
+                <div class="main span9">
+                    <section class="sCn pD0">
+                        <div class="cLrFx pD20">
+                            <h3 class="mR0 tRnCt">Add Photos</h3>
+                        </div>
+                        <div class="dSpLy-tBl tHcL bRdR pD0 mRb20 sTpS-hRz hMp">
+                            <div>
+                                <h3><em class="sTp-cNt">1</em> Create gallery</h3>
+                            </div>
+                            <div class="aCtV">
+                                <h3><em class="sTp-cNt">2</em> Upload photos</h3>
+                            </div>
+                            <div>
+                                <h3><em class="sTp-cNt">3</em> Add title &amp; description</h3>
+                            </div>
+                        </div>
+                        <div class="pD20 pDt0">                                                                                     
+                            <div class="row-fluid">
+                                <ul class="nav nav-tabs tB-cStM pD015">
+                                    <li style="{#% if gallery.get_gallery_flicker_images %#} xdisplay: none; {#% endif %#}">
+                                        <a href="{% url 'user_add_gallery_upload_photos' id %}"><i class="bUi-iCn-uP-lD-16 fS16 mRr5 ib cLr-gRn"></i> <span class="hMp">Upload from computer</span></a>
+                                    </li>
+                                    <li class="active">
+                                        <a href="{% url 'user_add_gallery_add_photos' id %}"><i aria-hidden="true" class="bUi-iCn-fLr-16 fS16 mRr5 ib cLr-iNd"></i> <span class="hMp">Flickr photos</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <hr class="mRb20 mRt0 oTsT-hRz20">
+                            <div class="tLbR mRb10 cLrFx">                     
+                                <div class="pLlT mRr10">
+                                        <div class="input-append iNsD">
+                                            <input class="search-query fS13 pD510 h34" placeholder="Search photos.." name="title" id="id_title"  type="text"  maxlength="100">
+                                            <button type="button" onclick="getPhotos();" id = "q" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14 ib"></i></button>
+                                        </div>
+                                </div>
+                                <div class="pLrT mRt10SmP pLlTSmP">
+                                    <span class="pLlT fS11 pDt7 cLr-gRy">View:  </span>
+                                    <select class="bUiSlCtbtn-link tXt-sMl pLrT" id="sort" onchange="search_filter('$(this).val()')">
+                                        <option value="title" onclick="search_filter('relevance')">Relevant</option>
+                                        <option value="releaseDate" onclick="search_filter('date-posted-desc')">Recent</option>
+                                        <option value="runtime" onclick="search_filter('interestingness-asc')">Interesting</option>
+                                    </select>
+                                </div>  
+                            </div>
+                            <form class="form-search mRb0" name="photomform" method ="post" id="photomform" action="{% url 'user_add_gallery_add_photos' id %}">
+                                <div class="row-fluid mRt20">
+                                    <div class="hT500 pDmR-10 mRb30 rLvE flickr-result">
+                                        <div class="tBl-bLk pDt0" id="no-data">
+                                            <div class="tBl-cEl">
+                                                <span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-pHoT-24 fS42-1 cLr-lTgRy ib"></i></span>
+                                                <p class="bLk mRt20 fS14 cLr-lTgRy oP75">Enter keyword(s) in the above search box load photos from flickr.</p>
+                                            </div>
+                                        </div>
+                                        <ul class="tMbS sXcL pDfX mRb0 sLpRiMg" style="" id="images">
+
+                                        </ul>
+                                        <div id="ajax_content_loading_flicker_search_page" style="display:none;padding-top:100px;text-align:center;">
+                                            <img src="{{STATIC_URL}}ui/images/global/loading.gif"></p>
+                                        </div>
+                                    </div> 
+                                    {% with gallery.get_gallery_flicker_images as flickr_img_list %}
+                                    <div class="mRb30 cLrFx pD15 wLl">
+                                        <div class="cLrFx">
+                                            <div class="pLlT">
+                                                <h4 class="mR0 tRnCt">Selected Photos<span class="lBl dRk lRg lRg-bRdR fS12 ib fW-bLd mRl10" id="photo_count">{{flickr_img_list.count}}</span></h4>
+                                            </div>
+                                            <a href="javascript:void(0);" data-toggle-icon="bUi-iCn-aNg-b-12" data-target="#selected-photos" data-toggle="collapse" class="pLrT"><i aria-hidden="true" class="bUi-iCn-aNg-rT-12 fS18 cLr-gRy"></i></a>
+                                        </div>
+                                        <div class="mXhT170 pDmR-015 vScRl collapse in" id="selected-photos">
+                                            <ul class="tMbS sXcL pDfX mRb0" id="selected-flickr-images" style="min-height: 111px; margin-top: 10px;">
+                                            {% for img in flickr_img_list %}
+                                                {% with img.get_flickr_id as flickr_id %}
+                                                <li class="rLvE selected-flickr-images" id="simg_{{flickr_id}}">
+                                                    <input type="hidden" name="flicker_id_list" value="{{flickr_id}}">
+                                                    <span class="aBsLt lH1 zI1" style="top: 4px; right: 4px;">
+                                                        <a href="javascript:deselect('{{flickr_id}}')" class="ib lH1"><i aria-hidden="true" class="bUi-iCn-rMv-aLt-16 cLs-iCn"></i></a></span><a class="bUi-tMb-wPr tMb-100 fLxiMgH" href="#">
+                                                        <span class="bUi-tMb">
+                                                            <span class="bUi-tMb-pRpL">
+                                                                <span class="bUi-tMb-cLp">
+                                                                    <span class="bUi-tMb-cLp-iN">
+                                                                        <img class="mDa-oT" src="{{img.photo_url}}" alt="">
+                                                                        <span class="vRtL-aLn">
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endwith %}
+                                            {% endfor %}
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                    {% endwith %}
+                                    <hr class="oTsT-hRz20 mRb0 mRt0">
+                                    <div class="row-fluid">
+                                        <div class="form-actions pD0 pLrT">
+                                            <button type="submit" class="btn btn-light fS12 fW-bLd ">Cancel</button>
+                                            <button class="btn btn-primary fS12 fW-bLd mRl5" type="submit">Next step</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div> <!-- /.main -->
+                <aside class="sD-bR span3">
+                    <div>
+                        <section class="tXt-cTr pD0 bNr-aD"> 
+                           
+                        </section>
+                    </div>
+                </aside>
+            </div>  <!-- /.row-fluid -->
+        </div>  <!-- /.span10 -->
+
+{% endblock %}
+
+{% block footerarea %}
+    <script src="{{ STATIC_URL }}themes/js/bootstrap-transition.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/bootstrap-select.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/bootstrap-collapse.js"></script>
+    <script src="{{ STATIC_URL }}themes/js/fxslider.js"></script>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load currency %}
+{% block navigation %}
+	{% activetab "selmodule" "deals" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Payment Conformation' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+    <div class="header-bar">
+    	<h2>{% trans 'Order Summary' %}</h2>                        
+	</div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap order-summary">
+                	<div class="order-summary-cont group">
+                    	<div id="item_details" style="position:relative;">
+							{%for msg in msgs%}
+								<div style="color:red;">{{msg}}</div>
+							{%endfor%}
+                            <table class="order_lst">
+                                <tbody>
+                                    <tr style="border:1px solid #e6e6e6; background:none repeat 0 0 #f6f6f6; border-bottom:none;">
+                                        <th style="width: 35%;"> <span>Item Details</span> </th>
+                                        <th style="width: 12%; text-align:center"><span>Unit Price</span></th>
+                                        <th style="width: 18%; text-align:center"><span>Quantity</span></th>
+                                        <th style="width:18%;text-align: center;"><span>Sub Total</span></th>
+                                    </tr>
+									{% for cart_item in cart.cart_items %}
+                                    <tr style="border-left:1px solid #e6e6e6; posiion:relative;">
+                                        <td>
+                                            <div class="item group alt">
+                                                <div class="detail">
+                                                    <a class="pic" href="javascript:void(0);">
+                                                        <img alt="{{ cart_item.product.name }}" title="{{ cart_item.product.name }}" src="{% if cart_item.product.get_cover_image_user %}{% thumbnail cart_item.product.get_cover_image_user 110x0 %}{% else %}{{STATIC_URL}}ui/images/global/img-none.png{% endif %}" height="80" width="80">
+                                                    </a>
+                                                    <h4 class="title">
+                                                        <a href="javascript:void(0);" style="">{{ cart_item.product.name|truncatechars:106 }}</a>
+                                                    </h4>
+                                                    <div class="summary">
+                                                        {% if deal.about %}{% autoescape off %}{{ deal.about|truncatechars:200 }}{% endautoescape %} {% else %}{{ deal.title }} {% endif %}
+                                                    </div>
+                                                </div> 
+                                                <div class="footer"></div>    
+                                            </div>                                                
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="hgltf">
+                                            	{{globalsettings.currency}}{{ cart_item.obj.product.for_sale_price|floatformat:2 }}
+                                            </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <h3 class="duration">
+                                            	{{ cart_item.quantity }}
+                                            </h3>
+                                            <span style="font-size:11px; color:#999;">
+											</span>
+                                        </td>
+                                        <td style="text-align: center;" class="total" id="id_total">
+                                            <h3 class="item_total">
+                                                 {{globalsettings.currency}}{{ cart_item.obj.get_product_total_price|floatformat:2 }}
+                                            </h3> 
+	                                        <div style="position:relative" class="cart_item list_remove">
+	                                            <input style="position: absolute; right: 10px; top: -20px;" type="button" onclick="if(confirm('You want to remove this product from your order list ')){;location.replace('{%url 'bmshop_product_item_remove' cart_item.obj.id  %}?aid={{address_id}}');this.focus();}" class="rbtn" id="remove_cart_item" value="Remove" name="remove_cart_item">
+	                                        </div>
+                                        </td>
+                                    </tr>
+									{% endfor %}
+                                    <tr class="ftr" style="border-left:1px solid #e6e6e6;">
+                                        <td class="total_you_pay" colspan="5">
+                                            <p style="display:block;float:left;text-align:left;padding:10px 10px 10px 0; width:340px;font-size:11px;font-weight:normal;color:#777;">
+                                                <span class="cform-checkbox-container"><input type="checkbox" value="1" id="terms" name="terms"/ style="float:left; margin:0 5px 0 0"><span class="cform-checkbox-element"></span></span>
+                                                I have read and agreed to the <a target="_blank" href="/terms-of-use.html">{% trans "Terms of Use" %}</a> {% trans "and" %} <a target="_blank" href="/privacy-policy.html">{% trans "Privacy Policy" %}</a>.
+                                            </p>
+											
+											<div style="border-bottom: 1px solid rgb(230, 230, 230); margin-bottom: 10px; padding-bottom:10px; float: right;" class="group">
+												<span style="font-size: 12px; color: rgb(102, 102, 102); font-weight: normal;">Sub Total</span>
+												<span style="font-size: 14px;">: {{globalsettings.currency}}{{ cart.cart_base_price|floatformat:2 }}</span>
+												<span class="clear" style="display: block; height: 5px;"></span>
+												<span style="font-size: 12px; color: rgb(102, 102, 102); font-weight: normal;">Shipping Charge</span>
+												<span style="font-size: 14px;">: {{globalsettings.currency}}{{cart.cart_shipping_charge|floatformat:2}}</span>
+												<span class="clear" style="display: block; height: 5px;"></span>
+												<span style="font-size: 12px; color: rgb(102, 102, 102); font-weight: normal;">Est. Tax</span>
+												<span style="font-size: 14px;">: {{globalsettings.currency}}{{cart.cart_tax|floatformat:2}}</span>
+												<span class="clear"></span>
+											</div>
+											<div class="clear"></div>
+                                            <span class="total_price_wraper"><span class="total_price_lrg">{{globalsettings.currency}}{{ cart.cart_price|floatformat:2 }}
+                                            </span><span class="you_pay_label">{% trans "You pay " %}&nbsp; : &nbsp;</span> </span>
+                                        </td>
+                                    </tr>                                
+                                </tbody>                            
+                            </table>
+							<form action="{%url 'bmshop_product_checkout_payment' %}" id="stripe_form" method="post">{% csrf_token %}
+	                            <div class="sbmt_wraper" style="padding-right:10px;">
+									<span style="display:block;padding:10px;">
+										{% if payment_config.paypal_payment %}
+											<span class="cform-radio-container"><input type="radio" name="payment_option" value="paypal" checked="checked"><span class="cform-radio-element"></span></span>{% trans "Paypal" %}
+										{% endif %}
+										{% if payment_config.google_checkout %}
+											<span class="cform-radio-container"><input type="radio" name="payment_option" value="google_checkout"><span class="cform-radio-element"></span></span>{% trans "Google Checkout" %}
+										{% endif %}
+										{% if payment_config.authorize %}
+											<span class="cform-radio-container"><input type="radio" name="payment_option" value="authorizenet"><span class="cform-radio-element"></span></span>{% trans "Authorizenet" %}
+										{% endif %}	
+										{% if payment_config.stripe %}
+										<span class="cform-radio-container"><input type="radio" name="payment_option" value="creditcard"><span class="cform-radio-element"></span></span>{% trans "Credit Card" %}
+									{% endif %}
+								   	</span> 
+								   	<input type="hidden" name="shpng_addrs_id" id="shpng_addrs" value="{{address_id}}">
+								   	{%if cart.cart_items%}<input type="submit" class="cform-button prime" value="Proceed" name="pay_submit" id="id_pay_submit">{%endif%}
+									{% if payment_config.stripe %}
+										<input type="hidden" name="stripeToken" id="stripeToken">
+										<input type="hidden" name="shpng_addrs_id_stripe" id="shpng_addrs_stripe" value="{{address_id}}">
+										<input style="display:none;" type="submit" id="stripe_button" value="{% trans 'Proceed' %}" class="cform-button prime" />
+									{% endif %}
+								</div>
+							</form>
+						</div><!--end of table-->                                       	   
+                    </div>
+                </div><!-- end page wrap -->
+        </div>  <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+            <div class="section">
+                <h3>{% trans 'Payment' %}</h3>  
+                <p>{% trans 'The order summary shows the details and validity of the order. At any point of time if you wish to modify your order you can click on the back button.' %}</p><br/>
+				<p>{% trans 'Clicking on Buy Now will confirm the order and will proceed to payment gateway (PayPal)' %}</p><br/>
+				<p>{% trans 'Once you confirm the order and make payment. An invoice is automatically generated and emailed to you.' %}</p>
+                <br>
+	            <h3>{% trans 'Contact Us' %}</h3>  
+	            <div class="tips_inner">
+	                <p>
+	                	<strong>
+	                		{{ globalsettings.phone }} 
+	                	</strong><br> 
+	                	<a href="mailto:{{ globalsettings.info_email }}">{{ globalsettings.info_email }}</a>
+	                </p>
+	            </div>
+            </div>                                    
+        </div>                            
+	</div>                                                    
+</div>
+{% endblock %}			
+{% block footer_include %}
+{% if payment_config.stripe %}
+<script src="https://checkout.stripe.com/v2/checkout.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#stripe_button').click(function(){
+		if(!$('#terms').attr('checked')){
+			alert(gettext('Please agree to the Terms of Use & Privacy Policy'));
+			return false;
+		}
+	  var token = function(res){
+		$('#stripeToken').val(res.id);
+		$('#stripe_form').submit()
+	  };
+	  StripeCheckout.open({
+	    key:         '{{payment_config.stripe_public_key}}',
+	    amount:      {{stripe_sp_cost}},
+	    name:        '{{globalsettings.domain}} Shopping',
+	    description: '{{ cart.cart_item_count }} {% trans "Items" %}',
+	    token:       token,
+		image:		'{% if globalsettings.logo %}{% thumbnail globalsettings.logo 110x0 crop %}{% else %}{{STATIC_URL}}ui/images/global/img-none.png{% endif %}',
+		currency:	'{{ payment_config.currency_code }}'
+	  });
+	  return false;
+	});
+});
+</script>
+{% endif %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('input[name=pay_submit]').click(function(){
+		if(!$('#terms').attr('checked')){
+			alert(gettext('Please agree to the Terms of Use & Privacy Policy'));
+			return false;
+		}else{return true;}
+		if(!$('input[name=payment_option]').attr('checked')){
+			alert(gettext('Please select a payment option!'));
+			return false;
+		}else{return true;}
+	});
+	$('input[name=payment_option]').change(function(){
+		if($(this).val()=='creditcard'){
+			$('#stripe_button').show();
+			$('#id_pay_submit').hide();
+		}else{
+			$('#stripe_button').hide();
+			$('#id_pay_submit').show();
+		}
+	});
+});
+</script>
+{% endblock %}	
+				

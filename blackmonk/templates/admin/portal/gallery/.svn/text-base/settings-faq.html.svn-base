@@ -1,0 +1,24 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+        <h5>{% trans 'Highlights' %}</h5>
+		<h6>{% trans 'Photos Listed' %}</h6>
+        <p>{% trans 'Photos can be added by two methods, Searching photos from Flickr and creating a gallery.Creating a gallery by adding your photos from your computer.' %}</p>
+        <hr>
+        <h6>{% trans 'Categories' %}</h6>
+        <p>{% trans 'Check the number of categories updated in the Staff CP.' %}</p>
+		<hr>
+        <h6>{% trans 'Gallery Approval Settings' %}</h6>
+        <p>{% trans 'The Staff member should be able to approve the gallery/album submitted by the user.' %}</p>
+		<p>{% trans 'Please tick the check box to approve the conditions when the user submits a gallery/album.' %}</p>
+        <hr>
+        <h6>{% trans 'Automatic Email Notifications' %}</h6>
+        <p>{% trans 'To send email automatically when a user submits gallery/album.' %}</p>
+		<p>{% trans 'To send email automatically when a user updates an existing gallery/album.' %}</p>
+		<hr>
+		<h6>{% trans 'Flickr API' %}</h6>
+		<p>{% trans 'Sign Up with <a href="http://www.flickr.com/services/apps/create/" target="_blank">{Flickr API}</a> and Request an API key.' %}
+		<a href="https://docs.google.com/document/d/18d99tmLtWIFFnUdpban7ADd63BjnwkNgfDgRCgpK5lg/edit?pli=1#bookmark=id.3lqfet1r6cb7" target="_blank" class="btn-txt-prime bm-upload-videos" title="Quick Demo"><span class="btn-txt" id="aeaoofnhgocdbnbeljkmbjdmhbcokfdb-mousedown">Quick Demo</span></a>
+		<p>{% trans 'Fill the App Key, App Secret and Flickr login credentials in the text box provided.' %}</p>
+	</div>                                    
+</div>     

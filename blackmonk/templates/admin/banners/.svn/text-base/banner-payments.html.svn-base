@@ -1,0 +1,87 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'config' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Banner Ads Payment Settings' %} {% endblock %}
+{% block head %}
+    <style>.pdr20 { padding-right: 20px; }</style>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			highlight: function(element, errorClass){
+				$(element).parent().parent().parent().parent().addClass('field-error');
+				$(element).addClass('error');},
+			unhighlight: function(element, errorClass){
+				$(element).parent().parent().parent().parent().removeClass('field-error');
+				$(element).removeClass('error');},
+			errorPlacement: function(error, element){},
+		});
+		$('.val').each(function() {
+	        $(this).rules('add', {
+	            required: true,
+	            number: true,
+	        });
+	    });
+		
+	});
+</script>
+{% endblock %}
+{% block content %}
+
+{% for form in banner_payment_forms.forms %}
+{% if form.errors %}
+    <div class="messageerror" >
+        <strong>{% trans 'There is a problem with your submission' %}, </strong>
+        <strong>{% trans 'Errors in banner payment form column' %} {{ forloop.counter }} </strong>
+        <ul style="list-style:square;margin-left:20px;">
+               {% for field in form %}
+                   {% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+               {% endfor %}
+        </ul>
+     </div>
+{% endif %}
+{% endfor %}
+
+<div id="admin_wrapper">
+    <div id="admin-platform" class="group">
+        <div class="header-bar">
+            <div id="nav-roll">
+                <ul>
+                    <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="z-index:9"><span class="icon"></span>{% trans 'Configuration' %}</a></li>
+                    <li><a href="{% url 'admin_configuration_mange_banner_zones' %}" style="z-index:8">{% trans 'Banner Ads' %}</a></li>
+                    <li><a href="{% url 'admin_configuration_banners_banner_payment_settings' %}" style="z-index:7">{% trans 'Pricing' %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="core-wraper" class="group">
+            <div class="admin-main col_12">
+                {% block leftnavigation %}
+                    {% activetab 'topnav' 'config' %}
+                    {% activetab 'leftnav' 'banners' %}
+                    {% activetab 'leftnavsub' 'banner-payment' %}
+                    {{ block.super }}
+                {% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Banner Ads - Pricing' %}</h2>
+                            <!--p class="ltxt80">{% trans 'Please pick and choose an advertising channel to control and manage your banner advertisement. Copy and paste the header section code from the respective ad service.' %}</p-->
+                        </div>
+                        <div id="id_content_div">
+                            {% include 'admin/banners/include-payment-settings.html' %}
+                        </div>
+                       </div>
+                 </div>                       
+               </div>                            
+              {#% include 'admin/configuration/banner-payment-faq.html' %#}  
+        </div>                                                    
+    </div>
+</div>
+{% endblock %}

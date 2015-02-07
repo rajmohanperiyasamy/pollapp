@@ -1,0 +1,20 @@
+from django.conf.urls import *
+
+urlpatterns = patterns('',
+        url(r'^/?$', 'usermgmt.views.modules_data',name='user_home'),              
+        url(r'^events/', include('events.userurls')),
+        url(r'^articles/', include('article.userurls')),
+        url(r'^community/', include('community.userurls')),
+        url(r'^business/', include('business.userurls')),
+        url(r'^classifieds/', include('classifieds.userurls')),
+        url(r'^photos/', include('gallery.userurls')),
+        url(r'^videos/', include('videos.userurls')),
+        url(r'^shop/', include('bmshop.userurls')),
+        url(r'^payments/', include('payments.userurls')),
+        url(r'^bookmarks/', include('bookmarks.userurls')),
+        url(r'^favorites/?$', include('usermgmt.favoritesurls')),
+        url(r'^favorites/(?P<view>\w+)/?$', 'usermgmt.favoriteviews.ajax_myfav_list',name='ajax_myfav_list'),
+        url(r'^banners/', include('banners.userurls')),
+        url(r'^deals/', include('deal.userurls')),
+        url(r'^utils/', include('common.utilurls')),
+) 

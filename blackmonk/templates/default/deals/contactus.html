@@ -1,0 +1,91 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load modulotag %}
+{% block pagetitle %}{{ globalsettings.city }} {% trans 'Deals' %} | {% trans 'Contact Information' %} {% endblock %}
+{% block meta %}
+	<meta name="description" content="{% trans 'Get in touch with the  folks to inquire about the deal.' %}" />
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/deal.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/user_forms.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/meta_zone.css">
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#basicInformation").validate({
+            ignore:'',
+            highlight: function(element, errorClass){$(element).addClass('error');$(element).parent().parent('div').addClass('error');},
+            unhighlight: function(element, errorClass){$(element).removeClass('error');$(element).parent().parent('div').removeClass('error');},
+               rules: {
+                name: "required",
+                email: {required:true,email:true},
+                details:"required",
+				mobile:{required:false,number:true},
+               },
+               errorPlacement: function(error, element) {
+                    //$(element).parent('div').find('.bm-error-txt-spn:first').removeClass('hide');
+               },
+        });                          
+    });
+    </script> 
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "deals" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+		{% activetab "dealnav" "contact" %}
+		{% include 'default/deals/part_top_navigation.html' %}
+		
+		{% if message %}
+					<div class="flash_success_alert" style="margin-bottom: 20px;" id="id_topmessage"><h2>{% autoescape off %}{{ message }}{% endautoescape %}</h2></div>
+					<script type="text/javascript">
+						setTimeout("window.document.getElementById('id_topmessage').style.display='none';",30000);
+					</script>
+		{% endif %}
+		<div class="group">
+				<div class="col_11">
+					{% if form.errors %}   
+			        <div class="error_expl" style="padding-top:20px;">
+			        	<div class="error_list">
+			                <h4>{% trans 'There is a problem with your submition' %}</h4>
+			                <ul>
+			                {% for field in form %}
+			           			 {% if field.errors%}
+			           	           	<li>{%for error in field.errors%}{{error}}{%endfor%}</li>
+			       	             {% endif %}
+							{% endfor %}
+			                </ul>
+			            </div> 
+			        </div>
+			        {% endif %}
+					
+					<div id="formContainer" class="group"> 
+                    	<br>
+
+               	  		<form id="basicInformation" method="post" name="basic[Information]" action="{% url 'deal_contact' %}">{% csrf_token %}
+	                        <fieldset>
+								<div class="title"><h2>{% trans 'Your Contact Information' %}</h2></div>
+                                <dl class="horizontal">
+                                    <dt><label for="name">{% trans 'Name' %} *</label></dt>
+                                    <dd>{{ form.name }}</dd>
+                                    
+                                    <dt><label for="email">{% trans 'Mobile' %} </label></dt>
+                                    <dd>{{ form.mobile }}</dd>  
+									
+									<dt><label for="email">{% trans 'Email' %} *</label></dt>
+                                    <dd>{{ form.email }}</dd>  
+                                    
+									<dt><label for="deatals">{% trans 'Details' %} *</label></dt>
+                                    <dd>{{ form.details }}</dd>
+								</dl>
+							</fieldset>
+                            <dl class="horizontal p_0 mr_0"><dt>&nbsp;</dt><dd><div class="pt_10"><a href="#1" onclick="$('#basicInformation').submit();" class="super button large green"><span class="btn_xl">{% trans 'Send' %}</span></a></dd></dl><br>
+                           
+						</form>
+					</div>                   
+                </div>
+
+{% endblock %}
+{% block busines_footer %}
+{% endblock %}

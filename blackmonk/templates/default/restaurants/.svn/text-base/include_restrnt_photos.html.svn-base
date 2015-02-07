@@ -1,0 +1,31 @@
+{% load thumbnail %}
+{% load modulotag %}
+{% load i18n %}
+<!-- Photos details start  -->
+    <div class="row-fluid buz_block" id="buz_photos" style="{% if view != 'photos' %}display:none;{% endif %}">
+        <section class="mRb30">
+            <div class="sCn-tTl">
+                <h3><span>{% trans 'All photos of' %} {{restaurant.name}}</span></h3>
+            </div>
+            <ul class="tMbS sXcL pDfX">
+               {% for image in restaurant.restaurant_images.all %}
+                <li>
+                    <a class="bUi-tMb-wPr tMb-100 fLxiMgH lRg-bRdR swipebox" href="{{image.photo.url}}">
+                        <span class="bUi-tMb">
+                            <span class="bUi-tMb-pRpL">
+                                <span class="bUi-tMb-cLp">
+                                    <span class="bUi-tMb-cLp-iN">
+                                        <img class="mDa-oT" src="{% thumbnail image.photo 0x191 %}" alt="{{image.title}}">
+                                        <span class="vRtL-aLn">
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>              
+<!-- Photos details end  -->                       

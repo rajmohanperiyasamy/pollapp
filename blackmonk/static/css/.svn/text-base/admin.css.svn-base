@@ -1,0 +1,11 @@
+.side_menu.on.off{border:none;padding:5px; background-color:#aaaaaa;border-top:solid;}
+.side_menu.on.onn{padding:5px; background-color:#806D7E;color:#fff;border-top:solid;border-color:#000;}
+.side_menu.on.inactive{float:left;border:none;padding:5px;color:#fff; background-color:#25587E;}
+.side_menu.on.active{float:left;border:none;padding:5px;color:#fff; background-color:#357EC7;border-left:solid;border-right:solid;}
+.menu_on{background: none repeat scroll 0 0 #AAAAAA !important;border-left: 5px solid #000000;padding-left: 15px;}
+.link_on{border:solid #aaa;padding:5px;background-color:green;float:right;color:#fff !important; text-decoration:none;margin-right:5px;}
+.msg{padding:5px;margin-left:15px; background-color:#c3c3c3;}
+.dashborad_menu{border:solid 1px #aaa;padding:10px;border-radius:4px;float:left;margin:10px;width:96px; height:96px;}
+.dashboard_tab{border:solid 1px #000;padding:2px;margin:10px;width:660px;height:40px;background-color:#aaa;}
+.dashboard_tab_menu{border:solid 1px #000;height:24px;padding:5px;margin-top:2px;margin-right:2px;margin-left:6px;float:left;background-color:yellow;}
+.dashboard_tab_option{margin-top:2px;float:left;}

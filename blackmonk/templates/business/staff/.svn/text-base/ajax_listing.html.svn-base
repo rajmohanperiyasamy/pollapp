@@ -1,0 +1,181 @@
+{% load i18n %}    
+{% load thumbnail %}
+{% load ds_utils %}
+<script type="text/javascript">
+var main_url = "{{ globalsettings.website_url }}";
+</script>
+<!-- script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script -->
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{created}}" name="id_created" id="id_created">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="" name="id_action" id="id_action">
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+<input type="hidden" value="{{catgy}}" name="search_cat" id="id_search_cat">
+{% if business %} 
+<ol class="data-table table-lists-container" id="ajax_content_list">
+    {% for buz in business %}
+    <li class="table-list" id="li_{{buz.id}}">
+            <div class="table-list-container check-item has-thumb110 group">
+             {% if buz.featured_sponsored == 'F' %}
+                 <span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+            {% else %}
+                {% if buz.featured_sponsored == 'S' %}
+                     <span class="list-type sponsored-item"><a class="tttxt" title="{% trans 'Item listed as sponsored' %}" href="#">{% trans 'Sponsored' %}</a></span>
+                {% endif %}
+            {% endif %}
+             <span class="checkbox-wrap">
+                <span class="cform-checkbox-container"><input type="checkbox" onclick="fix_action()" status="{{buz.status}}" value="{{buz.id}}" id="id_checkbox_{{buz.id}}" name="artCulture" class="check-overflow cbox check_action"><span class="cform-checkbox-element"></span></span>
+            </span>
+            <div class="item-media">
+                <a href="{% url 'staff_preview_business' buz.id %}" class="inline-block">
+                    <span class="item-thumb thumb-110">
+                        <span class="thumb-in">
+                            <span class="thumb"><img src="{% if buz.logo.logo %}{% thumbnail buz.logo.logo 110x0 %}{% else %}{{ buz.get_default_image }}{% endif %}" alt="{{gal.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                        </span>
+                    </span>
+                </a>                                                            
+            </div> 
+			{% with buz.get_stripe_subscription_status as unsub_status %} 
+			{% get_payment_mode id=buz.id type='business' as payments%}
+            <div class="item-info relative-block">
+                <h3 class="title"><a href="{% url 'staff_preview_business' buz.id %}">{{buz.name}}</a></h3>
+                <p class="ltxt80">
+                    {% for cat in buz.categories.all %}
+                    {{cat}}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+					<span class="divider12">|</span>{% if payments.payment_mode %}Payment Mode:{{payments.payment_mode}} & Payment Status: {{payments.status}}{% endif %}
+                </p> 
+				
+                <p class="ltxt80">
+                    {% trans 'By' %} <a href="{% url 'user_profile' buz.created_by.profile_slug %}">{{buz.created_by.display_name}}</a> 
+                    <span class="divider12">|</span>{{buz.created_on|date:"M d, Y"}}
+                    <!--span class="divider12">|</span>{% if buz.is_paid and buz.sp_cost != None %}Paid: {{globalsettings.currency}}{{buz.sp_cost}}{% else %}Not Paid{% endif %}-->
+                </p>
+                <ul class="quick-stats group">
+                    <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{buz.most_viewed}}</a></li>
+                    <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span>46</a></li-->
+                </ul>
+                <div class="item-status {% if forloop.counter == 1 %}tip tip9{% endif %} {% if not perms.business.publish_business %}no-options{% endif %} dev_hide_list_status" onclick="display_change_status({{buz.id}},$('#id_estatus_{{buz.id}}').attr('name'));">
+                    <span class="status-inside inline-block" id="id_span_chge_sts_{{buz.id}}">
+                    <span title="{{buz.get_status|capfirst}}" name="{{buz.status}}" id="id_estatus_{{buz.id}}" class="inline-block tttxt status-idty icon-{{buz.get_status}}"></span>     
+                    {% if not perms.business.publish_business %}</span>{% endif %}
+                    {% if perms.business.publish_business %}
+                        <span class="arrow"></span></span>
+                        <ul class="dropdown-list" id="change_status_id_{{buz.id}}">
+                            <li><strong>{% trans 'Update status to...' %}</strong></li>
+                            <ul id="id_dis_status_{{buz.id}}">
+                               </ul>
+                        </ul>
+                    {% endif %}
+                </div>                                  
+			{% if unsub_status == 'onhold' %}<a title="Unsubscribe Request" href="{% url 'staff_ajax_biz_unsubscription' %}?id={{buz.id}}" class="bm-add-gadget light_box" style="color: red; position: absolute; right: -37px; bottom: -4px;">Requested For Unsubscription</a>{% endif %}
+			{% if perms.business.promote_business and not buz.get_claim_status  %}<a title="{% trans 'Process Claim' %}" href="{% url 'staff_ajax_list_business_claim_status' %}?id={{buz.id}}" class="bm-add-gadget light_box" style="color: red; position: absolute; right: -37px; bottom: -4px;">{% trans 'Process Claim' %}</a>{% endif %}                          
+            </div>
+            <div class="action-buttons {% if forloop.counter == 1 %}tip tip10{% endif %}">
+                <div class="relative-block">
+                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{buz.id}}" onclick="display_settings({{buz.id}});"><span class="action-icon icon-manage"></span></span>
+                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{buz.id}}" style="display:none">
+                        {% if perms.business.promote_business %}
+                            <div id="id_upgrade_{{buz.id}}" {% if buz.status != 'P' and buz.status != 'N' and buz.status != 'D' %} style="display:none"{% endif %}>
+                                <li><a title="{% trans 'Update ListingType' %}" href="{% url 'staff_business_listing_type' %}?id={{buz.id}}" class="bm-add-gadget light_box">{% trans 'Update Listing Type' %}</a></li>
+                                <li><span class="line-break"></span></li>
+                            </div>
+                        {% endif %}
+                        {% if perms.business.promote_business and not buz.get_claim_status  %}
+                            <li><a title="{% trans 'Process Claim' %}" href="{% url 'staff_ajax_list_business_claim_status' %}?id={{buz.id}}" class="bm-add-gadget light_box">{% trans 'Process Claim' %}</a></li>
+                            <li><span class="line-break"></span></li>
+                        {% endif %}
+						{% if perms.business.promote_business and unsub_status %}
+                            <li><a title="Unsubscribe Request" href="{% url 'staff_ajax_biz_unsubscription' %}?id={{buz.id}}" class="bm-add-gadget light_box">{% if unsub_status == 'onhold' %}{% trans 'Procress Unsubscription' %}{% elif unsub_status == 'inactive' %}{% trans 'Unsubscription Detail' %}{% endif %}</a></li>
+                            <li><span class="line-break"></span></li>
+                        {% endif %}
+                        {% if perms.business.change_business %}
+                            <li><a title="{% trans 'Edit this Classified' %}" href="{% url 'staff_update_business' buz.id %}">{% trans 'Edit' %}</a></li>
+                            <li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'staff_seo_business' buz.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+                            <li><span class="line-break"></span></li>
+                        {% endif %}
+                            <li><a title="{% trans 'Manage Product' %}" href="{% url 'staff_business_product' buz.id %}">{% trans 'Manage Product' %}</a></li>
+                            <li><a title="{% trans 'Manage Coupon' %}" href="{% url 'staff_business_coupon' buz.id %}">{% trans 'Manage Coupon' %}</a></li>
+                            <li><a title="{% trans 'Manage Images' %}" href="{% url 'staff_business_images' buz.id %}">{% trans 'Manage Images' %}</a></li>
+                            <li><a title="{% trans 'Stats' %}" href="{% url 'common_get_modules_elements_views' buz.id 'business' 0 %}">{% trans 'View Stats' %}</a></li>
+                            <li><a title="{% trans 'Business Logs' %}" class="bm-add-gadget light_box" href ="{% url 'common_log' %}?obj_id={{ buz.id }}&type=business">Audit Logs</a></li>
+                        {% if perms.business.delete_business %}
+                            <li><span class="line-break"></span></li>
+                            <li><a onclick="if(confirm(gettext('Are you sure you want to delete the Business ?'))){filter_action({{buz.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+                        {% endif %}
+						<li><a href="{% url 'staff_manage_business_enquiry' buz.id %}" >{% trans 'Manage Enquiry' %}</a></li>
+                    </ul>
+                </div>                                                                                                                           
+            </div>
+			{% endwith %}
+        </div>
+    </li> 
+    {% endfor %}
+    </ol>
+    <div id="pagenation">
+        {% include 'common/pagination_ajax.html'%}  
+    </div> 
+    <script>
+    function status_function(id,status){
+            $('#id_dis_status_'+id).html('');
+            if(status=='P'){
+                ahtml = '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);">{% trans 'Blocked' %}</a></li>'
+                $('#id_dis_status_'+id).append(ahtml);
+            }
+            else if(status=='N'){
+                ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+                ahtml+= '<li><a onclick="save_status('+id+',\'R\');" href="javascript:void(0);" >{% trans 'Reject' %}</a></li>'
+                $('#id_dis_status_'+id).append(ahtml);
+            }
+            else if(status=='B'){
+                ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+                $('#id_dis_status_'+id).append(ahtml);
+            }
+            else if(status=='R'){
+                ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+                $('#id_dis_status_'+id).append(ahtml);
+            }
+            else if(status=='D'){
+                ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+                $('#id_dis_status_'+id).append(ahtml);
+            }
+            else{
+                $('#change_status_id_'+id).hide();
+                $('#id_span_chge_sts_'+id).removeClass('active')
+                return false;
+            }
+        }
+    function save_status(id,status){
+        $('#id_estatus_'+id).addClass('loading');
+        var DataString="id="+id+"&status="+status;
+        $.ajax({
+            type: "GET",
+            url: "{% url 'staff_change_status_business' %}",
+            data: DataString,
+            success: function(data){
+                if(data!=0){
+                    $('#id_estatus_'+id).removeClass('loading');
+                    $('#id_estatus_'+id).replaceWith(data);
+                    $('#change_status_id_'+id).hide();
+                    $('#id_span_chge_sts_'+id).removeClass('active')
+                    if (status == 'P' || status == 'N' ){
+                        $('#id_upgrade_'+id).show();
+                    }else{
+                        $('#id_upgrade_'+id).hide();
+                    }
+                    $('#id_checkbox_'+id).attr('status',status);
+                    show_count('all');
+                }else{
+                    $('#change_status_id_'+id).hide();
+                    $('#id_span_chge_sts_'+id).removeClass('active')
+                    $('#id_estatus_'+id).removeClass('loading');
+                    alert(gettext('Oops!!! Not able to process your request.'));
+                }
+            }
+        });
+    }
+</script> 
+    {% else %}
+        <div class="no-data"><p>{% trans 'Sorry , No Business found !' %}</p></div>
+{% endif %}   

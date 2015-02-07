@@ -1,0 +1,80 @@
+{% load i18n %}	
+{% load ds_utils %}
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{created}}" name="id_created" id="id_created">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="" name="id_action" id="id_action">
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+<input type="hidden" value="{{catgy}}" name="search_cat" id="id_search_cat">
+<!-- script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script -->
+{% if classified %} 
+<ol class="data-table table-lists-container" id="ajax_content_list">
+	{% include 'classifieds/staff/ajax_delete_listing.html' %}
+</ol>
+<div id="pagenation">
+	{% include 'common/pagination_ajax.html'%}  
+</div> 
+<script>
+	function status_function(id,status){
+			$('#id_dis_status_'+id).html('');
+			if(status=='P'){
+				ahtml = '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);">{% trans 'Blocked' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else if(status=='N'){
+				ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+				ahtml+= '<li><a onclick="save_status('+id+',\'R\');" href="javascript:void(0);" >{% trans 'Reject' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else if(status=='B'){
+				ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else if(status=='R'){
+				ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else if(status=='D'){
+				ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+				$('#id_dis_status_'+id).append(ahtml);
+			}
+			else{
+				$('#change_status_id_'+id).hide();
+				$('#id_span_chge_sts_'+id).removeClass('active')
+				return false;
+			}
+		}
+	function save_status(id,status){
+		$('#id_estatus_'+id).addClass('loading');
+		var DataString="id="+id+"&status="+status;
+		$.ajax({
+			type: "GET",
+			url: "{% url 'staff_change_status_classified' %}",
+			data: DataString,
+			success: function(data){
+				if(data!=0){
+					$('#id_estatus_'+id).removeClass('loading');
+					$('#id_estatus_'+id).replaceWith(data);
+					$('#change_status_id_'+id).hide();
+					$('#id_span_chge_sts_'+id).removeClass('active')
+					if (status == 'P' || status == 'N' ){
+						$('#id_upgrade_'+id).show();
+					}else{
+						$('#id_upgrade_'+id).hide();
+					}
+					$('#id_checkbox_'+id).attr('status',status);
+					show_count('all');
+				}else{
+					$('#change_status_id_'+id).hide();
+					$('#id_span_chge_sts_'+id).removeClass('active')
+					$('#id_estatus_'+id).removeClass('loading');
+					alert(gettext('Oops!!! Not able to process your request.'));
+				}
+			}
+		});
+	}
+</script> 
+ {% else %}
+ <div class="no-data"><p>{% trans 'Sorry , No Classifieds found !' %}</p></div>      
+ {% endif %}    

@@ -1,0 +1,187 @@
+{% load truncate_filter %}
+{% load mptt_comments_tags %}
+{% load i18n %}
+{% load tabs %}
+{% load thumbnail %}
+{% load ds_utils %}
+
+<style>
+    .pac-container {
+        border: 1px solid rgba(0, 0, 0, 0.12) !important;
+        z-index: 9999 !important;
+    }
+</style> 
+
+<div class="map-inner">
+        <header id="mast-head">
+            <div class="titlebar">
+                <div class="row-fluid">
+                    <ul class="nav nav-tabs">
+                        <li> <a href="{% url 'locality_map_business' %}" {% ifactivetab "modulenav" "business" %}class="active"{% endifactivetab %} target="_blank"> <i aria-hidden="true" class="bUi-iCn-bSn--24 ib"></i><span class="ib">{% trans 'Business' %}</span></a> </li>
+                        <li> <a href="{% url 'locality_map_events' %}" {% ifactivetab "modulenav" "events" %}class="active"{% endifactivetab %} target="_blank"> <i aria-hidden="true" class="bUi-iCn-eVnT-24 ib"></i><span class="ib">{% trans 'Events' %}</span></a> </li>
+                        <li> <a href="{% url 'locality_map_classifieds' %}" {% ifactivetab "modulenav" "classifieds" %}class="active"{% endifactivetab %} target="_blank"> <i aria-hidden="true" class="bUi-iCn-cLfD-24 ib"></i><span class="ib">{% trans 'Classifieds' %}</span></a> </li>
+                        <!--li> <a href="#" {% ifactivetab "modulenav" "deals" %}class="active"{% endifactivetab %}> <i aria-hidden="true" class="bUi-iCn-tAg-12 ib" target="_blank"></i><span class="ib">{% trans 'Deals' %}</span></a> </li-->
+                        <li> <a href="{% url 'locality_map_cinemas' %}" {% ifactivetab "modulenav" "cinemas" %}class="active"{% endifactivetab %} target="_blank"> <i aria-hidden="true" class="bUi-iCn-mOv-24 ib"></i><span class="ib">{% trans 'Cinemas' %}</span></a> </li>
+                        <li> <a href="{% url 'locality_map_attractions' %}" {% ifactivetab "modulenav" "attractions" %}class="active"{% endifactivetab %} target="_blank"> <i aria-hidden="true" class="bUi-iCn-mP-mKr-16 ib"></i><span class="ib">{% trans 'Attractions' %}</span></a> </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <!-- /.masthead -->
+        <div class="closeMap"> <a class="close" href="javascript:void(0)"><i aria-hidden="true" class="bUi-iCn-rMv-16"></i></a> </div>
+        <div class="tBl-bLk" id="content-container">
+                <div id="site">
+                    <div class="row-fluid">
+                        <div id="site" >
+                            <div class="expolre">
+                                <div class="gGl-mP-cNvS">
+                                    <div id="map-canvas"></div>
+                                </div>
+                                <div class="result-container" id="id_result_div_direction"> 
+                                    <div class="sCn">
+                                        <input type="hidden" id="gmap_travel_mode" value="DRIVING">
+                                        <ul class="nav nav-tabs mRb0 pD015 getdirection" id="id_travel_mode_ul">
+                                            <li class="devider"><a href="javascript:void(0);"><span class="icon"></span></a></li>
+                                            <li><a href="javascript:void();" data-value= "DRIVING" title="{% trans 'By Car' %}" class="drive"><span class="icon"></span></a></li>
+                                            <li><a class="transit" href="javascript:void(0);" data-value= "TRANSIT" title="{% trans 'By Public Transit' %}"><span class="icon"></span></a></li>
+                                            <li><a class="bicycle" href="javascript:void(0);" data-value= "BICYCLING" title="{% trans 'Bicycling' %}"><span class="icon"></span></a></li>
+                                            <li><a class="walk" href="javascript:void(0);" data-value= "WALKING" title="{% trans 'Walking' %}"><span class="icon"></span></a></li>
+                                            <!--li><a class="fly" href="javascript:void(0);" data-value= "DRIVING"><span class="icon"></span></a></li-->
+                                        </ul>
+                                        <form class="form-search rLvE mRb0" onsubmit="return false;" style="margin-top: 20px; margin-left: 15px;">
+                                            <div class="control-group" style="margin-bottom: 20px;">
+                                                <div class="controls"> <img src="{{STATIC_URL}}themes/img/icons/a-small.png" class="direction-a" />
+                                                    <input id="directionFrom" type="text" onkeyup="check_enter_key_hit(event);" style="height: 35px; width: 290px;" placeholder="{% trans 'Start address' %}" class="" value="" autofocus>
+                                                    <input id="directionTo" type="hidden" value="{{ address_obj.address1 }}{% if address_obj.address2 %}, {{address_obj.address2}}{% endif %}{% if address_obj.city %}, {{address_obj.city}}{% endif %}@{{ address_obj.lat }},{{ address_obj.lon }}" >
+                                                </div>
+                                            </div>
+                                            <div class="control-group cLrFx mRb20" style="">
+                                                <div class="controls"> <img src="{{STATIC_URL}}themes/img/icons/b-small.png" class="direction-b" />
+                                                    <address style="display: inline-block; width: 290px;" class="pLlT mRb0">
+                                                    <strong style="margin-bottom: 5px; display: block;"><a href="{% if navigation == 'events' %}{% url 'events_view_venue_event' content_obj.venue.slug %}{% else %}{{ content_obj.get_absolute_url }}{% endif %}">{{address_obj.venue}}</a></strong> <span style="font-size: 12px; color: rgb(102, 102, 102); line-height: 1.2;">{{ address_obj.address1 }}{% if address_obj.address2 %}, {{address_obj.address2}}{% endif %}{% if address_obj.city %}, {{address_obj.city}}{% endif %}{% if address_obj.zip %} - {{address_obj.zip }}{% endif %}</span>
+                                                    </address>
+                                                </div>
+                                            </div>
+                                            <div style="margin-bottom: 15px;" class="control-group">
+                                                <div class="controls"> <a href="javascript:void(0)" onclick="calcRoute();" id="getDir" class="btn btn-primary fS12 fW-bLd " style="margin-left: 30px;">Get Direction</a> </div>
+                                            </div>
+                                        </form>
+                                        <div id="directions-panel"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #site-wrapper --> 
+        </div>
+    </div>
+    
+<script type="text/javascript">
+{% with address_obj as addr %}
+var markers=[];
+var icon_lrg = "{{STATIC_URL}}themes/img/icons/map-pointer.png";
+var icon_sml = "{{STATIC_URL}}themes/img/icons/a-small.png";
+var contentString;
+var dir_icon_start = "{{STATIC_URL}}themes/img/icons/map-direction-a.png";
+var dir_icon_end = "{{STATIC_URL}}themes/img/icons/map-direction-b.png";
+$(document).ready(function(){
+    
+        var marker = new Object();
+        marker["lat"] = {{addr.lat}};
+        marker["lng"] = {{addr.lon}};
+        marker["zoom"] = {{addr.zoom}};
+        marker["icon"] = icon_lrg;
+        marker['content_info'] = get_content_info();
+        markers.push(marker);
+
+    setTimeout(function(){load_global_map('map-canvas',{{ addr.lat }}, {{ addr.lon }}, {{ addr.zoom }}, markers, true)},400);
+    initialize_places_auto_complete({{ addr.lat }}, {{ addr.lon }},'{{ globalsettings.country_code }}');
+    
+});
+
+
+function get_content_info(module){
+   {% if navigation == 'business' %}                           
+     {% with content_obj as b %}                     
+        contentString = '<ul id="map-view'+{{b.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+        contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ b.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+        contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp"> <span class="bUi-tMb-cLp-iN">';
+        contentString+='<img src="{% if b.logo.logo %}{% thumbnail b.logo.logo 290x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{addr.lat}},{{addr.lon}}&zoom=14&size=450x180&markers={{addr.lat}},{{addr.lon}}&sensor=false{% endif %}" class="mDa-oT"> <span class="vRtL-aLn"> </span> </span> </span> </span> </span> </a> </div>';
+        contentString+='<div class="mDa-bDy pD0"> <h4 class="mDa-hD tRnCt0 rLvE mRb0"><a class="tRnCt" href="{{ b.get_absolute_url }}">{{ b.name }}</a> </h4>';
+        contentString+='<div class="mDa-dTa"><div class="cLrFx mRb12"><span class="sTr-wPr sTr-rT-rD rEd iCn16 lH1 ib" data-rating="{{b.ratings}}"></span><a href="{{b.get_absolute_url}}#comments" class="review_count sPrTr ib">{% get_mptt_comment_count for b as comment_count %}{{comment_count}} {% trans "reviews" %}</a></div>';
+        contentString+='<ul class="iCnC-lSt iCn10 iCn-gRy"> <li class="iCnC-lSt-iTm "><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i><a href="{% url "locality_map_map_get_direction" %}?aid={{addr.id}}&objid={{b.id}}&src=business">{{ addr.address1 }}{% if addr.address2 %}, {{addr.address2}}{% endif %}{% if addr.city %}, {{addr.city}}{% endif %}{% if addr.zip %} - {{addr.zip }}{% endif %}</a> </li>';
+        {% if addr.telephone1 or addr.mobile %}
+        contentString+='<li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-cAl-12"></i> {% if addr.telephone1 %}{{addr.telephone1}}{% endif %}{% if addr.mobile %}, {{ addr.mobile }}{% endif %} </li>';
+        {% endif %}
+        contentString+='<li class="iCnC-lSt-iTm"> <i aria-hidden="true" class="bUi-iCn-tAg-12"></i><a href="{{ b.categories.all.0.get_absolute_url }}">{{ b.categories.all.0.name }}</a><!--span class="sPrTr">$$$$ </span--></li> </ul> </div> </div> </li></ul>';
+     {% endwith %} 
+   {% elif navigation == 'events' %} 
+     {% with content_obj as event %}  
+        contentString = '<ul id="map-view'+{{event.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+        contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ event.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+        contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp">{% with event.get_first_event_photo as event_img %} <span class="bUi-tMb-cLp-iN">';
+        contentString+='{% if event_img %}<img src="{% thumbnail event_img 400x0 crop %}" class="mDa-oT">{% else %}<span class="iCn-bRdR50 oP25" title="{{event.title}}"><i aria-hidden="true" class="bUi-iCn-eVnT-24 cLr-gRy ib"></i></span>{% endif %}<span class="vRtL-aLn"> </span> </span>{% endwith %} </span> </span> </span> </a> </div>';
+        contentString+='<div class="mDa-bDy pDt0"><h4 title="{{ event.title }}" class="mDa-hD"><a href="{{ event.get_absolute_url }}" class="tRnCt cLr-gRy-dRk fS14">{{ event.title }}</a></h4>';
+        contentString+='<div class="mDa-dTa"><ul class="iCnC-lSt iCn12 iCn-gRy">';
+        contentString+='<li class="iCnC-lSt-iTm"><i class="bUi-iCn-tMe-12"></i>{% if event.is_reoccuring %}{{event.get_current_date|ds_site_dateformat}}{% else %}{{event.start_date|ds_site_dateformat}} to {{event.end_date|ds_site_dateformat}}{% endif %} {% if event.start_time %}, {{event.start_time|ds_site_timeformat}}{% endif %} {% if event.end_time %} - {{event.end_time|ds_site_timeformat}}{% endif %}</li>';
+        contentString+='<li class="iCnC-lSt-iTm"><i class="bUi-iCn-mP-mKr-12"></i><a href="{% url "events_view_venue_event" event.venue.slug %}">{{ event.venue }}</a>';
+        contentString+='</li></ul></div></div>';
+        contentString+='</li></ul>';
+     {% endwith %} 
+   {% elif navigation == 'classifieds' %}  
+     {% with content_obj as classified %}  
+        contentString = '<ul id="map-view'+{{classified.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+        contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ classified.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+        contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp">{% with classified.get_first_classified_photo as classified_image %} <span class="bUi-tMb-cLp-iN">';
+        contentString+='{% if classified_image %}<img src="{% thumbnail classified_image 220x0 %}" alt="{{ classified.title }}" class="mDa-oT">{% else %}<span class="iCn-bRdR50 oP25" title="{{ classified.title }}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 cLr-gRy ib"></i></span>{% endif %}<span class="vRtL-aLn"> </span> </span>{% endwith %} </span> </span> </span> </a> </div>';
+        contentString+='<div class="mDa-bDy pDt0"><h4 title="{{ classified.title }}" class="mDa-hD"><a href="{{ classified.get_absolute_url }}" class="tRnCt cLr-gRy-dRk fS14">{{ classified.title }}</a></h4>';
+        contentString+='<div class="mDa-dTa">';
+        contentString+='<p class="fS12 cLr-gRy mXh35">{% autoescape on %}{{classified.description|striptags|truncatewords:30}}{% endautoescape %}</p>';
+        contentString+='</div>';
+        contentString+='<div class="mDa-dTa mRt4"><span class="fS11 cLr-lTgRy">{{classified.created_on|timesince|time_up_to:','}} {% trans "ago" %}</span></div>';
+        contentString+='</div>';
+        contentString+='</li></ul>';
+     {% endwith %} 
+   {% elif navigation == 'attractions' %}  
+     {% with content_obj as attraction %}  
+        var contentString = '<ul id="map-view'+{{attraction.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+        contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ attraction.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+        contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp">{% with attraction.album.album_photos.all.0.photo as attraction_img %} <span class="bUi-tMb-cLp-iN">';
+        contentString+='{% if attraction_img %}<img src="{% thumbnail attraction_img 260x0 %}" alt="{{ attraction.name }}" class="mDa-oT">{% else %}<span class="iCn-bRdR50 oP25" title="{{ attraction.name }}"><i aria-hidden="true" class="bUi-iCn-aTtR-24 cLr-gRy ib"></i></span>{% endif %}<span class="vRtL-aLn"> </span> </span>{% endwith %} </span> </span> </span> </a> </div>';
+        contentString+='<div class="mDa-bDy pDt0"><h4 title="{{ attraction.title }}" class="mDa-hD"><a href="{{ attraction.get_absolute_url }}" class="tRnCt cLr-gRy-dRk fS14">{{ attraction.name }}</a></h4>';
+        contentString+='{% if attraction.description %}<div class="mDa-dTa">';
+        contentString+='<p class="fS12 cLr-gRy mXh35">{% autoescape on %}{{attraction.description|striptags|truncatewords:20}}{% endautoescape %}</p>';
+        contentString+='</div>{% endif %}';
+        contentString+='{% with attraction.venue as venue %}<div class="mDa-dTa mRt4 cLrFx">';
+        contentString+='<span class="fS12 cLr-lTgRy pLlT"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i> {{ venue.venue}}</span></div>{% endwith %}';
+        contentString+='</div></li></ul>';
+     {% endwith %} 
+   {% elif navigation == 'cinemas' %}
+     {% with content_obj as theater %}     
+        var contentString = '<ul id="map-view'+{{theater.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+        contentString+='<li class="mDa mR0"><div class="mDa-bDy pD0"><div class="pLlT iM">';
+        contentString+='<span class="pD15 bLk pDr10mP pDl0mP"><i aria-hidden="true" class="bUi-iCn-mP-mKr-16 cLr-rEd fS24"></i></span></div>';
+        contentString+='<div class="cLr-lT"><h5 class="mDa-hD tRnC mRt10 mRb5 w85P rLvE" title="{{ theater.name }}">';
+        contentString+='<a href="{{theater.get_absolute_url}}" class="fW-bLd">{{ theater.name }}</a></h5>';
+        contentString+='<div class="mDa-dTa fS12 cLr-gRy"><span>{{theater.address.address1}}{% if theater.address.address2 %}, {{theater.address.address2}}{% endif %}{% if theater.address.city %}, {{theater.address.city}}{% endif %}{% if theater.address.zip %} {{theater.address.zip}}{% endif %}</span>{% if theater.address.phone %}<span class="sPrTr">{{theater.phone}}</span>{% endif %}</div>';
+        contentString+='</div></div></li></ul>';
+     {% endwith %}
+   {% elif navigation == 'venues' %}  
+     {% with content_obj as venue %}     
+        var contentString = '<ul id="map-view'+{{venue.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+        contentString+='<li class="mDa mR0"><div class="mDa-bDy pD0"><div class="pLlT iM">';
+        contentString+='<span class="pD15 bLk pDr10mP pDl0mP"><i aria-hidden="true" class="bUi-iCn-mP-mKr-16 cLr-rEd fS24"></i></span></div>';
+        contentString+='<div class="cLr-lT"><h5 class="mDa-hD tRnC mRt10 mRb5 w85P rLvE" title="{{ venue.venue }}">';
+        contentString+='<a href="javascript:void(0);" class="fW-bLd">{{ venue.venue }}</a></h5>';
+        contentString+='<div class="mDa-dTa fS12 cLr-gRy"><span>{{venue.address1}}{% if venue.address2 %}, {{venue.address2}}{% endif %}{% if venue.city %}, {{venue.city}}{% endif %}{% if venue.zip %} {{venue.zip}}{% endif %}</span>{% if venue.phone %}<span class="sPrTr">{{venue.phone}}</span>{% endif %}</div>';
+        contentString+='</div></div></li></ul>';
+     {% endwith %}
+   {% else %}
+        contentString = '{{globalsettings.company}}, {{globalsettings.city}}';
+   {% endif %}   
+   return contentString;                           
+}
+{% endwith %}
+</script>    
+    

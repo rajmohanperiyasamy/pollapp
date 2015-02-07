@@ -1,0 +1,27 @@
+{% load i18n thumbnail mptt_comments_tags ds_utils %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> 
+        	<a class="bUi-tMb-wPr tMb-50 fLxiMgW bUi-tMb-210" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if object.get_cover_image %}{% thumbnail object.get_cover_image 220x0 %}{% else %}{% if object.get_cover_url %}{{ object.get_cover_url }}{% else %}{{object.get_default_image}}{% endif %}{%endif%}" alt="">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a>
+        </div>
+        <div class="mDa-bDy pD0 mRt10">	
+        	<span class="fS11 uC cLr-lTbLu">{{object.category}}</span>
+            <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{object.title}}"><a href="{{object.get_absolute_url}}">{{object.title}}</a></h5>
+            
+            <div class="mDa-dTa mRt4">
+               <span class="fS11 cLr-lTgRy mR0">{{object.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+               <a class="fS12 cLr-lTgRy sPrTr mRb0 pLrT" href="{{object.get_absolute_url}}#comments" title="Comments"><i aria-hidden="true" class="bUi-iCn-bBlS-12"></i> {% get_mptt_comment_count for object as comment_count %} {{comment_count}}</a>
+            </div>                                             
+        </div>
+    </div>
+</li>

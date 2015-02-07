@@ -1,0 +1,15 @@
+<div id="id_ven_address">
+	<input type="hidden" name="venue" id="id_venue" value="{{ venue.id }}"/>
+	<address class="mRb10">
+	    <strong>{{ venue.venue }}</strong><br>
+	    {{ venue.address1 }}
+	    {% if venue.address2 %}<br>{{venue.address2}}{% endif %} {{venue.zip}}<br>
+	    {% if venue.telephone1 %}<abbr title="Phone">P:</abbr> {{venue.telephone1}}{% endif %}
+	</address>
+	{% if request.user.is_staff or request.user.id == venue.created_by.id  %}
+    	<a data-target="#addVenue" data-toggle="modal" class="btn btn-link pD0 fS12 mRr10">Edit</a>
+	{% endif %}
+	<span onclick="clear_venue();" class="btn btn-link pD0 fS12">Delete</span>
+</div>
+
+

@@ -1,0 +1,52 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:96px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Copyright Information' %}</p>
+</div>
+<div id="id_copyright_div" class="group">
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass('error');},
+			unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass('error');},
+			errorPlacement: function(error, element){},
+		   	rules:{
+				copyright: "required"
+		   	}
+		});
+	});
+	</script>
+    <form action="{% url 'admin_design_update_copyright_info' %}" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+			<div class="field text-field">	
+            	<div class="label"><label>{% trans 'Copyright' %}<span class="required-field">*</span></label></div>	
+            	<div class="value"><input type="text" autocomplete="off" name="copyright" maxlength="400" placeholder="Copyright © 2011-2012 {{globalsettings.domain}}. All rights reserved. " id="id_copyright" value="{% if copyright_obj.copyright %}{{ copyright_obj.copyright}}{% endif %}" style="width:300px;"></div>	
+            </div>
+		</div>    
+        <div class="modal-base form-submit group trp-bg">
+		   	<button role="button" class="cform-button prime right" type="button" onclick="update_copyright_info();" ><span class="cform-button-text">{% trans 'UPDATE' %}</span></button>
+		</div>           
+    </form>
+</div>   
+
+<script type="text/javascript">
+function update_copyright_info(){
+	var success = $('#mform').validate().form(); 
+	if (success){
+		var datastring='copyright='+$('#id_copyright').val();
+		$('#id_copyright_div').hide();
+		$('#ajax_content_loading').show();
+		var url = $('#mform').attr('action');
+		$.ajax({
+		type: "POST",
+		url: url,
+		data: datastring,
+		dataType:'JSON',
+		success: function(data){
+				show_msg(gettext(data.msg),data.mtype);
+				$('#ajax_content_loading').hide();
+				$('#id_copyright_div').fadeIn(800).html(data.html);
+			}
+		});
+	}
+}
+</script>

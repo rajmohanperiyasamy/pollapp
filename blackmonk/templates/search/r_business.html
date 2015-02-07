@@ -1,0 +1,54 @@
+{% load i18n %}	
+{% load thumbnail %}
+{% load mptt_comments_tags %}
+{% with object.address.all.0 as address %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> <a class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-bSnS" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if object.logo.logo %}{% thumbnail object.logo.logo 290x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{address.lat}},{{address.lon}}&zoom=14&size=450x180&markers={{address.lat}},{{address.lon}}&sensor=false{% endif %}" alt="">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a> </div>
+        <div class="mDa-bDy pD0">
+        	<span class="fS12 cLr-lTbLu">{{object.categories.all.0.parent_cat}}</span>
+            <h4 class="mDa-hD tRnCt0 mR50 rLvE" title="{{object}}"><a href="{{object.get_absolute_url}}" class="tRnCt bLk">{{object.name}}</a> 
+           <!-- Star Rating -->
+            <div class="sTr-rT oVrL-sCr mRt-20">
+                <span class="sTr-wPr sTr-rT-rD iCn16 rEd" id="id_rating_{{object.id}}"></span>
+                <a href="{{object.get_absolute_url}}#comments" class="cLr-lTgRy fS11 rW-cNt tXt-rT">{% get_mptt_comment_count for object as comment_count %}{{comment_count}} {% trans "reviews" %}</a> 
+            </div>
+            <!-- Star Rating -->  
+           </h4>
+            <div class="mDa-dTa">
+                <ul class="iCnC-lSt iCn10 iCn-gRy">
+                    <li class="iCnC-lSt-iTm">
+                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i>
+                        <a href="{{object.get_absolute_url}}">{{address.address1}}{% if address.address2 %}, {{address.address2}}{% endif %}{% if address.city %}, {{address.city}}{% endif %}{% if address.zip %} - {{address.zip }}{% endif %}</a>
+                    </li>
+					{% if address.telephone1 or address.mobile %}
+                    	<li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-cAl-12"></i>
+							{% if address.telephone1 %}{{address.telephone1}}{% else %}{{address.mobile}}{% endif %}
+					</li>
+					{% endif %}
+                    <li class="iCnC-lSt-iTm">
+                        <i aria-hidden="true" class="bUi-iCn-tAg-12"></i>
+						{% for cat in object.categories.all %}
+                        	<a href="{{cat.get_absolute_url}}">{{cat}}</a>{% if not forloop.last %}, {% endif %}
+						{% endfor %}
+                        <!--span class="sPrTr">$$</span-->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</li>
+<script>	
+$(function(){$('#id_rating_{{object.id}}').raty({ readOnly: true, score: {{object.ratings}} });});
+</script>
+{% endwith %}

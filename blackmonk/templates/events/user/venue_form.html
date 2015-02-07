@@ -1,0 +1,114 @@
+<script>
+	$(function() {$('.bM-sLt').bUiSlCt();}) 
+</script>
+<form id="mform" action="{% url 'events_ajax_add_venue' %}" class="form-horizontal uSr-aCnT mRb0">{% csrf_token %}
+	<input type="hidden" id="venue_id" value="{{venue.id}}">
+	<input type="hidden" id="lat_lng">
+	<input type="hidden" id="zoom">
+	<div class="row-fluid mRb30">
+		<div class="span7 sP12mX767">
+	    	<form class="form-horizontal uSr-aCnT">
+	            <div class="control-group">
+	                <label class="control-label">Venue<em class="cLr-rEd">*</em></label>
+	                <div class="controls">
+	                    {{ form.venue }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Address<em class="cLr-rEd">*</em></label>
+	                <div class="controls">
+	                    {{ form.address1}}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <div class="controls">
+	                    {{ form.address2 }}
+	                </div>
+	            </div>
+				<div class="control-group">
+	                <label class="control-label">City<em class="cLr-rEd">*</em></label>
+	                <div class="controls">
+	                    {{ form.city }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Zip/Postalcode</label>
+	                <div class="controls">
+	                    {{ form.zip }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Venue type</label>
+	                <div class="controls">
+	                    {{ form.type }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Phone</label>
+	                <div class="controls">
+	                    {{ form.telephone1 }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Email ID</label>
+	                <div class="controls">
+	                    {{ form.email }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Website</label>
+	                <div class="controls">
+	                    {{ form.website }}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label">Notes</label>
+	                <div class="controls">
+	                    {{ form.description }}
+	                </div>
+	            </div>
+	        </form>
+	    </div>
+	    <div class="span5 sP12mX767">
+	    	<div class="alert alert-info fS13 mRb10">
+	          <strong>Change map marker location</strong> 
+Use the mouse to pick up your marker and drag it to your street address. 
+	        </div>
+	    	<div style="width: 360px; height: 315px;position: relative; background-color: rgb(229, 227, 223);" id="map"></div>
+	    </div>	
+	</div>
+</form>
+<script type="text/javascript">
+function get_lat_lang(){
+	var lat_lng = marker.getPosition();
+	var zoom = map.getZoom();
+	$('#lat_lng').val(lat_lng);
+	$('#zoom').val(zoom);
+}
+$(document).ready(function(){
+	$('.select-menu').bind("change", function(){
+		$("#mform").validate().element($(this));
+	});
+    $( "#id_zip" ).autocomplete({
+			source: '{% url 'auto_suggest_pin' %}',
+		   	select: function(event, ui) {
+     			$("#id_zip").val(ui.item.id);
+     	 	}
+	     });
+	$('#id_zip').live("keyup",function(){getPin(getaddress(),$('#id_zip').val());});
+	setTimeout(function() {
+		{% if venue.lat %}
+			load_for_add('map',{{ venue.lat }}, {{ venue.lon }}, {{ venue.zoom }},"{{ venue }}","{{ venue.address1 }}<br>{{ venue.pincode }}");
+	    {% else %}
+			load_for_add('map',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},"{{ globalsettings.city }}","select the location");
+		{% endif %}		
+	}, 500);
+});
+function getaddress(){
+	{% if venue %}
+		return $('#id_address1').val()+" "+$('#id_address2').val()+" "+$('#id_venue').val();
+	{% else %}
+		return $('#id_address1').val()+" "+$('#id_address2').val();
+	{% endif %}
+}
+</script>

@@ -1,0 +1,98 @@
+<html>
+  <head>
+    <title>{% block title %}Raj mohan Sample application{% endblock %}</title>
+	
+	
+	<div id="container" style="width:1000px">
+		{% block container %}  {% endblock %}
+	<div>	
+	
+	<div id="heade" style="background-color:#FFA500;">
+	    <h1 style="margin-bottom:0;">Sample django application</h1>
+	    {% block header %}  {% endblock %}
+		
+	</div>
+    <div id="menu" style="background-color:#FFD700;height:400px;width:200px;float:left;">
+	   {% block sidebar %}
+        <b>Menu</b>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://192.168.1.3:8005">Home</a><br>
+		<a href="http://192.168.1.59:8005/add_author/">author</a><br>
+		<a href="http://192.168.1.59:8005/add_author/">Edit author</a><br>
+		<a href="http://www.w3schools.com">article</a><br>
+		<a href="https://www.google.co.in/search?q=google&client=ubuntu&hs=Hy6&channel=fs&source=lnms&tbm=isch&sa=X&ei=CGi6U-6LC4Hq8AWB8IKIDg&ved=0CAkQ_AUoAg&biw=1301&bih=614&dpr=1">images</a><br>
+		<a href="https://www.google.co.in/search?q=google&client=ubuntu&hs=ldR&channel=fs&tbm=vid&source=lnms&sa=X&ei=Dmi6U5zHOYiC8gX_k4CoAw&ved=0CAsQ_AUoBA&biw=1301&bih=614&dpr=1">videos</a><br>
+		<a href="http://192.168.1.59:8005/contact">contacts</a><br>
+	  {% endblock %} 	 
+	</div>	
+		
+  </head>
+  <body background="/static/Firefox_wallpaper.png">
+  	
+{% block head %}
+
+{% endblock %}
+<div id="content" style="background-color:#EEEEEE;height:400px;width:800px;float:left;">
+
+	{% block content %}
+	<h1>Who WE ARE</h1>
+    <p>
+		Recent Articles
+Trust Registration
+Sneha kapoor  (2014-07-07)
+
+The development of a trust usually takes 15-20 days time from the date of filing of the application. The plus point in a trust is that only 3 members are required for development and furthermore ...
+
+Choosing the All-Important Wedding Theme
+Tatiana Porembova  (2014-07-07)
+
+One of the most exciting parts of getting engaged is making the preliminary basic wedding plans, which decide all the important details of the biggest day of your life. There are many decisions to be ...
+
+Hiking Tour in Iceland - Travel Experience Like Never Before
+Henn Dutch  (2014-07-07)
+
+Unleash your inhibitions and keep a control on your fear as 'blessed are the curious for they shall have adventures' in big ways. There are indeed the best destinations across the globe and hiking tour ...
+
+Shared Web Hosting Vs. VPS Hosting
+Priya Saxena  (2014-07-07)
+
+Prior you start your hunt for a service provider to host your mission-critical website, it is essential to understand that how many types of web hosting solutions are available today. Many individuals and entrepreneurs opt ...
+
+Me That'd Mom Good Two Beautiful Hit Good the Good
+Paula PBlatt  (2014-07-07)
+
+Me that'd mom good two beautiful hit good the good you great about yourself improve right now yeah reviewed good mom good to mom a game good yes really much the I'm love you him ...
+
+More Recent Articles...
+
+Top Authors
+Eric Jennings
+I make $500 per day online. Learn how here: http://tinyurl.com/ow2plcu
+16 articles and 128,494 total views.
+http://tinyurl.com/ow2plcu
+
+Angela V. Edwards
+Angela Edwards has been helping webmasters get quality backlinks for over a year. Get 30 *New* High Page Rank Backlinks ...
+30 articles and 120,886 total views.
+http://angelasdiscountmarket.com/backlink_builder.html
+
+Andrean Xavier
+Xenophobia NDS Back-up ROMS and Firmware Downloads is one of the best sites that updates and uploads back-up copies of ...
+128 articles and 105,669 total views.
+http://xenophobiandsbackupromsandfirmwares.blogspot.com/
+
+
+	</p>	
+		
+	{% endblock %}	
+
+</div>	
+
+
+
+<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+	{% block Footer %}
+	Copyright © Doublespring.com
+	{% endblock %}
+</div>
+
+  </body>
+</html>

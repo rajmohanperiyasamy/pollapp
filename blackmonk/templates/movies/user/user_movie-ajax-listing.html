@@ -1,0 +1,121 @@
+{% load i18n %}		
+		<input type="hidden" value="{% url 'staff_movie_ajax_display_movie' %}" name="id_hidden_url" id="id_hidden_url">
+		<input type="hidden" value="{% url 'staff_movie_ajax_action' %}" name="id_action_url" id="id_action_url">
+		<input type="hidden" value="{% url 'staff_movie_change_status' %}" name="url_for_status_change" id="url_for_status_change">
+		<script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script>		
+	
+		<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+		<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+        <input type="hidden" value="{{created}}" name="id_created" id="id_created">
+        <input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+        <input type="hidden" value="{{msg}}" name="id_action_msg" id="id_action_msg">
+		<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+        <input type="hidden" value="" name="id_action" id="id_action">
+		{% if moviedisplay %}
+		<ol class="data-table table-lists-container" id="ajax_content_list">
+			{% for movie in moviedisplay %}	
+			<li class="table-list" id="li_{{movie.id}}">
+			        <div class="table-list-container check-item has-thumb110 group">
+			        	{% ifequal movie.listing_type 'F'%}
+			        		<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+				 		{% else %}
+						{% ifequal movie.listing_type 'S' %}
+							<span class="list-type sponsored-item"><a class="tttxt" title="{% trans 'Item listed as sponsored' %}" href="#">{% trans 'Sponsored' %}</a></span>
+				  		{% endifequal %}
+				 		{% endifequal %}
+						<span class="checkbox-wrap">
+							<span class="cform-checkbox-container"><input type="checkbox" value="{{movie.id}}" id="id_event_action" name="artCulture" class="check-overflow cbox"><span class="cform-checkbox-element"></span></span>
+						</span>
+					     <div class="item-media">
+                        	<a class="inline-block" href="{% url 'staff_movie_preview_url' %}?id={{movie.id}}">
+                                <span class="item-thumb thumb-110">
+                                    <span class="thumb-in">
+                                        <span class="thumb"><img class="inline-block" alt="Thumbnail" src="{{MEDIA_URL}}{{movie.get_image}}"><span class="inline-block h100"></span></span>
+                                    </span>
+                                </span>
+							</a>                                                            
+                        </div> 
+						<div class="item-info relative-block">
+                            <h3 class="title"><a href="{% url 'staff_movie_preview_url' %}?id={{movie.id}}">{{movie.title}}</a></h3>
+                            <p class="ltxt80"><span class="divider12">|</span> By <a >{{movie.created_by.get_full_name}}</a> <span class="divider12">|</span>{{movie.release_date|date:"M d,Y"}}</p>
+                            <ul class="quick-stats group">
+                                <li class="views"><a title="View Stats" href="#" class="tttxt"><span class="inline-block icon-view-stats"></span>123</a></li>
+                                <li class="cmnt"><a href="#" title="View comments" class="tttxt"><span class="inline-block icon-cmnt-stats"></span></a></li>
+                            </ul>
+						   
+						   <div class="item-status dev_hide_list_status" id="id_span_settings_{{movie.id}}" onclick="display_change_status({{movie.id}},$('#id_icon_published{{movie.id}}').attr('name'));">
+                                <span class="status-inside inline-block"><span class="inline-block status-idty {% if movie.status == 'D' %}icon-published{% else %}icon-pending{% endif %}" name="{{movie.status}}" id="id_icon_published{{movie.id}}"></span><span class="arrow" ></span></span>	 
+                                 <ul class="dropdown-list" id="change_status_id_{{movie.id}}"> 
+								 	<li><strong>{% trans 'Update status to...' %}</strong></li>	
+									<ul id="id_dis_status_{{movie.id}}">
+			                       	</ul>
+								 </ul>	
+							</div> 
+                        </div>
+						<div class="action-buttons">
+			                <div class="relative-block">
+			                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{movie.id}}" onclick="display_settings({{movie.id}});"><span class="action-icon icon-manage"></span></span>
+			                    <ul class="dropdown-list  dev_settingsdrpdwn" id="settings_id_{{movie.id}}" style="display:none">
+			                       	 <li><a href="{% url 'staff_movie_edit_movie' %}?id={{movie.id}}">{% trans 'Edit this Movie' %}</a></li>
+			                         <li><a class="movie-seo" href="{% url 'staff_movie_ajax_movie_seo' %}?movie_id={{movie.id}}">{% trans 'Update SEO' %}</a></li>
+									 <!--<li><a class="movie-pic-upload" href="{% url 'staff_movie_ajax_upload_pic' %}?movie_id={{movie.id}}">{% trans 'Upload photos' %}</a></li>
+								    --><li><span class="line-break"></span></li>
+							        <li><a class="prom "  href="{% url 'staff_movie_preview_url' %}?id={{movie.id}}">{% trans 'Add Showtimes' %}</a></li>
+                                    <li><span class="line-break"></span></li>
+								    <li><a onclick="if(confirm(gettext('Are you sure you want to delete the selected movie?'))){filter_action({{movie.id}},'DEL');return false;}"" href="javascript:void(0);">{% trans 'Delete this movie'%}</a></li>
+			                    </ul>
+							</div>                                                              	                                                         
+			            </div>
+			        </div>
+			    </li> 
+			{% endfor %}
+			</ol>
+         	<div id="pagenation">
+				{% include 'common/pagination_ajax.html'%}
+			</div>  
+         	
+         {% else %}
+         <div class="no-data"> <p>{% trans 'Sorry , No Movie found !' %}</p></div>
+         {% endif %}    
+		 
+		 <script>
+			
+		 		function status_function(id,status){
+						$('#id_dis_status_'+id).html('');
+						if(status=='D'){
+							ahtml = '<li><a onclick="save_status('+id+',\'S\');" href="javascript:void(0);">{% trans 'Submit' %}</a></li>'
+							$('#id_dis_status_'+id).append(ahtml);
+						}
+						else{
+							$('#change_status_id_'+id).hide();
+							$('#id_span_chge_sts_'+id).removeClass('active')
+							return false;
+						}
+					}
+					
+					function save_status(id,status){
+						$('#id_icon_published'+id).addClass('loading');
+						var DataString="id="+id+"&status="+status;
+						$.ajax({
+							type: "GET",
+							url: "{% url 'staff_movie_change_status' %}",
+							data: DataString,
+							success: function(data){
+								if(data!=0){
+									$('#id_icon_published'+id).removeClass('loading');
+									$('#id_icon_published'+id).replaceWith(data);
+									$('#change_status_id_'+id).hide();
+									$('#id_span_chge_sts_'+id).removeClass('active')
+									show_count('all');
+								}else{
+									show_msg(gettext('Oops!!! Not able to process your request.'),'e');
+								}
+							}
+						});
+				}
+					
+		 
+		 </script>	
+
+		 
+		 

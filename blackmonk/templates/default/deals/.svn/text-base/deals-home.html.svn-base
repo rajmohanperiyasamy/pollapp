@@ -1,0 +1,253 @@
+{% extends base %}
+{% load currency %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail truncate_filter bm_dealtags %}
+{% load modulotag %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Deals' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Deals' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function(){
+         $('.bids').each(function(){
+                bids.push($(this).val());
+            });
+            module_listing(bids,category);
+        });
+        
+        </script>
+    <!--  Featured Carousel -->
+    <script>    
+        $(function(){
+           
+           $('#deal-hero').bUiSlider({
+               pager:false,
+               adaptiveHeight: true,
+               slideWidth: 5000,
+               onSliderLoad:function(){
+                  $('.fTrDfLxiMgH').setrSpVHeight('fTrD-bL');
+               }
+               //auto:true
+           })
+           
+           {% for deal in featured_deals %}
+               $('.defaultCountdown{{deal.id}}').countdown({
+                    until: +{{ deal.get_remaining_scnd }},
+                    format: 'HMS',
+                    layout: '<span class="fS18 fW200 ib mRt4 cLr-dRk" title="Time Left" id="id_time_left_{{deal.id}}"><i aria-hidden="true" class="bUi-iCn-tMe-aLt-16 fS18 mRr5 cLr-dRk hmm"></i>{hnn}:{mnn}:{snn}</span>'
+                });
+           {% endfor %}
+            
+        })
+    </script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "deals" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        {% block headernavigation %}
+            {% activetab 'headernav' 'alldeals' %}
+            {% include 'default/deals/top-header-part.html' %}
+            {{ block.super }}
+        {% endblock %}
+        <div class="row-fluid">
+            <div class="span8 main">
+                {% if not deals and not featured_deals %}
+                    <div class="hT400 rLvE sCn">
+                        <div class="tBl-bLk pDt0">
+                            <div class="tBl-cEl">
+                                <span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-dEaL-24 fS42-1 cLr-gRy ib"></i></span>
+                                <p class="bLk mRt20 fS16 cLr-lTgRy oP75">Sorry! There are no deals found at the moment</p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+				{% if message %}
+					<div class="alert alert-error">
+						{{message}}
+					</div>
+				{% endif %}
+                {% with featured_deals as featureddeals %}
+                {% if featureddeals %}
+                <section class="sCn pD0">
+                    <div class="fTrD-bL mRb0 fTrD-mDm tXt-oTsD mDa-100 aDpTv cTrL-tR">
+                        <div class="fTrD-bL-iN">
+                            <ul {% if featureddeals.count >  1 %}id="deal-hero"{% endif %} class="fTrD-iTmS" {% if featureddeals.count >  1 %} style="width:50000px;"{% endif %}>
+                                {% for deal in featureddeals %}
+                                <li class="fTrD-iTm bDrRtRbR" {% if featureddeals.count >  1 %} style="float:left"{% endif %}>
+                                    <input type="hidden" id="fbids" name="fbids" class="bids" value="{{deal.id}}" />
+                                    <div class="row-fluid">
+                                        <div class="pLrT span5">
+                                            <figure class="fTrD-mDa">
+                                                <a class="bUi-tMb-wPr fTrDfLxiMgH" href="{{deal.get_absolute_url}}">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    {% if deal.album.album_photos.all.0.photo %}
+                                                                        <img class="mDa-oT" src="{% thumbnail deal.album.album_photos.all.0.photo 0x334 %}" alt="{{deal.title}}">
+                                                                        <span class="vRtL-aLn"></span>
+                                                                    {% else %}
+                                                                        <span class="iCn-bRdR50 oP25" title="{{deal.title}}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 cLr-gRy ib"></i></span><div class="vRtL-aLn"></div>
+                                                                    {% endif %}    
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </figure>  <!-- /.TrD-mDa -->
+                                        </div>
+                                        <div class="span7 pD2015 pD0mP">
+                                            <div class="fTrD-tXt">
+                                                <div class="vAlGn">
+                                                    <div class="fTrD-tXt-iN">
+                                                        <div class="cLr-lTgRy fS12 mRb30 mRb10mX480"><span class="cLr-lTbLu">{{deal.title}}</span>{% with deal.address.all.0.city as deal_location %}{% if deal_location %}<span class="sPrTr">{{deal_location}}</span>{% endif %}{% endwith %}</div>
+                                                        <h3 class="fTrD-hD lH135" title="{{deal.title}}"><a href="{{deal.get_absolute_url}}">{{deal.title}}</a></h3>
+                                                        <div class="fTrD-mTa">
+                                                            <div class="fS12 cLr-dRk">
+                                                                {% autoescape off %}{{deal.about|striptags|truncate_chars:160}}{% endautoescape %}
+                                                            </div>
+                                                            <div class="cLrFx mRt30">
+                                                                <div class="pLlT hSmP defaultCountdown{{deal.id}}">
+                                                                    <span class="fS18 fW200 ib mRt4 cLr-dRk" title="Time Left" id="id_time_left_{{deal.id}}"><i aria-hidden="true" class="bUi-iCn-tMe-aLt-16 fS18 mRr5 cLr-dRk hmm"></i></span>
+                                                                </div>
+                                                                <div class="pLrT">
+                                                                    <span class="ib mRr10">
+                                                                      <span class="lN-tRg fW200 cLr-lTgRy fS18">{{globalsettings.currency}}{{ deal.original_price|floatformat:2 }}</span>
+                                                                      <span class="cLr-gRn fW-bLd fS18">{{globalsettings.currency}}{{ deal.discount_price|floatformat:2 }}</span>
+                                                                    </span>
+                                                                    <a href="{{deal.get_absolute_url}}" class="btn btn-success ib fS12 uC fW-bsLd">{% trans 'View Deal' %}</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- /.TrD-tXt -->
+                                        </div>
+                                    </div>                                           
+                                </li>
+                               {% endfor %}
+                                
+                            </ul>
+                            <!-- /.fTrD-iTms -->
+                        </div>
+                        <!-- /.fTrD-bL-iN --> 
+                    </div>
+                    <!-- /.fTrD-bL -->
+                </section>
+                {% endif %}
+                {% endwith %}
+                <div class="row-fluid">
+                    <div class="tLbR mRt20">
+                        <div class="tLbR-iR">
+                            <div class="sCn-tTl pLlT mRb0">
+                                <h2>{{category.name|default:"All Deals"}}</h2>
+                            </div>                             
+                            <div class="btn-toolbar pLrT hP">
+                                <div id="media-toggle" class="btn-group pLrT" data-toggle="buttons-radio">                                            
+                                    <button type="button" title='Grid View' class="btn btn-link c-gD {% if view_type == 'grid' %}active{% endif %}" onclick="change_url_parm('grid');" ><i aria-hidden="true" class="bUi-iCn-tH-lR-aLt-16"></i></button>
+                                    <button type="button" title='List View' class="btn btn-link c-lT mRl5 {% if view_type == 'list' %}active{% endif %}" onclick="change_url_parm('list');"><i aria-hidden="true" class="bUi-iCn-rE-oDr-aLt-16"></i></button>
+                                </div> 
+                                <div class="pLrT mRr10">
+                                	{% get_deal_categories as categories %}
+                                    <select data-link="true" class="bUiSlCtbtn-link tXt-sMl">
+                                        <option {% if not category %}selected="selected"{% endif %} data-location="{% url 'deal_deals_home' %}">{% trans 'All Deals' %}</option>
+                                        {% for cat in categories %}
+                                        <option {% if cat.id == category.id %}selected="selected"{% endif %} data-location="{% url 'deals_category_listing' cat.slug %}">{{cat.name}}</option>	
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    <ul class="modulesBrowseData tHcL mDa-gD mDa-oT-tP pDfX">
+                    {% for deal in deals %}
+                    <li class="mDa" itemscope itemtype="http://schema.org/Product">
+                        <input type="hidden" id="fbids" name="fbids" class="cids" value="{{deal.id}}" />
+                        <div class="mDa-iN">
+                            <div class="mDa-wPr"> 
+                                <a class="bUi-tMb-wPr tMb-100 t65 fLxiMgW bUi-tMb-aRtCl" href="{{deal.get_absolute_url}}" itemprop="url">
+                                    <span class="bUi-tMb">
+                                        <span class="bUi-tMb-pRpL">
+                                            <span class="bUi-tMb-cLp">
+                                                {% if deal.album.album_photos.all.0.photo %}
+                                                    <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% thumbnail deal.album.album_photos.all.0.photo 260x0 %}" title="{{deal.title}}" alt="{{deal.title}}" itemprop="image">
+                                                        <span class="vRtL-aLn"> </span>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="iCn-bRdR50 oP25" title="{{deal.title}}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 cLr-gRy ib"></i></span><div class="vRtL-aLn"></div>
+                                                {% endif %}
+                                            </span>
+                                        </span>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="mDa-bDy">
+                                <span class="cLr-lTbLu fS12 mRb0 tRnCt">{{deal.title}}</span>
+								<h2 title="{{deal.title}}" class="mDa-hD tRnCt0 fW200 mR50 rLvE h65 fS18" itemprop="name">
+                                <a href="{{deal.get_absolute_url}}" itemprop="url">{{deal.title}}</a></h2>
+                                <div class="mDa-dTa mRt4 cLrFx">
+                                   {% with deal.address.all.0.city as deal_location %}
+                                        {% if deal_location %}<span class="fS12 cLr-lTgRy pLlT mRb0"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i> {{deal_location}}</span>{% endif %}
+                                   {% endwith %}
+                                   <div class="pLrT" itemprop="offers" itemscope itemtype="http://schema.org/AggregateOffer">
+                                        <span class="ib">
+                                          <span class="lN-tRg fW200 cLr-lTgRy fS16" itemprop="highPrice">{{ deal.original_price|floatformat:0|moneyfmt }}</span>
+                                          <span class="cLr-gRn fW-bLd fS16" itemprop="lowPrice">{{ deal.discount_price|floatformat:0|moneyfmt }}</span>
+                                        </span>
+                                        <a href="{{deal.get_absolute_url}}" class="btn btn-success fS11 uC fW-bsLd hD-gD mRl10">{% trans 'View Deal' %}</a>
+                                    </div>
+                                </div>                                            
+                                <!--div class="mDa-hVr"><a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="#"><i aria-hidden="true" class="bUi-iCn-sHr-aLt-16 ib"></i></a></div-->
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    </ul>
+                    {% include 'default/common/pagination-white.html' %}
+                </div>
+            {% endif %}
+            </div><!--main-->
+            <aside class="sD-bR span4 mSnRy">
+                <div>
+                    <section class="tXt-cTr pD15 bNr-aD" id="banner_placement_right"></section> 
+                </div>
+                <div>
+                    {% include 'default/deals/part_subscribe.html' %}
+                </div>
+                <div>
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+<script type="text/javascript">
+{% if message %}
+setTimeout(function(){$('.alert').css('display','none');},3000);
+{% endif %}
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,70 @@
+{% load tabs %} 
+<div class="AD-bTn">
+    <div class="btn-group">
+    		<a 
+			{% ifactivetab "addbutton" "article" %}href="/user/articles"{% endifactivetab %}
+			{% ifactivetab "addbutton" 'events' %}href="{% url 'events_addevent' %}"{% endifactivetab %}
+			{% ifactivetab "addbutton" 'photos' %}href="{% url 'user_add_gallery' %}"{% endifactivetab %}
+			{% ifactivetab "addbutton" 'videos' %}href="{% url 'user_video_add' %}"{% endifactivetab %}
+			{% ifactivetab "addbutton" 'business' %}href="{% url 'user_add_business' %}"{% endifactivetab %}
+			{% ifactivetab "addbutton" 'classifieds' %}href="{% url 'user_add_classified' %}"{% endifactivetab %}" 
+			class="btn btn-danger"><i class="bUi-iCn-pLs-16 ib" aria-hidden="true"></i> 
+            <span class="ib fS13">
+			{% ifactivetab "addbutton" "article" %}Add Article{% endifactivetab %}
+			{% ifactivetab "addbutton" 'events' %}Add Event{% endifactivetab %}
+			{% ifactivetab "addbutton" 'photos' %}Add Photos{% endifactivetab %}
+			{% ifactivetab "addbutton" 'videos' %}Add Video{% endifactivetab %}
+			{% ifactivetab "addbutton" 'business' %}Add Business{% endifactivetab %}
+			{% ifactivetab "addbutton" 'classifieds' %}Post Free Ad{% endifactivetab %}
+			</span></a>
+			<a href="#" data-toggle="dropdown" class="btn btn-danger btn-dangerdRk dropdown-toggle pDb9"><span class="caret"></span></a>
+             <ul class="dropdown-menu pLrT fS12">
+                    <li><a class="fW-bLd" href="/user/articles"><!--a class="fW-bLd" data-target="#addArticle" data-toggle="modal" href="{% url 'article_select_type' %}"-->
+                    <i class="bUi-iCn-aRtL-24 fS16 cLr-lTgRy mRr10" aria-hidden="true"></i>Articles
+					</a></li>
+                    <li><a class="fW-bLd" href="{% url 'events_addevent' %}">
+                    <i class="bUi-iCn-eVnT-24 fS16 cLr-lTgRy mRr10" aria-hidden="true"></i>Events
+					</a></li>
+                    <li><a class="fW-bLd" href="{% url 'user_add_gallery' %}">
+                    <i class="bUi-iCn-pHoT-24 fS16 cLr-lTgRy mRr10" aria-hidden="true"></i>Photos
+					</a></li>
+                    <li><a class="fW-bLd" href="{% url 'user_video_add' %}">
+                    <i class="bUi-iCn-vDeO-aLt-24 fS16 cLr-lTgRy mRr10" aria-hidden="true"></i>Videos
+					</a></li>
+                    <li><a class="fW-bLd" href="{% url 'user_add_business' %}">
+                    <i class="bUi-iCn-bSn--24 fS16 cLr-lTgRy mRr10" aria-hidden="true"></i>Business
+					</a></li>
+                    <li><a class="fW-bLd" href="{% url 'user_add_classified' %}">
+                    <i class="bUi-iCn-cLfD-24 fS16 cLr-lTgRy mRr10" aria-hidden="true"></i>Classifieds
+					</a></li>
+                </ul>
+        </div>
+    </div>
+<div id="addArticle" class="modal hide fade mW40" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="myModalLabel" class="mR50">Select Article Type</h4>
+    </div>
+    <div class="modal-body">
+		<div style="text-align: center; width: 100%;">
+			<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+		</div>
+    </div>
+    <div class="modal-footer">
+        <!--button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button-->
+        <button class="btn btn-primary" type="submit" onclick="$('#mform').submit();" >Next</button>
+    </div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("a[data-target=#addArticle]").click(function(ev) {
+		   ev.preventDefault();
+		   target = $(this).attr("href");
+		
+		   // load the url and show modal on success
+		   $("#addArticle .modal-body").load(target, function() {
+		        $("#addArticle").modal("show");
+		   });
+		});
+	});
+</script>

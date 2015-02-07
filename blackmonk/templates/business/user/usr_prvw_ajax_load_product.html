@@ -1,0 +1,28 @@
+{% load thumbnail %}
+{% load truncate_filter %}
+<li class="mDa" id="product_li_{{pro.id}}" style="display:none;">
+    <div class="mDa-iN bM-bX">
+        <div class="mDa-wPr"> 
+            <a class="bUi-tMb-wPr tMb-50 fLxiMgW"  href="javascript:void(0);" >
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN">
+                                <img class="mDa-oT" src="{% if pro.photo %}{% thumbnail pro.photo 285x0 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{ pro.title }}" title="{{ pro.title }}">
+                                <span class="vRtL-aLn">
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a> 
+        </div>
+        <div class="mDa-bDy pD15">
+            <h4 class="mDa-hD" title="{{ pro.title }}"><a href="javascript:void(0);">{{ pro.title }}</a></h4>
+            <div class="mDa-dTa">
+                <div class="fS11 cLr-dRk">{% autoescape off %}{{ pro.description|striptags|truncate_chars:95 }}{% endautoescape %}</div>
+            </div>
+            <div class="mRt10 cLrFx"><a class="fS12 cLr-gRy pLrT mRl10" href="javascript:delete_product({{pro.id}})">Delete</a><a href="{% url 'user_business_product_update' pro.business.id pro.id %}" data-target="#addProduct" class="fS12 cLr-gRy pLrT">Edit</a></div>
+        </div>
+    </div>
+</li>

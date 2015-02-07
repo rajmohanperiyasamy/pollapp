@@ -1,0 +1,145 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% block navigation %}
+	{% activetab 'topnav' 'config' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Email Templates' %} {% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block content %}
+
+<div id="admin_wrapper">
+            		<div id="admin-platform" class="group">
+                              <div class="header-bar">
+                                    <div id="nav-roll">
+                                          <ul>
+                                                <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                                                <li><a href="" style="z-index:8">{% trans 'Email Templates' %}</a></li>
+                                          </ul>
+                                    </div>
+                              </div>
+                              <div id="core-wraper" class="group">
+                              	<div class="admin-main col_12">
+									{% block leftnavigation %}
+										{% activetab 'topnav' 'config' %}
+										{% activetab 'leftnav' 'email' %}
+										{{ block.super }}
+									{% endblock %}
+									<div class="left-nav-list-bg"></div>
+                                    <div class="col_9 mr_0">        
+                                        <div class="page-wrap">
+                                            <div class="page-head br_0">
+                                                <h2>{% trans 'Email templates' %}</h2>
+                                                <p class="ltxt80">{% trans 'Email templates allow you to have complete control over all email notifications that your website may generate to inform your users, content subscribers, etc.' %}</p>   
+                                            </div>
+                                            <div class="cat-list group" id="email-configuration-list">
+                                                                                 
+                                                <ul class="cat-list-container" id="staffs">
+                                                    <li class="cat-list-row hdr-rw">
+                                                        <div class="cat-list-row-inner group">
+                                                            <div class="cat-list-column email-name">
+                                                                {% trans 'Name' %}                                               
+                                                            </div>
+                                                            <div class="cat-list-column email-last-update">
+                                                                {% trans 'Last Update' %}  
+                                                            </div>
+                                                            <div class="email-options">
+                                                            </div>
+                                                        </div>
+                                                    </li> 
+													{% for email_temp in email_templist %}                                    
+                                                    <li class="cat-list-row">
+                                                        <div class="cat-list-row-inner group">
+                                                            <div class="cat-list-column email-name">
+                                                                <a href="#">
+                                                                    <h5 class="name">{{ email_temp.name }}</h5>
+                                                                    <span class="type">{{ email_temp.type }}</span>
+                                                                </a>                                                    
+                                                            </div>
+                                                            <div class="cat-list-column email-last-update">
+                                                                    <span class="time">{{email_temp.date_updated|get_readable_time_format}} {% trans 'ago' %}</span>	                                   
+                                                            </div>
+                                                             <!--div class="cat-list-column email-status">
+                                                                <div class="relative-block">
+                                                                    <span  class="status-inside inline-block active "><span id="span_act_class_{{ email_temp.id }}" class="inline-block status-idty {% if email_temp.active %}icon-active-email{% else %}icon-inactive-email{% endif %}"></span><span  class="arrow"></span></span>
+                                                                    <ul class="dropdown-list">
+                                                                        <li><strong>{% trans 'Change status to...' %}</strong></li>
+																			<li class="clk_li_hide"><a href="javascript:void(0);" id="active_{{ email_temp.id }}" onclick="change_status({{ email_temp.id }})">{% if email_temp.active %}{% trans 'Inactive' %}{% else %}{% trans 'Active' %}{% endif %}</a></li>
+																	</ul> 
+                                                                </div> 
+                                                            </div-->
+                                                            <div class="action-buttons">
+                                                                <div class="group">
+                                                                    <a href="{% url 'admin_configuration_view_emailtemplate' %}?id={{ email_temp.code }}" class="tttxt-n email-edit" title="Edit Email - {{ email_temp.name }}"><span class="action-icon icon-edit"></span></a>
+                                                                </div>                                                            
+                                                            </div>                                                                                                
+                                                        </div>
+                                                    </li> 
+													{% endfor %}   
+                                         	 	</ul>
+                                            </div>
+                                        </div>                       
+                                    </div>
+								</div>                                                                
+                                 {% include 'admin/configuration/email-faq.html' %}                         
+							</div>                                                    
+						</div>
+					</div>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor4/ckeditor.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+	<script type="text/javascript">
+           $(document).ready(function() {
+		   	//$('ul.dropdown-list').hide();
+			$('.status-inside').removeClass('active');
+                       $('.email-status .relative-block').click(function(){
+                               $('ul.dropdown-list').hide();
+                               $('.status-inside').removeClass('active');
+                               $(this).find('.status-inside').addClass('active');
+                               $(this).find('ul.dropdown-list').show();
+                       });        
+                       
+                       $('div#content, li.clk_li_hide').click(
+                               function() {
+                               $('ul.dropdown-list').hide();
+                               $('.status-inside').removeClass('active');
+                                });
+                               
+                       $('.email-status .relative-block, ul.dropdown-list').click(function(event){
+                          event.stopPropagation();
+                       });
+               });
+  </script>
+	<script>
+		function change_status(id){
+			$('#span_act_class_'+id).addClass('loading');
+			var DataString="id="+id;
+			$.ajax({
+				type: "GET",
+				url: "{% url 'admin_configuration_emailtmp_change_status' %}",
+				data: DataString,
+				success: function(data){
+					if(data!=0){
+						$('#span_act_class_'+id).removeClass('loading');
+						if(data=='2'){
+							$('#active_'+id).empty().html(gettext('Inctive'));
+							$('#span_act_class_'+id).removeClass('icon-inactive-email');
+							$('#span_act_class_'+id).addClass('icon-active-email');
+						}else{
+							$('#active_'+id).empty().html(gettext('Active'));
+							$('#span_act_class_'+id).removeClass('icon-active-email');
+							$('#span_act_class_'+id).addClass('icon-inactive-email');
+						}
+					}else{
+						$('#span_act_class_'+id).removeClass('loading');
+						show_msg(gettext('Oops!!! Not able to process your request.'),'e');
+					}
+				}
+			});
+		}
+  </script>	
+{% endblock %}

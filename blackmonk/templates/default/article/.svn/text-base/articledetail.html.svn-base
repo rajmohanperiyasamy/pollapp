@@ -1,0 +1,195 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% load thumbnail %}
+{% load mptt_comments_tags %}
+{% block pagetitle %}{% seo_format_tag module='Articles' title=article.seo_title code='DT' category=article.category.name as seo_meta_title %}{{seo_meta_title}} {% endblock %}
+{% block meta %}
+	<meta name="description" content="{{article.summary}}" />
+<!-- Facebook-->
+	<meta property="og:type" content="article"/>
+	<meta property="og:url" content="{{globalsettings.website_url}}{{article.get_absolute_url}}"/>
+	<meta property="og:title" content="{{ article.title }}"/>
+	{% if article.articlephotos.all.0.photo %}<meta property="og:image" content="{{globalsettings.website_url}}{{ article.articlephotos.all.0.photo.url }}"/>{% endif %}
+	<meta property="og:site_name" content="{{globalsettings.domain}}"/>
+	<meta property="og:description" content="{{ article.content|striptags|truncatechars:200 }}"/>
+<!-- Twitter-->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:url" content="{{globalsettings.website_url}}{{article.get_absolute_url}}">
+	<meta name="twitter:title" content="{{ article.title }}">
+	<meta name="twitter:description" content="{{ article.content|striptags|truncatechars:200 }}">
+	{% if article.articlephotos.all.0.photo %}<meta name="twitter:image" content="{{globalsettings.website_url}}{{ article.articlephotos.all.0.photo.url }}">{% endif %}
+	<meta name="twitter:domain" content="{{globalsettings.domain}}">
+
+{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/article/article.js"></script>
+	<link rel="stylesheet" href="{{STATIC_URL}}themes/css/article.css" />
+	<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+	<script src="{{STATIC_URL}}themes/js/ios-orientationchange-fix.js"></script>
+	<script src="{{STATIC_URL}}themes/js/fxslider.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	bids.push({{article.id}});
+	details_pages(bids);
+	});
+	
+	</script>
+	<script>	
+		$(function(){
+			$('.rLtD-cRsL').bUiSlider({
+				pager:false,
+				speed:600,
+				//auto:true,
+				slideWidth: 187,
+				//infiniteLoop: false,
+				//hideControlOnEnd: true,
+				adaptiveHeight: true,
+			    minSlides:1,
+			    maxSlides: 4,
+			    slideMargin: 12,
+			    onSliderLoad:function(){
+				  $('.fLxiMgW').setrSpVWidth(0);
+			   }
+			});
+		    $(".fxslider").fxslider();
+		});
+	</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "articles" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<div class="main span8">
+				<article class="sCn pD20 aRtCL-pSt pSt-vW-mDe" itemscope itemtype="http://schema.org/Article">
+					<header class="pSt-hDr">
+						<div class="pSt-tLbR">
+							<div class="pSt-mTa pLlT" itemprop="genre"><a href="{{article.category.get_absolute_url}}" title="Go to {{article.category}} {% trans 'Section' %}" class="pSt-cTgRy lBl dFt mNi uC">{{article.category}}</a></div>
+						</div>
+						<h1 class="pSt-tTl" itemprop="name">{{article.title}}</h1>
+						<ul class="pSt-mTa unstyled">
+							<li class="pSt-mTa-iTm ib">
+								<span class="pSt-mTa-aThR">{% trans 'By ' %}<a href="{% url 'user_profile' article.created_by.profile_slug %}" title="Go to the profile of {{article.created_by.display_name}}" class="pSt-aThR"><span itemprop="author">{{article.created_by.display_name}}</span></a></span>
+							</li>
+							<li class="pSt-mTa-iTm ib sPrTr">
+								<span class="pSt-pBlSd-dT"><time class="pSt-dT">{{ article.published_on|ds_site_dateformat }}</time><meta itemprop="datePublished" content="{{ article.published_on|get_iso_time_format}}"></span>
+							</li>
+						</ul>
+						{% get_mptt_comment_count for article as comment_count %}
+						<meta itemprop="interactionCount" content="UserComments:{{comment_count}}"/>
+					</header>
+					<div class="pSt-cNt">
+						<div class="pSt-cNt-iN">
+							<div class="mRt10 mRb20 shareH">
+                               <div class="cLrFx">
+
+                                    {% with article as object %}
+                                    	{% include 'default/social-share-links.html' %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+							<div class="pSt-fLd body" itemprop="description">
+								{% autoescape off %}{{ article.content }}{% endautoescape %}
+							</div>
+							{% if article.tags.all %}<div class="tGs"><p><em class="cLr-dRk">{% trans 'TAGS: ' %}</em>{% for tag in article.tags.all %}<a href="{% url 'article_list' %}?tagid={{tag.id}}" rel="tag" itemprop="keywords">{{tag.tag}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p></div>{% endif %}
+                            <!--div class="cLrFx mRt20">
+                                {#% with article as object %#}
+                                    {#% include 'default/social-share-links.html' %#}
+                                {#% endwith %#}
+                            </div-->
+							{% if article.articlephotos.all %}
+							<section class="pD300">
+								<div class="sCn-tTl">
+		                            <h2><span>{% trans 'Photo Gallery' %}</span></h2>
+		                        </div>
+		                        <ul class="tMbS sXcL pDfX fxslider">
+		                        	{% for photo in article.get_photos %}
+									<li data-src="{{photo.photo.url}}">
+										<a class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR " href="#">
+		                                    <span class="bUi-tMb">
+		                                        <span class="bUi-tMb-pRpL">
+		                                            <span class="bUi-tMb-cLp">
+		                                                <span class="bUi-tMb-cLp-iN">
+		                                                    <img class="mDa-oT" src="{% thumbnail photo.photo 260x0 %}" alt="{{photo.title}}" itemprop="image">
+		                                                    <span class="vRtL-aLn">
+		                                                    </span>
+		                                                </span>
+		                                            </span>
+		                                        </span>
+		                                    </span>
+		                                </a>
+									</li>
+									{% endfor %}
+								</ul>
+							</section>
+							{% endif %}
+						</div>
+					</div>
+				</article>
+				{% if similar_articles %}
+				<div class="row-fluid">
+					<section class="sCn">
+						<div class="sCn-tTl">
+                        	<h2><span>{% trans 'Read Similar Articles' %}</span></h2>
+                        </div>
+                        <div class="fTrD-bL cRsL mDa-65 tXt-oTsD aDpTv cTrL-tR mRb0">
+							<div class="fTrD-bL-iN">
+	                            <ul class="fTrD-iTmS {% if similar_articles.count > 4 %}rLtD-cRsL{% else %} fOcL{% endif %}" {% if similar_articles.count > 4 %} style="width:10000px;" {% endif %}>
+	                            	{% for article in similar_articles %}
+                                	<li class="fTrD-iTm bDrR0" {% if similar_articles.count > 4 %} style="float:left" {% endif %}>
+	                                	<figure class="fTrD-mDa">
+	                                		<span class="bUi-tMb-wPr fLxiMgW" href="{{article.get_absolute_url}}">
+												<span class="bUi-tMb">
+													<span class="bUi-tMb-pRpL">
+														<span class="bUi-tMb-cLp">
+															<span class="bUi-tMb-cLp-iN">
+																<img class="mDa-oT" src="{% if article.get_first_article_photo %}{% thumbnail article.get_first_article_photo 260x0 %}{% elif article.get_img_from_html %}{{ article.get_img_from_html }}{% else %}{{STATIC_URL}}themes/img/no-image.jpg{% endif %}" alt="">
+																<span class="vRtL-aLn"></span>	
+															</span>
+														</span>
+													</span>
+												</span>
+											</span>
+	                                    </figure>  <!-- /.TrD-mDa -->
+	                                	<div class="fTrD-tXt">
+	                                    	<div class="vAlGn">
+		                                    	<div class="fTrD-tXt-iN pD10-0-5">
+			                                        <h4 class="fTrD-hD fS14"><a  href="{{article.get_absolute_url}}">{{article.title}}</a></h4>
+		                                    	</div>
+	                                    	</div>
+	                                    </div> <!-- /.TrD-tXt -->		                                   
+	                                </li>
+	                                {% endfor %}
+	                            </ul>
+							</div>
+                        </div>
+					</section>
+				</div>
+				{% endif %}
+				<div class="row-fluid mRt30" id="comments">
+					{% with article as object %}
+			        	{% with 'articles' as appname %}
+			                {% include 'comments/include_comment.html' %}
+			            {% endwith %}
+					{% endwith %}
+				</div>
+			</div>
+			<aside class="sD-bR span4">
+				<div>
+					<section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right"></section> 
+				</div>
+				{% include 'default/article/latest-popular-articles.html' %}
+				<div>
+                	{% include 'default/likebox.html' %}
+				</div>
+			</aside>
+		</div>
+    </div>
+{% endblock %}        

@@ -1,0 +1,24 @@
+{% load i18n %}
+<div class="section">
+	<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/1qSud3JD7RY5ybuy5vj2Es2lSQmb2Iuwcu8SpHlb5b1Y/edit#bookmark=id.5h0unb3jybps" target="_blank"><span class="icon">?</span>Quick help</a><hr>
+   <h5>{% trans 'FAQs' %}</h5>
+   <h6>{% trans 'Question' %}</h6>
+   <p>{% trans "Ask a Question. (This Question shows in the search result)" %}</p>
+   <hr>
+	{% if user.is_superuser %}
+       <h5>{% trans 'Category' %}</h5>
+       <h6>{% trans 'Choose relevant category' %}</h6>
+       <p>{% trans "If you don't find the desired category, you can add in the " %}<a href="/admin/portal/community/category" target="_blank">Admin CP</a></p>
+       <hr>
+	{% endif %}
+   <h6>{% trans "Description" %}</h6>
+   <p>{% trans "Enter a short meaningful description about the query." %}</p>
+	<hr>
+   <h6>{% trans "Tags" %}</h6>
+   <p>{% trans "Enter tags relevant to the question." %}</p>
+	<hr>   
+	<h6>{% trans "Select the options if you would like to" %}</h6>
+   <p>{% trans "Feature the query?" %}</p>
+   <p>{% trans "Recieve email when your query is answered?" %}</p>
+   <p>{% trans "Would you like users to comment on your query?" %}</p>
+</div> 

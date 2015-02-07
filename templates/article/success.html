@@ -1,0 +1,37 @@
+{% extends "home.html" %}
+<{% block title %}{% endblock %}>
+{% block content %}
+
+<p>HI you added the following author </p>
+
+
+	<p>NAME  :{{author.id}}</p>
+	<p>Gender:{{author.title}}</p>
+	<p>B-DAte:{{author.birth_date}}</p>
+	
+	<p>Author added time: {{time}}
+	
+
+
+<h4>List of authors<h4>
+	{% for authors in all_authors %}
+   
+      <a href="{%url 'update_author' author.id %}">{{ authors|truncatechars:20 }}</a>
+	  
+    
+{% endfor %}
+<a href="" rel="shadowbox;width=800;height=600">How to use it</a>
+<script type="text/javascript" src="/static/js/shadowbox.js"></script>
+
+	
+	<script type="text/javascript"><!--
+
+	Shadowbox.loadSkin('classic', '/js/skin'); // use the "classic" skin
+	//Shadowbox.loadLanguage('en', 'my/lang/dir'); // use the English language
+	//Shadowbox.loadPlayer(['html', 'iframe'], '/'); // use img and qt players
+
+	window.onload = Shadowbox.init;
+	
+	
+ 	//--></script>
+{% endblock %}

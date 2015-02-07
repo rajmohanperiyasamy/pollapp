@@ -1,0 +1,65 @@
+{% load i18n %}
+<div id="ajax_content_loading_seo" style="display:none;padding-top:222px;padding-bottom:222px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Classifieds Category SEO' %}</p>
+</div>
+<div class="main_col lb_seo" id="ajax_content_seo">
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');},
+			unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	seo_title: "required",
+				seo_description: "required"		
+		   	}
+		});
+	});
+	function string_to_slug(str){
+	  str = str.replace(/^\s+|\s+$/g, ''); 
+	  str = str.toLowerCase();
+	  str = str.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'); 
+	  $('#id_slug').val(str);
+	}
+	</script>
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	{% if form.errors %}
+		<div class="messageerror" >
+			<strong>{% trans 'There is a problem with your submission' %}</strong>
+            <ul style="list-style:square;margin-left:20px;">
+           		{% for field in form %}
+           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+          	 	{% endfor %}
+			</ul>
+	 	</div>
+	{% endif %}
+	<div id="add-new-category" class="modal-form">
+    <form name="mform" action="{% url 'staff_seo_attraction' attraction.id %}" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields vform no_head">
+    		<div id="meta-tags" class="field-group">
+				<div class="fields-head">
+                    <h3>{% trans 'Title' %}</h3>
+                    <p class="ltxt80">{% trans "Write a short meta title for your website. This title is used in the search results of search engines like Google." %}</p> 
+                </div>
+				<div class="field text-field fd-title">	
+                    <div class="value">{{form.seo_title}}</div>	
+                </div> 
+			</div>
+		</div>
+		<div class="fields vform no_head bor_bot_none">
+    		<div id="meta-tags" class="field-group">
+				<div class="fields-head">
+                    <h3>{% trans 'Description' %}</h3>
+                    <p class="ltxt80">{% trans "In one or two short sentences to describe your website. This description is used in the search results of search engines like Google." %}</p> 
+                </div>
+	           	<div class="field text-field">	
+					<div class="value">{{form.seo_description}}</div>
+				</div> 
+			</div>
+		</div>       
+        <div class="modal-base form-submit group">
+		  	<button role="button" class="cform-button prime right"  type="button" onclick="save_seo()"><span class="cform-button-text">{% trans 'Update' %}</span></button>
+		</div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+</div>

@@ -1,0 +1,538 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load upload_tags %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "business" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Business' %} {% endblock %}
+{% block head %}
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+<!-- TAGS -->
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css" />
+<!-- TAGS -->
+{% endblock %}
+{% block content %}
+ <div id="userHub-platform" class="group">
+    <div class="header-bar">
+		<a href="{% url 'user_manage_business' %}"><h2><span class="go_back"></span>{% trans 'Business' %}</h2></a>
+	</div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap">
+                <div id="business-add" class="group">
+                    <div id="add-new-business">
+                    	{% if form.errors or wform.errors or aform.errors  %}
+							<div class="messageerror" >
+								<span style="font-size:1.2em;font-weight:250;"><strong>There is a problem with your submission</strong></span>
+						        {% if form.errors %}
+								<ul>{% for field in form %}
+								 	{% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						 		 {% endfor %}</ul>
+								{% endif %}
+								{% if wform.errors %}
+								<ul>{% for field in wform %}
+								 	{% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						 		 {% endfor %}</ul>
+								{% endif %}
+								{% if aform.errors %}
+								<ul>{% for field in aform %}
+								 	{% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						 		 {% endfor %}</ul>
+								{% endif %}
+							</div>
+						{% endif %}
+                        <form id="mform" name="mform" action="{% url 'user_add_business' %}" method="post">
+                            <div class="fields hform">
+                                <div class="field-group relative-block">              
+                                    <div class="field text-field fd-title">
+                                        <div class="label"><label for="">Business Name<span class="required-field">*</span></label></div>
+                                        <div class="value">
+                                        	{{form.name}}
+                                            <span class="tip">{{globalsettings.website_url}}/business/{{form.slug}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="field text-field">
+                                        <div class="label"><label for=""></label></div>
+                                        <div class="value">
+                                            <div id="fileupload" >
+										 		<div class="fileupload-content">
+										    		<ul class="files bm-uploader-list"></ul>
+												</div>
+								            	{% csrf_token %}<div class="clear"></div>
+								            	<div class="upload-button-wrapper" id="upload-button-wrapper">
+								                	<a class="upload-button" id="upload-button">{% trans 'Attach Logo' %}</a>
+								                    <div class="fileinput-button">
+								                    	<input type="file" size="1" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+													</div>
+								                </div>
+											</div>
+                                        </div>
+                                    </div><div class="clear"></div>
+                                    <div class="field select-field">
+                                        <div class="label"><label for="">Parent Category<span class="required-field">*</span></label></div>
+                                        <div class="value">
+											 <select data-placeholder="{% trans 'Select a category'%}" id="id_category" name="category" class="select-menu fl"  onchange="loadsubcategory()">
+                                             	<option value=""></option>
+                                                {% for cat in category %}
+                                                	<option value="{{cat.id}}">{{cat}}</option>
+												{% endfor %}
+                                            </select> 
+											<span class="tip">{% trans 'Click and select multiple categories related to the business.' %}</span>
+                                        </div>
+                                    </div> 
+                                    <div class="field select-field relative-block">
+                                        <div class="label"><label for="">Sub Category<span class="required-field">*</span></label></div>
+                                        <div class="value">
+                                        	<select data-placeholder="{% trans 'Select a Sub Category'%}" class="select-menu fl" name="sub_category" id="id_sub_category" multiple="multiple">
+							     			</select>  
+											<span class="tip" id="cat_span">{% trans 'Click and select multiple categories.' %}</span>
+                                        </div>
+										<div id="attributes_loading" style="position: absolute; right: 198px; top: 7px; display: none;">
+											<img src="{{STATIC_URL}}ui/images/global/loading-s.gif" alt="....">
+										</div>
+                                    </div>
+                                </div> <!--/field-group--> 
+								<div id="attributes" style="display:none;" class="cr_wmr">
+                                    {% include 'business/update_attribute.html' %}
+                               </div>
+								<div class="clear"></div>
+								<div class="field-group cr_wmr">
+                                	<div class="fields-head"><h3>{% trans 'We Accept' %}</h3></div>  
+									<div class="field text-field">
+                                        <div class="label"><label for=""> </label></div>
+                                        <div class="value">
+											<span class="cform-radio-container"><input type="radio" name="we_accept" checked="checked" class="checkbox mrl0" value="0"><span class="cform-radio-element"></span></span> 
+                                            <label>{% trans 'I prefer not to specify the modes of payment options.' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="field text-field">
+                                        <div class="label"></div>
+                                        <div class="value">
+											<span class="cform-radio-container"><input type="radio" name="we_accept" class="checkbox mrl0" value="1"><span class="cform-radio-element"></span></span> 
+                                            <label>{% trans 'Let me specify the modes of payment options.' %}</label>
+                                        </div>
+                                    </div>
+                                     <div class="field text-field" id="we_acpt" style="display:none;">
+                                        <div class="label"><label for=""></label></div>
+                                        <div class="value">{{form.paymentoptions}}</div>
+                                    </div> 
+								</div>
+								<div class="clear"></div>
+								<div class="field-group cr_wmr">
+                                	<div class="fields-head">
+                                		<h3>{% trans 'Working Hours' %}</h3>
+									</div>  
+                                    <div class="field text-field">
+                                        <div class="label"><label for=""> </label></div>
+                                        <div class="value">
+											<span class="cform-radio-container"><input type="radio" name="operating_hours" checked="checked" class="checkbox mrl0" value="0"><span class="cform-radio-element"></span></span> 
+                                            <label>I prefer not to specify operating hours.</label>
+                                        </div>
+                                    </div>
+                                    <div class="field text-field">
+                                        <div class="label"></div>
+                                        <div class="value">
+											<span class="cform-radio-container"><input type="radio" name="operating_hours" class="checkbox mrl0" value="1"><span class="cform-radio-element"></span></span> 
+                                            <label>My operating hours are</label>
+                                        </div>
+                                    </div>
+                                    <div class="field text-field" id="opt_hour" style="display:none;">
+                                        {% include 'business/staff/update_working_hour.html' %}
+                                    </div>
+                                </div><!--/field-group--> 
+								<div class="field-group">
+									<div class="fields-head"><h3>{% trans 'Media URL' %}</h3></div>
+									<div class="field text-field media_url">
+										<div class="label"></div>
+										<div class="value" id="googleplus" style="margin-top:10px;display:none;">
+											<img src="{{STATIC_URL}}ui/images/icons/favicons/gplus.jpeg">
+											{{form.gooleplus_url}}
+											<a class="icon-remove o3 tttxt-w" style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;" title="Remove" href="javascript:hide('googleplus')">X</a>
+	                                    </div>
+										<div class="value" id="facebook" style="margin-top:10px;display:none;">
+											<img src="{{STATIC_URL}}ui/images/icons/favicons/facebook.png">
+											{{form.fb_url}}
+											<a class="icon-remove o3 tttxt-w" style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;" title="Remove" href="javascript:hide('facebook')">X</a>
+	                                    </div>
+										<div class="value" id="twitter" style="margin-top:10px;display:none;">
+											<img src="{{STATIC_URL}}ui/images/icons/favicons/twitter-favicon.ico">
+											{{form.twitter_url}}
+											<a class="icon-remove o3 tttxt-w" style="text-indent: 9999em; overflow: hidden; width: 16px; height: 16px; display: inline-block;" title="Remove" href="javascript:hide('twitter')">X</a>
+	                                    </div>
+										<div class="value" style="margin-top:10px;">
+	                                        <div class="group">
+	                                        	<span id="i_googleplus">
+													<img src="{{STATIC_URL}}ui/images/icons/favicons/gplus.jpeg">
+													<span class="cform-checkbox-container"><input type="checkbox" id="c_weburl" onclick="show('googleplus')"><span class="cform-checkbox-element"></span></span> 
+												</span>
+												<span id="i_facebook">
+													<img src="{{STATIC_URL}}ui/images/icons/favicons/facebook.png">
+													<span class="cform-checkbox-container"><input type="checkbox" id="c_facebook" onclick="show('facebook')"><span class="cform-checkbox-element"></span></span> 
+												</span>
+												<span id="i_twitter">
+													<img src="{{STATIC_URL}}ui/images/icons/favicons/twitter-favicon.ico">
+													<span class="cform-checkbox-container"><input type="checkbox" id="c_twitter" onclick="show('twitter')"><span class="cform-checkbox-element"></span></span> 
+												</span>
+	                                        </div>
+	                                    </div>
+	                                </div> 
+								</div>
+								<div class="field-group">
+                                	<div class="fields-head"></div>  
+									<div class="field text-field">
+                                        <div class="label"><label for=""> </label></div>
+                                        <div class="value">
+                                        	 <div id="fileuploaddoc">
+										 		<div class="fileupload-content">
+										    		<ul class="files bm-uploader-list">
+										    		</ul>
+												</div>
+								            	{% csrf_token %}<div class="clear"></div>
+								            	<div class="upload-button-wrapper">
+								                	<a class="upload-button">{% trans 'Attach Files' %}</a>
+								                    <div class="fileinput-button">
+								                    	<input type="file" size="1" name="file" id="id_file" multiple=""  accept="*" tabindex="-1">
+													</div>
+								                </div>
+											</div>
+											<span class="tip">{% trans 'Attach a Brochure/Menu of the business.(Attachment can be PDF/Word format)' %}</span>
+                                        </div>
+                                    </div>
+								</div><div class="clear"></div>
+                                <div class="field-group" id="address">
+                                    {% include 'business/user/update_address.html' %}
+                                </div> <!--/field-group-->   
+                                <div class="field-group" id="">
+                                    <div class="fields-head"></div>                                            
+                                    <div class="field text-field">	
+                                        <div class="label"><label for="">Description<span class="required-field">*</span></label></div>	
+                                        <div class="value">{{form.description}}</div>	
+                                    </div>
+                                	<div class="field text-field">	
+                                        <div class="label">
+                                        	<label for="-button">{% trans 'Tags' %}</label>
+										</div>
+                                        <div class="value has-fd-icon">
+                                        	<input id='tags' type="hidden" class='tags' name="tags"  value="">
+											<ul id="mytags" class="fl"></ul>
+                                        	<!--img class="fd-icon" src="{{STATIC_URL}}ui/images/icons/b/66.png" alt=""-->
+											<span class="tip">{% trans "Add multiple tags separated by comas ',' or use 'tab' key" %}</span>
+                                        </div>
+                                    </div>
+                                </div> <!--/field-group-->  
+                            </div> <!--/fields-->
+                            <div class="form-submit right group">
+                               <button class="cform-button" roll="button" type="button" onclick="window.location.replace('{% url 'user_manage_business' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+							   <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'SAVE AS DRAFT' %}</span></button>
+							   <button role="button" class="cform-button prime" name="next" type="submit"><span class="cform-button-text">{% trans 'SAVE & NEXT' %}</span></button>
+                            </div>                                                
+                        </form>
+                    </div>																	                                        
+                </div> <!-- end table -->                                    
+            </div><!-- end page wrap -->
+        </div>  <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+			{% include 'business/staff/add_update_faq.html' %}
+		</div>        
+	</div>                            
+</div>
+{% endblock %}			
+{% block footer_include %}
+<!-- TAGS -->
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+<!-- TAGS -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/business/staff.js"></script>
+<script src="{{ STATIC_URL }}js/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script type="text/javascript">
+var edt;
+function updateTextArea(edt){
+    CKEDITOR.tools.setTimeout( function(){ 
+        $('#id_description').val(edt.getData());
+        $("#id_description").trigger('keyup');
+    }, 0);  
+}
+$(document).ready(function(){
+	try{
+		var instance = CKEDITOR.instances['id_description'];
+		CKEDITOR.remove(instance);
+	}
+	catch(e){}
+	CKEDITOR.on( 'instanceCreated', function( e ){
+		   e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+   	});
+	var edt=CKEDITOR.replace( 'id_description',{					
+		customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+		toolbar : 'Basic'
+	});
+	edt.on('key', function(event) {updateTextArea(edt);});
+
+	$('#id_category').change(function(){$('#id_category').valid();})
+	$('#id_sub_category').change(function(){$('#id_sub_category').valid();})
+	$('#id_description').keyup(function(){$('#id_description').valid();})
+
+	$('#id_website').focusin(function(){
+		if($('#id_website').val()==""){
+				$('#id_website').val('http://www.');
+		}
+		  
+	});
+	$('#id_website').focusout(function(){
+	if($('#id_website').val()=='http://www.'){
+				$('#id_website').val('');
+			$(this).parent('div').parent('div').removeClass('field-error');$('#id_website').removeClass("error");	
+			}
+	});
+
+	jQuery(function(){time=$('.horkinghour').autocomplete({source:availableTags});});
+	$('#apply_all').click(function(){
+		$('.starttime.on').val($('#id_mon_start').val());
+		$('.endtime.on').val($('#id_mon_end').val());
+	});
+	$('.checkbox').click(function(){
+		if($(this).is(':checked')){
+			$(this).parent().parent().parent().find('input[type=text]').val('');
+			$(this).parent().parent().parent().find('input[type=text]').attr('placeholder','');
+			$(this).parent().parent().parent().find('input[type=text]').attr('disabled','disabled');
+			$(this).parent().parent().parent().find('input[type=text]').removeClass('on');
+		}
+		else{
+			$(this).parent().parent().parent().find('.starttime').attr('placeholder',gettext('09:00 AM'));
+			$(this).parent().parent().parent().find('.endtime').attr('placeholder',gettext('06:00 PM'));
+			$(this).parent().parent().parent().find('input[type=text]').removeAttr('disabled');
+			$(this).parent().parent().parent().find('input[type=text]').addClass('on');
+		}
+	});
+	
+	$('input[name=operating_hours]').change(function(){
+		if($('input[name=operating_hours]:checked').val()==1){$('#opt_hour').show();}
+		else{$('#opt_hour').hide();}
+	});
+	$('input[name=we_accept]').change(function(){
+		if($('input[name=we_accept]:checked').val()==1){$('#we_acpt').show();}
+		else{$('#we_acpt').hide();}
+	});
+	$('#id_sub_category').change(function(){
+		var cat_ids=[];
+		$('#id_sub_category :selected').each(function(i, selected){
+			cat_ids[i] = $(selected).val();
+		});
+		if(cat_ids!=''){
+			dataString='cat_id='+cat_ids+'&parent_cat_id='+$('#id_category').val();
+			$('#attributes').hide();
+			$('#attributes_loading').show();
+			$.ajax({
+			type: "GET",
+			url: "{% url 'business_ajax_load_attribute' %}",
+			data: dataString,
+			dataType:'JSON',
+			success: function(data){
+					$('#attributes_loading').hide();
+					$('#attributes').html(data.html);
+					$('#attributes').show();
+					$('.append_attr').chosen({disable_search_threshold:10}); 
+				}
+			});
+		}else{
+			$('#attributes').hide();
+		}
+	});
+	$.validator.addMethod("desc_required", function(value, element) {  
+    	$('#id_description').val(edt.getData());
+		if($('#id_description').val()!=''){return true;}
+		else{return false;}
+	},"Please enter a description.");
+	$.validator.addMethod("time", function(value, element) {  
+    return this.optional(element) || /^(([0]?[1-9])|([1][0-2])):([0-5]?[0-9])(:([0-5]?[0-9]))?\s([AP][M])$/i.test(value);},gettext("Please enter a valid time."));
+	$("#mform").validate({
+		ignore: "",
+		highlight: function(element, errorClass){add_error_class(element)},
+		unhighlight: function(element, errorClass){remove_error_class(element)},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	name: "required",
+			slug: "required",
+			description: "desc_required",
+			category:"required",
+			sub_category:"required",
+			
+			address1:"required",
+			city:"required",
+			zip:"required",
+			email:{required:false,email:true},
+			website:{required:false,url:true},
+			
+			mon_start:{required:false,time:true},
+		    mon_end:{required:false,time:true},
+		    tue_start:{required:false,time:true},
+		    tue_end:{required:false,time:true},
+		    wed_start:{required:false,time:true},
+		    wed_end:{required:false,time:true},
+		    thu_start:{required:false,time:true},
+		    thu_end:{required:false,time:true},
+		    fri_start:{required:false,time:true},
+		    fri_end:{required:false,time:true},
+		    sat_start:{required:false,time:true},
+		    sat_end:{required:false,time:true},
+		    sun_start:{required:false,time:true},
+		    sun_end:{required:false,time:true},
+			
+			lstart_date:{required:true,date:true},
+			lend_date:{required:true,date:true}
+	   	},
+		submitHandler:function(){
+			get_lat_lang();
+			form.submit();
+		}
+	});
+	
+	if($("#id_lend_date").length){
+		$("#id_lend_date").datepicker({ dateFormat: "yy-mm-dd",minDate: new Date() });
+	}
+	if($("#id_lstart_date").length){
+		$("#id_lstart_date").datepicker({ dateFormat: "yy-mm-dd",minDate: new Date()});
+	}
+	
+	file_upload('{% url 'business_ajax_upload_logo' %}?id={{business.id}}',1);
+	$('#fileupload').bind('fileuploadstart', function (e, data) {$('#upload-button-wrapper').hide();});
+	$('#fileupload').bind('fileuploaddestroy', function (e, data) {
+		setTimeout(function(){
+			$('#upload-button-wrapper').show();
+			$('#upload-button').html(gettext('Attach Logo'));
+		},700);
+		setTimeout(function(){$('#upload-button').html(gettext('Attach Logo'));},1050);
+	});
+	
+	file_upload_buz('{% url 'business_ajax_upload_files' %}?id={{business.id}}',5,'template-upload-1','template-download-1');
+	
+	{% if not business %}
+	{% if new_pic %}
+		get_images('{% url 'business_ajax_upload_logo' %}?ids={% for np in new_pic %}{{np}}{% if not forloop.last %},{% endif %}{% endfor %}')
+	{% endif %}
+	{% endif %}
+	
+	$("#mytags").tagit({
+       singleField: true,
+       singleFieldNode: $('#tags'),
+	   allowSpaces:true,
+       tagSource: function( request, response ) {
+         $.ajax({
+		       url: '{% url 'business_auto_suggest_tag' %}',
+		       data: { term:request.term },
+		       dataType: "json",
+		       success: function( data ) {
+		       response( $.map( data, function( item ) {
+		       return {
+			   	label: item.label, value: item.value 
+				}}
+				));
+       		}
+       });
+      }});
+});
+</script>
+<script type="text/javascript">
+function loadsubcategory(){
+	var categories = document.getElementById('id_category').value;
+	var select = document.getElementById('id_sub_category');
+	while(select.hasChildNodes()){
+			select.removeChild(select.firstChild);
+		}
+	$('#attributes').hide();
+	$('#listing_business').hide();
+	{% for cat in category %}
+		if (categories == {{ cat.id }}){
+			{% for subcat in cat.getChildCategory %}
+				var option = document.createElement("option");
+	            option.setAttribute("value", "{{subcat.id}}");
+	            option.innerHTML = "{{ subcat.name }}";
+	            select.appendChild(option);
+			{% endfor %}
+			 $("#id_sub_category").trigger("liszt:updated");
+		}
+	{% endfor %}
+}
+</script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript">
+	{% if address %}
+		load_for_add('map',{{ address.lat }}, {{ address.lon }}, {{ address.zoom }},'{{ address.city }}','{{ globalsettings.city }} - {{address.zip}}');
+	{% else %}
+		load_for_add('map',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},'{{ globalsettings.city }}','{{ globalsettings.city }}');
+	{% endif %}
+	function string_to_slug(str) {
+	  str = str.replace(/^\s+|\s+$/g, ''); 
+	  str = str.toLowerCase();
+	  str = str.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'); 
+	  $('#id_slug').val(str);
+	}	
+	$( "#id_zip" ).autocomplete({
+			source: '{% url 'auto_suggest_pin' %}',
+		   	select: function(event, ui) {
+     			$("#id_zip").val(ui.item.id);
+     	 	}
+	});
+	function get_lat_lang(){
+		var lat_lng = marker.getPosition();
+		var zoom = map.getZoom();
+		$('#lat_lng').val(lat_lng);
+		$('#zoom').val(zoom);
+	}
+function show(id){
+	$('#'+id).slideDown();
+	$('#i_'+id).fadeOut('fast');
+}
+function hide(id){
+		$('#'+id).slideUp();
+		$('#'+id).find('input[type=text]').val('');
+		$('#i_'+id).find('input[type=checkbox]').attr('CHECKED',false);
+		$('#i_'+id).fadeIn('fast');
+}
+function showhttp(vl){
+	if(vl=='f'){if($('#id_fb_url').val()==""){$('#id_fb_url').val('http://www.facebook.com/');}}
+	else if(vl=='g'){if($('#id_gooleplus_url').val()==""){$('#id_gooleplus_url').val('http://plus.google.com/');}}
+	else if(vl=='tw'){if($('#id_twitter_url').val()==""){$('#id_twitter_url').val('http://www.twitter.com/');}}
+}
+function hidehttp(vl){
+	if(vl=='f'){
+		if($('#id_fb_url').val()=='http://www.facebook.com/'){
+			$('#id_fb_url').val('');
+			var element=$('#id_fb_url');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+		}
+	}
+	else if(vl=='g'){
+		if($('#id_gooleplus_url').val()=='http://plus.google.com/'){
+			$('#id_gooleplus_url').val('');
+			var element=$('#id_gooleplus_url');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+		}
+	}
+	else if(vl=='tw'){
+		if($('#id_twitter_url').val()=='http://www.twitter.com/'){
+			$('#id_twitter_url').val('');
+			var element=$('#id_twitter_url');
+			$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");
+		}
+	}
+}
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#id_city').live("keyup",function(){getPin(getaddress(),$('#id_zip').val());});
+});
+function getaddress(){return $('#id_address1').val()+" "+$('#id_address2').val()+" "+$('#id_city').val();}
+</script>
+{% endblock %}	
+				

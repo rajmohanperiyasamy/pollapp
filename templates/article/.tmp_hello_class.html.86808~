@@ -1,0 +1,7 @@
+{% extends "hello.html" %}
+
+<html>
+	<body>
+		HIIII {{ name }}
+	</body>
+</html>

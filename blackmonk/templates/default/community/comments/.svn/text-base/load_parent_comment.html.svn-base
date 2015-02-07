@@ -1,0 +1,74 @@
+{% if comment %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% load mptt_comments_tags %}
+{% load markup i18n mptt_tags mptt_comments_tags comparison %}
+<li class="cMnT dev-cMnT">
+	<div class="cMnT-iN">
+    	<div class="vCrD pLlT">
+        	<span class="bBl-aRw">
+            	<span class="aRw a1"></span>
+            	<span class="aRw a2"></span>
+        	</span>
+          	{% if cc_avatar %}
+          	<a href="{% url 'user_profile' comment.user.username %}">
+          		<img class="aVtR" src="{% if comment.user.image %}{% thumbnail comment.user.image 48x48 %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}">
+          	</a>
+			{% else %}
+            	<a href="{% url 'user_profile' comment.user.username %}"><img class="aVtR" src="{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg"></a>
+			{% endif %}
+		</div>
+		<div class="cMnT-bDy dev-cParent">
+			<div class="cMnT-bDy-iN">
+    			<header class="cMnT-hD">
+        			<span class="pBlSr"><a href="{% url 'user_profile' comment.user.username %}">{{comment.user.get_full_name }}</a></span>
+        			{% if comment.content_type.model == "business" %}<div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span></div>{% endif %}
+        			<span class="tM sPrTr" title="{{comment.submit_date}}">{{ comment.submit_date|get_readable_time_format }} {% trans 'ago' %}</span>
+    			</header>
+    			<div class="cMnT-tXt">
+        			<p>{{ comment.comment|linebreaksbr }}</p>
+		        </div>
+    			<footer class="cMnT-fTr">
+      				{% if cc_like_dislike %}
+       				<span class="cMnT-rTg-pStV" title="{{comment.like}} up, {{comment.dislike}} down" id="cmnt_up_dwn_count_{{comment.id}}">{{ comment.like|add:comment.dislike }}</span>
+        			<span class="cMnT-vTnG ">
+           				<span class="cMnT-vTnG ">
+               				<a href="javascript:void(0);" class="cMnT-rTg-uP" onclick="like_dislike({{ comment.id }},{{comment.like}},'1')"><i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i></a>
+               				<a href="javascript:void(0);" class="cMnT-rTg-dWn" onclick="like_dislike({{ comment.id }},{{comment.like}},'0')"><i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i></a>
+            			</span>
+    				</span>
+    				{% endif %}
+    				<input class="dev-cId" type="hidden" name="cid" value="{{comment.id}}">
+    				{% if cc_threaded and not comment.content_type.model == "business" %}
+						{% if user.is_authenticated %}
+							<span class="rPlY sPrTr " onclick="load_recomment_form($(this))"><a href="javascript:void(0)">Reply</a></span>
+						{% else %}
+							{% if cc_threaded %}
+								<span style="display:none;" id="replay_{{comment.id}}" class="rPlY sPrTr replay_btn" onclick="load_recomment_form($(this))"><a href="javascript:void(0)">Reply</a></span>
+								<span  id="replay_signup_{{comment.id}}" class="rPlY sPrTr replay_signup_btn"><a onclick="$('#comment_save_id').val('{{comment.id}}');login_box('comm_cmmt_reply',{{comment.id}});" href="javascript:void(0);">Reply</a></span>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+    				{% if comment.parent.lft != 1 and not comment.content_type.model == "business" %}
+    				<span class="fS11 sPrTr">
+						<i aria-hidden="true" class="bUi-iCn-rPl-rT-12 ib" title="in reply to"></i> 
+    					<a href="{% url 'user_profile' comment.user.username %}" class="pRnT-lNk cLr-lTbLu">{{comment.parent.user.get_full_name }}</a> 
+						<a href="javascript:void(0)" parent_id="{{comment.parent.pk}}" class="sHw-pRnT cLr-lTbLu dev-showParent" data-action="show-parent">(Show the comment)</a>
+    				</span>
+    				{% endif %}
+				</footer>
+				<div class="cMnT-oPtN btn-group">
+    				<a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown"href="#"><span class="caret"></span></a>
+			        <ul class="dropdown-menu pLrT mNi">
+			            <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+			            <li><a href="#" class="comment-link">Direct link</a></li>
+			            <li><a href="#" class="btn-translate">Translate Comment</a></li>
+			            <li><a href="#" class="btn-mention_user">Mention user</a></li>
+			            <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+			        </ul>
+			    </div>
+			</div> <!-- /.cMnT-bDy-iN -->
+		</div><!-- /.cMnT-bDy -->
+	</div> <!-- /.cMnT-iN -->
+</li> <!-- /.cMnT -->
+{% endif %}

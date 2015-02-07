@@ -1,0 +1,10 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4 D_faq ads_faq">
+    <div class="section">
+        <a href="https://docs.google.com/document/d/18d99tmLtWIFFnUdpban7ADd63BjnwkNgfDgRCgpK5lg/edit?pli=1#bookmark=id.9jmz5q5fyqo9" target="_blank" class="btn-txt-prime bm-upload-videos" title="Quick Demo"><span class="btn-txt" id="aeaoofnhgocdbnbeljkmbjdmhbcokfdb-mousedown">Quick Demo</span></a>
+        <hr>
+        <h5>{% trans 'Highlights' %}</h5>
+        <h6>{% trans 'Google Map Key' %}</h6>
+        <p>{% trans 'Sign Up with <a href="http://code.google.com/apis/maps/signup.html" target="_blank">Google Maps</a>, Generate the API key and fill the Google Maps key in the text box.' %}</p>
+    </div>
+</div>

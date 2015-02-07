@@ -1,0 +1,322 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'config' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage SEO Formats' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+<style>
+    .custom-error{border-color:#FF9902;}
+</style>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+    <div id="admin-platform" class="group">
+        <div class="header-bar">
+            <div id="nav-roll">
+                <ul>
+                    <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                    <li><a href="{% url 'admin_seo_overview' %}" style="z-index:8">{% trans 'SEO' %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="core-wraper" class="group">
+            <div class="admin-main col_12 configuration">
+                {% block leftnavigation %}
+                    {% activetab 'topnav' 'config' %}
+                    {% activetab 'leftnav' 'seo' %}
+                    {% activetab 'leftnavsub' 'seo' %}
+                    {{ block.super }}
+                {% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Search Engine Optimization (SEO)' %}</h2>
+                             <p class="ltxt80">For higher ranking and better visibility in the search engines make sure your site is structured in the way search engines understand.</p>
+                        </div>
+
+                            <div class="group">
+                                <form action="" class="seo_format" >
+                                    <div class="fields vform no_head" id="id_top_div">
+                                        <div id="meta-tags" class="field-group testdd">
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <h3>{% trans 'Home Page Title Format' %}</h3>
+                                                    <p class="ltxt80">{% trans 'Override the way your homepage title is presented' %}<br>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field text-field">
+                                                <div class="value">
+                                                    <ul style="display:inline-block; vertical-align:top;" id="id_home_title" class="fxl" name="home_title" placeholder="Enter meta tag"></ul>
+                                                    <span class="tool-tip html" title="{% trans '<b>Formatting</b><br/>SITE TITLE - The SEO title of your home page,<br /> SITE NAME - Name of your Website <br /> DOMAIN NAME - Domain Name of Your Website'%}">?</span>
+                                                </div>
+                                            </div><!--field-->
+
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <h3>{% trans 'Module Page Title Format' %}</h3>
+                                                    <p class="ltxt80">{% trans 'Override the way your module page title is presented' %}<br>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field text-field">
+                                                <div class="value">
+                                                    <ul style="display:inline-block; vertical-align:top;" id="id_module_title" class="fxl" name="module_title" placeholder="Enter meta tag"></ul>
+                                                    <span class="tool-tip html" title="{% trans '<b>Formatting</b><br/>MODULE TITLE - The SEO title of Module,<br /> SITE NAME - Name of your Website <br /> MODULE NAME - Name of Module <br/> DOMAIN NAME - Domain Name of Your Website'%}">?</span>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <h3>{% trans 'Listing Title Format' %}</h3>
+                                                    <p class="ltxt80">{% trans 'Override the way your listing titles are presented' %}<br>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field text-field">
+                                                <div class="value">
+                                                    <ul style="display:inline-block; vertical-align:top;" class="fxl" id="id_listing_title"  type="text" placeholder="Enter meta tag" value="" name="listing_title"></ul>
+                                                    <span class="tool-tip html" title="{% trans '<b>Formatting</b><br/>LISTING TITLE - The SEO title of Listing,<br /> SITE NAME - Name of your Website <br/> CATEGORY NAME - Category name of Listing <br/> MODULE NAME - Name of Module <br/> DOMAIN NAME - Domain Name of Your Website'%}">?</span>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <h3>{% trans 'Item Title Format' %}</h3>
+                                                    <p class="ltxt80">{% trans 'Override the way your item titles are presented' %}<br>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field text-field">
+                                                <div class="value">
+                                                    <ul style="display:inline-block; vertical-align:top;" class="fxl" id="id_detail_title" type="text" placeholder="Enter meta tag" value="" name="detail_title"></ul>
+                                                    <span class="tool-tip html" title="{% trans '<b>Formatting</b><br/>ITEM TITLE - The Item title<br /> DOMAIN NAME - Domain Name of Your Website<br/> SITE NAME - Name of your Website <br/> MODULE NAME - Name of Module'%}">?</span>
+                                                </div>
+                                            </div><!--field-->
+                                        </div>
+
+                                        <div id="meta-tags" class="field-group">
+                                            <div class="fields-head">
+                                                <h3>Webmasters Tools Verification</h3>
+                                                <p class="ltxt80">Search engines like Google, Bing and Yahoo provide Webmaster Tools  that give you detailed information and statistics about how they see and crawl your website. In order to access most of the features,  you will have to verify your sites.</p>
+                                             </div>
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <label>Google Webmaster Tools</label>
+                                                    <p class="ltxt80">Enter your meta tag  to verify your site with Google Webmaster Tools.<br>
+                                                    <a href="https://www.google.com/webmasters/tools/home?hl=en" target="_blank">How do I get Google Webmaster Tools verification meta tag?</a> </p>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field text-field">
+                                                <div class="value">
+                                                    <input class="fxl" type="text" id="id_google_webm_tag" value="{% if google_webm_tag.attr_value %}{{google_webm_tag.attr_value}}{% endif %}" name="google_webm_tag" placeholder="Enter meta tag">
+                                                    <span class="tip"><span style="display:inline; font-weight:bold;">Tip: </span>Copy and paste only the verification key 'dBw5CvburAxi537Rp9qi5uG2174'</span>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <label>Bing Webmaster Center</label>
+                                                    <p class="ltxt80">Enter your meta tag to verify your site with Bing Webmaster Center.<br>
+                                                    <a href="http://www.bing.com/toolbox/webmaster" target="_blank">How do I get Bing Webmaster Center  verification meta tag?</a> </p>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field text-field">
+                                                <div class="value">
+                                                    <input class="fxl" type="text" id="id_bing_webm_tag" name="bing_webm_tag" value="{% if bing_webm_tag.attr_value %}{{bing_webm_tag.attr_value}}{% endif %}" placeholder="Enter meta tag">
+                                                    <span class="tip"><span style="display:inline; font-weight:bold;">Tip: </span>Copy and paste only the verification key '12C1203B5086AECE94EB3A3'</span>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field">
+                                                <div class="label info pdb_0">
+                                                    <label>robots.txt</label>
+                                                    <p class="ltxt80">The text will be displayed as your robots.txt, it determines how web robots should act on your site. <a href="#">What robots.txt is, and how to use it?</a></p>
+                                                </div>
+                                            </div><!--field-->
+
+                                            <div class="field">
+                                                <div class="value">
+                                                    <textarea rows="8" class="fxl" id="id_robot_txt">{% if robot_txt.attr_value %}{{robot_txt.attr_value}}{% endif %}</textarea>
+                                                </div>
+                                            </div><!--field-->
+                                        </div>
+                                    </div><!--fields-->
+                                    <div class="modal-base form-submit group trp-bg">
+                                        <button role="button" class="cform-button prime right" type="button" onclick="update_seo_settings();"><span class="cform-button-text">{% trans 'Save Changes' %}</span></button>
+                                    </div>
+                                </form>
+                            </div><!--group-->
+
+                       </div>
+                 </div>
+               </div>
+               <div id="aside" class="side-bar col_4">
+                   {% include 'admin/seo/seo-faq.html' %}
+               </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/seo/seo-formats.js"></script>
+<!--script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script-->
+
+<script>
+        $(function(){
+            var HomeTitleTags = ['Site Title', 'Site Name', 'Domain Name'];
+            var ModuleTitleTags = ['Module Title', 'Site Name', 'Module Name', 'Domain Name'];
+            var ListingTitleTags = ['Listing Title', 'Site Name', 'Category Name', 'Domain Name', 'Module Name'];
+            var DetailTitleTags = ['Item Title', 'Domain Name', 'Site Name', 'Module Name'];
+
+
+            var home_title_tags = $('#id_home_title');
+            home_title_tags.tagit({
+               availableTags: HomeTitleTags,
+               selectFromAvailableTagsOnly: true,
+
+            })
+
+            var module_title_tags = $('#id_module_title');
+            module_title_tags.tagit({
+               availableTags: ModuleTitleTags,
+               selectFromAvailableTagsOnly: true,
+
+            })
+
+            var listing_title_tags = $('#id_listing_title');
+            listing_title_tags.tagit({
+               availableTags: ListingTitleTags,
+               selectFromAvailableTagsOnly: true,
+
+            })
+
+            var detail_title_tags = $('#id_detail_title');
+            detail_title_tags.tagit({
+               availableTags: DetailTitleTags,
+               selectFromAvailableTagsOnly: true,
+
+            })
+
+            {% if home_title.title %}
+                var titles = '{{home_title.title}}';
+                titles = titles.split(',')
+                for(i=0;i<titles.length;i++)
+                {home_title_tags.tagit("createCTagNew", titles[i]);}
+            {% else %}
+                 {
+                    home_title_tags.tagit("createCTagNew", 'Site Title');
+                    home_title_tags.tagit("createCTagNew", 'Site Name');
+                  }
+            {% endif %}
+
+            {% if module_title.title %}
+                var titles = '{{module_title.title}}';
+                titles = titles.split(',')
+                for(i=0;i<titles.length;i++)
+                {module_title_tags.tagit("createCTagNew", titles[i]);}
+            {% else %}
+                 {
+                    module_title_tags.tagit("createCTagNew", 'Module Title');
+                    module_title_tags.tagit("createCTagNew", 'Site Name');
+                  }
+            {% endif %}
+
+            {% if listing_title.title %}
+                var titles = '{{listing_title.title}}';
+                titles = titles.split(',')
+                for(i=0;i<titles.length;i++)
+                {listing_title_tags.tagit("createCTagNew", titles[i]);}
+            {% else %}
+                 {
+                    listing_title_tags.tagit("createCTagNew", 'Listing Title');
+                    listing_title_tags.tagit("createCTagNew", 'Site Name');
+                 }
+            {% endif %}
+
+            {% if detail_title.title %}
+                var titles = '{{detail_title.title}}';
+                titles = titles.split(',')
+                for(i=0;i<titles.length;i++)
+                {detail_title_tags.tagit("createCTagNew", titles[i]);}
+            {% else %}
+                 {
+                    detail_title_tags.tagit("createCTagNew", 'Item Title');
+                    detail_title_tags.tagit("createCTagNew", 'Domain Name');
+                 }
+            {% endif %}
+
+            $('.html').tipsy({html: true });
+
+        });
+
+function update_seo_settings(){
+        var dataString='home_title='+$('#id_home_title').val() + '&module_title='+$('#id_module_title').val() + '&listing_title='+$('#id_listing_title').val() + '&detail_title='+$('#id_detail_title').val();
+        dataString+='&google_webm_tag='+$('#id_google_webm_tag').val() + '&bing_webm_tag='+$('#id_bing_webm_tag').val() + '&robot_txt='+encodeURIComponent($('#id_robot_txt').val());
+
+        var success = true;
+        if($.trim($('#id_home_title').val())==''){
+          $('#id_home_title').addClass('tag-error');
+          success = false;
+        }
+        else{
+             $('#id_home_title').removeClass('tag-error');
+        }
+
+        if($.trim($('#id_module_title').val())==''){
+          $('#id_module_title').addClass('tag-error');
+          success = false;
+        }
+        else{
+             $('#id_module_title').removeClass('tag-error');
+        }
+
+        if($.trim($('#id_listing_title').val())==''){
+          $('#id_listing_title').addClass('tag-error');
+          success = false;
+        }
+        else{
+             $('#id_listing_title').removeClass('tag-error');
+        }
+
+        if($.trim($('#id_detail_title').val())==''){
+          $('#id_detail_title').addClass('tag-error');
+          success = false;
+        }
+        else{
+             $('#id_detail_title').removeClass('tag-error');
+        }
+
+        if(success){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'admin_seo_update_seo_settings' %}",
+                data: dataString,
+                dataType:'JSON',
+                success: function(data){
+                     if (data.status){
+                        show_msg(gettext(data.msg),data.mtype);
+                     }
+                },
+                error: function(data){
+                    alert('Oops!! Cannot process your request.');
+                }
+            });
+        }
+        else{$('html, body').animate({scrollTop:$('#id_top_div').offset().top - 20}, 'slow');return false;}
+}
+</script>
+{% endblock %}

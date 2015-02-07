@@ -1,0 +1,183 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Classified Price' %} {% endblock %}
+{% block head %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#id_cls_price_form').submit(function(){
+			$('#id_cls_price_form input').removeAttr('disabled');
+			$('#id_cls_price_form select').removeAttr('disabled');
+			$('#id_cls_price_form select').removeAttr('disabled', true).trigger("liszt:updated");
+			return true;
+		});
+	});
+	
+	
+	function change_visiblity(field)
+	{
+		var div_id = $(field).parents('div:eq(1)').attr('id');
+		if(field.attr('checked')){
+			$(field).parents('div:eq(1)').removeClass('disabled');
+			$('#'+div_id+' input,#'+div_id+' select').removeAttr('disabled');
+			$('#'+div_id+' input,#'+div_id+' select').removeAttr('disabled', true).trigger("liszt:updated");
+		} 
+		else{
+			$(field).parents('div:eq(1)').addClass('disabled');
+			$('#'+div_id+' input,#'+div_id+' select').attr('disabled','disabled');
+			$('#'+div_id+' input,#'+div_id+' select').attr('disabled', true).trigger("liszt:updated");
+			$('#'+div_id+' input[type=checkbox]').removeAttr('disabled');
+		}
+	}
+</script>	
+{% endblock %}
+{% block content %}
+
+			{% for form in classified_price_forms.forms %}
+			{% if form.errors %}
+				<div class="messageerror" >
+					<strong>{% trans 'There is a problem with your submission' %}, </strong>
+					<strong>{% trans 'Errors in classified pricing form column' %} {{ forloop.counter }} </strong>
+		            <ul style="list-style:square;margin-left:20px;">
+		           		{% for field in form %}
+		           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+		          	 	{% endfor %}
+					</ul>
+			 	</div>
+			{% endif %}
+			{% endfor %}
+			<div id="admin_wrapper">
+                <div id="admin-platform" class="group">
+                    <div class="header-bar">
+                        <div id="nav-roll">
+                              <ul>
+                                    <li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" title="{% trans 'Modules' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                                    <li><a href="{% url 'admin_portal_classifieds' %}" title="{% trans 'Classifieds' %}" style="z-index:8">{% trans 'Classifieds' %}</a></li>
+                                    <li><a href="javascript:void(0);" title="{% trans 'Pricing' %}" style="z-index:7">{% trans 'Pricing' %}</a></li>
+                              </ul>
+                        </div>
+                    </div>
+					<div id="core-wraper" class="group">
+                        <div class="admin-main col_12">
+                            {% block leftnavigation %}
+							{% activetab 'topnav' 'site' %}
+							{% activetab 'leftnav' 'classifieds' %}
+							{% activetab 'leftnavsub' 'cls_price' %}
+							{{ block.super }}
+							{% endblock %}
+                            <div class="left-nav-list-bg"></div>
+                            <div class="col_9 mr_0">
+								<div class="page-wrap mod-settings">
+                                	<div class="page-head br_0">
+                                    	<h2>{% trans 'Classifieds Pricing' %}</h2>
+										<p class="ltxt80">{% trans "Set price chart to display in the user submission classified ad posting.User posted ads has to pay a price to promote their classified ad in the website." %}</p>
+                                    </div>
+                                	<div class="contentpricing group">
+										<form name="cls_price_form" id="id_cls_price_form" method="post" action="{% url 'admin_portal_classifieds_price' %}">{% csrf_token %}
+                                            <div class="table_data classifieds-pricing">
+                                				<div class="table_wrap group">
+                                                <div class="col_feature">
+                                                    <ul>
+                                                        <li class="col_head column"></li>
+                                                        <li class="column"><span class="feature_label">{% trans 'Exposure & Response' %}</span></li>
+                                                            <li class="column"><span class="feature_label">{% trans 'Images' %}</span></li>
+                                                            <li class="column"><span class="feature_label">{% trans 'Comments' %}</span></li>
+                                                            <li class="column"><span class="feature_label">{% trans 'Share Buttons' %}</span></li>
+                                                            <li class="column"><span class="feature_label">{% trans 'Newsletter Promotion' %}</span></li>
+                                                            <li class="column" style="border-bottom-width:1px;"><span class="feature_label">{% trans 'Social Media Promotion' %}</span></li>
+                                                        
+                                                        <li class="column"><span class="feature_label">{% trans 'Listing Duration' %}</span></li>
+														<li class="col_ftr column"  style="border-left:none;"><span class="sub_label">{% trans 'Set Pricing' %}<br>{% blocktrans with globalsettings.currency as currency %}(eg: {{ currency }}10){% endblocktrans %}</span></li>
+                                                    </ul>
+                                                </div>
+                                            {{ classified_price_forms.management_form }}
+											{% for form in classified_price_forms.forms %}
+                                                <div class="col_108 {% if not form.instance.level_visibility %}disabled{% endif %}" name="shaan" id="visible{{forloop.counter}}">
+                                                    <ul>
+                                                        <li class="column col_head">
+                                                            <div class="check_center">
+                                                               {{ form.level_visibility }}
+                                                            </div>
+                                                            <h2>{{ form.level_label }}</h2>
+                                                        </li>
+														<li class="column">
+															{{form.exposure}}
+                                                        </li>
+                                                        <li class="column">
+														    {{form.images}}
+                                                        </li>
+                                                        <li class="column">
+                                                           	{{form.comments}}
+                                                        </li>
+                                                        <li class="column">
+                                                           	{{form.share_buttons}}
+                                                        </li>
+                                                        <li class="column">
+                                                            {{form.newsletter}}
+                                                        </li>
+                                                        <li class="column" style="border-bottom-width:1px;">
+                                                           	{{form.social_media}}
+                                                        </li>
+														
+                                                        <li class="column"  style="border-bottom:1px solid #e0e0e0;">
+                                                            {{form.contract_period}}
+                                                            <span style="margin-left:5px;">/ {% trans 'Month' %}</span>
+                                                            
+                                                        </li>   
+                                                                                 
+                                                        <li class="col_ftr price_show_3"> 
+															{% if form.instance.level == 'level0' %} 
+																<div style="display:none">{{ form.price }}</div>
+																<h3>{% trans 'FREE' %}</h3>   
+                               								{% elif form.instance.level == 'level1' %}
+															<div style="display:none">{{ form.price }}</div>
+																<h3><a href="{% url 'admin_portal_classifieds_category' %}">{% trans 'Category Price' %}</a></h3>   
+															{% else %}
+                                                                <div>
+                                                                    {{ globalsettings.currency }}
+                                                                    <input id="id_form-2-price" class="textField" type="text" value="{{ form.price.value|floatformat:2 }}" style="width:50px; height:21px;" name="form-2-price">
+                                                                </div>
+															{% endif %}
+                                                        </li>
+
+                                                    </ul>
+                                                </div> 
+												{% for hid in form.hidden_fields %} 
+								 					{{ hid }}
+												{% endfor %} 
+                                         {% endfor %}        
+                                             
+                                            </div>
+                                                <div class="form-submit right group trp-bg">
+                                                   <button role="button" class="cform-button" type="button" onclick="location.replace('{% url 'admin_portal_classifieds_price' %}')"><span class="cform-button-text">{% trans 'RESET' %}</span></button>
+                                                   <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'UPDATE' %}</span></button>
+                                                </div>
+                                            </div>
+                                                                                                                                                          
+                                        </form>                                       	   
+                                    </div>
+                                </div>
+                            </div>                       
+                        </div>                             
+                        <div id="aside" class="side-bar col_4">
+                            {% include 'admin/portal/classifieds/pricing-faq.html' %}                                  
+                        </div>                            
+					</div>                                                    
+				</div>
+			</div>
+		            
+<script>
+{% for form in classified_price_forms.forms %}
+	{% if not form.instance.level_visibility %}
+		$('#visible{{forloop.counter}}').find('input, select').attr('disabled','disabled');
+		$('#visible{{forloop.counter}} input[type=checkbox]').removeAttr('disabled');
+	{% endif %}
+{% endfor %}
+</script>
+         
+{% endblock %}

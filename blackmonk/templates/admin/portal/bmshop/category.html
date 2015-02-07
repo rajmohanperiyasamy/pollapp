@@ -1,0 +1,180 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Shop Category' %} {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{STATIC_URL}}ui/css/colorbox.css" type="text/css" />
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#master-check').click(function(){
+		if($("#master-check").is(':checked')){$(".check-overflow").attr('checked',true);}
+		else{$(".check-overflow").attr('checked',false);}
+	});
+});
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+function save_category(option){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag==true){
+		var dataString='name='+encodeURIComponent($('#id_name').val());
+		dataString+='&slug='+encodeURIComponent($('#id_slug').val());
+		dataString+='&parent='+$('#id_parent').val();
+		dataString+='&position='+$('#id_position').val();
+		if($('#id_featured').is(':checked')){
+			dataString+='&featured='+$('#id_featured').val();
+		}
+		dataString+='&description='+encodeURIComponent($('#id_description').val());
+		
+		dataString+='&meta_title='+encodeURIComponent($('#id_meta_title').val());
+		dataString+='&meta_description='+encodeURIComponent($('#id_meta_description').val());
+		try{
+			dataString+='&id='+$('#id_id').val();
+			id=$('#id_id').val();
+		}catch(ex){}
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_bmshop_update_category' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#edit_link'+data.id).colorbox({width: "560",initialWidth: "560", top:"0", initialHeight: "200"});
+				$('#ajax_content_loading').html(data.msg);
+				if(data.status){
+						$.colorbox.close();
+						location.replace('{% url 'admin_bmshop_category_settings' %}?msg=CUS&mtype=s')
+				}
+				$('#ajax_content').empty().html(data.lightbox_html);
+				$('.modal-form .select-menu').chosen({disable_search_threshold:10});
+	  			$('.field-group [title]').tipsy({trigger: 'focus', gravity: 'w',ftip:true});
+				setTimeout(function(){
+					$('#ajax_content_loading').hide();
+				    $('#ajax_content').fadeIn(2000);
+					$.colorbox.resize();
+				},1000);
+			}
+		});
+	}
+}
+function delete_category(ids){
+	
+		if(confirm(gettext('Are you sure want to delete seleced category ?'))){
+			$.ajax({
+			type: "GET",
+			url: "{% url 'admin_bmshop_delete_category' %}",
+			data: 'id='+ids,
+			dataType:'JSON',
+			success: function(data){
+					if(data.status==1){
+						$('#cat_row_'+ids).remove();
+					}
+					show_msg(data.msg,data.mtype);
+				}
+			});
+		}
+	}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_bmshop_main_settings' %}" style="z-index:8">{% trans 'Shop' %}</a></li>
+                    <li><a href="{% url 'admin_bmshop_category_settings' %}" style="z-index:7">{% trans 'Categories' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+        		{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'bmshop' %}
+					{% activetab 'leftnavsub' 'bm_cat' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Categories' %}</h2>
+                            <p class="ltxt80">{% trans " Add the category that best fits in the e-shop module. For example: 'Clothing' as a category." %}</p> 
+						</div>
+                        <div id="business-categories" class="cat-list group">
+                        	<section class="toolbars">
+                            	<div class="group">
+                                    <span style="float:right">
+                                    	<a href="{% url 'admin_bmshop_update_category' %}" title="{% trans 'Add New Category' %}" class="btn-txt-inline-prime bm-add-gadget-clasfied"><span class="btn-txt">{% trans 'Add New Category' %}</span></a>
+									</span>
+								</div>
+							</section>
+							{% load mptt_tags %}
+							<ul class="cat-list-container inner" id="top_append">
+							    {% recursetree category_objs %}
+								<li id="div_1" class="cat-list-row">
+                                	<div class="cat-list-row-inner group" id="cat_row_{{node.id}}">
+                                    	
+                                        <div class="cat-list-column cat-name"><h3>{{ node }}</h3></div>
+                                        <div class="cat-list-column action-buttons">
+                                        	<div class="group">
+                                                <a class="tttxt-n bm-add-gadget bmElement" href="{%url 'admin_bmshop_update_category' %}?id={{node.id}}" title="Update Category"><span class="icon icon-edit"></span></a>
+                                                <a href="javascript:void(0);" class="tttxt-n" title="Delete" onclick="delete_category({{node.id}})"><span class="icon icon-delete"></span></a>
+                                            </div> 
+										</div>
+									</div>
+									{% if not node.is_leaf_node %}
+						                <ul class="children">
+						                    {{ children }} 
+						                </ul>
+						            {% endif %}  
+								</li>
+							    {% endrecursetree %}
+							</ul>
+                    	</div>
+                	</div>
+            	</div>                       
+            </div>                            
+			<div id="aside" class="side-bar col_4">
+				<div class="section">
+					 <h5>{% trans 'Highlights' %}</h5>
+			        <h6>{% trans 'Categories' %}</h6>
+					<p>{% trans 'Get a quick snapshot of categories & sub-categories of the E-Shop module.' %}</p>
+				</div>                                    
+			</div>            
+		</div>                                                    
+	</div>
+</div>
+<script type="text/javascript">
+
+</script>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

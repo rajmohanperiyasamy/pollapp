@@ -1,0 +1,173 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Classifieds Settings' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+$.validator.addMethod("api_key_required", function(value, element) {
+	if($('#save_Oodle').is(':checked')){
+		if($('#id_api_key').val() == ""){
+			return flase;
+		}else{
+			return true;
+		}
+	}
+	else{return true;}
+	},"");
+$.validator.addMethod("radius_required", function(value, element) {
+	if($('#save_Oodle').is(':checked')){
+		if($('#id_radius').val() == 0){
+			return flase;
+		}else{
+			return true;
+		}
+	}
+	else{return true;}
+	},"");
+$.validator.addMethod("location_required", function(value, element) {
+	if($('#save_Oodle').is(':checked')){
+		if($('#id_location').val() == ""){
+			return flase;
+		}else{
+			return true;
+		}
+	}
+	else{return true;}
+	},"");
+$.validator.addMethod("region_required", function(value, element) {
+	if($('#save_Oodle').is(':checked')){
+		if($('#id_region').val() == ""){
+			return flase;
+		}else{
+			return true;
+		}
+	}
+	else{return true;}
+	},"");
+	$("#mform").validate({
+		highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass('error');},
+		unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass('error');},
+		errorPlacement: function(error, element){},
+	   	rules:{
+			meta_title:"required",
+			meta_description:"required",
+			api_key:"api_key_required",
+			radius:"radius_required",
+			location:"location_required",
+			region:"region_required"
+	   	}
+	});
+	
+});
+function save_approval(){
+	var flag = $('#mform').validate().form()
+	if(flag){
+		var dataString='ajax=true';
+		
+		if($('#on_add').is(':checked')){
+			dataString+='&on_add=on';
+			//dataString+='&on_add_email='+$('#on_add_email').val();
+			dataString+='&on_update_email='+$('#on_update_email').val();
+		}
+		if($('#on_update').is(':checked')){
+			dataString+='&on_update=on';
+			dataString+='&on_update_email='+$('#on_update_email').val();
+		}		
+
+		if($('#id_free').is(':checked')){dataString+='&free=on';}
+		if($('#id_paid').is(':checked')){dataString+='&paid=on';}
+		if($('#id_free_update').is(':checked')){dataString+='&free_update=on';}
+		if($('#id_paid_update').is(':checked')){dataString+='&paid_update=on';}
+		
+		dataString+='&api_key='+$('#id_api_key').val();
+		dataString+='&radius='+$('#id_radius').val();
+		if($('#id_region').val()!=''){dataString+='&region='+$('#id_region').val();}
+		if($('#id_location').val()!=''){dataString+='&location='+$('#id_location').val();}
+		
+		dataString+='&meta_title='+encodeURIComponent($('#id_meta_title').val());
+		dataString+='&meta_description='+encodeURIComponent($('#id_meta_description').val());
+		
+		if($('#save_Oodle').is(':checked')){dataString+='&save_Oodle=on';}
+		else{dataString+='&save_Oodle=off';}
+
+		var height = $('#ajax_content').parent('.page-wrap').height();
+		$('#ajax_content').parent('.page-wrap').css('height',height)
+		$('#ajax_content').fadeOut('fast', function() {
+			$('#ajax_content_loading').show();
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+	    });
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_portal_classifieds_approval' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				setTimeout( function() {
+					show_msg(data.msg,data.mtype);
+					$('#ajax_content_loading').fadeOut('fast', function() {
+						$('#ajax_content').html(data.html);
+						$('#ajax_content').fadeIn();
+						$('#ajax_content').parent('.page-wrap').removeAttr('style');
+				    });
+				}, 500 );
+			}
+		});
+	}
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_portal_classifieds' %}" style="z-index:8">{% trans 'Classifieds' %}</a></li>
+					<li><a href="{% url 'admin_portal_classifieds_approval' %}" style="z-index:7">{% trans 'Settings' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'classifieds' %}
+					{% activetab 'leftnavsub' 'cls_set' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>Classifieds Settings</h2>
+							<p class="ltxt80">{% trans "Specify the settings which pertain to the classified module." %}</p>
+                        </div>
+                       {% include 'admin/portal/classifieds/include_settings.html' %}
+	               	</div>
+	         	</div>                       
+	       	</div>                            
+	        {% include 'admin/portal/classifieds/settings-faq.html' %}                        
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

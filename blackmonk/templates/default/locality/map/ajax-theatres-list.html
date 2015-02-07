@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load thumbnail ds_utils %}
+
+{% for theater in theaters %}
+<li class="mDa" onmouseover="show_info_window('{{forloop.counter0|add:fl_counter}}');" value="{{forloop.counter0|add:fl_counter}}" data-name="{{forloop.counter0|add:fl_counter}}">
+    <div class="mDa-iN">                                        
+        <div class="mDa-bDy pD0">
+            <div class="pLlT iM">
+                <span class="pD15 bLk pDr10mP pDl0mP"><i aria-hidden="true" class="bUi-iCn-mP-mKr-16 cLr-rEd fS24"></i></span>
+            </div>
+            <div class="cLr-lT">
+                <h5 class="mDa-hD tRnC mRt10 mRb5 w85P rLvE" title=""><a href="{{theater.get_absolute_url}}" class="fW-bLd">{{theater.name}}</a></h5>
+                <div class="mDa-dTa fS12 cLr-gRy">
+                    <span>{{theater.address.address1}}{% if theater.address.address2 %}, {{theater.address.address2}}{% endif %}{% if theater.address.city %}, {{theater.address.city}}{% endif %}{% if theater.address.zip %} {{theater.address.zip}}{% endif %}</span>{% if theater.address.phone %}<span class="sPrTr">{{theater.phone}}</span>{% endif %}
+                </div> 
+                <a href="{{theater.get_absolute_url}}" class="btn btn-primary fS11 pD612 cLr-wHt pStN-rT mRt10mX480 StCmP" >{% trans 'Showtimes' %}</a>
+            </div> 
+        </div>
+    </div>
+</li>
+{% endfor %}

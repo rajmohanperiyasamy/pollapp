@@ -1,0 +1,10 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+        <h5>{% trans 'FAQs' %}</h5>
+        <h6>{% trans 'Adding an Attribute?' %}</h6>
+        <p>{% trans 'Before adding an attribute you have to select the business category for which you want to add the attributes.' %}</p>
+		<p>{% trans 'Click on the attribute group and add the attribute name.Add the default values of the attribute name.' %}</p>
+		<p>{% trans 'For example: If the attribute name is Hotel Services, the default values would be parking available, 24hrs room service.' %}</p>
+	</div>                                    
+</div>     

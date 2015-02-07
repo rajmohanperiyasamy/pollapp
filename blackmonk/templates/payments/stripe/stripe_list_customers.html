@@ -1,0 +1,78 @@
+{% load i18n %}
+<style>
+.action-buttons a {
+    background: -moz-linear-gradient(center top , #FEFEFE, #F7F7F7) repeat scroll 0 0 transparent;
+    border: 1px solid #D2D2D2;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.09);
+    display: block;
+    float: right;
+    margin: 0 0 0 2px;
+    padding: 3px 4px;
+}
+.preview-head {
+    overflow: hidden;
+  	padding: 6px 15px 19px;
+    position: absolute;
+}
+</style>
+
+
+<div class="nw_wraper">
+			 <!--div id="stf-platform" class="group">
+				<section class="sub-header-bar">
+			         	<div class="header-bar preview-head">
+			                <div class="item-title">
+			                    <h2 style="padding-bottom: 3px;" title =""></h2>
+							</div>                                   
+			        </div>
+			    </section>  
+			</div-->
+			<div id="core-wraper" class="group">
+	        	<div class="sf-mn">
+	              	<div class="page-wrap">
+						<div id="articles" class="group">
+	                        <section class="toolbars">
+	                        </section>
+							<span id="ajax_content_log_loading" class="load-list-items" style="display:none;padding-bottom:90px;">
+							 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+							</span>
+							<div style="display:none;" class="info-bar" id="top_info_bar"></div>
+							<span id="ajax_content_log_loading" class="load-list-items" style="display:none">
+							 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+							</span>                                       
+							<div id="id_content_log_listing" class="group">
+								<!--Content starts-->												
+								<ol class="data-table table-lists-container" style="max-height: 420px; overflow-y: auto;" id="ajax_content_list">
+									{% for subscriber in subscribers %}
+											<li class="table-list">
+										        <div class="table-list-container check-item group">
+										            <div class="item-info relative-block" style="width:385px;">
+														<div class="field text-field">
+											            	<div class="label"><label>Subscription ID:</label></div>	
+											                <div class="value">{{subscriber}}</div>	
+											            </div>
+										            </div>
+										        </div>
+										    </li>
+									{% endfor %}
+								</ol>
+								<!--Content ends-->
+							</div>
+	                    </div> <!-- end table -->
+	              </div>  <!-- end page wrap -->
+	        </div>  <!-- end main-col -->
+		</div>                                                    
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+	
+		$('.article_tpe').colorbox({width: "560",initialWidth: "560", top:"60", initialHeight: "200"});
+		
+		$(".iframe").colorbox({width:"800", height:"560", iframe:true});
+		
+		$(".recent_class").colorbox({width:"800", height:"560"});
+		
+	}); 			
+</script>	

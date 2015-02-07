@@ -1,0 +1,164 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load i18n %}
+{% load tabs %}
+{% load ds_utils %}
+{% load bm_videostags %}
+{% block pagetitle %}{% seo_format_tag module='Videos' title=video.seo_title code='DT' category=category.name as seo_meta_title %}{{seo_meta_title}} {% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="title" content="{{video.title}}" />
+    <meta name="description" content="{{video.description|striptags}}" />
+	
+	<!-- Facebook-->
+	<meta property="og:type" content="video"/>
+	<meta property="og:url" content="{{globalsettings.website_url}}{{video.get_absolute_url}}"/>
+	<meta property="og:title" content="{{ video.title }}"/>
+	{% if video.get_video_hq_image %}<meta property="og:image" content="{{video.get_video_hq_image}}"/>{% endif %}
+	<meta property="og:site_name" content="{{globalsettings.domain}}"/>
+	<meta property="og:description" content="{{ video.description|striptags|truncatechars:200 }}"/>
+	<meta property="og:video" content="{{ video.get_fb_share_url }}">
+    <meta property="og:video:type" content="application/x-shockwave-flash">
+    <meta property="og:video:width" content="1280">
+    <meta property="og:video:height" content="720">
+<!-- Twitter-->
+	<meta name="twitter:card" content="player">
+	<meta name="twitter:site" content="{% if video.is_vimeo %}@vimeo{% else %}@youtube{% endif %}">
+	<meta name="twitter:url" content="{{globalsettings.website_url}}{{video.get_absolute_url}}">
+	<meta name="twitter:title" content="{{ video.title }}">
+	<meta name="twitter:description" content="{{ video.description|striptags|truncatechars:200 }}">
+	{% if video.get_video_hq_image %}<meta name="twitter:image" content="{{video.get_video_hq_image}}">{% endif %}
+	<meta name="twitter:domain" content="{{globalsettings.domain}}">
+	<meta name="twitter:player" content="{{ video.get_twitter_share_url }}">
+    <meta name="twitter:player:width" content="1280">
+    <meta name="twitter:player:height" content="720">
+
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/videos/videos.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	bids.push({{video.id}});
+	details_pages(bids);
+	});
+	
+	</script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "videos" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span8">
+                <section class="sCn pD300 aRtCL-pSt pSt-vW-mDe" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+                    <header class="pSt-hDr">
+                        <div class="pSt-tLbR">
+                            <div class="pSt-mTa pLlT"><a href="{{video.category.get_absolute_url}}" title="{% trans 'Go to' %} {{video.category}}" class="pSt-cTgRy lBl dFt mNi uC">{{video.category}}</a></div>
+                            {% with video as object %}
+                            <div class="pLrT">
+                                {% include 'default/social-share-links.html' %}
+                            </div>
+                            {% endwith %}
+                        </div>
+                        <h1 class="pSt-tTl" itemprop="name">{{video.title}}</h1>
+                        <ul class="pSt-mTa unstyled">
+                            <li class="pSt-mTa-iTm ib">
+                                <span class="pSt-mTa-aThR">{% trans 'By ' %}<a href="{% url 'user_profile' video.created_by.profile_slug %}" title="Go to the profile of {{video.created_by.display_name}}" class="pSt-aThR">{{video.created_by.get_full_name}}</a></span>
+                            </li>
+                            <li class="pSt-mTa-iTm ib sPrTr">
+                                <span class="pSt-pBlSd-dT"><time class="pSt-dT">{{video.published_on|ds_site_dateformat}}</time></span>
+                            </li>
+                        </ul>
+                    </header>
+                    <div class="row-fluid">
+                        <div class="mR030">
+                            <div class="fLxVdO mRt20 clearfix mRb20">
+								{% autoescape off %}{{video.get_embed_video_player}}{% endautoescape %}
+								<meta itemprop="duration" content="{{ video.duration|get_iso_time_duration }}" />
+				                <meta itemprop="thumbnail" content="{{ video.get_video_hq_image }}" />
+				                <meta itemprop="contentURL" content="{{ video.get_video_url }}" />
+				                <meta itemprop="embedURL" content="{{ video.get_embed_video_src }}" />
+				                <meta itemprop="uploadDate" content="{{video.published_on|get_iso_time_format}}" />
+
+                            </div>
+                            <div class="pSt-cNt">
+                                <div class="pSt-cNt-iN">
+                                    <div class="pSt-fLd body" itemprop="description">
+                                        {% autoescape off %}{{video.description|urlize|url_target_blank}}{% endautoescape %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                {% get_related_videos video_obj=video limit=12 as related_videos %}
+                {% if related_videos %}
+                <div class="row-fluid">
+                    <section class="sCn pDb0">
+                        <div class="sCn-tTl">
+                            <h2><span>{% trans 'Liked it? You may also like these videos' %}</span></h2>
+                        </div>
+                        <div class="fTrD-bL cRsL mDa-65 tXt-oTsD aDpTv cTrL-tR mRb0">
+                            <div class="fTrD-bL-iN">
+                                <ul class="mDa-gD nObG fGd dSgDwDt mDa-oT-tP hAtO {% if related_videos.count > 4 %}rLtD-cRsL{% else %}fOcL pDfX pDl12Fc{% endif %}" {% if related_videos.count > 4 %} style="width:10000px;" {% endif %}>
+                                    {% for video in related_videos %}
+                                    <li class="mDa mRb0 pDl0" {% if related_videos.count > 4 %} style="float:left;" {% endif %} itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+                                        <input type="hidden" id="fbids" name="fbids" class="bids" value="{{video.id}}">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr tMb-65 bUi-tMb-210 fLxiMgW30" href="{{video.get_absolute_url}}" itemprop="url">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{{video.get_video_hq_image}}" alt="{{video.title}}" title="{{video.title}}" itemprop="image">
+                                                                    <span class="vRtL-aLn"> </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                                <div class="mDa-hVr cVr tR-hVr"><span class="bR5"><span class="lBl dRk mNi" itemprop="duration">{{video.duration}}</span><meta itemprop="duration" content="{{ video.duration|get_iso_time_duration }}" /></span></div>
+                                                <div class="mDa-hVr tR-hVr cVr">
+                                                    <a class="s-32 cTr" href="{{video.get_absolute_url}}">
+                                                        <i class="bUi-iCn-pLy-aLt-24 hT-aTo fS32-1 pLy-iCn" aria-hidden="true"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="mDa-bDy pD50">
+                                                <h5 class="mDa-hD tRnCt0 mR50 rLvE h35" title="{{video.title}}" itemprop="name"><a href="{{video.get_absolute_url}}">{{video.title}}</a></h5>                                           
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                {% endif %}
+				<div class="row-fluid mRt30">
+                    {% with video as object %}
+                        {% with 'videos' as appname %}
+                            {% include 'comments/include_comment.html' %}
+                        {% endwith %}
+                    {% endwith %}
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div>
+                    <section class="sCn bNr-aD hide" id="banner_placement_right"></section>
+                </div>
+                {% include 'default/videos/latest-trending-videos.html' %}
+                <div>
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}            

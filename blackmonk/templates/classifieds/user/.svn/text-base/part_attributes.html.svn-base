@@ -1,0 +1,47 @@
+{% load i18n %}
+{% if attribute_dict %}
+	<hr class="oTsT-hRz20">
+	{% for att in attribute_dict %}	
+		<div class="control-group">
+		    <label class="control-label pDt0">{{att.name}}</label>
+		    <div class="controls clearfix">
+				{% ifequal att.type "C" %} <input type="text" name="extra_{{att.id}}" maxlength="99" value="{% if att.ex_values %}{{ att.ex_values }}{% endif %}" class="iSp8" /> {% endifequal %}
+				{% ifequal att.type "K" %}
+					<div class="iSp8"> 
+			   			{% for at in att.default_values %}
+							<div class="span6 pLlTmP pD0 sP6mP">
+		                        <label class="checkbox inline fW-nRmL">
+		                            <input type="checkbox" name="extra_{{att.id}}" value= "{{ at }}"
+									{% if att.ex_values %}
+										{% for t in  att.ex_values %}
+											{% if t == at %}checked="checked"{% endif %}
+										{% endfor %}
+									{% endif %}>
+		                            {{ at }}</label>
+		                    </div>
+			   			{% endfor %}
+					</div>
+				{% endifequal %}
+				{% ifequal att.type "S" %}
+					<select name="extra_{{att.id}}" class="iSp8 bM-sLt">
+						{% for at in att.default_values %}
+							<option {% if att.ex_values %}{% if att.ex_values == at %}selected="selected"{% endif %}{% endif %}	> {{ at }} </option>
+						{% endfor %}
+					</select>
+				{% endifequal %}
+				{% ifequal att.type "R" %}
+					<div class="iSp8">
+			   			{% for at in att.default_values %}
+			                <div class="span6 pLlTmP pD0 sP6mP">
+			                    <label class="radio inline fW-nRmL">
+			                        <input type="radio" name="extra_{{att.id}}" value="{{ at }}" {% if att.ex_values %}{% if att.ex_values == at %}checked="checked"{% endif %}{% endif %}>
+			                        {{ at }}</label>
+			                </div>
+			   			{% endfor %}
+					</div>
+				{% endifequal %}
+			</div>
+		</div>
+	{% endfor %}
+	<hr class="oTsT-hRz20">
+{% endif %}

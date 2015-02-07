@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "movies.movielanguage", "fields": {"name": "Hindi"}}, {"pk": 3, "model": "movies.movielanguage", "fields": {"name": "Polish"}}, {"pk": 8, "model": "movies.movielanguage", "fields": {"name": "French"}}, {"pk": 9, "model": "movies.movielanguage", "fields": {"name": "Spanish"}}, {"pk": 2, "model": "movies.movielanguage", "fields": {"name": "English"}}]

@@ -1,0 +1,14 @@
+<p>Customer Name : {{order.user.profile.get_full_name}}</p>
+<p>Total Amount : {{global_settings.currency}}{{order.price|floatformat:2}}</p>
+<p>Payment Status: {{order.get_status_display}}</p>
+<a href="{{global_settings.website_url}}{%url 'staff_bmshop_payment_orders' %}">Go to Order History Page >></a>
+<h4>Items</h4>
+<ul>
+	{%for item in order.get_order_items%}
+	<li>
+		<h5>{{item.product_name}}</h5>
+		<p>Quantity: {{item.quantity}}</p>
+		<p>Sub Total: {{global_settings.currency}}{{item.price|floatformat:2}}</p>
+	</li>
+	{%endfor%}
+</ul>

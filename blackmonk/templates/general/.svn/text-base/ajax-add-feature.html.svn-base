@@ -1,0 +1,36 @@
+{% load i18n %}
+{% load thumbnail %}
+	<div class="field text-field">	
+        <div class="label"><label>{% trans 'Title' %}</label></div>	
+        <div class="value"><input type="text" id="id_title" name="title" style="width: 400px;" value="{{ title }}"   maxlength="150" name="title"></div>	
+    </div>
+    <div class="field select-field">	
+        <div class="label"><label>{% trans 'Url' %}<span class="required-field">*</span></label></div>	
+        <div class="value">
+            <input type="text" id="id_slug" name="slug"  value="{{ url }}"  maxlength="150" style="width: 400px;" name="title">
+        </div>	
+    </div>
+    {% if photos %}
+    <div class="field text-field" id="id_photo_field">	
+        <div class="label"><label>{% trans 'Photos' %}</label></div>	
+        <div class="value">
+        <div class="item-photos set-feature">
+        <ul>
+        		{% for photo in photos %}
+                <li id="{{ photo.photo.url }}" class="inline-block selct_photo">
+                    <div class="photos-preview"><img src="{% thumbnail photo.photo 110x0 %}"></div>
+						<span style="display:none;" class="icon-tick"></span>
+                </li>
+                {% endfor %}
+            </ul>
+         </div>
+	</div>
+ </div>
+ {% endif %}
+ 	<div class="field select-field" id="id_photo_url_field" style="display:{% if photos %} none{% endif %};">	
+        <div class="label"><label>{% trans 'Photo Url' %}<span class="required-field">*</span></label></div>	
+        <div class="value">
+            <input type="text" id="id_photo_url" name="photo_url"  value=""  style="width: 400px;" name="title">
+        </div>	
+    </div>
+ 

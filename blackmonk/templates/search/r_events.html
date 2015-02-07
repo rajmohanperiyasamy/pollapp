@@ -1,0 +1,33 @@
+{% load i18n thumbnail %}
+{% load ds_utils %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-wPr"> <a class="bUi-tMb-wPr tMb-65 bUi-tMb-eVnT fLxiMgW" href="{{object.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN">
+                                <img class="mDa-oT" src="{% if object.album.album_photos.all.0.photo %}{% thumbnail object.album.album_photos.all.0.photo 400x0 crop %}{% else %}{{STATIC_URL}}themes/img/no-event.png{% endif %}" alt="{{object}}">
+                                <span class="vRtL-aLn">
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a> </div>
+        <div class="mDa-bDy pD0">
+        	<span class="fS12 cLr-lTbLu">{% for cat in object.category.all %}{{cat}}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+            <h4 class="mDa-hD" title="{{object}}"><a href="{{object.get_absolute_url}}">{{object}}</a></h4>
+            <div class="mDa-dTa">
+                <ul class="iCnC-lSt iCn12 iCn-gRy">
+                    <li class="iCnC-lSt-iTm">
+                        <i class="bUi-iCn-tMe-12"></i>{{object.start_date|ds_site_dateformat}}{% if object.start_time %}, {{object.start_time|ds_site_timeformat}}{% endif %} {% if object.end_time %} - {{object.end_time|ds_site_timeformat}}{% endif %}
+                    </li>
+                    <li class="iCnC-lSt-iTm">
+                        <i class="bUi-iCn-mP-mKr-12"></i><a href="{% url 'events_view_venue_event' object.venue.slug %}">{{object.venue}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</li>       

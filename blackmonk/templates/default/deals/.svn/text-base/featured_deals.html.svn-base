@@ -1,0 +1,209 @@
+{% extends base %}
+{% load currency %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load modulotag %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Deals' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Deals' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/deal.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/lightbox.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/general/lightbox.js"></script>
+	
+	
+		<!-- countdown js begin-->       
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown.js"></script>
+        <!-- configure look of counter -->
+        <script type="text/javascript">
+        $(function () {
+			{% for deal in deals %}
+            $('.defaultCountdown{{ deal.id }}').countdown({
+                until: +{{ deal.get_remaining_scnd }},
+                format: 'YDHMS',
+                layout: '<dl class="days"><dt>{dnn}</dt><dd>Days</dd></dl><dl class="hours"><dt>{hnn}</dt><dd>Hours</dd></dl>'+
+				'<dl class="minutes"><dt>{mnn}</dt><dd>Minutes</dd></dl>'+
+				'<dl class="seconds"><dt>{snn}</dt><dd>Seconds</dd></dl>'+
+				'<div class="clear"></div>'
+                });
+			{% endfor %}
+        });
+        </script>
+<!-- countdown js end-->
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+		<script type="text/javascript">
+	    $(document).ready(function(){
+		 $('.bids').each(function(){
+				bids.push($(this).val());
+			});
+	        module_listing(bids,category);
+		});
+		
+		</script>
+<script type="text/javascript">
+	var share = {
+	    fb:function(title,url) {
+			this.share('http://www.facebook.com/sharer.php?u=##URL##&t=##TITLE##',title,url);
+	    },
+	    tw:function(title) {
+	        this.share('http://twitter.com/home?status=##TITLE##',title);
+	    },
+	    share:function(tpl,title,url) {
+	        if(!url) url = (window.location);
+	        if(!title) title = (document.title);
+	        tpl = tpl.replace("##URL##",encodeURIComponent(url));
+	        tpl = tpl.replace("##TITLE##",encodeURIComponent(title));
+	        window.open(tpl,"sharemwindow"+tpl.substr(7,6),"width=650,height=380");
+	    }
+	};
+</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "deals" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+
+		{% include 'default/deals/part_lightbox.html' %}
+		{% activetab "dealnav" "featured" %}
+		{% include 'default/deals/part_top_navigation.html' %}
+
+		{% if message %}
+			<div class="flash_success_alert" id="id_topmessage"><h2>{% autoescape off %}{{ message }}{% endautoescape %}</h2></div>
+			<script type="text/javascript">
+				setTimeout("window.document.getElementById('id_topmessage').style.display='none';",30000);
+			</script>
+		{% endif %}
+		<div class="group">
+				<div class="col_11">
+                    <div id="active_list" class="list_wrap group">
+                    	{% if deals %}
+							{% for deal in deals %}
+							<div class="active_lst_wrap group">
+								<input type="hidden" id="fbids" name="fbids" class="bids" value="{{deal.id}}" />
+								<div class="deal_share_tools group">
+	                                <div class="share_deal">
+										<a class="rs_icon click_pvnt respond_clr" onclick="$('#content_id').val('{{ deal.id }}');$('#t_a_f_title').html('{{ deal.title }}');show_content('respond_to_div');">{% trans 'Tell Your Friend' %}</a>
+	                                </div>  
+                                	{% if rem_seconds %}
+									{% if deal.can_gifted %}
+										<div class="gift_wrap"><a href="/deals/confirmation/?did={{ deal.id }}&friend=1">{% trans 'Buy it for a friend!' %}</a></div>
+									{% endif %}
+									{% endif %}
+	
+	                                <div class="clear"></div>
+	                            </div>
+	                            <h2 class="deal_title"><a href="{{ deal.get_absolute_url }}">{{ deal.title }}</a></h2>
+	                            <div class="group">
+	                                <div class="deal_pic_320">
+										{% if deal.get_deal_image.photo %}
+		                                	<a href="{{ deal.get_absolute_url }}" title="{{ deal.title }}">
+		                                    <img src="{% thumbnail deal.get_deal_image.photo 320x196 %}" width="320" height="196">
+											</a>
+										{% else %}
+											<span class="iCn-bRdR50 oP25" title="{{deal.title}}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 cLr-gRy ib"></i></span><div class="vRtL-aLn"></div>
+										{% endif %}
+	                                </div>
+	                                <div class="deal_info_wraper">
+	                                    <div class="deal_info">
+	                                        <div class="deal_info_wrap group">                                       
+	                                            <dl class="group">
+	                                            	<dd>{% trans 'Value' %}</dd>
+	                                              <dt style="">{{ deal.original_price|floatformat:0|moneyfmt }}</dt>
+	                                            </dl>
+	                                            <dl class="discount group">
+	                                            	 <dd>{% trans 'Discount' %}</dd>
+	                                              <dt>{{ deal.get_discount }}%</dt>
+	                                            </dl>
+	                                            <dl class="save group">
+	                                            	<dd>{% trans 'You Save' %}</dd>
+	                                              <dt>{{ deal.get_savings|moneyfmt }}</dt>
+	                                            </dl>
+	                                            <div class="clear"></div>
+	                                        </div> 
+											{% ifequal deal.get_count_total_sold deal.max_count %}
+												<div class="closed_the_deal" onclick="window.location.replace('{% url 'deal_featured_deals' %}');">
+		                                            <span class="qty">{% trans 'Closed!' %}</span>
+		                                            <p class="price">--</p>
+		                                        </div>
+											{% else %}
+	                                        <div class="get_the_deal" onclick="window.location.replace('{% url 'deal_confirmation' %}?did={{ deal.id }}')">
+	                                            <span class="qty">{% trans 'Buy!' %}</span>
+	                                            <p class="price">{{ deal.discount_price|floatformat:0|moneyfmt }}</p>
+	                                        </div>
+											{% endifequal %}
+	                                        <div class="clear"></div>                                                                                    
+	                                    </div> 
+	                                    <div class="time_counter">
+	                                    	{% ifnotequal deal.get_count_total_sold deal.max_count %}
+	                                        <h4>{% trans 'time left to buy' %}</h4>
+	                                        <div class="info_wrap group defaultCountdown{{ deal.id }}">
+	                                            <dl class="days">
+	                                              <dt>00</dt>
+	                                              <dd>{% trans 'Days' %}</dd>
+	                                            </dl>                                        
+	                                            <dl class="hours">
+	                                              <dt>00</dt>
+	                                              <dd>{% trans 'Hours' %}</dd>
+	                                            </dl>
+	
+	                                            <dl class="minutes">
+	                                              <dt>00</dt>
+	                                              <dd>{% trans 'Minutes' %}</dd>
+	                                            </dl>
+	                                            <dl class="seconds">
+	                                              <dt>00</dt>
+	                                              <dd>{% trans 'Seconds' %}</dd>
+	
+	                                            </dl>
+	                                            <div class="clear"></div>
+	                                        </div> 
+											{% endifnotequal %}
+	                                        <div class="clear"></div>                                               
+	                                    </div>  
+	                                    <div class="number_bought group">
+	                                        <h4>&nbsp;</h4>
+	                                        <div class="info_wrap group">
+	                                            <span class="bought_qty">{% trans 'Over' %} <strong>{{ deal.get_count_total_sold }}</strong> {% trans 'bought' %}</span>
+	                                            <span class="up_progress"><div id="progressbar" class="progressbar widget_content"><div class="progressbar_value widget_header" style="width: {{ deal.get_total_percentage }}%;"></div></div></span>
+	                                            {% ifnotequal deal.get_count_total_sold deal.max_count %}<h4 style="color: #666666;">{% trans 'Show your voucher to avail' %} {{ deal.get_discount }}% {% trans 'off on room tariff' %}</h4>{% endifnotequal %}
+	                                            <div class="clear"></div>
+	                                        </div>
+	                                        <div class="clear"></div>                                                
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+							{% endfor %}
+						{% else %}
+								<div class="active_lst_wrap group">
+									<h2 class="deal_title">{% trans 'No active DEALS at the moment' %}</h2>
+								</div>
+						{% endif %}
+						                                           
+                    </div>
+                </div>
+				<div class="col_5 mr_0">
+					<div id="alert_signup" style="margin-bottom:10px;">
+						{% include 'default/deals/part_subscribe.html' %}
+					</div>
+					<!-- Facebook likebox starts -->
+                        {% include 'default/likebox.html' %}
+						<!-- Facebook likebox ends -->
+					<!--div id="deal_for_business">
+                        <h2>{% trans 'Deals for Businesses' %}</h2>
+                        <p>{% trans 'Grow your business by reaching local customers, ONLINE! Find out how you can feature YOUR BUSINESS in our Hot Deals section.' %}&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  <a href="{% url deal_how %}" style="padding-right:6px;border-right:1px solid #e6e6e6;margin-right:6px;">{% trans 'How it Works' %}</a><a href="{% url deal_faqs %}">FAQ's</a></p>                  
+                    </div-->
+                    
+					
+				</div><!-- /secondary -->
+			</div>
+            <div class="clear"></div>
+
+{% endblock %}
+{% block busines_footer %}
+{% endblock %}

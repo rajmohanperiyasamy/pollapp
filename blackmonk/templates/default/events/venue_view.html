@@ -1,0 +1,261 @@
+{% extends base %}
+{% load comparison %}
+{% load thumbnail %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% block pagetitle %}{% seo_format_tag module='Venues' title=venue.seo_title code='DT' category=category.name as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/lightbox.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/events.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "venues" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+
+			{% include 'default/events/event-search.html' %}
+		
+			<!-- Lightbox code begin -->   
+     		<div class="lightbox_outer" >
+			<div class="lightbox_content_holder">
+ 			<a href= "#" class="call_lightbox lb_close fix_ie6png enlarge click_pvnt"></a>
+			<div class="lightbox_content">
+			<!-- Put all your contents only inside this "lightbox_content" div -->
+			
+			{% if_greater venue.get_venue_photos.count 1 %}
+			<!-- gallery begin -->
+				<input type = "hidden" value = "yes" id = "as_load_hack" />
+				<script>
+						var lb_img_arr = [];
+						{% for photos in venue.get_venue_photos %}
+						lb_img_arr[{{ forloop.counter0 }}] = "{% thumbnail photos.photo 576x384 %}";
+						{% endfor %}
+						var index = 0;
+						var total_imgs = lb_img_arr.length
+				</script>
+				<div id="as_image_gallery" class="allhide" style="position:relative;"> 
+				
+					<div class="loader_32" style="z-index:10"></div> 
+				
+					<div>
+				
+                    	<img src="{% thumbnail venue.get_first_venue_photo 1000x500 %}"  alt="{{venue.title}}"  id="lb_main_img">
+						
+					</div>
+					
+					<div class="lb_next_img">
+						
+                    	<img src="{% thumbnail venue.get_first_venue_photo 1000x500 %}"  alt="{{venue.title}}"  id="lb_next_img">
+						
+					</div>
+					
+					<div align="center" class="lb_nav">
+						<img src="{{ STATIC_URL }}themes/green/images/js/prev_lb.png" alt="Previous" class="left lb_prev" id="prev_0" style="position:absolute;top:50%; left:-24px;margin-top:-20px;z-index:9;display:block;" />
+						<img src="{{ STATIC_URL }}themes/green/images/js/next_lb.png" alt="Next" class="right lb_next" id="next_0" style="position:absolute;top:50%; right:-24px;margin-top:-20px;z-index:9;display:block" />
+					</div>
+				
+				</div>
+				
+				<!-- gallery end -->
+			{% endif_greater %}
+			
+			
+			<!-- put your contents only iside "lightbox_content" div -->		
+			</div>			
+			</div>
+			</div>
+			<div class="lightbox_background"></div>
+			<!-- Lightbox code end -->
+			
+			{% if venue.get_first_venue_photo %}
+			<!-- Zooming code begin -->   
+			<div class="zoomie_outer ds_image_popup zoom_image" >
+			<div class="zoomie_content_holder zoomie_lb_outer">
+			<a href= "#" class="lb_close fix_ie6png click_pvnt zoomie_close"></a>
+			
+			<div id="ds_image_parent">
+            <img src="{% thumbnail venue.get_first_venue_photo 1000x500 %}" id="ds_image">
+			</div>
+			
+			</div>
+			</div>
+			<!-- Zooming code end -->  
+			{% endif %}
+
+			<div class="group">
+				<div id="breadcrumbs"><a href="/" title="{{ globalsettings.domain }} {% trans 'Home' %}">{% trans 'Home' %}</a> &nbsp;»&nbsp; <a href="/events/" title="Events">{% trans 'Events' %}</a> &nbsp;»&nbsp; <a href="{% url 'events_venue_list' %}" title="Venues">{% trans 'Venues' %}</a> &nbsp;»&nbsp; <span title="{{ venue.type }}">{{ venue.type }}</span></div>
+
+				<div class="col_11">
+					<div id="venue_details" class="thick_box">
+						<div class="thick_box_core group">                
+                            <div id="venue_all" class="detail_content group">
+                                <div class="title_bar">
+                                    <h1 class="title">{{venue.venue}}</h1>
+                                    <div class="sub_title"><span class="cat">{{venue.type}}</span><span>{{venue.address1}}</span></div>
+
+                                </div>
+                                <div class="column_parent venue_details col_2">
+									{% if venue.get_first_venue_photo %}
+									<div class="venue_pic event_pic zoom_image">
+                                    	<span class="enlarge fix_ie6png"></span>
+										<img src="{% thumbnail venue.get_first_venue_photo 112x112 %}" width="100" height="100">
+									{% else %}	
+									<div class="venue_pic event_pic">
+	                                    	<span class="enlarge fix_ie6png"></span>	
+										<img src="{{ STATIC_URL }}themes/green/images/global/nophoto_90.jpg" width="100" height="100">
+									{% endif %}
+                                    </div>    
+									
+									                                            
+                                    <div class="anchor_vlink">
+                                        <ul>
+                                            <li><a href="#" id="events_accdn" class="call_acdn click_pvnt">{% trans 'Events' %}</a></li>
+                                            <li><a href="#" id="map_accdn" class="call_acdn click_pvnt load_map">{% trans 'Location Map' %}</a></li>
+                                            <li><a href="#" id="comments_accdn" class="call_acdn click_pvnt">{% trans 'Comments' %}</a></li>
+											{% if venue.get_venue_photos %}
+											{% if_greater venue.get_venue_photos.count 1 %}
+											<li><a href="#" id="photos_sidebar" class="call_acdn click_pvnt">{% trans 'Photos' %}</a></li>
+											{% endif_greater %}
+											{% endif %}
+                                        </ul>
+                                    </div>
+                              	</div>
+                                <div class="column_child ml_130">
+                                    <div class="child_inner">
+                                        <div class="venue_detail group">
+
+                                            <div class="col_4">
+                                            	<h2 class="title">{% trans 'Location' %}</h2>
+                                            	<h3 class="venue_title"><a href="#">{{venue.venue}}</a></h3>
+                                            	<p class="address">{{venue.address1}}<a href="#location_map" id="map_accdn" class="call_acdn load_map click_pvnt">({% trans 'map' %})</a></p>
+                                    		</div>
+                                            <div class="col_4 mr_0">
+                                            	{% if contact %}
+                                            	<h2 class="title">{% trans 'Contact' %}</h2>
+                                                <p class="contact"> {% if venue.telephone %}{% trans 'Tel:' %} {{venue.telephone}},{% endif %} {% if venue.mobile %}{% trans 'Mob:' %} {{venue.mobile}}{% endif %}<br>{% if venue.email %}{% trans 'Email:' %} <a href="mailto:{{venue.email}}">{{venue.email}}</a> {% endif %}<br/>{% if venue.website %}{% trans 'Website:' %} <a target="_blank" href="{{venue.website}}">{{venue.website}}</a>{% endif %}</p>
+												{% endif %}
+                                    		</div>
+                                            <div class="clear"></div>
+										{% if venue.description %}
+                                            <div class="venue_desc">
+                                            	<h2 class="title">{% trans 'Description' %}</h2>
+                                                <p id="synopsis">{% autoescape off %}{{venue.description}}{% endautoescape %}</p>
+												<p class="more_des"><a class="toggle click_pvnt" href="#">({% trans 'More' %})</a></p>
+											</div>                                                
+										{% endif %}
+                                        </div>
+                                        <div class="clear"></div>
+                                        <div class="more_on_this_venue">
+                                            <ul class="accordian9 group">
+                                                <li id="events" class="acdn_row events_accdn"><a href="#" class="bar_title close click_pvnt">{% trans 'Events' %}</a>
+
+                                                    <div class="acdn_content">
+                                                        <div class="events place_list">
+                                                            {% if not event_all %}
+                                                            <div class="as_no_showtimes" align="center" style="display:block">{% trans 'Sorry.... No active events found for this venue.' %}</div>
+                                                            {% else %}
+                                                            {% for event in event_all %}
+                                                            <div class="item group">
+                                                                <div class="date"><span class="dtstart"><abbr>{{event.start_date|date:"M"}}</abbr><h3>{{event.start_date|date:"d"}}</h3></span><!--to <span class="dtend"><abbr>{{event.end_date|date:"M"}}</abbr><h3>{{event.end_date|date:"d"}}</h3></span> --></div>
+                                                                <div class="detail">
+                                                                    <h4 class="title"><a style="" href="/events/{{event.slug}}.html">{{event.title}}</a></h4>
+                                                                    <div class="sub_title"><span class="time pl_0">{% if event.start_time %}({{event.start_time|ds_site_timeformat}}{%ifnotequal event.start_time event.end_time %} - {{event.end_time|ds_site_timeformat}}{% endifnotequal %}){% endif %}</span></div>
+																</div> 
+                                                                <div class="footer"></div>    
+                                                            </div> 
+                                                             {% endfor %}
+                                                             {% endif %}                                                                                          
+                                                        </div>
+													</div>
+                                                </li>
+                                                <li id="location_map" class="acdn_row map_accdn "><a href="#" class="bar_title close click_pvnt load_map">{% trans 'Location Map' %}</a>
+
+                                                    <div class="acdn_content" id="id_ipn_map">
+                                                    	<div class="map" id="map"></div>
+														<p class="top_link99"><a href="#" class="click_pvnt">{% trans 'Go top' %}</a></p>
+													</div>
+                                                </li>
+												
+												<!-- Photos accordium begin -->
+												{% if venue.get_venue_photos %}
+												{% if_greater venue.get_venue_photos.count 1 %}
+												<li id="events_photos" class="acdn_row photos_sidebar"><a href="#events_photos" class="bar_title close click_pvnt">{% trans 'Photos' %}</a>
+                                                	<div class="acdn_content">
+                                                		<div class="photos">
+                                                            <ul class="thumbs group">
+                                                            	{% for banner in venue.get_venue_photos %}
+                                                                	<li><a href="{% thumbnail banner.photo 1000x500 %}" name="{{venue.venue}}_wallpaper{{forloop.counter0}}" class="click_pvnt as_lb_gallery" ><img src="{% thumbnail banner.photo 100x100 %}" alt="{{ venue.venue }}" height="80" width="80"></a></li>
+																{% endfor %}
+                                                            </ul>
+															<div class="clear"></div>
+                                                        </div>
+														<p class="top_link99"><a href="#" class="click_pvnt">{% trans 'Go top' %}</a></p>
+													</div>
+                                                </li>
+												{% endif_greater %}
+												{% endif %}
+												<!-- Photos accordium end -->
+ 												
+												<li id="comments" class="acdn_row comments_accdn">
+													<a href="" class="bar_title close click_pvnt" > {% trans 'Comments' %}</a>
+													<div class="acdn_content">
+                                                       <div id = "whole_comment">
+                                                        <div id="commenting">
+														{% if venue %}
+														  {% with venue as object %}
+															{% with 'venues' as appname %}
+																{% include 'comments/include_comment.html' %}
+															{% endwith %}
+															{% endwith %}
+														{% endif %}
+														</div>			
+													<p class="top_link99"><a href="#" class="click_pvnt">{% trans 'Go top' %}</a></p>
+													</div>
+                                                </li>
+											</ul>											
+											
+                                        </div>
+										
+                                    </div>
+									<div class="clear"></div>                                            
+                                </div>
+                          </div>
+
+						</div>
+					</div>                                                    
+                </div>
+                <div class="secondary">
+                    <div class="advt ad_300x250">
+                    	<span class="declare">{% trans 'Advertisement' %}</span>
+                    	<div class="display_ad">
+                    	</div>
+                    </div><!-- /ad_300x250 -->
+                </div> <!-- /secondary -->
+
+			</div>
+			<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+			<script type="text/javascript" src="{{ STATIC_URL }}js/general/google_map.js"></script>
+			<script>
+			function load_accdn_map(){
+				load('map',{{venue.lat}},{{venue.lon}}, {{venue.zoom}},"{{ globalsettings.city }}","{{ globalsettings.city }}")
+				}
+				$(document).ready(function(){
+					load_accdn_map();
+					$('.load_map').addClass('open');
+					$('#id_ipn_map').show();
+					
+					});	
+			var rsvp_status_url='';
+			</script>
+			<script type="text/javascript" src="{{ STATIC_URL }}js/Event/event.js"></script>
+			<script type="text/javascript" src="{{ STATIC_URL }}js/general/lightbox.js"></script>
+			{% if_greater venue.get_venue_photos.count 1 %}
+			<script type="text/javascript" src="{{ STATIC_URL }}js/general/ds_lightbox_gallery.js"></script>
+			{% endif_greater %}
+{% endblock %}

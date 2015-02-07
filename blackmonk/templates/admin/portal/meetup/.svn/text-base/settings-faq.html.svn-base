@@ -1,0 +1,22 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+		<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.2xz6uw92k31h" target="_blank"><span class="icon">?</span>Quick help</a>
+		<hr>
+		<h5>{% trans 'MeetUp API Page:' %}</h5>
+		<p>{% trans 'Integrate MeetUp API and allow your users to look for events happening in your city/region' %}</p>
+		<hr>
+        <h6>{% trans 'API Key:' %}</h6>
+        <p>{% trans 'Visit following URL https://secure.meetup.com/register/ and generate an API key for your website' %}</p>
+		<hr>
+		<h6>{% trans 'Page Title (SEO):' %}</h6>
+        <p>{% trans 'Enter SEO Title in 70 characters or less. SEO Title is important for search ranking – please include keywords' %}</p>
+		<hr>
+		<h6>{% trans 'Description:' %}</h6>
+        <p>{% trans 'Enter compelling description of the web page in 160 characters or less.' %}</p>
+		<hr>
+	</div>                                    
+</div>     		
+
+
+

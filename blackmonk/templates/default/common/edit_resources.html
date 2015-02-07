@@ -1,0 +1,276 @@
+{% extends base %}
+{% load i18n %}
+{% load tabs %}
+{% block pagetitle %}{{ page.seo_title }}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{ page.seo_description }}" />
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/themes/css/about-us.css">
+<script src="/static/themes/js/bm-editor.js"></script>
+<script src="/static/themes/js/file-upload/jquery.ui.widget.js"></script>
+<script src="/static/themes/js/file-upload/jquery.iframe-transport.js"></script>
+<script src="/static/themes/js/file-upload/jquery.fileupload.js"></script>
+<script>
+            var container = false;
+            var cont;
+            var error = false;
+            $(function () {
+                $('.file-upload').fileupload({
+                    limitConcurrentUploads:1,
+                    add: function (e, data) {
+						var uploadErrors = [];
+						
+						if(data.originalFiles[0]['size'] > 5000000) {
+							uploadErrors.push('Filesize is too big');
+						}
+						if(uploadErrors.length > 0) {
+							alert(uploadErrors.join("\n"));
+						} else {
+							if(container === false){
+								cont = $('.bannerImg');
+								container = true;
+							}
+							data.list = $('<div/>').addClass('uploaded').html('<div class="img-cont"><div class="cont"><div class="progress fade in"><div class="bar" style="width: 0%;"></div></div></div></div><div class="img-details"><a class="deleteImg" href="javascript:void(0)"><i class="bUi-iCn-rCyL-16" aria-hidden="true"></i></a></div>');
+							$('.pSt-hDr').addClass('hasImage');
+							$('.headerGroup').addClass('on');
+							$('.headerGroup').addClass('translate');
+							cont.append(data.list);
+							data.submit();
+						}
+                    },
+                    progress : function (e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        data.list.find('.bar').css('width', progress+'%');
+                    },
+                    done: function (e, data) {
+                         if (data.files && data.files[0]) {
+	                    	//alert(data.files[0].name)
+                            var reader = new FileReader();
+	                    	var res = jQuery.parseJSON(data.result)
+	                    	console.log(res[0]);
+                            reader.onload = function(e) {
+                                data.list.find('.progress').removeClass('in');
+                                var imgString = "";
+                                imgString += '<img src="'+res[0].url+'" class="fade"/>';
+                                imgString += '<input type="hidden" name="pageimg" value="'+res[0].photo_id+'" />';
+                                data.list.find('.img-cont .cont').append(imgString);
+                                setTimeout(function(){data.list.find('img').addClass('in');},300);
+								setTimeout(function(){data.list.find('.progress').remove();},200);
+								$('.deleteImg').on('click',function(){
+									$('.headerGroup').removeClass('on');
+									data.list.find('img').removeClass('in');
+									$('.headerGroup').removeClass('translate');
+									$('.bannerImg .uploaded').remove();
+									$('.pSt-hDr').removeClass('hasImage');	
+									setTimeout(function(){
+										
+									},350);
+										
+								});
+                            }
+                            reader.readAsDataURL(data.files[0]);
+                        }
+                    }
+
+                });
+            });
+
+	$(document).ready(function() {
+		var $el = $('.pSt-fLd.body');
+		$('.uploadBtnCont .uploadBanner').click(function(event) {
+			$(this).parent().find('.file-upload').trigger('click');
+		});
+		var header = new bMEditor('.aRtCL-pSt .pSt-tTl',{
+			disableToolbar: true,
+			placeholder: 'Title',
+			disableReturn:true,
+			insert:false
+		});
+		var header = new bMEditor('.aRtCL-pSt .pSt-sBtTl',{
+			disableToolbar: true,
+			placeholder: 'Subtitle',
+			disableReturn:true,
+			insert:false
+		});
+		var editor = new bMEditor('.aRtCL-pSt .body',{
+			placeholder: 'Write your Content',
+			buttons: ['bold', 'italic', 'underline', 'anchor', 'header1', 'header2', 'quote', ,'unorderedlist','orderedlist'],
+			imageUploadUrl:"{% url 'resources_image_upload' %}"
+		});
+		$('.deleteImg').on('click',function(){
+			$('.headerGroup').removeClass('on');
+			$('.headerGroup').removeClass('translate');
+			$('.bannerImg .uploaded').remove();
+			$('.pSt-hDr').removeClass('hasImage');	
+		});
+{% if page %}
+		$('.uploadBtnCont form').attr('action', "{% url 'resources_image_upload' %}");
+		$('.aRtCL-pSt figcaption').attr('contenteditable','true');
+		function toolbarAction(el,cl){
+		el.on('click',function(event) {
+		$(this).parent().find('li').removeClass('active');
+		$(this).addClass('active');
+		$(this).parent().parent().attr('class','active move').addClass(cl);
+		});
+		}
+		toolbarAction($('.alignLeft'),'iMg-lT');
+		toolbarAction($('.alignCenter'),'iMg-cTr');
+		toolbarAction($('.alignRight'),'iMg-rT');
+		toolbarAction($('.alignLeftOut'),'iMg-lTO');
+		toolbarAction($('.alignCenterOut'),'iMg-cTrO');
+		toolbarAction($('.alignRightOut'),'iMg-rTO');
+		
+		$('.imageToolbar .delete').on('click',function(){
+		var r=confirm("Do you Want To Delete!");
+		if (r==true){
+		$(this).parent().parent().remove();	
+		}
+		});
+		$(document).mouseup(function (e){
+		var container = $('.aRtCL-pSt img').parent();
+		if (!container.is(e.target)&& container.has(e.target).length === 0){
+		container.removeClass('move');
+		setTimeout(function(){
+		container.removeClass('active');
+		},'400');
+		}
+		});
+		$('.aRtCL-pSt img').on('click',function(event) {
+		var $el  = $(this);
+		if($el.parent().hasClass('active')){
+		$el.parent().removeClass('move');
+		setTimeout(function(){
+		$el.parent().removeClass('active');
+		},'400');
+		}else{
+		$el.parent().addClass('active');
+		setTimeout(function(){
+		$el.parent().addClass('move');
+		},'100');    
+		}
+		});
+		$('.image .iMg-cPtN').on('focus', function(event) {
+		if($(this).text()==='Type caption for image (optional)'){
+		$(this).text('').removeClass('captionPlaceholder');
+		}
+		$el.attr('contenteditable', 'false');
+		})
+		$('.image .iMg-cPtN').on('blur', function(event) {
+		if($(this).text() === ''){
+		$(this).text('Type caption for image (optional)').addClass('captionPlaceholder');    
+		}
+		$el.attr('contenteditable', 'true');
+		})
+		$(document).mouseup(function (e){
+		var videocontainer = $('.aRtCL-pSt iframe').parent().parent();
+		if (!videocontainer.is(e.target)&& videocontainer.has(e.target).length === 0){
+		$('figure.video').removeClass('move');
+		setTimeout(function(){
+		$('figure.video').removeClass('active');
+		},'400');
+		activeVideoToolbar = false;
+		}
+		});
+
+		$('.aRtCL-pSt iframe').parent().mouseenter(function(event) {
+		var $videoCont = $(this).parent();
+		if(!activeVideoToolbar){
+		$videoCont.addClass('active');
+		setTimeout(function(){
+		$videoCont.addClass('move');
+		},'100');
+		activeVideoToolbar = true;
+		}
+		});
+
+
+		function toolbarActionv(el,cl){
+	            el.on('click',function(event) {
+	                    $(this).parent().find('li').removeClass('active');
+	                    $(this).addClass('active');
+	                    $(this).parent().parent().attr('class','active move video').addClass(cl);
+	            });
+	    }
+	    toolbarActionv($('.video .alignLeft'),'iMg-lT');
+	    toolbarActionv($('.video .alignCenter'),'iMg-cTr');
+	    toolbarActionv($('.video .alignRight'),'iMg-rT');
+
+		$('.video .iMg-cPtN').on('focus', function(event) {
+		if($(this).text()==='Type caption for video (optional)'){
+		$(this).text('').removeClass('captionPlaceholder');
+		}
+		$el.attr('contenteditable', 'false');
+		})
+		$('.video .iMg-cPtN').on('blur', function(event) {
+		if($(this).text() === ''){
+		$(this).text('Type caption for video (optional)').addClass('captionPlaceholder');    
+		}
+		$el.attr('contenteditable', 'true');
+		})
+{% endif %}
+	});
+	function save_page(){
+		$('#title').removeAttr("contenteditable"); 
+		$('#title').removeAttr("data-bm-element"); 
+		$('#sub-title').removeAttr("contenteditable"); 
+		$('#sub-title').removeAttr("data-bm-element"); 
+		$('#page-body').removeAttr("contenteditable"); 
+		$('#page-body').removeAttr("data-bm-element");
+		var dataString = "content=" + encodeURIComponent($('#page-content').html());
+		$.ajax({
+			type: "POST",
+			url: ".",
+			data: dataString,
+			dataType:'HTML',
+			success: function(data){
+				location.replace(data);
+			}
+		});
+	}
+</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "home" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="main span12 static rLvE">
+			<div class="btnGroup" id="save-page-btn">
+				<a href="{% if page.is_static %}/admin{% else %}{% url 'admin_custom_page' %}{% endif %}" class="btn btn-default">Cancel</a>
+				<button class="btn btn-success" onclick="save_page()">Save</button>
+			</div>
+			<article class="sCn  aRtCL-pSt pSt-vW-mDe" id="page-content">
+{% if page %}
+{% autoescape off %}{{page.content}}{% endautoescape %}
+{% else %}
+<header class="pSt-hDr">
+	<div class="bannerImg">
+		<div class="uploadBtnCont">
+			<a class="uploadBanner" href="javascript:void(0);"> <img
+				src="/static/themes/img/upload-image.png">
+			</a>
+			<form enctype="multipart/form-data" action="{% url 'resources_image_upload' %}" method="POST">
+				<input class="file-upload" type="file" name="photo">
+			</form>
+		</div>
+	</div>
+	<div class="headerGroup">
+		<h1 class="pSt-tTl" id="title"></h1>
+		<h4 class="pSt-sBtTl" id="sub-title"></h4>
+	</div>
+</header>
+<div class="pSt-cNt">
+	<div class="pSt-cNt-iN clearfix">
+		<div class="pSt-fLd body" id="page-body"></div>
+	</div>
+</div>
+{% endif %}
+			</article>
+		</div>
+	</div>
+</div>
+{% endblock %}

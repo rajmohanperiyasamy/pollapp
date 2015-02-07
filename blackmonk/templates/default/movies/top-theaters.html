@@ -1,0 +1,33 @@
+{% load i18n bm_movie_tags %}
+
+{% get_top_theatres limit=5 as theatres %}
+{% if theatres %}
+<div style="">
+    <section class="sCn mDa-lT-mNi">
+        <div class="sCn-tTl sCn-tTl-bR">
+            <h3>
+                <span>{% trans 'Cinemas' %}<a class="tXt-lNk rGhT" href="{% url 'movies_theater_showtimes' %}">{% trans 'View all' %}</a></span>
+            </h3>
+        </div>
+        <ul class="modulesBrowseData mDa-lT mDa-oT-lT">
+            {% for theater in theatres %}
+            <li class="mDa">
+                <div class="mDa-bDy pD0">
+                    <div class="pLlT iM">
+                        <span class="pD15 bLk pDr10mP pDl0mP"><i class="bUi-iCn-mP-mKr-16 cLr-rEd fS24" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="cLr-lT">
+                        <h5 title="{{theater.name}}" class="mDa-hD tRnC mRb5 w85P rLvE"><a class="fW-bLd cLr-dRk" href="{{theater.get_absolute_url}}">{{theater.name}}</a></h5>
+                        <div class="mDa-dTa fS12 cLr-gRy">
+                            <span>{{theater.address.address1}}{% if theater.address.address2 %}, {{theater.address.address2}}{% endif %}{% if theater.address.city %}, {{theater.address.city}}{% endif %}{% if theater.address.pin %} {{theater.address.pin}}{% endif %}</span>{% if theater.address.phone %}<span class="sPrTr">{{theater.address.phone}}</span>{% endif %}
+                        </div> 
+                        
+                    </div> 
+                </div>
+                {% if not forloop.last %}<hr class="oTsT-hRz">{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endif %}

@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load bm_advice_tags %}
+
+{% get_related_advice category=advice.category advice=advice limit=7 as related_advices %} 
+{% if related_advices %}
+<div>
+    <section class="sCn mDa-lT-mNi cMpCt">
+        <div class="sCn-tTl sCn-tTl-bR">
+            <h3><span>{% trans 'Related Questions' %}</span></h3>
+        </div>
+        <ul class="mDa-lT">
+            {% for advice in related_advices %}
+            <li class="mDa">
+                <div class="mDa-iN">
+                    <div class="mDa-bDy">
+                        <h6 class="mDa-hD fW-bLd" title="{{advice.question}}"><a href="{{advice.get_absolute_url}}" class="pLlT w90P">{{advice.question}}</a> {% with advice.advice_answers.all as answers %}<span class="pLrT fS11 fW-nRmL cLr-lTgRy" title="{{answers.count}} Answers">{{answers.count}} A</span>{% endwith %}</h6>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>                        
+{% endif %}                

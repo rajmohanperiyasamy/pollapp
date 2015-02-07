@@ -1,0 +1,176 @@
+{% extends "admin_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "staff" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Admin | Manage Staff{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<script>
+	function goto_event_list(page){
+		var url = "{{base_url}}/?page="+page;
+		window.location.replace(url);
+		}
+</script>
+{% endblock %}
+{% block content %}
+    	<div class="container group">
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="{%url 'admin_manage_staff' %}" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff</a></li>
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Manage Staff</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Manage Staff</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="{%url 'admin_manage_staff' %}" class="side_menu on">Manage Staff</a></li>  
+                        <li><a href="{%url 'admin_create_fresh_staff' %}" class="side_menu">Add new Staff</a></li>  
+                        <li><a href="{%url 'admin_promote_user' %}" class="side_menu">Promote an User</a></li>
+                        <li><a href="{%url 'admin_search_staff' %}" class="side_menu">Search Staff</a></li> 
+                        <li><a href="{%url 'admin_add_seo' %}" class="side_menu">Manage SEO</a></li>                         
+                    </ul>
+                </div> 	
+            	<div class="main_col" style="float:left; width:740px;">
+            	 {% if message %}
+				 <div class="message">{{message}}</div>
+				 {% endif %}
+					<div class="page_title group" style="display:block; overflow:hidden; padding-top:10px;">
+                		<form name="mform1" method="post" action="/admin/sortstaff/">{% csrf_token %}
+                		<div class="all_control">
+                		    <select name="category" id="qna_cat" class="textField small" style="width:105px;" onchange="window.document.mform1.submit();">
+                                <option value="" style="padding-left:5px;">More actions</option>
+                                <optgroup style="border-top:1px dotted #7d7d7d; margin:5px; padding-top:5px;">
+                                    <option value="name">&nbsp;Sort by Name</option>
+                                    <option value="date">&nbsp;Sort by Date</option>
+                                    <option value="role">&nbsp;Sort by Role</option>                                    
+                                </optgroup>
+                             </select>   
+              			</div>	
+              			</form>
+                        <div class="quick_nav">							
+                            <a href="{%url 'admin_create_fresh_staff' %}" class="thick_link_plus">Add new Staff</a>
+                        </div>
+           			 </div>                           
+                                        
+						
+						<table class="admin content" align="center" cellspacing="0" cellpadding="0">
+							<colgroup>
+								<col width="30">                            
+								<col width="260">
+								<col width="260">                                
+								<col width="150">  
+								<col width="140">
+							</colgroup>				
+							<tbody>
+								<tr class="head">
+									<th class=""><div>Pic</div></th>                                
+									<th class="details"><div>Username &amp; Email</div></th>
+									<th class="username"><div>Name &amp; Date</div></th>
+                                    <th class="role"><div>Role</div></th>
+									<th class="action" style="text-align:left;"><div>Actions</div></th>
+								</tr>
+
+								{% for profile in profiles %}					
+								<tr class="row">
+                                    <td class="">
+                                        <a href="/profile/{{profile.user.username}}/">
+                                            <img src="{{MEDIA_URL}}{{profile.get_profile_pic}}" alt="{{profile.user.username}}" width="28" height="28" class="thumbnail">
+                                        </a>
+									</td>                                
+									<td class="details">
+										<ul class="user-details">
+											<li><h3 style="font:bold 13px/14px arial, sans-serif; margin:0; padding:0"><a href="/profile/{{profile.user.username}}/" title="See Profile" style="text-decoration:none">{{profile.user.username}}</a></h5>
+                                            <li style="font-size:12px;color:#808080;">{{profile.email}}</li>
+										</ul>
+									</td>
+									<td class="username">
+										<h4 style="font:bold 12px/12px arial,sans-serif;margin:0 0 2px 0;"><a href="/profile/{{profile.user.username}}/" style="text-decoration:none">{{profile.get_full_name}}</a></h4>
+                                        <p style="color:#666; font-size:11px; margin:0; padding:0;">{% ds_time profile.user.date_joined %}</p>
+									</td>  
+                                    <td class="role" style="vertical-align:middle !important">
+                                    	<span><a href="#" class="role1">{% if profile.user.is_superuser %}Admin{% else %}{{profile.user.groups.count}}{% endif %}</a></span>
+                                    </td>                                    
+									<td class="action">
+										<div class="action_link">
+                                        <div class="action_nav">
+											<!-- <a href="/admin/editstaff/?sid={{profile.user.id}}" class="edit">Edit</a>&nbsp;|&nbsp; --><a href="/admin/deletestaff/?sid={{profile.user.id}}" class="delete">Delete</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+								                                                            
+							</tbody>
+						</table>
+                        <div style="width:740px; text-align:center; margin:20px 0">
+					               	{% ifnotequal pages 1 %}
+					                    {% spaceless %}
+							  				 
+											{% if is_paginated %}
+												<div class="Paginator">
+												{% if has_previous %}
+													{% ifequal num current_page %}
+															<span class="active">{{ num }} </span>
+													{% else %}
+														<a href="javascript:goto_event_list('{{prev}}');" class="Prev" title="Previous Page">&laquo Prev</a>
+													{% endifequal %}
+												{% endif %}
+											 
+												{% if not in_leading_range %}
+													{% for num in pages_outside_trailing_range %}
+														{% ifequal num current_page %}
+															<span class="active">{{ num }} </span>
+														{% else %}
+															<a href="javascript:goto_event_list('{{ num }}');" >{{ num }}</a>&nbsp;
+														{% endifequal %}
+													{% endfor %}
+													...
+												{% endif %}
+												 
+												{% for num in page_numbers %}
+													  {% ifequal num current_page %}
+													    	<span class="active">{{ num }} </span>
+													  {% else %}
+													  		<a href="javascript:goto_event_list('{{ num }}');" title="Page {{ num }}">{{ num }}</a>&nbsp;
+													  {% endifequal %}
+												{% endfor %}
+												 
+												{% if not in_trailing_range %}
+													...
+													{% for num in pages_outside_leading_range reversed %}
+														{% ifequal num current_page %}
+															<span class="active">{{ num }} </span>
+														{% else %}
+															<a href="javascript:goto_event_list('{{ num }}');" >{{ num }}</a>&nbsp;
+														{% endifequal %}
+													{% endfor %}
+												{% endif %}
+												 
+												{% if has_next %}
+													<a href="javascript:goto_event_list('{{next}}')" class="Next" title="Next Page">Next&nbsp;&raquo</a>
+												{% endif %}
+												<span class="Results">&nbsp;({{count}}&nbsp;Staff)</span>
+											</div> 
+											{% endif %}
+										 
+										{% endspaceless %}
+										{% endifnotequal %}
+									
+					  
+					           <div class="clear"></div>
+
+                     	</div>   
+                </div> 
+                <hr />
+            </div>
+        </div>
+{% endblock %}

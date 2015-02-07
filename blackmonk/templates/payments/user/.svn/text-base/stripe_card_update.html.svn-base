@@ -1,0 +1,122 @@
+{% extends "user_base.html" %}
+{% load i18n %}
+{% load upload_tags %}
+{% load tabs %}
+
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<style>
+.controls.radio-choices input {
+    margin-top: -1px;
+    margin-right: 5px;
+}
+.controls.radio-choices > label , .radio-choices .help-block{
+    float: left;
+}
+.controls.radio-choices > label , .radio-choices .help-block{
+    font-weight: normal;
+    margin: 7px 10px 0 0;
+}
+</style>
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "business" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<div class="span10 sP9mX979 sP12mX767">
+        <div class="row-fluid">
+			<div class="main span9">
+				<section class="sCn pD0">
+					<div class="cLrFx pD20">
+						<div class="pLlT">
+							<h3 class="mR0 tRnCt">Update your card detail</h3>
+						</div>
+					</div>
+					<hr class="mRb12 mRt0">
+					{{form.errors}}
+					<div class="pD20">
+						<form action="." method="post" class="form-horizontal uSr-aCnT mRb0">
+							<h5>Details of your current configured card</h5>
+							{% with customer.cards.data.0 as card %}
+							<div class="control-group">
+								<label class="control-label" >Last 4 digit of card</label>
+								<div class="controls">
+									<input type="text" readonly="readonly" value="{{card.last4}}" class="iSp8 dSbLd">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" >Email</label>
+								<div class="controls">
+									<input type="text" readonly="readonly" value="{{card.name}}" class="iSp8 dSbLd">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" >Brand</label>
+								<div class="controls">
+									<input type="text" readonly="readonly" value="{{card.brand}}" class="iSp8 dSbLd">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" >Funding</label>
+								<div class="controls">
+									<input type="text" readonly="readonly" value="{{card.funding}}" class="iSp8 dSbLd">
+								</div>
+							</div>
+							<div id="card_detail" style="{% if object.is_bankaccount %}display: none;{% endif %}">
+								<div class="control-group">
+									<label class="control-label" ></label>
+									<div class="controls">
+										<script
+										    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+										    data-key="{{payment_config.stripe_public_key}}"
+										    data-name="Orlando.com"
+										    data-panel-label="Save my Card"
+										    data-label="Update my Card"
+										    data-amount="0">
+										</script>
+										<span class="help-block">Click here if you want to update your card details. </span>
+									</div>
+								</div>
+							</div>
+							{% endwith %}
+							<hr class="oTsT-hRz20">
+							<h5>Details about subscription</h5>
+							{% with customer.subscriptions.data.0 as subscription %}
+							<div class="control-group">
+								<label class="control-label" >Plan</label>
+								<div class="controls">
+									<input type="text" readonly="readonly" value="{{subscription.plan.name}}" class="iSp8 dSbLd">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" >Description</label>
+								<div class="controls">
+									<input type="text" readonly="readonly" value="{{subscription.plan.statement_description}}" class="iSp8 dSbLd">
+								</div>
+							</div>
+							{% endwith %}
+	                        <div class="row-fluid">
+	                            <div class="form-actions pD0 pLrT">
+	                                <a href="/user/business/" class="btn btn-default">Cancel</a>
+	                            </div>
+	                        </div>
+                        </form>
+					</div>
+				</section>
+			</div> <!-- /.main -->
+			<aside class="sD-bR span3">
+				<div>
+					<section class="tXt-cTr pD0 bNr-aD">
+					</section>
+				</div>
+			</aside>
+		</div>  <!-- /.row-fluid -->
+	</div>  <!-- /.span10 -->
+{% endblock %}
+
+{% block footerarea %}
+{% endblock %}

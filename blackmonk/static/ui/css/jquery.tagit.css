@@ -1,0 +1,121 @@
+.ui-autocomplete {
+	background-color: #eee;
+	position: absolute;
+	cursor: default;
+	max-height: 100px;
+		overflow-y: auto;
+		/* prevent horizontal scrollbar */
+		overflow-x: hidden;
+		/* add padding to account for vertical scrollbar */
+	
+}
+.ui-autocomplete .ui-menu-item {
+}
+.ui-autocomplete  .ui-menu-item a {
+	display:block;
+	padding:4px 6px;
+	text-decoration:none;
+	line-height:12px;
+}
+.ui-autocomplete .ui-menu-item a.ui-state-hover,
+.ui-autocomplete .ui-menu-item a.ui-state-active {
+	background-color:#78959D;
+	color:#fff;
+	margin:0;
+}
+.ui-autocomplete-loading {
+	background: white url(images/ui-anim_basic_16x16.gif) right center no-repeat;
+}
+
+ul.tagit {
+	overflow:auto;
+	background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #BBBBBB #C2C2C2 #C9C9C9;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) inset;
+    font: 13px/16px Arial,sans-serif;
+    margin: 0;
+	padding:2px 0;
+}
+ul.tagit:hover {
+ border-color: #A0A0A0 #B2B2B2 #B9B9B9;
+    border-style: solid;
+    border-width: 1px;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) inset;
+	   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) inset;
+		 -o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) inset;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) inset;
+}
+ul.tagit:focus {
+    border: 1px solid #5393fc;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+	   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+		 -o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+    outline: medium none;
+}
+ul.tagit li {
+	display: block;
+	float: left;
+	margin:3px 0 3px 5px;
+}
+ul.tagit li.tagit-choice {
+	background-color: #FFFFFF;
+    border: 1px solid #AAAAAA;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 0 2px #FFFFFF inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+    color: #808080;
+    cursor: default;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 3px 20px 3px 5px;
+    position: relative;
+	font-family:Arial, Helvetica, sans-serif;
+}
+ul.tagit li.tagit-new {
+	padding:2px 4px 3px;
+	padding:2px 4px 1px;
+	padding:2px 4px 1px 0;
+}
+
+ul.tagit li.tagit-choice input {
+	display:block;
+	float:left;
+	margin:2px 5px 2px 0;
+}
+ul.tagit li.tagit-choice a.close {
+	background:url(../images/global/close.png) no-repeat scroll right top transparent;
+    display: block;
+    font-size: 1px;
+    height: 13px;
+    position: absolute;
+    right: 3px;
+    top: 4px;
+    width: 12px;
+}
+ul.tagit li.tagit-choice a.close:hover {
+	background-position:right -11px;
+}
+ul.tagit input[type="text"], ul.tagit input[type="text"]:hover, ul.tagit input[type="text"]:focus {
+	-moz-box-sizing:border-box;
+	border:none;
+	margin:0;
+	padding:0;
+	width:inherit;
+	border-color:#C6C6C6;
+	background-color:#FFFFFF;
+	color:#333333;
+	box-shadow:none;
+	height:auto;
+}
+
+ul.tagit.tagit-focus{
+    border: 1px solid #5393fc;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+-o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px rgba(77,144,254, 0.65);
+    outline: medium none;
+}

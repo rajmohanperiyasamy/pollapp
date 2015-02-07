@@ -1,0 +1,103 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% load modulotag %}
+{% load comparison %}
+{% load truncate_filter %}
+{% block pagetitle %}{{flower.name|title}} | {{globalsettings.domain}}{% endblock %}
+{% block meta %}
+	<meta name="Description" content="{{seo.seo_description}}">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<!-- Facebook-->
+	<meta property="og:type" content="product"/>
+	<meta property="og:url" content="{{globalsettings.website_url}}{{flower.get_absolute_url}}"/>
+	<meta property="og:title" content="{{ flower.name }}"/>
+	{% if flower.image_large %}<meta property="og:image" content="{{flower.image_large}}"/>{% endif %}
+	<meta property="og:site_name" content="{{globalsettings.domain}}"/>
+	<meta property="og:description" content="{{ flower.description|truncatechars:200 }}"/>
+<!-- Twitter-->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:url" content="{{globalsettings.website_url}}{{flower.get_absolute_url}}">
+	<meta name="twitter:title" content="{{ flower.name }}">
+	<meta name="twitter:description" content="{{ flower.description|truncatechars:200 }}">
+	{% if flower.image_large %}<meta name="twitter:image:src" content="{{flower.image_large}}">{% endif %}
+
+{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "florist" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+
+	<div class="container-fluid">
+        {% include 'default/flowers/flowers-top-search.html' %}
+		<ul class="bRdCrB" itemscope itemtype="http://schema.org/WebPage">
+	        <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb"><a itemprop="url" href="{% url 'site_home' %}"><span itemprop="title">{% trans 'Home' %}</span></a><span class="sPrTr"></span></li>
+         	<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb"><a itemprop="url" href="{% url 'flowers_flowers_home' %}"><span itemprop="title">{% trans 'Florist' %}</span></a><span class="sPrTr"></span></li>
+         	<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb" class="aCtV"><span itemprop="title">{{ flower.name }}</span></li>
+	     </ul>
+        <div class="row-fluid">
+            <div class="span8 main">
+            	<section class="sCn pD0">
+                	<div class="row-fluid bDrRtRbR">
+						<div class="span7">
+							<div class="pD20">
+								<h3 class="fTrD-hD lH135">{{ flower.name }}</h3>
+	                        	<span class="fS12 cLr-gRy">{% trans 'Item No.' %} <span class="cLr-gRy">{{ flower.flower_code }}</span></span>
+	                        	<div class="cLrFx mRt20">
+                                	{% if flower.description %}<p class="dSc sMl cLr-dRk mRb10">{{ flower.description }}</p>{% endif %}
+                                    <div class="pLlT mRt10">
+                                        {% with flower as object %}
+                                    	   {% include 'default/social-share-links.html' %}
+                                    	{% endwith %}
+                                    </div>
+	                            	<div class="pLrT">
+	                                	<span class="ib mRr10">
+									      <span class="cLr-dRf fW200 fS24">{{globalsettings.currency}}{{flower.price}}</span>
+									    </span>
+	                                    <a target="_blank" href="http://www.floristone.com/cart.cfm?dcode={{flower.flower_code}}" class="btn btn-primary ib fS13 uC">Buy</a>
+	                            	</div>
+	                            </div>
+							</div>
+						</div>
+						<div class="pLrT span5 pD0">
+							<div class="fTrD-bL mRb0 sLdR-mDm mDa-100 cTrL-dFt">
+	                        	<div class="fTrD-bL-iN h200Mp">
+		                            <ul class="fTrD-iTmS">
+		                                <li class="fTrD-iTm h200Mp">
+		                                    <figure class="fTrD-mDa">
+		                                        <span class="bUi-tMb-wPr fLxiMgW" href="{{ flower.get_absolute_url }}">
+													<span class="bUi-tMb">
+														<span class="bUi-tMb-pRpL">
+															<span class="bUi-tMb-cLp">
+																<span class="bUi-tMb-cLp-iN">
+																	<img class="mDa-oT" src="{{flower.image_large}}" alt="{{ flower.name }}">
+																	<span class="vRtL-aLn"></span>	
+																</span>
+															</span>
+														</span>
+													</span>
+												</span>
+		                                    </figure> <!-- /.TrD-mDa --> 
+		                                </li> <!-- /.fTrD-iTm -->
+		                            </ul> <!-- /.fTrD-iTms -->
+	                        	</div> <!-- /.fTrD-bL-iN -->
+	                        </div> <!-- /.fTrD-bL -->
+						</div>
+            		</div>
+                </section>
+            </div>
+            <aside class="sD-bR span4 oF3mN768 sP9mN768">
+                <div>
+                    <section class="tXt-cTr bNr-aD sCn" id="banner_placement_right">
+                    </section>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}			   

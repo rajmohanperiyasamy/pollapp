@@ -1,0 +1,33 @@
+{% load thumbnail %}
+
+{% for business in businesslist %}
+{% with business.address.all.0 as address %}
+<li class="mDa" onmouseover="show_info_window('{{forloop.counter0|add:fl_counter}}');" value="{{forloop.counter0|add:fl_counter}}" data-name="{{forloop.counter0|add:fl_counter}}">
+    <div class="mDa-iN">
+        <div class="clearfix">
+            <div class="mDa-wPr"> <a class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-80" href="{{business.get_absolute_url}}">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN"> <img class="mDa-oT" src="{% if business.logo.logo %}{% thumbnail business.logo.logo 290x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{address.lat}},{{address.lon}}&zoom=14&size=450x180&markers={{address.lat}},{{address.lon}}&sensor=false{% endif %}" alt="{{business.name}}">
+                                <span class="vRtL-aLn"> </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+                </a> </div>
+            <div class="mDa-bDy pDt0">
+                <h4 class="mDa-hD tRnCt0 rLvE mRb5" title="{{ business.name }}"><a href="{{business.get_absolute_url}}" class="tRnCt cLr-gRy-dRk fS14">{{ business.name }}</a> </h4>
+                <div class="mDa-dTa mRt6">
+                    <ul class="iCnC-lSt iCn10 iCn-gRy">
+                        <li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i><a href="javascript:void(0)" onmouseover="show_info_window('{{forloop.counter0}}');">{{address.address1}}{% if address.address2 %}, {{address.address2}}{% endif %}{% if address.city %}, {{address.city}}{% endif %}{% if address.zip %} - {{address.zip }}{% endif %}</a></li>
+                        {% if address.telephone1 %}<li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-cAl-12"></i>{{address.telephone1}}</li>{% endif %}
+                        <li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-tAg-12"></i><a href="{{business.categories.all.0.get_absolute_url}}">{{business.categories.all.0.name}}</a><!--span class="sPrTr">$$</span--></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+{% endwith %}
+{% endfor %}

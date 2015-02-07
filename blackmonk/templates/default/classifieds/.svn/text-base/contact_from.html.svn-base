@@ -1,0 +1,73 @@
+{% load i18n %}
+<style>
+form .fields .field .label{width:80px;}
+form .fields .field .value{margin-left: 100px;}
+</style>
+<div class="main_col" id="ajax_content">
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass('error');},
+			unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass('error');},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	respond_name: "required",
+				respond_email: "required email",
+				respond_phone: "required",
+				respond_msg: "required"		
+		   	}
+		});
+	});
+	</script>
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	{% if form.errors %}
+		<div class="messageerror">
+			<strong>{% trans 'There is a problem with your submission' %}</strong>
+            <ul style="list-style:square;margin-left:20px;">
+           		{% for field in form %}
+           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+          	 	{% endfor %}
+			</ul>
+	 	</div>
+	{% endif %}
+	<div class="modal-form">
+	<form action="{% url 'classifieds_contact' %}?cid={{classified.id}}" name="mform" id="mform" method="post" class="form-horizontal uSr-aCnT mRb0">{% csrf_token %}
+        <div class="control-group">
+            <label class="control-label" >{% trans 'Name' %}<em class="cLr-rEd">*</em></label>
+            <div class="controls">
+                <input type="text" id="respond_name" name="respond_name" size="30" autocomplete="off" class="iSp8">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" >{% trans 'Email' %}<em class="cLr-rEd">*</em></label>
+            <div class="controls">
+                <input type="text" id="respond_email" name="respond_email" size="30" autocomplete="off" class="iSp8">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" >{% trans 'Phone No' %}<em class="cLr-rEd">*</em></label>
+            <div class="controls">
+                <input type="text" id="respond_phone" name="respond_phone" size="30" autocomplete="off" class="iSp8">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" >{% trans 'To' %}<em class="cLr-rEd">*</em></label>
+            <div class="controls">
+                <input type="text" readonly value="{{classified.address.email}}" class="iSp8">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" >{% trans 'Subject' %}<em class="cLr-rEd">*</em></label>
+            <div class="controls">
+                <input type="text" readonly value="{{classified.title}}" class="iSp8">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" >{% trans 'Message' %}<em class="cLr-rEd">*</em></label>
+            <div class="controls">
+                <textarea rows="4" name="respond_msg" id="respond_msg" cols="50" class="iSp8""></textarea>
+            </div>
+        </div>
+    </form>
+	<script>$(document).ready(function(){setTimeout(function(){$.colorbox.resize()},500)})</script>
+</div>

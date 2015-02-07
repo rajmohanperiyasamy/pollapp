@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="section">
+    <h5>{% trans 'FAQs' %}</h5>
+    <h6>{% trans 'Free Classified' %}</h6>
+    <p>{% trans "Select fields which you want to display in the user submission price chart.There is no pricing to be set in a free classified ad." %}</a>.</p>
+    <hr>
+    <h6>{% trans 'Sponsored Classified' %}</h6>
+    <p>{% trans "Select fields which you want to display in the user submission price chart.Set pricing based on the category for the sponsored ad.The sponsored ad is displayed in a list highlighted with a background color." %}</p>
+    <hr>
+    <h6>{% trans 'Featured Classified' %}</h6>
+    <p>{% trans "Select fields which you want to display in the user submission price chart.Set pricing per month for featured classified ads.Make sure you set the pricing more than sponsored since featured ads get more eyeballs which are shown in the classified homepage." %}</p>
+	<p>{% trans "Note: You can enable/disable the pricing option which you don't want to display.Also change the primary label title from sponsored/featured to your desired title." %}</p>
+</div>  

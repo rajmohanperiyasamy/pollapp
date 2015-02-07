@@ -1,0 +1,115 @@
+{% extends "user_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+
+{% block pagetitle %}{% seo_format_tag module='Articles' title=seo.seo_title code='MT' as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block navigation %}
+	{% activetab "leftnav" "article" %}
+	{{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<div class="span10 sP9mX979 sP12mX767">
+        <div class="row-fluid">
+			<div class="main span9">
+				<section class="sCn pD0">
+					<div class="cLrFx pD2015">
+						<div class="pLlT w100mP">
+							<h3 class="mR0 tRnCt">Articles <span class="lBl dRk lRg lRg-bRdR fS12 ib fW-bLd" title="Total Articles" id="total_count">{{total}}</span></h3>
+						</div>
+                        <div class="clearfix pLlTmP mRt10mX480">
+                        	<div class="pLrT w100pSmP mRt10SmP mRl10">
+                                <!-- a href="{% url 'article_add_article' %}?a_tpe=FR&payment_mode=online" class="btn fS12 btn-danger fW-bLd"><i aria-hidden="true" class="bUi-iCn-pLs-12"></i></a -->
+								<a class="btn fS12 btn-danger fW-bLd" title="Add Article" data-target="#addArticle" data-toggle="modal" href="{% url 'article_select_type' %}"><i class="bUi-iCn-pLs-12" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="pLrT">
+                                <form class="form-search mRb0" action="#">
+                                    <div class="input-append iNsD">
+                                        <input class="search-query fS13 pD510 h34" onkeyup="if($(this).val().length > 2){$('#id_search').val('true');hm_sort();}if($(this).val().length == 0){clear_search();}" name="search_keyword" id="content_search" type="text" placeholder="Search Articles" maxlength="100">
+                                        <button type="button" onclick="$('#id_search').val('true');hm_sort();" id="search_content_id" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14 ib"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+					</div>
+					<div class="pD150">
+						<div class="tLbR mRb5 pD015">
+                            <div class="tLbR-iR">
+                            	<div class="pLrT">
+                            		<span class="pLlT fS11 pDt7 cLr-gRy">View:  </span>
+	                            	<select class="bUiSlCtbtn-link tXt-sMl pLrT" id="filter_by" onchange="call_the_filter()">
+										<option value="-created_on" selected="selected">Newest</option>
+										<option value="created_on">Oldest</option>
+										<option value="-most_viewed">Most viewed</option>
+										<option data-divider="true"></option>
+										<option value="N" onclick="" >Pending</option>
+										<option value="P">Published</option>
+										<option value="D">Draft</option>
+										<option value="R">Rejected</option>
+										<option value="B">Blocked</option>
+										<option value="E">Expired</option>
+										<option value="S">Scheduled</option>
+										<option data-divider="true"></option>
+										<option value="F">Featured</option>
+										<option value="Y">Free</option>
+                                    </select>
+                            	</div>
+                            </div>
+                        </div>
+                        <hr class="mRb12 mRt0">
+						<div class="hT600 rLvE" id="ajax_content_loading" style="display:none;">
+	                         <div class="tBl-bLk pDt0">
+	                            <div class="tBl-cEl">
+	                                <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+	                            </div>
+	                        </div>
+	                    </div>
+						<div id="id_content_listing">
+							{% include 'article/user/ajax_object_listing.html' %}
+						</div>
+					</div>
+				</section>
+			</div> <!-- /.main -->
+			<aside class="sD-bR span3">
+				<div>
+					<section class="tXt-cTr pD0 bNr-aD"> 
+                       
+                    </section>
+				</div>
+			</aside>
+		</div>  <!-- /.row-fluid -->
+	</div>  <!-- /.span10 -->
+	<div id="addArticle" class="modal hide fade mW40" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 id="myModalLabel" class="mR50">Select Article Type</h4>
+	    </div>
+	    <div class="modal-body">
+			<div style="text-align: center; width: 100%;">
+				<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+			</div>
+	    </div>
+	    <div class="modal-footer">
+	        <!--button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button-->
+	        <button class="btn btn-primary" type="submit" onclick="$('#mform').submit();" >Next</button>
+	    </div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("a[data-target=#addArticle]").click(function(ev) {
+			   ev.preventDefault();
+			   target = $(this).attr("href");
+			
+			   // load the url and show modal on success
+			   $("#addArticle .modal-body").load(target, function() {
+			        $("#addArticle").modal("show");
+			   });
+			});
+		});
+	</script>
+{% endblock %}

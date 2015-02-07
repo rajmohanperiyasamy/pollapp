@@ -1,0 +1,56 @@
+@charset "utf-8";
+/* CSS Document */
+.bm_sliderjcarousel-skin .jcarousel-container {
+	background: none repeat scroll 0 0 #FFFFFF;
+    position: relative;
+}
+.bm_sliderjcarousel-skin .jcarousel-container-horizontal {
+		width:980px;
+		height:84px;
+}
+.bm_sliderjcarousel-skin .jcarousel-clip {
+    overflow: hidden;
+}
+.bm_sliderjcarousel-skin .jcarousel-clip-horizontal {
+	float:left;
+	width:924px;
+	position:relative;
+	left:28px;
+}
+/** *  Horizontal Buttons */
+.bm_sliderjcarousel-skin .jcarousel-next-horizontal {
+    background:url(../images/icons/next_btn.png) no-repeat white scroll;
+    height: 84px;
+    width: 28px;
+	float:right;
+	position:relative;
+	cursor:pointer;
+	border-left:1px solid #e6e6e6;
+}
+.bm_sliderjcarousel-skin .jcarousel-next-horizontal:hover{
+	    background:url(../images/icons/next_btn-hover.png) no-repeat white scroll;
+}
+.bm_sliderjcarousel-skin .jcarousel-next-horizontal:active{
+	    background:url(../images/icons/next_btn-active.png) no-repeat white scroll;
+}
+.bm_sliderjcarousel-skin .jcarousel-prev-horizontal {
+	background:url(../images/icons/pre_btn.png) no-repeat scroll white;
+    height: 84px;
+    width: 28px;
+	float: left;
+	position:absolute;
+	cursor:pointer;
+	border-right:1px solid #e1e1e1;
+}
+
+.bm_sliderjcarousel-skin .jcarousel-prev-horizontal:hover {
+	background:url(../images/icons/pre_btn-hover.png) no-repeat scroll white;
+}
+.bm_sliderjcarousel-skin .jcarousel-prev-horizontal:active {
+	background:url(../images/icons/pre_btn-active.png) no-repeat scroll white;
+}
+
+
+
+
+

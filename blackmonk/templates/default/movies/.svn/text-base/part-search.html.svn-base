@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="sRcH-bLK-hDn">
+    <label class="sHw-sRcH pD50 mRb0 cLr-lTgRy" for="movies-search-field">
+        <i aria-hidden="true" class="bUi-iCn-sRh-16 ib mRt4"></i>
+    </label>
+    <form class="form-search mRb0" action="{#% url 'movies_movies_search' %#}" id="id_shaan_form">
+        <div class="input-append iNsD">
+            <input class="search-query fS12 pD510" name="q" autocomplete="off" id="id_find" type="text" placeholder="{% trans 'Search Movies' %}" maxlength="100">
+            <button type="submit" class="btn btn-link pD510 cLr-gRy" role="button"><i aria-hidden="true" class="bUi-iCn-sRh-16 fS14"></i></button>
+        </div>
+    </form>
+</div>
+<script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>
+<script>
+$(function () {
+    $('#id_find').typeahead({
+       ajax: { url: '{% url 'movies_auto_suggest_movies' %}',type: "GET",
+                triggerLength: 1 },      
+       itemSelected: function (obj) {
+                                     
+            $('#id_shaan_form').submit();
+        }, 
+    });
+});
+</script>

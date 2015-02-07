@@ -1,0 +1,27 @@
+{% load i18n %}
+
+{% if img_url_list %}
+<div class="field text-field">
+    <div class="label"><label for="">{% trans 'Select Image' %}</label></div>
+    <div class="value">
+        <div class="image_grid">
+			{% for image in img_url_list %}
+            <div class="image_block {% cycle '' '' '' 'mr_0' %}">
+            	<span class="cform-radio-container"><input class="submit_thumb" name="image_url" value="{{image}}" {% if present_imageurl == image %}checked="checked"{% endif %} type="radio"><span class="cform-radio-element"></span></span>
+                <span class="image_wrap inline-block">
+                	<span class="item-thumb thumb-110">
+                        <span class="thumb-in">
+                            <span class="thumb">
+								<img src="{{image}}" class="inline-block">
+								<span class="inline-block h100"></span>
+							</span>
+                        </span>
+                    </span>
+                </span>
+            </div>
+		{% cycle '' '' '' '<div class="clear"></div>'%}
+		{% endfor %}
+		</div>
+    </div>
+</div> 
+{% endif %}

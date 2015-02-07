@@ -1,0 +1,26 @@
+{% load i18n %}
+{% if venue %}
+<div id="id_ven_address" class="ven_addr_size">
+	<input type="hidden" name="venue" id="id_venue" value="{{ venue.id }}"/>
+    <div class="group address_block">
+        <div class="action">
+            <span>
+                <span style="margin-bottom:5px;" onclick="clear_venue();" role="button" title="{% trans 'Remove' %}" class="icon-remove inline-block o3"></span>
+                {% if request.user.is_staff or request.user.id == venue.created_by.id  %}
+                <a href="{% url 'staff_events_ajax_add_venue' %}?vid={{ venue.id }}" title="{% trans 'Edit Venue' %}" class="add-venue txt-button">
+                        	<span  role="button" title="{% trans 'Edit' %}" class="icon-edit inline-block o3"></span>
+                 </a>
+                 {% endif %}
+            </span>
+		 
+        </div>
+         <div class="address">
+            <h4 class="venue-title">{{ venue.venue }}</h4>
+            <p class="venue-address">{{ venue.address1 }}{% if venue.address2 %}, {{venue.address2}}{% endif %}{% if venue.zip %}, {{venue.zip}}{% endif %}</p>
+            <p class="venue-contact">{% if venue.telephone1 != 'undefined' or venue.telephone1 != "" %} <span>{% trans 'Phone:' %}</span> {{venue.telephone1}}</br>{% endif %}
+            {% if venue.email %} <span>{% trans 'Email:' %}</span>  {{venue.email}}</br>{% endif %}
+            {% if venue.website %} <span>{% trans 'Web:' %}</span> {{venue.website}}{% endif %}</p>
+        </div>
+ 	</div>
+</div>
+{% endif %}

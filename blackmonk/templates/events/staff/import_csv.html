@@ -1,0 +1,367 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load upload_tags %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "events" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Events' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+ <div id="staff-platform" class="group">
+    <div class="header-bar has-sub">
+    	<a href="{% url 'staff_event_home' %}"><h2><span class="go_back"></span>{% trans 'Event' %}</h2></a>
+        <section class="sub-header-bar">
+            <div class="group">
+                <div class="filter-view-tabs">
+                </div>
+                <div class="add-section-right">
+					<button class="cform-button" roll="button" type="button" onclick="window.open('{{ STATIC_URL }}general/Event.csv')"><span class="cform-button-text">{% trans 'Download Sample CSV' %}</span></button>
+				</div> 
+            </div>
+        </section>                           
+	</div>
+    <div id="core-wraper" class="group">
+        <div class="staff-main">
+            <div class="page-wrap">
+                <div id="business-add" class="group">
+                    <div id="add-new-business">
+                        <form id="mform" name="mform" onsubmit="return validate()" action="{% url 'staff_events_import_csv' %}" enctype="multipart/form-data" method="post">{% csrf_token %}
+                            <div class="fields hform">
+                                <div class="field-group">              
+                                    <div class="field select-field">
+                                        <div class="label"><label for="">{% trans 'Upload CSV File' %}<span class="required-field">*</span></label></div>
+                                        <div class="value">
+                                        	<input type="file" name="eventcsv" id="eventcsv" accept="*.csv">
+											<span class="tip" id="cat_span">{% trans 'Upload a CSV file to add mulitple listing.' %}</span>
+                                        </div>
+                                    </div>                                                                                                        
+                                </div> <!--/field-group--> 
+                            </div> <!--/fields-->
+                            <div class="form-submit right group trp-bg">
+                                <button class="cform-button"  onclick="$('.quickhelp').toggle();$('.hlpbtn').toggle();" roll="button" type="button" "><span class="hlpbtn" style="display: none;">Hide</span><span class="hlpbtn">Show</span> <span class="cform-button-text">{% trans 'help' %}</span></button>
+                                <button class="cform-button" roll="button" type="button" onclick="window.location.replace('{% url 'staff_event_home' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+                                <button role="button" class="cform-button prime" type="submit"><span class="cform-button-text">{% trans 'SAVE' %}</span></button>
+                            </div>                                                
+                        </form>
+                        {% if filehistory %}
+                            {% include 'common/csvfile_history.html' %}
+                        {% endif %}
+						<div class="quickhelp" style="display: none">
+						 <!--/Table Fomat I--> 
+						<div class="qKhP">
+							<h2>Quick Help</h2>
+							<h3>Required Fields</h3>
+								<table class="bdr wth">
+									<tr class="header">
+										<th class="qTr">Fields</th>
+											<th class="qTr">Type</th>
+										<th class="qTr">Description</th>
+											<th class="qTr">Example</th>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">TITLE</td>
+											<td class="qTr">Character<br/>Limit: 150 characters</td>
+										<td class="qTr">Enter the Title of the Event</td>
+											<td class="qTr">Eg: How to write Django programs</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr tbl">EVENT_DESCRIPTION</td>
+											<td class="qTr">Character</td>
+										<td class="qTr tbl">Enter the Description of the Event</td>
+											<td class="qTr ">Eg: Enter few lines about the event</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr tbl">CATEGORY</td>
+											<td class="qTr">Character</td>
+										<td class="qTr tbl">Enter the Category of the Event seperated by comma if multiple category</td>
+											<td class="qTr">Eg:<br/>(i) Art and Culture<br/>(ii) Festivals, Parties<br/>(iii) Conferences etc.</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr tbl">STATUS</td>
+											<td class="qTr">Character</td>
+										<td class="qTr tbl">Enter the Status of the Event</td>
+											<td class="qTr">Eg:<br/>(i) PUBLISHED<br/>(ii) PENDING<br/>(iii) BLOCKED</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">START_DATE</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Date when the event starts <br/>Format:<br/>YYYY-MM-DD</td>
+											<td class="qTr">Eg: 2013-09-18 </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">END_DATE</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Date when the event ends <br/>Format:<br/>YYYY-MM-DD</td>
+											<td class="qTr">Eg: 2013-09-25 </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_NAME</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Venue name of the Event</td>
+											<td class="qTr">Eg: Taj hotel</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_TYPE</td>
+											<td class="qTr">Character<br/>Limit: 100 characters</td>
+										<td class="qTr">Enter the Venue type</td>
+											<td class="qTr">Eg:<br/>(i)Areana/Stadium<br/>(ii)Beach<br/>(iii)Coffee House etc. </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_ADDRESS1</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the address of the Event - Line 1</td>
+											<td class="qTr">Eg: #123, abc road,</td>
+									</tr>
+                                    <tr class="brda">
+                                        <td class="qTr">VENUE_ZIPCODE</td>
+                                            <td class="qTr">Character<br/>Limit: 16 characters</td>
+                                        <td class="qTr">Enter the Zipcode / Pin</td>
+                                            <td class="qTr">Eg: 12345</td>
+                                    </tr>
+								</table>
+                 		</div>
+					<!--/Table Fomat I ends here--> 
+					<!--/Table Fomat II--> 
+						<div class="qKhP">
+							<h3>Optional Fields</h3>
+								<table class="bdr wth">
+									<tr class="header">
+										<th class="qTr">Fields</th>
+											<th class="qTr">Type</th>
+										<th class="qTr">Description</th>
+											<th class="qTr">Example</th>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">START_TIME</td>
+											<td class="qTr">Time</td>
+										<td class="qTr">Enter the Event Start Time<br/>Format<br/>24hour_format: HH:MM:SS</td>
+											<td class="qTr">Eg: 09:50:55</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">END_TIME</td>
+											<td class="qTr">Time</td>
+										<td class="qTr">Enter the Event End Time<br/>Format<br/>24hour_format: HH:MM:SS</td>
+											<td class="qTr">Eg: 09:55:58</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">IS_REOCCURING</td>
+											<td class="qTr">Boolean</td>
+										<td class="qTr">If this field is TRUE then this event occurs recurrently</td>
+											<td class="qTr">Eg:<br/>(i)TRUE<br/>(ii)FALSE</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">REPEAT_SUMMARY</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the details about the day and date on which it repeates. Also enter whether it repeates daily, weekly, monthly or yearly</td>
+											<td class="qTr">Eg:<br/>(i)Daily, until 26 September 2013<br/>(ii)Weekly on Wednesday, until 26 September 2013<br/>(iii)Monthly on day 18, until 26 September 2013<br/>(iv)Yearly on September 18, until 26 September 2013</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">TICKET_PRIZE</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the Ticket Price for the Event</td>
+											<td class="qTr">Eg: 10</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">TICKET_WEBSITE</td>
+											<td class="qTr">URL</td>
+										<td class="qTr">Enter the Website URL where you can buy the Tickets</td>
+											<td class="qTr">Eg: www.buytickets.com</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">TICKET_PHONE_NO</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the Ticket Enquire Phone Number</td>
+											<td class="qTr">Eg: 1234-123-1234</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">EVENT_WEBSITE</td>
+											<td class="qTr">URL</td>
+										<td class="qTr">Enter the Event Website URL</td>
+											<td class="qTr">Eg: www.eventwebsite.com</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">FACEBOOK</td>
+											<td class="qTr">URL</td>
+										<td class="qTr">Enter the Facebook URL for the Event</td>
+											<td class="qTr">Eg: www.facebook.com/eventname</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">GOOGLEPLUS</td>
+											<td class="qTr">URL</td>
+										<td class="qTr">Enter the Googleplus URL for the Event</td>
+											<td class="qTr">Eg: plus.google.com/eventname</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">CONTACT_EMAIL</td>
+											<td class="qTr">Email</td>
+										<td class="qTr">Enter the Contact Email address for the Event</td>
+											<td class="qTr">Eg: Event@example.com</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">PHONE</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the Event Enquire Phone number</td>
+											<td class="qTr">Eg: 1234-123-1234</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">LISTING_TYPE</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Listing type for the Event</td>
+											<td class="qTr">Eg: <br/>(i) FREE</br>(ii) FEATURED</br>(iii) SPONSORED</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">LISTING_PRICE</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the Listing Price for the Event in {{globalsettings.currency}}</td>
+											<td class="qTr">Eg: 10</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">LISTING_START</td>
+											<td class="qTr">Date & Time</td>
+										<td class="qTr">Enter the Listing start Date<br/>Format:<br/>YYYY-MM-DD HH:MM:SS</td>
+											<td class="qTr">Eg: 2013-09-17 09-30-55</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">LISTING_END</td>
+											<td class="qTr">Date & Time</td>
+										<td class="qTr">Enter the Listing End date<br/>Format:<br/>YYYY-MM-DD HH-MM-SS</td>
+											<td class="qTr">Eg: 2013-09-25 09-30-55</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">LISTING_DURATION</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the Listing duration in days</td>
+											<td class="qTr">Eg: 10</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">IS_PAID</td>
+											<td class="qTr">Boolean</td>
+										<td class="qTr">If the field is TRUE then the Event price has been paid</td>
+											<td class="qTr">Eg:  <br/>(i)TRUE</br>(ii)FALSE</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">SEO_TITLE</td>
+											<td class="qTr">Chatacter<br/>Limit: 70 characters</td>
+										<td class="qTr">Enter the Seo Tile for the Event</td>
+											<td class="qTr">Eg: </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">SEO_DESCRIPTION</td>
+											<td class="qTr">Characters<br/>Limit:160 characters</td>
+										<td class="qTr">Enter the Seo Description for the Event </td>
+											<td class="qTr">Eg: </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">TAGS</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Tags for the Event. Tags must be seperated by commas </td>
+											<td class="qTr">Eg: sports, cricket</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_ADDRESS2</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the address of the Event - Line 2</td>
+											<td class="qTr">Eg: some town, Bangalore-560005</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_PHONE_NO</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the Venue Phone number</td>
+											<td class="qTr">Eg: 1234-123-1234</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_EMAIL</td>
+											<td class="qTr">Email</td>
+										<td class="qTr">Enter the Venue Email address</td>
+											<td class="qTr">Eg: venue@example.com</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_WEBSITE_URL</td>
+											<td class="qTr">URL</td>
+										<td class="qTr">Enter the Venue website URL</td>
+											<td class="qTr">Eg: www.venuename.com</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_DESCRIPTION</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Venue description</td>
+											<td class="qTr">Eg: Enter few lines about the Venue.</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_LATITUDE</td>
+											<td class="qTr">Number/Decimal</td>
+										<td class="qTr">Enter the Venue Latitude</td>
+											<td class="qTr">Eg: 30°S </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_LONGITUDE</td>
+											<td class="qTr">Number/Decimal</td>
+										<td class="qTr">Enter the Longitude</td>
+											<td class="qTr">Eg: 30°E</td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_MAPZOOM</td>
+											<td class="qTr">Number</td>
+										<td class="qTr">Enter the MapZoom</td>
+											<td class="qTr">Eg: Zoom Range: 0 - 19 </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_SEO_TITLE</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Venue Seo Tile</td>
+											<td class="qTr">Eg: </td>
+									</tr>
+									<tr class="brda">
+										<td class="qTr">VENUE_SEO_DESCRIPTION</td>
+											<td class="qTr">Character</td>
+										<td class="qTr">Enter the Venue Seo Description</td>
+											<td class="qTr">Eg: </td>
+									</tr>
+								</table>
+            	     	</div>
+					 <!--/Table Fomat II ends here--> 
+					</div>
+                    </div>																	                                        
+                </div> <!-- end table -->                                    
+            </div><!-- end page wrap -->
+        </div>  <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+			<div class="section">
+				<a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/1qSud3JD7RY5ybuy5vj2Es2lSQmb2Iuwcu8SpHlb5b1Y/edit#bookmark=id.m2pbmt1556sd" target="_blank"><span class="icon">?</span>Quick help</a><hr>
+			</div>
+			{# include 'events/staff/event-import-csv-faq.html' #}
+		</div>        
+	</div>                            
+</div>
+{% endblock %}			
+{% block footer_include %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#mform").validate({
+		ignore: "",
+		highlight: function(element, errorClass){add_error_class(element)},
+		unhighlight: function(element, errorClass){remove_error_class(element)},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	eventcsv: "required",
+	   	}
+	});
+});
+function validate(){
+	if($('#eventcsv').val().toLowerCase().lastIndexOf(".csv")==-1) 
+	 {
+		alert("Please upload only .csv extention file");
+		$('#eventcsv').focus(); 
+		return false;
+	}
+	else{
+		return true;
+	}
+}
+</script>
+{% endblock %}	
+				

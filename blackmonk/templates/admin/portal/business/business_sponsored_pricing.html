@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Manage Business Configuration</title>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-screen.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-print.css" type="text/css" media="print" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-1.4.4.min.js"></script>
+<script src="{{ STATIC_URL }}/js/menu/menu.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/menu/style.css" />
+<!--[if IE]>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/ds-ie.css" type="text/css" media="screen, projection" title="MB Staff IE styles" charset="utf-8" />
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/admin.css" />
+	<!--[if lt IE 8]>
+	   <style type="text/css">
+	   li a {display:inline-block;}
+	   li a {display:block;}
+	   </style>
+   	<![endif]-->
+	
+<script type="text/javascript">
+function showsubcategory(id){
+	if('+' == jQuery('#id_parentcategory'+id).html()){
+		jQuery('#id_parentcategory'+id).html('--');
+		jQuery('.subcategoycss'+id).show();
+	}else{
+		jQuery('#id_parentcategory'+id).html('+');
+		jQuery('.subcategoycss'+id).hide();
+	}
+}
+
+function check(){
+	$('.subcat').each(function(){
+		var category_ids = $(this).attr('id').split('id_')[1];
+		var cat_id = category_ids.split('_')[1];
+		if ($(this).hasClass('month')){
+			if ( parseInt($(this).val()) < parseInt($('#monthly_price_'+cat_id).val()) || $.trim($(this).val()) == "")
+				{
+					$(this).val($('#monthly_price_'+cat_id).val());
+				}
+		}
+		else if ($(this).hasClass('year')){
+			if (parseInt($(this).val()) < parseInt($('#yearly_price_'+cat_id).val()) || $.trim($(this).val()) == "")
+				{
+					$(this).val($('#yearly_price_'+cat_id).val());
+				}
+		}
+	})
+}
+
+
+function validate(){
+ 	
+	var status = false ;
+	
+	$('.cat_price').each(function(){
+	 if ($.trim($(this).val()) == "")
+	  	{
+			$(this).addClass('error');
+			alert('Please fill in the unfilled boxes');
+			return false;
+		}
+	 else if (isNaN($.trim($(this).val())))	
+	 	{
+			$(this).addClass('error');
+			alert('Please enter numbers');
+			return false;
+		}
+	 else{
+			$(this).removeClass('error');
+			status = true ;
+	 	}
+	});
+	check();
+	return status;
+}
+
+</script>
+{% block head %}
+{% endblock %}
+</head>
+<body id="mb_staff">
+	<!--// Header \\-->
+    <div id="header" style="background-color:#294572">
+  		<div class="container group">
+            <div class="main">
+              <div id="mb_logo">
+                    <a href="/"><img src="{{ globalsettings.staff_logo }}" alt="{{ globalsettings.city }}" class="logo"  /></a>
+              	</div>
+                <div id="mb_top_nav">
+                	<p style="display:inline; font-weight:bold; color:#D3CFBC; padding-right:10px;"><span style="color:#6F685B">Hello,</span> Admin</p>
+                    <div class="nav_container">
+                        <a href="/">Home</a><strong>&bull;</strong>
+                        <a href="/staff/">Staff CP</a><strong>&bull;</strong>
+                        <a href="/accounts/overview/">My Account</a><strong>&bull;</strong>
+                        <a href="/accounts/signout/">Sign out</a>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	<!--/ End Header \-->
+	<!--// Main Nav \\-->
+	<!--/ End Main Nav \-->
+    <div id="content">
+    	<div class="container group">
+			<div class="main" style="margin-bottom:20px;margin-top:10px;">
+				<div style="padding:2px;border:solid;border-width:1px;border-radius:4px;border-color:#aaa;height:25px;width:188px;margin-left:6px;">
+					<ul class="side_menus" style="border:none !important;margin-top:0px;">
+                        <li><a href="{% url 'admin_portal' %}" style="" class="side_menu on active">Portal</a></li>
+						<li><a href="{% url 'admin_configuration_general' %}" style="border-right:solid #ffffff;" class="side_menu on inactive">Configuration</a></li>
+						<li><a href="javascript:void(0)" class="side_menu on inactive">Design</a></li>
+                    </ul>
+				</div><hr/>
+				<div style="padding:5px;margin-left:5px;">
+					<a href="{% url 'admin_portal' %}">Portal</a>&nbsp;&#187;&nbsp;
+					<a href="{% url 'admin_portal_business' %}">Business</a>&nbsp;&#187;&nbsp;
+					<a href="{% url 'admin_portal_business_price' %}">Pricing</a>&nbsp;&#187;&nbsp;Sponsored Pricing
+				</div>
+            	<div class="right_col"  style="float:left;width:150px;">
+                	{% include 'admin/portal/left_navigation.html' %}
+					<script type="text/javascript">
+						$('#bus_price').addClass('menu_on');
+						$('#business').addClass('active_menu');
+					</script>
+                </div> 	
+				<div class="right_col" style="float:left;border:solid;border-top:solid;padding:2px;margin-top:1px;width:600px;"><br>
+					<div class="title" align="center"><h2 id="id_s_message">Business</h2></div>
+					{% if msg %}
+					<div class="msg" style="float:left;">{{msg}}</div>
+					<script type="text/javascript">
+						$('.msg').fadeOut(7000);
+					</script>
+					{% endif %}
+					{% if form.errors %}
+						<div class="messageerror" >
+							<span style="font-size:1.2em;font-weight:250;">
+								<strong>There is a problem with your submission</strong></span>
+			                <ul>
+			       			 {% for field in form %}
+			       			 	{% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+			      	 		 {% endfor %}
+							</ul>
+				 		 </div>
+					{% endif %}
+					<div id="formContainer" class=" clearfix" >
+						<form name="bus_spon_price_form" id="id_bus_price_form" method="post" action="{% url 'admin_portal_business_sponsored_price' %}" onsubmit="return validate();return false;">{% csrf_token %}
+						<table class="staff_ctg content" align="center" cellpadding="0" cellspacing="0" width="590">
+								<colgroup>
+									<col width="550">							
+									<col width="60">
+	                                <col width="130">
+								</colgroup>				
+								<tbody>
+									<tr class="head" style="">
+										<th class=""><div>Category</div></th>
+										<th class="posted_by"><div>Price/Month</div></th>
+										<th class="action" style="text-align: left;"><div>Price/Year</div></th>
+									</tr>
+									{% for category in parentcategoryes %}
+										<tr class="row">
+											<td class="category" style="width:300px;">
+												<div class="main_category_title">
+													<h5 style="margin:0; padding:0;" onclick="showsubcategory({{ category.id }});"><b id="id_parentcategory{{ category.id }}">+</b> <a href="#" onclick="return false;">{{ category.name }}</a></h5>
+												</div>
+											</td>
+											<td class="posted_by" style="">
+												Starts at
+												<div>
+		                                            {{ globalsettings.currency }} <input type="text"  class="cat_price" id="monthly_price_{{category.id}}" name="monthly_price_{{category.id}}" value="{% if category.price_month %}{{category.price_month}}{% endif %}"  onkeyup="check()" size="7"/>
+												</div>											
+											</td>
+											<td class="posted_by" style="">
+												Starts at
+												<div >
+													 {{ globalsettings.currency }} <input type="text" class="cat_price" id="yearly_price_{{category.id}}" name="yearly_price_{{category.id}}" value="{% if category.price_year %}{{category.price_year}}{% endif %}" onkeyup="check()" size="7"/>
+												</div>
+											</td>
+										</tr>
+										{% for subcat in category.getChildCategory %}
+											<tr class="row sub subcategoycss{{ category.id }}">
+												<td class="category" style="width:300px;">
+													<div class="sub_category_title">
+														<h5>{{ subcat.name }}</h5>
+													</div>
+												</td>
+												<td class="posted_by" style="width:120px;">
+													<div>
+			                                            {{ globalsettings.currency }} <input type="text" id="id_{{ subcat.id }}_{{category.id}}" class="subcat month" name="monthly_price_{{subcat.id}}" value="{% if subcat.price_month %}{{ subcat.price_month }}{% endif %}" size="7"/>
+													</div>											
+												</td>
+												<td class="action" style="">
+													<div >
+														{{ globalsettings.currency }} <input type="text" id="id_{{ subcat.id }}_{{category.id}}" class="subcat year" name="yearly_price_{{subcat.id}}" value="{% if subcat.price_year %}{{ subcat.price_year }}{% endif %}" size="7"/>
+													</div>
+												</td>
+											</tr>
+										{% endfor %}
+									{% endfor %}				
+	                                </tbody>
+							</table>
+							<input type="button" class="inputsubmit off" value="Back" onclick="location.replace('{% url 'admin_portal_business_price' %}');" name="continue" style="font-size:14px; padding:5px 10px !important; font-weight:bold;">&nbsp;
+							<input type="submit" class="inputsubmit on" value="Update" name="continue" style="font-size:14px; padding:5px 10px !important;  font-weight:bold;">
+						</form>
+					</div>
+                </div>
+				<div class="right_col" style="float:left;margin-left:5px;border:solid;padding:5px;width:140px;height:447px;border-width:1px;border-radius:4px;border-color:#aaa;">
+					<h3>Help Text</h3>
+                </div>	
+                <hr />
+            </div>
+        </div>
+    	<hr/>
+	</div>
+	<div class="footer" style="height:120px; background-color:#FBF9F7; margin-top:20px;">
+    	<div class="container group" style="text-align:center; padding-top:15px;color:#aaa">
+        	Copyright &copy; 2008-2010 {{ globalsettings.domain }}. All rights reserved.
+        </div>
+    </div>
+<script type="text/javascript">
+{% for category in parentcategoryes %}
+	jQuery('.subcategoycss{{ category.id }}').hide();
+{% endfor %}
+</script>
+</body>
+</html>
+
+
+
+
+
+ 	
+ 	

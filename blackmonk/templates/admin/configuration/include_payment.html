@@ -1,0 +1,160 @@
+{% load i18n %}
+<div id="ajax_content_loading" style="display:none;padding-top:96px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Payment Settings' %}</p>
+</div>
+<div class="group" id="map-options">
+	<form action="{% url 'admin_configuration_payment_update' %}" name="mform" id="mform" method="post">
+	    <div class="fields vform no_head">
+	        <div id="meta-tags" class="field-group">
+	            <div class="fields-head">
+	                <h3>{% trans 'Currency Code/Symbol' %}</h3>
+	                <p class="ltxt80">{% trans 'Enter the currency code/symbol of the region in which your business is located.' %}</p> 
+	            </div>  
+	            <div class="field text-field">	
+	                <div class="value">
+	                    {{form.currency_code}}
+	                </div>	
+	            </div><!--field--> 
+	            <div class="field text-field">	
+	                <div class="value">
+						{{form.currency_symbol}}
+	                </div>	
+	            </div><!--field-->                                                     
+	        </div>            
+	    </div><!--fields-->
+	    <div class="fields vform no_head">
+	        <div id="meta-tags" class="field-group">
+	            <div class="fields-head">
+	                <h3>{% trans 'Payment Gateways' %}</h3>
+	                <p class="ltxt80">{% trans 'Set up your payment gateways  like PayPal and Google Checkout for receiving payments.' %}</p> 
+	            </div>
+	            <div class="field text-field relative-block has_check">
+	                <div class="label info pdb_0">
+	                	<span class="cform-checkbox-container">
+	                        {{form.invoice_payment}}
+	                        <span class="cform-checkbox-element"></span>
+	                    </span>
+	                    <label>{% trans 'Offline Payment' %}</label>
+	                    <p class="ltxt80">{% trans 'Enable/disable this manual payment gateway' %}</p>
+	                </div>	
+	            </div><!--field-->
+	            <div class="field text-field relative-block has_check">
+	                <div class="label info pdb_0">
+	                	<span class="cform-checkbox-container">
+	                        {{form.paypal_payment}}
+	                        <span class="cform-checkbox-element"></span>
+	                    </span>
+	                    <label>{% trans 'PayPal Payment' %}</label>
+	                    <p class="ltxt80">{% trans 'Allow PayPal for receiving online payments.' %}</p>
+	                </div>	
+	            </div><!--field-->
+	            <div class="field has_check">
+	                <div class="label info pdb_0">
+	                    <label>{% trans 'Registered email' %}</label>
+	                    <p class="ltxt80">{% trans 'Enter the email address that you have registered with PayPal.' %} </p>
+	                </div>	
+	            </div><!--field-->
+	            <div class="field text-field has_check">	
+	                <div class="value">
+	                	{{form.paypal_receiver_email}}
+	                </div>	
+	            </div><!--field--> 
+	            <!--div class="field text-field relative-block has_check">
+	                <div class="label info pdb_0">
+	                	<span class="cform-checkbox-container">
+	                        {{form.google_checkout}}
+	                        <span class="cform-checkbox-element"></span>
+	                    </span>
+	                    <label>{% trans 'Google Checkout' %}</label>
+	                    <p class="ltxt80">{% trans 'Allow Google Checkout for receiving online payments.' %}</p>
+	                </div>	
+	            </div--><!--field-->
+	            <!--div class="field has_check">
+	                <div class="label info pdb_0">
+	                    <label>{% trans 'Merchant ID/Key' %}</label>
+	                    <p class="ltxt80">Enter the merchant ID/Key for your Google Checkout account.<br><a href="http://support.google.com/checkout/sell/bin/answer.py?hl=en&answer=42963">How to get my Google Checkout Merchant ID and Key </a></p>
+	                </div>	
+	            </div--><!--field-->
+	            <!--div class="field text-field has_check">
+	            	<div class="label"><label>Merchant ID</label></div>	
+	                <div class="value">
+						{{form.merchant_id}}
+	                </div>	
+	            </div--><!--field-->
+	            <!--div class="field text-field has_check">
+	            	<div class="label"><label>Merchant Key</label></div>	
+	                <div class="value">
+	                	{{form.merchant_key}}
+	                </div>	
+	            </div--><!--field-->
+				
+				<div class="field text-field relative-block has_check">
+	                <div class="label info pdb_0">
+	                	<span class="cform-checkbox-container">
+	                        {{form.authorize}}
+	                        <span class="cform-checkbox-element"></span>
+	                    </span>
+	                    <label>{% trans 'Authorize.Net' %}</label>
+	                    <p class="ltxt80">{% trans 'Allow Authorize.Net for receiving online card payments.' %}</p>
+	                </div>	
+	            </div><!--field-->
+	            <div class="field has_check">
+	                <div class="label info pdb_0">
+	                    <label>{% trans 'Login ID/Transaction Key' %}</label>
+	                    <p class="ltxt80">{% trans 'Enter the Login ID and Transaction Key for your Authorize.Net account.' %}<br></p>
+	                </div>	
+	            </div><!--field-->
+	            <div class="field text-field has_check">
+	            	<div class="label"><label>{% trans 'Login ID' %}</label></div>	
+	                <div class="value">
+						{{form.login_id}}
+	                </div>	
+	            </div><!--field-->
+	            <div class="field text-field has_check">
+	            	<div class="label"><label>{% trans 'Transaction Key' %}</label></div>	
+	                <div class="value">
+	                	{{form.transaction_key}}
+	                </div>	
+                </div>
+	        </div> 
+			<!-- ############################################-->
+			<div class="field text-field relative-block has_check">
+                <div class="label info pdb_0">
+                	<span class="cform-checkbox-container">
+                        {{form.stripe}}
+                        <span class="cform-checkbox-element"></span>
+                    </span>
+                    <label>{% trans 'Stripe' %}</label>
+                    <p class="ltxt80">{% trans 'Allow Stripe for receiving through credit card payments.' %}</p>
+                </div>	
+            </div><!--field-->
+            <!--div class="field has_check">
+                <div class="label info pdb_0">
+                    <label>{% trans 'Merchant ID/Key' %}</label>
+                    <p class="ltxt80">Enter the merchant ID/Key for your Google Checkout account.<br><a href="http://support.google.com/checkout/sell/bin/answer.py?hl=en&answer=42963">How to get my Google Checkout Merchant ID and Key </a></p>
+                </div>	
+            </div><!--field-->
+            <div class="field text-field has_check">
+            	<div class="label"><label>Live Publishable Key</label></div>	
+                <div class="value">
+					{{form.stripe_public_key}}
+                </div>	
+            </div><!--field-->
+            <div class="field text-field has_check">
+            	<div class="label"><label>Live Secret Key</label></div>	
+                <div class="value">
+                	{{form.stripe_private_key}}
+                </div>	
+            </div><!--field-->
+            {% if form.stripe.value %}
+            <div class="field text-field has_check" style="margin-bottom: 20px">
+                <div class="label"><label>View all <a href="{% url 'stripe_list_plans' %}" style="color: #4083A9;" title="{% trans 'Subscription Plans' %}" type="button">Subscription Plans</a> existing in your Stripe.com account.</label></div>
+            </div>
+            {% endif %}
+	    </div><!--fields-->
+	    <div class="modal-base form-submit group trp-bg">
+			<button role="button" class="cform-button prime right" type="button" onclick="save_payment()"  style="margin-right: 10px;"><span class="cform-button-text">Save Changes</span></button>
+		</div>
+	</form>
+</div><!--group-->  
+

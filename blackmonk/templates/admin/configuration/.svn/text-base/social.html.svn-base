@@ -1,0 +1,45 @@
+﻿{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'apiconfig' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Social' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_configuration_general_signup' %}" style="z-index:9"><span class="icon"></span>{% trans 'API Config' %}</a></li>
+                    <li><a href="{% url 'admin_configuration_social' %}" style="z-index:8">{% trans 'Social' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12 configuration">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'apiconfig' %}
+					{% activetab 'leftnav' 'social' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                            <h2>{% trans 'Social' %}</h2>
+							<p class="ltxt80">{% trans 'Set social platforms to leverage the beauty of the apps like adding Fan Box and more.' %}</p>
+                        </div>
+						{% include 'admin/configuration/include_social.html' %}
+	               	</div>
+	         	</div>                       
+	       	</div>                            
+	       {% include 'admin/configuration/social-faq.html' %}                    
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}

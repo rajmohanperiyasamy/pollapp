@@ -1,0 +1,111 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load ds_utils %}
+{% block pagetitle %}{{ seo.seo_title }}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+<script type="text/javascript">
+var loaded = true;
+
+function loadMore()
+{
+  load_more_meetups();       
+  $(window).on('scroll', bindScroll);
+}
+
+function bindScroll(){
+  if($(window).scrollTop() + $(window).height() > $(document).height() - 480 && loaded) {
+        loaded = false;
+      $(window).off('scroll');
+      {% if more_meet %}
+      loadMore();
+      {% endif %}
+  }
+}
+
+$(window).scroll(bindScroll);
+
+function load_more_meetups(){
+    $('#id_content_ul').after('<div id="id_loading_div" class="tXt-cTr">Loading...</div>');
+    var more_meetup_url = '{{more_meet}}';
+    more_meetup_url = encodeURIComponent(more_meetup_url);
+    $.ajax({
+            type: "GET",
+            url: "{% url 'meetup_more_meetups' %}",
+            data: "more_meetups="+more_meetup_url+"{% if selected_category %}&category={{selected_category}}{% endif %}",
+            dataType: "JSON",
+            success: function(data){
+                //loaded = true;
+                if(data.status){
+                   if(data.mtp_list){$('#id_loading_div').remove();$('#id_content_ul').append(data.html);}             
+                   else{$('#id_loading_div').html(gettext('No more meetups'));setTimeout("$('#id_loading_div').hide()",5000);}
+                }
+                else{
+                     $('#id_loading_div').html(gettext('No more meetups'));
+                     setTimeout("$('#id_loading_div').hide()",5000);
+                }
+            }
+    });
+}  
+</script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "meetups" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span8">
+                
+                <!-- /.fTrD-bL -->
+                <div class="pG-hD mRb10">
+                    <h3>{% trans 'Meetups' %}</h3>
+                </div>
+                <div class="tLbR hP">
+                    <div class="tLbR-iR">
+                        <!--div class="btn-toolbar pLrT">
+                            <div data-toggle="buttons-radio" class="btn-group" id="media-toggle">
+                                <button class="btn btn-link c-lT active" type="button">
+                                <i aria-hidden="true" class="bUi-iCn-rE-oDr-aLt-16 "></i>
+                                </button>
+                                <button class="btn btn-link mRl5 c-gD" type="button">
+                                <i aria-hidden="true" class="bUi-iCn-tH-lR-aLt-16"></i>
+                                </button>
+                            </div>
+                        </div-->
+                        <div class="pLrT mRr10">
+                            <select data-link="true" class="bUiSlCtbtn-link">
+                                <option {% if not selected_category %}selected="selected"{% endif %} data-location="{% url 'meetup_index' %}">{% trans 'All Meetups' %}</option>
+                                {% for cat in categories %}
+                                <option {% if selected_category ==  cat.slug %}selected="selected"{% endif %} data-location="{% url 'meetup_cat_index' cat.slug %}">{{cat.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <ul class="modulesBrowseData tHcL mDa-lT mDa-oT-lT">
+                    <li class="mDa-gRp"><!--gb li start -->
+                        <ul class="" id="id_content_ul">
+                            {% include 'default/meetup/part-meetup-list.html' %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <aside class="sD-bR span4">
+                <div class="mSnRy">
+                    <section class="tXt-cTr pD15 bNr-aD pDt0" id="banner_placement_right"></section> 
+                </div>
+                <div class="mSnRy">
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+            
+        </div>
+    </div>
+{% endblock %}        

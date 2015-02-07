@@ -1,0 +1,84 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Bookmarks Overview' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_portal_bookmarks' %}" style="z-index:8">{% trans 'Bookmark' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'bookmarks' %}
+					{% activetab 'leftnavsub' 'bkmrk_overview' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Bookmarks' %}</h2>
+                            <p class="ltxt80">{% trans "Bookmarks overview page gives you a quick snapshot of what's been updated in the Bookmarks Staff CP. You can check this page to track if any new Bookmarks and categories are been added." %}</p>
+						</div>
+                        <ul class="overview-list group">
+							<li class="list-item-container group">
+                            	<div class="col-dt">
+                                	<div class="col-inner">
+                                    	<h5>{% trans 'Bookmarks listed' %}</h5>
+                                    </div>
+								</div>
+                                <div class="col-dd">
+                                	<div class="col-inner">
+                                    	<h3>{{bookmark}}</h3>
+										<p><span class="ltxt80">{% trans 'Published' %}:{{published}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Pending' %}: {{pending}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Drafted' %}: {{drafted}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Rejected' %}: {{rejected}}</span><span class="divider13">|</span><span class="ltxt80">{% trans 'Blocked' %}: {{blocked}}</span></p>
+                                        <a href="{#% url 'staff_bookmark_home' %#}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Bookmark' %}">{% trans 'Manage' %}</a>
+                                   	</div>                                                    
+                              	</div>
+							</li> 
+							<li class="list-item-container group">
+                            	<div class="col-dt">
+                                	<div class="col-inner">
+                                    	<h5>{% trans 'Categories' %}</h5>
+                                   	</div>
+                               	</div>
+                                <div class="col-dd">
+                                	<div class="col-inner">
+                                    	<h3>{{category}}</h3>
+                                        <a href="{% url 'admin_portal_bookmarks_category' %}" class="action edit-icon tttxt start-modal" title="{% trans 'Manage Categories' %}">{% trans 'Manage' %}</a>
+                                  	</div>                                                    
+								</div>
+							</li>
+                        </ul>
+                  	</div>
+              	</div>                       
+      		</div>                            
+            {% include 'admin/portal/bookmarks/faq.html' %}                    
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

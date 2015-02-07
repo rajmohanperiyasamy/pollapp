@@ -1,0 +1,41 @@
+{% extends base %}
+{% load modulotag %}
+{% load comparison %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load bm_articletags %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Bookmarks' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Bookmarks' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "bookmark" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span8">
+                <div class="row-fluid">
+                    {% include 'default/bookmarks/ajax_home_bookmarks.html' %}
+                </div>
+            </div>
+            <aside class="sD-bR span4">
+                <div class="mSnRy">
+                    <section class="sCn bNr-aD hide" id="banner_placement_right"></section> 
+                </div>
+                <div class="mSnRy">
+                    {% include 'default/likebox.html' %}
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}        

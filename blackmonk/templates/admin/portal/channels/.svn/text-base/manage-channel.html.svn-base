@@ -1,0 +1,105 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Channels | Manage Channels' %} {% endblock %}
+{% block head %}
+<script type="text/javascript">
+function change_status(id){
+  $('.dev_hide_list_status ul.dropdown-list').hide();
+  $('span.status-inside').removeClass('active');
+  $('#id_change_status_ul_'+id).toggle();
+  $('#id_change_status_span_'+id).toggleClass('active');
+}
+function save_status(id){
+    $('#id_change_status_span_icon_'+id).addClass('loading');
+    var DataString="id="+id;
+    var url = '{% url 'admin_channel_status' %}';
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: DataString,
+        dataType:'JSON',
+        success: function(data){
+            if(data.success){
+                $('#id_change_status_span_icon_'+id).removeClass('loading');
+                $('#id_change_status_span_icon_'+id).removeClass('icon-active-user icon-inactive-user').addClass(data.status_class);
+                $('#id_change_status_ul_'+id).hide();
+                $('#id_change_status_span_'+id).removeClass('active');
+                $('#id_change_status_text_'+id).text(gettext(data.status_text));
+            }else{
+                show_msg(gettext('Oops!!! Not able to process your request.'),'alert-error');
+            }
+        }
+    });                 
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="javascript:void(0)" style="z-index:9"><span class="icon"></span>{% trans 'Channels' %}</a></li>
+					<li><a href="{% url 'admin_channel_manage_channel' %}" style="z-index:7">{% trans 'Manage Channels' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+        		{% block leftnavigation %}
+					{% include 'admin/portal/channels/left-navigation.html'%}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Manage Channels' %}</h2>
+							<p class="ltxt80">{% trans 'Add or Update channels for your website' %}</p>
+						</div>
+                        <div id="custom_page" class="cat-list group">
+                        	<section class="toolbars">
+                            	<div class="group">
+                                    <span style="float:right">
+                                    	<a href="{% url 'admin_channel_add_cahnnel' %}" title="{% trans 'Add New Channel' %}" class="btn-txt-inline-prime"><span class="btn-txt">{% trans 'Add New Channel' %}</span></a>
+									</span>
+								</div>
+							</section>
+                            <ul class="cat-list-container" id="category">
+                            	{% for channel in channels %}
+								<li class="cat-list-row" id="div_{{channel.id}}">
+                                	<div class="cat-list-row-inner group">
+                                        <div class="cat-list-column cat-name"><h3>{{ channel.name }}</h3></div>
+                                        <div class="cat-list-column action-buttons">
+                                        	<div class="group">
+                                                <a href="{% url 'admin_channel_update_channel' channel.id %}" title="{% trans 'Update Page' %}" class="tttxt-n"><span class="icon icon-edit"></span></a>
+                                            </div> 
+										</div>
+										<div class="cat-list-row-inner group member-status" style="float:right;margin-right:10px;padding-top:4px;">
+							                <div class="relative-block dev_hide_list_status" onclick="change_status({{channel.id}});" id="id_change_status_div_{{channel.id}}">
+							                    <span class="status-inside inline-block" id="id_change_status_span_{{channel.id}}"><span class="inline-block status-idty {% if channel.status %}icon-active-user{% else %}icon-inactive-user{% endif %}" id="id_change_status_span_icon_{{channel.id}}"></span><span class="arrow"></span></span>
+							                    <ul class="dropdown-list" id="id_change_status_ul_{{channel.id}}">
+							                        <li><strong>{% trans 'Update status to...' %}</strong></li>
+							                        <li><a href="javascript:void(0)" id="id_change_status_text_{{channel.id}}" onclick="save_status({{channel.id}});">{% if channel.status %}{% trans 'Inactive' %}{% else %}{% trans 'Active' %}{% endif %}</a></li>
+							                    </ul>  	 
+							                </div>                                                     
+							            </div> 
+									</div>
+								</li>  
+								{% endfor %}                                           
+							</ul>                          
+                    	</div>
+                	</div>
+            	</div>                       
+            </div>                            
+			 {#% include 'admin/portal/channels/faq.html' %#}                                   
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}

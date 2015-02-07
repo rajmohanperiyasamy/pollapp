@@ -1,0 +1,12 @@
+{% load i18n ds_utils %}
+<li class="mDa">
+    <div class="mDa-iN">
+        <div class="mDa-bDy mRr0mP">
+            <h5 class="mDa-hD tRnCt mRt0 mRb5 fS16 pDr15" title="{{object}}"><a href="{{object.get_absolute_url}}">{{object}}</a></h5>
+            <p class="fS12 cLr-gRy-dRk pDr15 mRb0"><span class="mRr5 cLr-gRy">{{object.created_on|timesince|time_up_to:','}} {% trans 'ago' %}</span> {% autoescape off %}{{object.moredetails|truncatewords:40}}{% endautoescape %}</p>
+        <footer class="cMnT-fTr">
+            <span class="rPlY fS12"><a href="{{object.get_absolute_url}}" class="cLr-lTbLu">{{object.get_all_answers.count}} {% trans "Answers" %}</a></span>
+        </footer>
+        </div>
+    </div>
+</li>        

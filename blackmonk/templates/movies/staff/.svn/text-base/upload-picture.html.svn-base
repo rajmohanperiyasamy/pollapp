@@ -1,0 +1,31 @@
+{% load upload_tags %}
+<input type="hidden" name="eid" value="{{movie.id }}" />
+<fieldset id="basic_info"  style="width:720px;">
+	<div id="fileupload" >
+		<div class="title">
+			<p>Upload movie image from your computer.You can upload upto 10 photos</p>
+		</div>
+	 	<div class="fileupload-content" style="padding-left:20px;">
+	    	<ul class="files bm-uploader-list"></ul>
+		</div>
+		<div id="bm-dropzone_area" class="dropzone">Drop the files here</div>
+        {% csrf_token %}
+        <div class="upload-button-wrapper"  style="padding-left:20px;">
+            <a class="upload-button">Add Images</a>
+                <div class="fileinput-button">
+                    <input type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+                </div>
+            </div>
+		</div>
+</fieldset>
+                                                                                  
+			
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+<script type="text/javascript">
+$(document).ready(function(){
+	file_upload('/staff/movies/ajaxuploadphotos/?id={{movie.id}}',30);
+});
+</script>			

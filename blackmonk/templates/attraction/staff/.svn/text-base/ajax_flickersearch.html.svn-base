@@ -1,0 +1,212 @@
+{% load tabs %}
+{% load upload_tags %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<style>
+	#images .img_wrap{float:left;cursor:pointer;width:100px;text-align:center;margin-right:10px;display:block;height:120px;position:relative;border:1px solid #e6e6e6;margin-bottom:10px;padding:10px;}
+	#images .img_wrap:hover {border-color:#333}
+	#images .img_wrap:hove  span.checkbox{background-color:#333;}
+	#images .img_wrap span.checkbox{position:absolute;top:0; left:0;z-index:1;background-color:#e6e6e6;padding:2px;}
+	.loader_32 {
+	    display:none;
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    margin-left: -23px;
+	    margin-top: -23px;
+	    width: 46px;
+	    height: 46px;
+	    -webkit-border-radius: 6px;
+	    -moz-border-radius: 6px;
+		-khtml-border-radius: 6px;
+		border-radius: 6px;
+	    background: #000 url({{ STATIC_URL }}themes/green/images/global/loader_32_alt.gif) no-repeat center center;
+	}
+	.lightbox_content_holder{background-color:black!important;padding:2px!important}
+	#as_loader_wrap{display:none}
+</style>
+
+<script>
+	$(document).ready(function(){
+		$("#mform").hide();
+		$('.click_pvnt').click(function(event){
+			event.preventDefault();
+		});
+		
+		
+		$("#catmform").submit(function(event){
+			event.preventDefault();
+			getPhotos();			
+		});
+
+	});
+	var PAGE=1;
+	var SORT='relevance';
+	function search_filter(sort){
+		SORT=sort;
+		PAGE=1;
+		$('#prv_page').attr('disabled', true);
+		getPhotos();
+	}
+	function next_page(){
+		PAGE=PAGE+1;
+		getPhotos();
+		if(PAGE>1){
+			$('#prv_page').attr('disabled', false);
+		}
+		else{
+			$('#prv_page').attr('disabled', true);
+		}
+	}
+	function previous_page(){
+		PAGE=PAGE-1;
+		getPhotos();
+		if(PAGE>1){
+			$('#prv_page').attr('disabled', false);
+		}
+		else{
+			$('#prv_page').attr('disabled', true);
+		}
+	}
+	function getPhotos(){
+		var text = document.getElementById("id_title").value;
+		
+		strRE = new RegExp( );
+		strRE.compile( '^[\s ]*$', 'gi' );
+		if(strRE.test(text)==true)
+		{
+			alert("Please enter photo title?");
+		}
+		else
+		{
+		$("#id_search_loader").show();
+		var url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={{ globalsettings.flickr_api_key }}";
+		url += "&safe_search=1";
+		url += "&per_page=20"
+		url += "&page="+PAGE;
+		url += "&tags=''";
+		url += "&sort="+SORT;
+		url += "&text="+text;
+		$.getJSON(url + "&format=json&jsoncallback=?", function(data){
+		$("#id_search_loader").hide();
+			if(data.photos.photo==null || data.photos.photo=='')
+			{ 
+			$("#mform").hide();
+			alert("No search result found try another keyword.");
+			}
+			else
+			{ 
+				$(".img_wrap.unselected").remove();
+			    $.each(data.photos.photo, function(i,item){
+			    var src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret;
+				var l_img = src + ".jpg";
+				src += "_t.jpg";
+				var html = '<li class="img_wrap" id="image_'+item.id+'">';
+				
+				html += '<img style="" src="'+src+'" /><input type="button" id="btn_'+item.id+'" value="Add" onclick="select_photo(\''+item.id+'\');"></li>';
+				$("#images").append(html)
+		    });
+			$('html, body').animate({scrollTop:$('#mform').offset().top+300}, 300);	
+			$("#mform").show();
+			}
+		});
+		}
+	}
+	function view_large_image(src){
+		$('#as_load_hack').val('yes');
+		$('#as_loader_wrap').show();
+		$('#big_image').hide();
+		lightbox();
+		$('#big_image').attr('src',src).load(function(){
+			load_callback_hack();
+		});
+	}
+	
+	function load_callback_hack(){
+		var exec = $('#as_load_hack').val();
+		if (exec == 'yes') {
+			$('#as_loader_wrap').hide();
+			$('#big_image').show();
+			$('#as_load_hack').val('no');
+		}		
+	}
+	
+
+function select_photo(fid){
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_attraction_ajax_upload_filcker_photos' %}",
+		data: "id={{attraction.id}}&fid="+fid,
+		success: function(data){
+			if(data==0){
+				alert('Oops !!! Not able to process your request.');
+			}else{
+				$('#photo_gallery').append(data);
+				$('#image_'+fid).css('border','solid 1px green');
+				$('#image_'+fid).css('background-color','#aaa');
+				$('#btn_'+fid).remove();
+			}
+		}
+	});
+}
+$(document).ready(function(){
+	$('#id_title').bind('keypress', function(e) {
+	var code = (e.keyCode ? e.keyCode : e.which);
+	 if(code == 13) {
+	   getPhotos();
+	 }
+});	
+});
+</script>
+<fieldset id="basic_info" style="width:720px;">
+	<div id="fileupload" >
+	 	<div class="fileupload-content" style="padding-left:20px;">
+	    	<ul class="files bm-uploader-list" id="photo_gallery">
+	    		
+	    	</ul>
+		</div>
+	</div>
+</fieldset>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+<script type="text/javascript">
+$(document).ready(function(){
+	file_upload('/staff/attraction/ajaxuploadphotos/?id={{attraction.id}}',10);
+});
+</script>
+<form action="#" name="catmform" id="catmform" method="post" class="add_category" style="padding-left:200px;">{% csrf_token %}
+	<fieldset style="padding-top:0;">
+		<div class="title"><h2>Search Photos In Flicker</h2></div>
+		<dl class="horizontal">
+			<dt style="width:300px;">
+				{{ form.title }}&nbsp;<input class="inputsubmit on" id="as_search_submit" name="" value="Search"  type="submit"><br>
+				<a href="javascript:search_filter('relevance')">Relevance</a>&nbsp;|&nbsp;<a href="javascript:search_filter('date-posted-asc')">Last Posted</a>&nbsp;|&nbsp;<a href="javascript:search_filter('date-posted-desc')">First Posted</a>&nbsp;|&nbsp;<a href="javascript:search_filter('interestingness-asc')">Interesting</a><label style="margin-right:20px;">&nbsp;</label>
+			</dt>
+			<dd></dd>
+		</dl>                                           
+	</fieldset>
+</form>
+</div>
+<div class="loader_wrapper2" id="id_search_loader" style="display:none;">
+	<span class="horizontal_loader"><img src="{{ STATIC_URL }}themes/green/images/global/buzz_twitter_more.gif" class="horizontal_loader_gif"/>Searching...</span>
+</div>
+<form action="#" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+<div  style="width:720px; float: left;" id="search_result">
+	<div class="title">
+		<h2>Search Results </h2>
+	</div>
+	<ul  id="images">
+	</ul>
+	<ul style="text-align:center;">
+		<li>
+			<input type="button" class="inputsubmit off" id="prv_page" disabled="disabled" value="&#171; Previous" onclick="previous_page()">&nbsp;
+			<input type="button" class="inputsubmit off" value="Next &#187;" onclick="next_page()">
+		<br></li>
+	</ul>
+</div>
+<br>
+</form>
+			

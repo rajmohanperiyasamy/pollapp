@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Manage Configuration</title>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-screen.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-print.css" type="text/css" media="print" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-1.4.4.min.js"></script>
+<!--[if IE]>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/ds-ie.css" type="text/css" media="screen, projection" title="MB Staff IE styles" charset="utf-8" />
+<![endif]-->
+<style type="text/css">
+    .side_menu.on.off{border:none;padding:5px; background-color:#aaaaaa;border-top:solid;}
+    .side_menu.on.onn{padding:5px; background-color:#806D7E;color:#fff;border-top:solid;border-color:#000;}
+    .side_menu.on.inactive{float:left;border:none;padding:5px;color:#fff; background-color:#25587E;}
+    .side_menu.on.active{float:left;border:none;padding:5px;color:#fff; background-color:#357EC7;border-left:solid;border-right:solid;}
+</style>
+{% block head %}
+{% endblock %}
+</head>
+<body id="mb_staff">
+    <!--// Header \\-->
+    <div id="header" style="background-color:#294572">
+          <div class="container group">
+            <div class="main">
+              <div id="mb_logo">
+                    <a href="/"><img src="{{ globalsettings.staff_logo }}" alt="{{ globalsettings.city }}" class="logo"  /></a>
+                  </div>
+                <div id="mb_top_nav">
+                    <p style="display:inline; font-weight:bold; color:#D3CFBC; padding-right:10px;"><span style="color:#6F685B">Hello,</span> Admin</p>
+                    <div class="nav_container">
+                        <a href="/">Home</a><strong>&bull;</strong>
+                        <a href="/staff/">Staff CP</a><strong>&bull;</strong>
+                        <a href="/accounts/overview/">My Account</a><strong>&bull;</strong>
+                        <a href="/accounts/signout/">Sign out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Header \-->
+    <!--// Main Nav \\-->
+    <!--/ End Main Nav \-->
+    <div id="content">
+        <div class="container group">
+            <div class="main" style="margin-bottom:20px;margin-top:10px;">
+                <div style="padding:2px;border:solid;border-width:1px;border-radius:4px;border-color:#aaa;height:25px;width:182px;margin-left:96px;">
+                    <ul class="side_menus" style="border:none !important;margin-top:0px;">
+                        <li><a href="{% url 'admin_portal' %}" style="" class="side_menu on inactive">Portal</a></li>
+                        <li><a href="{% url 'admin_configuration_general' %}" style="" class="side_menu on active">Configuration</a></li>
+                        <li><a href="javascript:void(0)" class="side_menu on inactive">Design</a></li>
+                    </ul>
+                </div><hr/>
+                <div class="right_col"  style="float:left;">
+                    <ul class="side_menus" style="margin-bottom:0px;margin-top:0px;border-top:solid;border-left:solid;border-bottom:solid;">
+                        <li><a href="{% url 'admin_configuration_general' %}" style="border:none;" class="side_menu on onn">General</a></li>
+                        <li><a href="{% url 'admin_configuration_emailtemplates' %}" class="side_menu on off">Email Templates</a></li>
+                        <li><a href="{% url 'admin_configuration_payment' %}" class="side_menu on off">Payment</a></li>
+                        <li><a href="javascript:void(0)" class="side_menu on off">Advertisement</a></li>
+                        <li><a href="{% url 'admin_configuration_social' %}" class="side_menu on off">Social</a></li>
+                        <li><a href="{% url 'admin_configuration_map' %}" class="side_menu on off">Map</a></li>
+                        <li><a href="{% url 'admin_configuration_report' %}" class="side_menu on off">Reports</a></li>
+                    </ul>
+                </div>
+                <div class="right_col" style="float:left;border:solid;border-top:solid;padding:2px;width:600px;"><br>
+                    <div class="title"><h2 id="id_s_message">General Settings</h2></div>
+                    {% if form.errors %}
+                        <div class="messageerror" >
+                            <span style="font-size:1.2em;font-weight:250;"><strong>There is a problem with your submission</strong></span>
+                            <ul>
+                             {% for field in form %}
+                                 {% if field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+                              {% endfor %}
+                            </ul>
+                         </div>
+                    {% endif %}
+                    <div id="formContainer" class=" clearfix" >
+                        <form style="margin-top:0 !important" action="{% url 'admin_configuration_general' %}" method="post" enctype="multipart/form-data" name="f_address" id="f_addbusiness" class="clearfix coloumn" style="margin-top:20px; width:740px">{% csrf_token %}
+                        <fieldset id="add_address" style="margin-top:0 !important">
+                            <dl class="horizontal" >
+                                <dt><label>City* :</label></dt>
+                                <dd>{{form.city}}</dd>
+
+                                <dt><label>Domain* :</label></dt>
+                                <dd>{{form.domain}}</dd>
+
+                                <dt><label>Country* :</label></dt>
+                                <dd>{{form.country}}</dd>
+
+                                <dt><label>Email Id* :</label></dt>
+                                <dd>{{form.info_email}}</dd>
+
+                                <dt><label>Phone* :</label></dt>
+                                <dd>{{form.phone}}</dd>
+
+                                <dt><label>Website* :</label></dt>
+                                <dd>{{form.website_url}}</dd>
+
+                                <dt><label>Company* :</label></dt>
+                                <dd>{{form.company_name}}</dd>
+
+                                <dt><label>Address* :</label></dt>
+                                <dd>{{form.company_address}}</dd>
+
+                                <dt>&nbsp;</dt><dd>&nbsp;</dd>
+
+                                <dt>&nbsp;</dt>
+                                <dd>
+                                    <input value="Update" style="float:left;" class="inputsubmit on" type="submit" />
+                                    {% if msg %}
+                                        <div id="msg" style="color:green;font-weight:bolder;float:left;">{{msg}}</div>
+                                        <script type="text/javascript">
+                                            $('#msg').fadeOut(7000);
+                                        </script>
+                                    {% endif %}
+                                </dd>
+
+                            </dl>
+                        </form>
+                    </fieldset>
+                </div>
+                </div>
+                <div class="right_col" style="float:left;margin-left:5px;border:solid;padding:5px;width:180px;height:447px;border-width:1px;border-radius:4px;border-color:#aaa;">
+                    <h3>Help Text</h3>
+                </div>
+                <hr />
+            </div>
+        </div>
+        <hr/>
+    </div>
+    <div class="footer" style="height:120px; background-color:#FBF9F7; margin-top:20px;">
+        <div class="container group" style="text-align:center; padding-top:15px;color:#aaa">
+            Copyright &copy; 2008-2010 {{ globalsettings.domain }}. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

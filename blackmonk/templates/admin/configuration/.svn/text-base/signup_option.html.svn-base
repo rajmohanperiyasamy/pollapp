@@ -1,0 +1,163 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'config' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Sign Up Option' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+var validate=false;
+$(document).ready(function(){
+    $(":input[type='text']").live("keyup",function(e){if(validate){notify();}});
+    fun_fb_disable();
+    fun_tw_disable();
+    fun_ln_disable();
+});
+function fun_fb_disable(){
+    if($("#id_facebook").prop("checked")){
+        $('#id_facebook_app_id').removeAttr('disabled','disabled');
+        $('#id_facebook_secret_key').removeAttr('disabled','disabled');
+    }else{
+        $('#id_facebook_app_id').attr('disabled','disabled');
+        $('#id_facebook_secret_key').attr('disabled','disabled');
+    }
+}
+function fun_tw_disable(){
+    if($("#id_twitter").prop("checked")){
+        $('#id_twitter_consumer_key').removeAttr('disabled','disabled');
+        $('#id_twitter_consumer_secret').removeAttr('disabled','disabled');
+    }else{
+        $('#id_twitter_consumer_key').attr('disabled','disabled');
+        $('#id_twitter_consumer_secret').attr('disabled','disabled');
+    }
+}
+function fun_ln_disable(){
+    if($("#id_linkedin").prop("checked")){
+        $('#id_linkedin_app_id').removeAttr('disabled','disabled');
+        $('#id_linkedin_secret_key').removeAttr('disabled','disabled');
+    }else{
+        $('#id_linkedin_app_id').attr('disabled','disabled');
+        $('#id_linkedin_secret_key').attr('disabled','disabled');
+    }
+}
+function notify(){
+    if($('#id_facebook').is(':checked')){
+        if($('#id_facebook_app_id').val()!=""){$('#id_facebook_app_id').removeClass('error'); $('#id_facebook_app_id').parent('div').parent('div').removeClass('field-error');}
+        else{$('#id_facebook_app_id').addClass('error'); $('#id_facebook_app_id').parent('div').parent('div').addClass('field-error');}
+        if($('#id_facebook_secret_key').val()!=""){$('#id_facebook_secret_key').removeClass('error'); $('#id_facebook_secret_key').parent('div').parent('div').removeClass('field-error');}
+        else{$('#id_facebook_secret_key').addClass('error'); $('#id_facebook_secret_key').parent('div').parent('div').addClass('field-error');}
+    }
+    if($('#id_twitter').is(':checked')){
+        if($('#id_twitter_consumer_key').val()!=""){$('#id_twitter_consumer_key').removeClass('error'); $('#id_twitter_consumer_key').parent('div').parent('div').removeClass('field-error');}
+        else{$('#id_twitter_consumer_key').addClass('error'); $('#id_twitter_consumer_key').parent('div').parent('div').addClass('field-error');}
+        if($('#id_twitter_consumer_secret').val()!=""){$('#id_twitter_consumer_secret').removeClass('error'); $('#id_twitter_consumer_secret').parent('div').parent('div').removeClass('field-error');}
+        else{$('#id_twitter_consumer_secret').addClass('error'); $('#id_twitter_consumer_secret').parent('div').parent('div').addClass('field-error');}
+    }
+    if($('#id_linkedin').is(':checked')){
+        if($('#id_linkedin_app_id').val()!=""){$('#id_linkedin_app_id').removeClass('error'); $('#id_linkedin_app_id').parent('div').parent('div').removeClass('field-error');}
+        else{$('#id_linkedin_app_id').addClass('error'); $('#id_linkedin_app_id').parent('div').parent('div').addClass('field-error');}
+        if($('#id_linkedin_secret_key').val()!=""){$('#id_linkedin_secret_key').removeClass('error'); $('#id_linkedin_secret_key').parent('div').parent('div').removeClass('field-error');}
+        else{$('#id_linkedin_secret_key').addClass('error'); $('#id_linkedin_secret_key').parent('div').parent('div').addClass('field-error');}
+    }
+}
+function save_signup_setting(){
+    var flag1=true;
+    var flag2=true;
+    var flag3=true;
+    var flag4=true;
+    var flag5=true;
+    var flag6=true;
+    validate=true;
+    var dataString='';
+    if($('#id_openid').is(':checked')){dataString+='&openid=1';}
+    if($('#id_facebook').is(':checked')){
+        notify();
+        if($('#id_facebook_app_id').val()!=""){flag1=true;}
+        else{flag1=false;}
+        if($('#id_facebook_secret_key').val()!=""){flag2=true;}
+        else{flag2=false;}
+        dataString+='&facebook=1';
+    }
+    if($('#id_twitter').is(':checked')){
+        notify();
+        if($('#id_twitter_consumer_key').val()!=""){flag3=true;}
+        else{flag3=false;}
+        if($('#id_twitter_consumer_secret').val()!=""){flag4=true;}
+        else{flag4=false;}
+        dataString+='&twitter=1';
+    }
+    if($('#id_linkedin').is(':checked')){
+        notify();
+        if($('#id_linkedin_app_id').val()!=""){flag5=true;}
+        else{flag5=false;}
+        if($('#id_linkedin_secret_key').val()!=""){flag6=true;}
+        else{flag6=false;}
+        dataString+='&linkedin=1';
+    }
+    dataString+='&facebook_app_id='+$('#id_facebook_app_id').val();
+    dataString+='&facebook_secret_key='+$('#id_facebook_secret_key').val();
+    dataString+='&twitter_consumer_key='+$('#id_twitter_consumer_key').val();
+    dataString+='&twitter_consumer_secret='+$('#id_twitter_consumer_secret').val();
+    dataString+='&linkedin_app_id='+$('#id_linkedin_app_id').val();
+    dataString+='&linkedin_secret_key='+$('#id_linkedin_secret_key').val();
+
+    if(flag1==true&&flag2==true&&flag3==true&&flag4==true&&flag5==true&&flag6==true){
+        $('#signin-options').hide();
+        $('#ajax_content_loading').show();
+        $.ajax({
+        type: "POST",
+        url: "{% url 'admin_configuration_general_signup_update' %}",
+        data: dataString,
+        dataType:'JSON',
+        success: function(data){
+                show_msg(data.msg,data.mtype);
+                $('#ajax_content_loading').hide();
+                $('#signin-options').fadeIn(2500).html(data.html);
+                fun_fb_disable();
+                fun_tw_disable();
+                fun_ln_disable();
+            }
+        });
+    }
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+    <div id="admin-platform" class="group">
+        <div class="header-bar">
+            <div id="nav-roll">
+                <ul>
+                    <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                    <li><a href="{% url 'admin_configuration_general_signup' %}" style="z-index:7">{% trans 'Sign in Options' %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="core-wraper" class="group">
+            <div class="admin-main col_12 configuration">
+                {% block leftnavigation %}
+                    {% activetab 'topnav' 'config' %}
+                    {% activetab 'leftnav' 'signup' %}
+                    {{ block.super }}
+                {% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Sign in options' %}</h2>
+                            <p class="ltxt80">{% trans 'Set flexible sign in options for your users to login with OpenID, Facebook and Twitter.' %}</p>
+                        </div>
+                        {% include 'admin/configuration/include_signup_settings.html' %}
+                       </div>
+                 </div>
+               </div>
+           {% include 'admin/configuration/signup-faq.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

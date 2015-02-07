@@ -1,0 +1,416 @@
+{% load comment_config %}
+{% load i18n %}
+{% load thumbnail %}
+{% load mptt_comments_tags %}
+{% load_comment_config_obj object %}
+
+{% if cc_comment_enabled %}
+{% if cc_discuss_comment %}
+    {% include 'general/disqus-comments.html' %}
+{% else %}
+    {% get_mptt_comment_count for object as comment_count %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}themes/js/jquery.raty.js"></script>
+    <input type="hidden" value="{{object}}" id="id_comment_title" name="comment_title" />
+	<input type="hidden" id="common_comment_save_id" value="">
+	{% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+		<section class="sCn pD15">
+			<div id="cmnt_alert_bar" class="alert alert-success pD0 mRt-30 mRt-20mX979" style="display:none;">
+               <div class="container-fluid">
+                   <div class="pD100 cLrFx">
+                       <p id="cmnt_message" class="ib fS14 fW-bLd mRb0 mR50">Your review is under approval.</p>
+                   </div>
+               </div>
+            </div>
+        	<div class="sCn-tTl cLrFx mRb0">
+            	<h3>
+					<span id="id_comment_count" id_val="{{comment_count}}" class="mRt4 pLlT">{{comment_count}} {% trans 'Reviews' %}</span> 
+					{% if user.is_authenticated  %}
+						<a href="javascript:load_review()"  id="write_review_button" class="pLrT btn btn-primary fS12">Write your review</a>
+					{% else %}
+						<a href="javascript:load_review()" style="display:none;"  id="write_review_button" class="pLrT btn btn-primary fS12">Write your review</a>
+						<a style="float:right;"  id="write_review_button_signin" onclick="login_box('review');" href="javascript:void(0);" class="pLrT btn btn-primary fS12">
+							Write your review
+						</a> 
+					{% endif %}
+				</h3>
+			</div>
+       	</section>
+	{% else %}
+		{% if appname != 'community' %}
+        <!--div class="sCn-tTl">
+            <h3><span id="id_comment_count" id_val="{{comment_count}}">{{comment_count}} {% trans 'Comments' %}</span></h3>
+        </div-->
+		{% endif %}
+	{% endif %}
+	{% if appname == 'community' or appname == 'deals' or appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+	{% else %}
+		<section class="sCn pD15">
+			<div id="cmnt_alert_bar" class="alert alert-success pD0 mRt-30 mRt-20mX979" style="display:none;">
+               <div class="container-fluid">
+                   <div class="pD100 cLrFx">
+                       <p id="cmnt_message" class="ib fS14 fW-bLd mRb0 mR50">Your comment is under approval.</p>
+                   </div>
+               </div>
+            </div>
+        	<div class="sCn-tTl cLrFx mRb0">
+            	<h3>
+					<span id="id_comment_count" id_val="{{comment_count}}" class="mRt4 pLlT">{{comment_count}} {% trans 'Comments' %}</span> 
+					<a href="javascript:load_comm_form()"  class="pLrT btn btn-primary fS12">Write your comment</a>
+				</h3>
+			</div>
+       	</section>
+	{% endif %}
+	{% if appname != 'community' %}
+		{% get_mptt_comment_form for object as form %}
+		{{form.content_type}}
+		{{form.object_pk}}
+	{% endif %}
+	<ol class="cMnTs {% if appname != 'community' %}bBl{% endif %} aVtR-cRcL mRb30" >
+        <li class="cMnT-pSt" id="mptt-comments-tree">
+            <div class="cMnT-pSt-iN" id="comment_from_holder">
+{% if appname == 'community' or appname == 'deals' %}
+	            {% include "comments/form.html" %}
+{% endif %}
+            </div>
+        </li>
+		<li class="cMnT-pSt">
+			<div class="cMnTs-pNl-lDnG tXt-cTr" id="comment_from_div_loading" style="display:none;">
+				<a class="btn btn-light btn-large btn-block fS13" href="javascript:void(0);">
+					<span class="">
+						<i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i>
+						<span class="bUi-sPnR-mSg cLr-gRy fS13">Loading...</span>
+					</span>
+				</a>
+			</div>
+		</li>
+        {#% include "comments/load_comment.html" %#}
+        {% include "comments/load_comment_later.html" %}
+    </ol> <!-- /.cMnTs -->
+
+<script type="text/javascript">
+function update_comment_button(hobj){
+    var postBtn = $(hobj).parents(".dev-cForm").find('.dev-postBtn');
+    if($.trim(hobj.val()).length >= 1){
+        postBtn.removeAttr('disabled');
+        postBtn.removeClass('disabled');
+	}else{
+    	postBtn.attr('disabled','disabled');
+        postBtn.addClass('disabled');
+	}
+}
+function load_initial_comments(){
+    $.ajax({
+    type: "GET",
+    url: "{% url 'get_initial_mptt_comment_list' object.id object|class_name appname %}",
+    data: dataString,
+    dataType:'html',
+    success: function(data){
+            if(data){
+                $('#comment_remaining_div.load_later').html(data);
+				if($('#cmt_remaining').val() != '0'){
+					$('#comment_remaining_p').show();
+				}
+                {% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+                   load_rating_stars()
+                {% endif %}
+            }
+        }
+    });
+}
+function load_rating_stars(){
+    $('.dev-uraty').raty({
+        readOnly: true,
+        score: function() {return $(this).attr('data-score');}
+    });
+    $('.sTr-rT-aCt').raty({
+        precision: true,
+        target    : '.rT-sCr',
+        targetKeep: true,
+        hints: ['', '', '', '', ''],
+        size      : 16,
+        scoreName: 'ratings'
+    });
+}
+$(document).ready(function(){
+    load_initial_comments()
+    {% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+	   load_rating_stars()
+    {% endif %}
+    $('body').on("click",'.dev-Reply', function(event) {
+		$(this).attr('disabled', true);
+    	event.preventDefault();
+        var cPid=$(this).parent().find("input[name=cid]").val();
+        var thisElem=$(this);
+        var dataString = 'c_id='+cPid
+		thisElem.closest('li').append($('#show_replay_from_loading').html())
+        $.ajax({
+        	type: "POST",
+            url: "{% url 'comment_reply' %}",
+            data: dataString,
+            dataType:'json',
+            success: function(data){
+				thisElem.closest('li').find('.show_replay_from_loading_div').remove()
+            	if(data.status=='success'){
+                	thisElem.parents(".dev-cParent").after(data.display_html);
+                    thisElem.remove();
+					$('[data-focus="true"]').doThis(function(){
+			          this.autoFocus();
+			       });
+				}else{alert("Oops not able process your request!");}
+			}
+		});
+	});
+    $('body').on('click','.reply_save_button',function(){
+    	var id=$(this).attr('data_id');
+        var thisElem=$(this);
+        var formElem = $(this).parents('form');
+        var dataString=formElem.serialize();
+		thisElem.closest('li').append($('#show_replay_from_loading').html())
+		dataString+='&reply=1';
+        //dataString+='&rating=0';
+        //try{dataString+='&parent_pk='+formElem.find(".rT-sCr").text();}catch(ex){}
+        $.ajax({
+        	type: "post",
+            url: "{% url 'comments_post_comment' %}",
+            data: dataString,
+            dataType:'json',
+            success: function(data){
+				thisElem.closest('li').find('.show_replay_from_loading_div').remove()
+            	if(data.status=='success'){
+                	thisElem.parents(".dev-cRDiv").before(data.display_html);
+                    thisElem.parents(".dev-cRDiv").remove();
+					formElem.removeClass('hS-fCs')
+					comment_count(data)
+				}else if(data.status=='form_err'){
+					$('div.comment_replay_form_'+id).empty().html(data.form_html).show();
+                    $('#reply_ajax_content').show();
+				}else{
+                	$('#reply_ajax_content').show();
+                    alert("Oops not able process your request!");
+				}
+			}
+		});
+	});
+	var cmt = ''
+    $('body').on('click','.save_comment',function(){
+		$(this).attr('disabled', true);
+    	var formElem = $(this).parents('form');
+        var dataString=formElem.serialize();
+		$('#comment_from_div_loading').show();
+        $.ajax({
+        	type: "POST",
+            url: "{% url 'comments_post_comment' %}",
+            data: dataString,
+            dataType:'JSON',
+            success: function(data){
+				$('#comment_from_div_loading').hide();
+            	if(data.status=='success'){
+					$('#write_review_button').empty().html('Edit your review');
+                	var postBtn = formElem.find('.dev-postBtn');
+                    postBtn.attr('disabled','disabled');
+                    postBtn.addClass('disabled');
+                    formElem.find("textarea[name=comment]").val("")
+					formElem.removeClass('hS-fCs')
+					{% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+						$("#comment_holder_ol_"+data.comment_id).remove();
+						$('#comment_from_holder').empty().hide();
+					{% endif %}
+					{% if appname == 'community' or appname == 'deals' %}
+						$('#id_entry_comment_count').html(parseInt($('#id_entry_comment_count').text()) + 1);
+					{% else %}
+						$('#comment_from_holder').empty().hide();
+					{% endif %}
+                    $('#comment_remaining_div').prepend(data.display_html);
+					comment_count(data)
+					if(!data.approved){$('#cmnt_alert_bar').show();setTimeout(function(){close_cmnt_msg()},5000);}
+				}
+				else if(data.status=='form_err'){alert("Oops not able process your submission!");}
+				else{alert("Oops not able process your request!");}
+			}
+		});
+	});
+    $('body').on("click",'.dev-showParent', function(event) {
+        event.preventDefault();
+        var thisElem=$(this);
+		thisElem.closest('li').prepend($('#show_replay_loading').html())
+        var dataString = 'parent_id='+$(this).attr('parent_id');
+        $.ajax({
+			type: "post",
+            url: "{% url 'load_parent_comment' %}",
+            data: dataString,
+            dataType:'json',
+            success: function(data){
+				thisElem.closest('li').find('.show_replay_loading_div').remove()
+                var pCElem= thisElem.parents(".dev-cMnT");
+                pCElem.addClass("cLdRn");
+                pCElem.before(data.html);
+                thisElem.remove();    
+            }
+        });               
+    });
+	$(".bm-ajax-login").colorbox({width: "681",initialWidth: "681", top:"5%",initialHeight: "360",onOpen: function(){$("#colorbox").addClass("no_title");},onComplete:colorboxonComplete});
+});
+function close_cmnt_msg(){
+	$('#cmnt_alert_bar').removeClass('active');
+	setTimeout(function(){
+		$('#cmnt_alert_bar').css('display','none');
+		$('#cmnt_alert_bar').removeClass();
+		$('#cmnt_alert_bar').addClass('alert-bar');
+	},200);
+}
+
+function colorboxonComplete(){
+	setTimeout(function(){$(".bm-ajax-login").resize()},200);
+}
+function save_comment(){
+	$('.comment_save_button').click()
+}
+var page=2;
+function load_more(){
+    var dataString = 'content_type='+$('#id_content_type').val();
+    dataString+= '&object_pk='+$('#id_object_pk').val();
+	//alert($('#id_object_pk').val());
+	dataString+= '&page='+page;
+    $('#comment_remaining_div_loading').show();
+    $('#comment_remaining_p').hide();
+    $.ajax({
+        type: "post",
+        url: "{% url 'load_more_comment' %}",
+        data: dataString,
+        dataType:'json',
+        success: function(data){
+            $('#comment_remaining_div_loading').hide();
+            if(data.status=='success'){
+				$('#comment_remaining_p').remove();
+                $('#comment_remaining_div').append(data.display_html);
+                $('#comment_remaining_div').show();
+				page=page+1
+            }
+            else{
+                $('#comment_remaining_p').show();
+                alert("Oops not able process your request!");
+            }
+        }
+    });
+}
+function like_dislike(id,cnt,type){
+    var cnt = cnt + 1;
+    $.ajax({
+       type: "GET",
+       url: "{% url 'comments_like_dislike' %}",
+       data:"cid="+id+"&type="+type,
+       dataType:'JSON',
+       success: function(data){
+           if (data.status=='working'){
+                $('#cmnt_up_dwn_count_'+id).html(data.count);
+	            $('#cmnt_up_dwn_count_'+id).attr('title',data.like_count+' up'+', '+data.dislike_count+' down');
+            }
+		} 
+	});
+}
+function flag(id){
+	$.ajax({
+    	type: "GET",
+       	url: "{% url 'comments_flag' %}",
+       	data:"cid="+id,
+       	success: function(data){
+       		if (data=='1'){alert("Flagged");}
+			else{alert("Already Flagged");} 
+       }
+    });
+}
+function expandtext(textArea,len){
+	{% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}len=2000;{% endif %}
+    var txtvalue = textArea.value;
+    var the_len = txtvalue.length;
+    if (the_len > len){textArea.value = txtvalue.substring(0,len);}
+    while(textArea.rows > 1 && textArea.scrollHeight < textArea.offsetHeight){textArea.rows--;}
+	while (textArea.scrollHeight > textArea.offsetHeight){textArea.rows++;}
+    textArea.rows++
+}
+function comment_count(data){
+{% if not cc_approval %}
+	if(data.review_flag && data.approved){
+		var count = parseInt($('#id_comment_count').attr('id_val'));
+		count=count+1;
+		$('#id_comment_count').attr('id_val',count);
+		$('#id_comment_count').html(count+' {% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}{% trans "Reviews" %}{% else %}{% trans "Comments" %}{% endif %}');
+	}
+{% endif %}
+	return true;
+}
+{% if appname == 'business' or appname == 'restaurants' or appname == 'movies' or appname == 'shop' %}
+	function load_review(){
+		$('#comment_from_div_loading').show();
+		$.ajax({
+	    		type: "GET",
+	           	url: "{% url 'load_review' object.id object|class_name %}",
+	           	dataType:'json',
+	           	success: function(data){
+					$('#comment_from_div_loading').hide();
+	            	if(data.status=='success'){
+	                	$('#comment_from_holder').show();
+	                	$('#comment_from_holder').empty().html(data.display_html);
+						$('[data-focus="true"]').doThis(function(){
+							this.autoFocus();
+							this.focus();
+						});
+						$('#comment_holder_ol_'+data.review).hide();
+	            	}else{alert('Oops!!! Not able to process your request.')}
+	           }
+	    });
+	}
+	function check_review(){
+		$.ajax({
+	    		type: "GET",
+	           	url: "{% url 'check_review' object.id object|class_name %}",
+	           	success: function(data){
+	            	if(data=='1'){
+	                	$('#write_review_button').empty().html(gettext('Edit your review'));
+	            	}
+	           }
+	    });
+	}
+	{% if user.is_authenticated  %}check_review(){% endif %}
+{% elif appname != 'community' or appname != 'deals' %}
+	function load_comm_form(){
+		$('#comment_from_div_loading').show();
+		$.ajax({
+	    		type: "GET",
+	           	url: "{% url 'load_comment_form' object.id object|class_name %}",
+	           	dataType:'json',
+	           	success: function(data){
+					$('#comment_from_div_loading').hide();
+	            	if(data.status=='success'){
+	                	$('#comment_from_holder').show();
+	                	$('#comment_from_holder').empty().html(data.display_html);
+						$('[data-focus="true"]').doThis(function(){
+							this.autoFocus();
+							this.focus();
+						});
+						//$('#comment_holder_ol_'+data.review).hide();
+	            	}else{alert('Oops!!! Not able to process your request.')}
+	           }
+	    });
+	}
+{% endif %}
+</script>
+{% endif %}
+{% endif %}
+<div id="show_replay_loading" style="display:none;">
+<div class="cMnTs-pNl-lDnG show_replay_loading_div">
+	<p class="bUi-sPnR">
+		<i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i>
+		<span class="bUi-sPnR-mSg cLr-gRy fS13">Loading...</span>
+	</p>
+</div>
+</div>
+<div id="show_replay_from_loading" style="display:none;">
+<div class="cMnTs-pNl-lDnG show_replay_from_loading_div" style="text-align:center;">
+	<p class="bUi-sPnR">
+		<i alt="Loading icon" class="icon-spinner bUi-iCn-sPnR mRr5 fS16" aria-hidden="true"></i>
+		<span class="bUi-sPnR-mSg cLr-gRy fS13">Loading...</span>
+	</p>
+</div>
+</div>

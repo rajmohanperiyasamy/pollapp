@@ -1,0 +1,26 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% block pagetitle %}{{seo.seo_title}}{% endblock %}
+{% block meta %}
+    <meta name="Description" content="{{seo.seo_description}}">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "bookmark" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+   <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="main span12">
+                <div class="sCn">                
+                    <iframe frameborder="0" noresize="noresize" src="{{bookmark.source_url}}" style="width: 100%; height: 1700px; overflow-x: hidden; overflow-y: auto;"></iframe>
+                </div>
+            </div>
+        </div>
+   </div>                
+{% endblock %}

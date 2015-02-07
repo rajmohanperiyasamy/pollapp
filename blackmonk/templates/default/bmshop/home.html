@@ -1,0 +1,98 @@
+{% extends base %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load i18n %}
+{% load currency %}
+{% load tabs %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% block pagetitle %}{%if seo%}{% seo_format_tag module='Shop' title=seo.meta_title code='MT' as seo_meta_title %}{{seo_meta_title}}{%else%}{% trans 'Shop' %}{%endif%}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{%if seo%}{{ seo.meta_description }}{%else%}{% trans 'Shop' %}{%endif%}" />
+{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/store.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+	{% include 'default/bmshop/include_search.html' %}		
+	<div class="page_wraper" id="product_list">
+	        <div class="group">
+	            <div style="width:228px; margin-right:20px;" class="col_4" id="search_refine_bar">
+					<div class="search_refine">
+	                	<div class="inner">
+							<div class="refinement category" id="refine_category">
+	                        	<h4>{% trans 'Categories' %}<span class="arrow"></span><span class="icon"></span></h4>
+	                            <div class="refine_attributes">
+	                            	<div class="group">
+	                                    <ul>
+	                                        <li><a href="{%url 'bmshop_product_home' %}">{% trans 'All' %}</a></li>
+											{%for cat_obj in main_cats%}
+	                                        	<li><a href="{{cat_obj.get_absolute_url}}">{{cat_obj.name}}</a></li>
+	                                        {%endfor%}
+	                                    </ul>
+									</div>                                                
+								</div>                                            
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="main col_12 mr_0" style="width:733px;">
+	                <div class="list_wraper product_home">
+						{%for category_obj in category_objs%}   
+						{%if category_obj.get_featured_products_home%}
+	                    <div class="featured" style="">
+	                        <h2 style="">{{category_obj.name}}</h2>
+	                    </div>                            
+	                    <div class="place_list group">
+							{%for product_obj in category_obj.get_featured_products_home%}
+								<div class="item">
+		                            <div class="item_wrap">
+		                                <div class="product_image">
+		                                    <span class="cover">
+		                                        <span class="inner">
+													<a href="{{product_obj.get_absolute_url}}">
+									                    <img alt="{{product_obj.name}}" height="100px" title="{{product_obj.name}}" src="{%if product_obj.get_cover_image_user%}{% thumbnail product_obj.get_cover_image_user 120x0 %}{%endif%}">
+													</a>
+									                <span class="v_align"></span>
+		                                        </span>
+		                                    </span>
+		                                </div> 
+		                                <div class="product_info">
+		                                    <div class="inside">
+		                                        <div class="name">
+		                                            <a href="{{product_obj.get_absolute_url}}" title="{{product_obj.name}}">
+		                                                <span class="display_name"> {{product_obj.name|truncatechars:45}}</span>
+												    </a>
+													<!--a href="#" title="Plaid Western Shirt">
+		                                                <span class="brand_name"></span>
+		                                            </a-->
+		                                        </div> 
+												<div class="price">
+                                                     <div class="discount_price">
+										                <div class="sales_price">{%if product_obj.get_base_price%}<em style="display: block; margin-bottom: 5px;font-weight:normal" >{{globalsettings.currency}}{{product_obj.get_base_price|floatformat:2}}</em>{%endif%}<div class="standard_price">{{globalsettings.currency}}{{product_obj.for_sale_price|floatformat:2}} </div></div>
+													</div>
+                                                </div>
+		                                    </div><!-- end .inside -->
+		                                </div><!-- end .info --> 	
+										    
+		                            </div><!-- end .item_wrap -->
+		                        </div><!-- end .item -->
+							{%endfor%}	
+	                    </div>
+						{%endif%}
+						{%endfor%}
+					</div>                              
+	            </div> 
+	        </div>
+	    </div>
+<script type="text/javascript">
+
+	
+</script>			
+{% endblock %}

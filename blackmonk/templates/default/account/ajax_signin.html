@@ -1,0 +1,141 @@
+{% load i18n %}
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<div id="content-container" class="tBl-bLk">
+    <div class="tBl-cEl">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="cTr-bLk pL0">
+                    <section class="tXt-cTr">
+                        <h2 class="mRt0">{% trans 'Sign in to ' %}{{ globalsettings.domain }}</h2>
+                        <p class="fS13 mRb20 cLr-gRy">Not a member? <a class="fW-bLd" href="javascript: lightbox_load_signup_form('{{type}}');">Sign up</a></p>
+                        <hr>
+                        {#% include 'account/signin_other.html' %#}
+                        <!-- hr -->
+                        <div class="messageerror" style="{% if not form.errors  %}display:none;{% endif %}background: none repeat scroll 0 0 #FCF4F4;color: #FF9902;padding: 10px;">
+                            <span style="font-size:1.2em;font-weight:250;"><strong>{% trans "There is a problem with your submission" %}</strong></span>
+                            <ul>
+                                <li>{% trans "Please enter a correct username and password. Note that both fields are case-sensitive." %}</li>
+                            </ul>
+                        </div>
+                        <form class="signup-email" action="javascript:ajax_login()" id="signin_form" name="signup_form" method="post">{% csrf_token %}
+                            <input type="hidden" name="next" id="next" value="{{ next }}" />
+                            <div class="row-fluid tXt-lT">
+                                <h3 class="fS14 cLr-gRy mRb20">Sign in with your email address</h3>
+                                <fieldset>
+                                    <div class="control-group">
+                                        <label class="control-label">{% trans 'Email' %}</label>
+                                        <div class="controls">
+                                            <input type="text" name="username" id="username">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">{% trans 'Password' %}</label>
+                                        <div class="controls">
+                                            <input type="password" name="password" id="password">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="form-actions pD0">
+                                    <button id="signin_button" type="submit" class="btn btn-primary fS12 fW-bLd ">Sign In</button>
+                                    <span class="help-inline fS12 mRl10"><a href="/account/forgotpwd/">Forgot password?</a></span>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+function ajax_login(){
+    var flag=$("#signin_form").validate().form();
+    if(flag){
+        //$('#signin_button').addClass('prevent_click');
+        $('#signin_button').css('pointer-events','none');
+        $.ajax({
+            type:'post',
+            url:'{% url 'ajax_signin' %}',
+            data:'email='+$('#username').val()+'&password='+$('#password').val()+'&next='+$('#next').val(),
+            success:function(data){
+                //$('#signin_button').removeClass('prevent_click');
+                $('#signin_button').css('pointer-events','auto');
+                if(data=='1'){	
+					user_login = true;
+                    user_status_checklogin();
+                    {% if type == "contest" %}
+                        $('#ajax_login_detail').hide();
+                        $('#ajax_login_detail_loading').show();
+                        call_register_user();
+                    {% else %}
+                        $('#lightbox_login').modal('hide')
+                        $('.fav_login').hide();
+                        $('.fav_add').show();
+                        $('.sub_add').show();
+                        {% if type == "sub" %}
+                            $('div.tool_bar a.sub_add').click();
+                        {% elif type == "cmmt" and val  %}
+                            save_replay_comment({{ val }});
+                            $('.ajax_login_comment_save_button').hide();
+                            $('.comment_save_button').show();
+                            $('.reply_save_button').click()
+                        {% elif type == "cmmt" %}
+                            $('.ajax_login_comment_save_button').hide();
+                            $('.comment_save_button').show();
+							$('.comment_community_save_button').show();
+                            save_comment();
+						{% elif type == "event" %}
+                            event_rsvp();
+						{% elif type == "cmmt_com" %}
+                            $('.ajax_login_comment_save_button').hide();
+                            $('.comment_community_save_button').show();
+							$('.comment_save_button').show();
+                            save_answer_comment();
+                        {% elif type == "review" %}
+                            $('#write_review_button_signin').hide();
+                            $('#write_review_button').show();
+                            load_review();
+                        {% elif type == "rsvp" %}
+                            event_rsvp();
+                        {% elif type == 'postquestion' %}
+                            post_question();
+                        {% elif type == 'addpost' %}
+                            check_add_post();
+                        {% elif type == 'addanswer' %}
+                            save_answer();
+                        {% elif type == 'subscribe' %}
+                            follow_entry(1);
+                        {% elif type == 'qnacmnts' %}
+                            save_comment();
+                        {% elif type == 'followques' %}
+                            follow_homeques(1);
+                        {% elif type == 'subtopic' or type == 'unsubtopic' %}
+                            topic_follow(1);
+                        {% elif type == 'flaganswer' %}
+                            answer_flag();
+
+                        {% elif type == 'cmmt_reply' %}
+                            reply_thread({{val}});
+							$('#replay_'+$('#common_comment_save_id').val()).click()
+							hobj = $('#replay_'+$('#common_comment_save_id').val());
+
+						{% elif type == 'comm_cmmt_reply' %}
+                            reply_thread({{val}});
+							hobj = $('#replay_'+$('#comment_save_id').val());
+							load_recomment_form(hobj);
+
+                        {% elif type == 'follow' %}
+                            follow_entry(1);
+                        {% elif type == '' %}
+                            post_question();
+                        {% endif %}
+                    {% endif %}
+                }else{
+                    $('.messageerror').show();
+                }
+            }
+        });
+    }
+}
+</script>

@@ -1,0 +1,317 @@
+{% extends "user_base.html" %}
+
+{% load i18n %}
+{% load ds_utils %}
+{% load thumbnail %}
+{% load tabs %}
+
+{% block pagetitle %}{% trans 'Articles Payment Conformation' %}{% endblock %}
+{% block meta %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/bm.common.js"></script>
+{% endblock %}
+
+{% block navigation %}
+    {% activetab "leftnav" "article" %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+	            	<div class="span10 sP9mX979 sP12mX767">
+		                <div class="row-fluid">
+							<div class="main span9">
+								<section class="sCn pD0">
+									<div class="cLrFx pD20">
+										<div class="pLlT">
+											<h3 class="mR0 tRnCt">Article Payment Confirmation</h3>
+										</div>
+									</div>
+									<hr class="mRb12 mRt0">
+									<div class="pD20">
+										<div class="uSr-aCnT mRb0">
+                                        	<div class="sCn-tTl">
+                                                <h3 class="clearfix oFl">
+                                                    <span class="ib pLlT">Order Details</span>
+                                                </h3>
+                                            </div>
+                                        	<table class="table table-bordered bDrT0Mp">
+                                                <thead class="hMp bFa">
+                                                    <tr>
+                                                        <th class="span4">
+                                                            <span>Item Details</span>
+                                                        </th>
+                                                        <th class="span1">
+                                                            <span>Ad Type</span>
+                                                        </th>
+                                                        <th class="tXt-rT span1">
+                                                            <span>Total</span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="span4">
+                                                            <div class="control-group">
+                                                                <label class="control-label pDt0 vOp">Item Details</label>
+                                                                <ul class="modulesBrowseData mDa-lT mDa-oT-lT dSrS480">
+                                                                    <li class="mDa mRb0">
+                                                                        <div class="mDa-iN bDr0 pD0">
+                                                                            <div class="mDa-wPr">
+                                                                                <a class="bUi-tMb-wPr tMb-75 dSpD fLxiMgW bUi-tMb-110" href="{% url 'user_article_preview' pay_obj.id %}">
+                                                                                    <span class="bUi-tMb">
+                                                                                        <span class="bUi-tMb-pRpL">
+                                                                                            <span class="bUi-tMb-cLp">
+                                                                                                <span class="bUi-tMb-cLp-iN">
+                                                                                                    <img class="mDa-oT" alt="{{ pay_obj.get_payment_title }}" title="{{ pay_obj.get_payment_title }}" src="{% if pay_obj.get_payment_photo %}{% thumbnail pay_obj.get_payment_photo 110x0 %}{% else %}{{STATIC_URL}}ui/images/global/img-none.png{% endif %}">
+                                                                                                    <span class="vRtL-aLn">
+                                                                                                    </span>
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="mDa-bDy">
+                                                                                <h4 title="{{ pay_obj.get_payment_title }}" class="mDa-hD tRnCt0 rLvE">
+                                                                                    <a href="{% url 'user_article_preview' pay_obj.id %}">{{ pay_obj.get_payment_title }}</a>
+                                                                                </h4>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                        <td class="span1">
+                                                            <div class="control-group">
+                                                                <div class="controls">
+                                                                    <label class="control-label pDt0 vOp">Ad Type</label>
+                                                                    <label class="fW-nRmL">
+																		{% if level %}
+																			{{level.level_label|title}}
+																		{% else %}
+						                        							{{pay_obj.get_payment_listing_type|title}}
+																		{% endif %}
+																	</label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="tXt-rT span1"><strong class="fS13 pLlT vOp">Total</strong><strong class="fS14">{% if payment_config %}{{ payment_config.currency_symbol }}{% else %}{{globalsettings.currency}}{% endif %} {{listing_price}}</strong></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="row-fluid mRb10 tXt-rT">
+                                                <div class="ib mRr10 cLr-gRy">You pay :</div>
+                                                <h3 class="ib">{% if payment_config %}{{ payment_config.currency_symbol }}{% else %}{{globalsettings.currency}}{% endif %} {{listing_price}}</h3>
+                                            </div>
+											{% if payment_config %}
+                                            <div class="control-group">
+                                                <label class="control-label">Payment gateway</label>
+                                                <div class="controls">
+													{% if payment_config.paypal_payment %}
+                                                    <label class="radio fW-nRmL mRb0">
+                                                        <input type="radio" name="payment_option" value="paypal" checked="checked">
+                                                        {% trans "Paypal" %} </label>
+													{% endif %}
+													{% if payment_config.stripe %}
+                                                    <label class="radio fW-nRmL mRb0">
+                                                        <input type="radio" name="payment_option" value="creditcard">
+                                                        {% trans "Credit Card" %} </label>
+													{% endif %}
+													{% if payment_config.authorize %}
+                                                    <label class="radio fW-nRmL mRb0">
+                                                        <input type="radio" name="payment_option" value="authorizenet">
+                                                        {% trans "Authorize.net" %} </label>
+													{% endif %}
+                                                </div>
+                                            </div>
+											{% endif %}
+											{% if paid_object %}
+											<label class="control-label">You have opted to pay offline.Please verify the below details.</label>
+											<form method="post" id="pform" class="form-horizontal uSr-aCnT mRb0" action="{% url 'article_payments_offline_confirm' pay_obj.id %}">
+												<input type ='hidden' value='banners' name='type' id='type'>
+												<div class="control-group">
+					                                <label class="control-label">Name:</label>
+					                                <div class="controls">
+					                                    <input type="text" value="{{paid_object.user.display_name}}" placeholder="Name" name="pay_name" maxlength="30" id="pay_name" class="iSp8" autocomplete="off">
+					                                </div>
+					                            </div>
+												<div class="control-group">
+					                                <label class="control-label">Email:<em class="cLr-rEd">*</em></label>
+					                                <div class="controls">
+					                                    <input type="text" value="{{paid_object.user.useremail}}" placeholder="Email" name="pay_email" maxlength="30" id="pay_email" class="iSp8" autocomplete="off">
+					                                </div>
+					                            </div>
+												<div class="control-group">
+					                                <label class="control-label">Phone No:<em class="cLr-rEd">*</em></label>
+					                                <div class="controls">
+					                                    <input type="text" placeholder="Phone No" name="pay_phone" maxlength="16" id="pay_phone" class="iSp8" autocomplete="off">
+					                                </div>
+					                            </div>
+												<div class="control-group">
+					                                <label class="control-label">How would you like to be contacted:<em class="cLr-rEd">*</em></label>
+					                                <div class="controls">
+					                                    <label for="id_is_contact_mode_1"><input type="radio" value="email" name="contact_mode" id="contact_mode_1" checked="checked">Email</label>
+														<label for="id_is_contact_mode_2"><input type="radio" value="phone" name="contact_mode" id="contact_mode_2">Phone</label>
+					                                </div>
+					                            </div>
+												<div class="control-group">
+					                                <label class="control-label">Mode of payment:<em class="cLr-rEd">*</em></label>
+					                                <div class="controls">
+					                                    <label for="id_is_pay_mode_1"><input type="radio" value="cash" name="pay_mode" id="pay_mode_1" checked="checked">Cash</label>
+														<label for="id_is_pay_mode_2"><input type="radio" value="cheque" name="pay_mode" id="pay_mode_2" >Cheque</label>
+														<label for="id_is_pay_mode_3"><input type="radio" value="dd" name="pay_mode" id="pay_mode_3">Demand Draft(DD)</label>
+					                                </div>
+					                            </div>
+												<div class="row-fluid">
+					                                <div class="form-actions pD0 pLrT">
+														<input type="submit" name="offlinesubmit" class="btn btn-primary fS12 fW-bLd mRl5" value="{% trans 'Submit' %}" />
+					                                </div>
+					                            </div>
+											</form>
+											{% endif %}
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <label for="gender1" class="checkbox inline fW-nRmL fS12">
+                                                        <input type="checkbox" value="1" id="terms" name="terms">
+                                                        I have read and agreed to the
+                                                        <a href="/terms-of-use.html" target="_blank">Terms of Service</a>
+                                                        and
+                                                        <a href="/privacy-policy.html" target="_blank">Privacy Policy</a>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <hr class="oTsT-hRz20 mRb0">
+													{% if payment_config.paypal_payment %}
+														<form style="margin-bottom: 0px;" action="" method="post" id="paypal_form">{% csrf_token %}
+															<input type="hidden" value="paypal" name="payment_options" />
+															<div class="row-fluid">
+																<div class="form-actions pD0 pLrT">
+														   			<input type="submit" name="submit" value="{% trans 'Proceed' %}" class="btn btn-primary fS12 fW-bLd mRl5">
+						                                        </div>
+															</div>
+														</form>
+													{% endif %}
+													{% if payment_config.stripe %}
+														<form style="display:none;margin-bottom: 0px;" method="post" id="stripe_form">
+															<input type="hidden" name="stripeToken" id="stripeToken">
+															<div class="row-fluid">
+																<div class="form-actions pD0 pLrT">
+														   			<input type="submit" id="stripe_button" value="{% trans 'Proceed' %}" class="btn btn-primary fS12 fW-bLd mRl5">
+						                                        </div>
+															</div>
+														</form>
+													{% endif %}
+													{% if payment_config.authorize %}
+														<form style="display:none;margin-bottom: 0px;" action="?sdate={{listing_start|date:'Y/m/d'}}&edate={{listing_end|date:'Y/m/d'}}" method="post" id="authorize_form">{% csrf_token %}
+															<input type="hidden" value="authorizenet" name="payment_options">
+															<div class="row-fluid">
+																<div class="form-actions pD0 pLrT">
+														   			<input type="submit" name="submit" value="{% trans 'Proceed' %}" class="btn btn-primary fS12 fW-bLd mRl5">
+						                                        </div>
+															</div>
+														</form>
+													{% endif %}
+                                        </div>
+									</div>
+								</section>
+							</div> <!-- /.main -->
+							<aside class="sD-bR span3">
+								<div>
+									<section class="tXt-cTr pD0 bNr-aD"> 
+			                           
+			                        </section>
+								</div>
+							</aside>
+						</div>  <!-- /.row-fluid -->
+					</div>
+{% endblock %}
+
+
+{% block footerarea %}
+{% if payment_config.stripe %}
+	<script src="https://checkout.stripe.com/v2/checkout.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('#stripe_button').click(function(){
+			if(!$('#terms').attr('checked')){
+				alert('Please agree to the Terms of Use & Privacy Policy');
+				return false;
+			}
+		  var token = function(res){
+			$('#stripeToken').val(res.id);
+			$('#stripe_form').submit()
+		  };
+		  StripeCheckout.open({
+		    key:         '{{payment_config.stripe_public_key}}',
+		    amount:      {{stripe_sp_cost}},
+		    name:        '{{ pay_obj.get_payment_title|capfirst }}',
+		    description: '{{ listing_period }} {% if level %}{{level.level_label|title}}{% else %}{{pay_obj.get_payment_listing_type|title}}{% endif %}',
+		    token:       token,
+			image:		'{% if pay_obj.get_payment_photo %}{% thumbnail pay_obj.get_payment_photo 110x0 %}{% else %}{{STATIC_URL}}ui/images/global/img-none.png{% endif %}',
+			currency:	'{{ payment_config.currency_code }}'
+		  });
+		
+		  return false;
+		});
+	});
+	</script>
+{% endif %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('input[name=submit]').click(function(){
+		if(!$('#terms').attr('checked')){
+			alert('Please agree to the Terms of Use & Privacy Policy');
+			return false;
+		}
+	});
+	$("#pform").validate({
+        ignore:'',
+			highlight: function(element, errorClass){
+				$(element).parent('div').parent('div').addClass('error');
+				$(element).parent('div').addClass('error');
+				$(element).addClass('error');
+			},
+			unhighlight: function(element, errorClass){
+				$(element).parent('div').parent('div').removeClass('error');
+				$(element).parent('div').removeClass('error');
+				$(element).removeClass('error');
+			},
+        errorPlacement: function(error, element){},
+           rules:{
+            pay_name: "required",
+			pay_phone: {required:true,number:true},
+            pay_email: {required:true,email:true},
+           },
+    });
+	$('input[name=offlinesubmit]').click(function(){
+		if(!$('#terms').attr('checked')){
+			alert('Please agree to the Terms of Use & Privacy Policy');
+			return false;
+		}
+	});
+	$('input[name=payment_option]').change(function(){
+		if($(this).val()=='paypal'){
+			$('#paypal_form').show();
+			$('#authorize_form').hide();
+			$('#stripe_form').hide();
+		}
+		if($(this).val()=='authorizenet'){
+			$('#paypal_form').hide();
+			$('#authorize_form').show();
+			$('#stripe_form').hide();
+		}
+		if($(this).val()=='creditcard'){
+			$('#stripe_form').show();
+			$('#paypal_form').hide();
+			$('#authorize_form').hide();
+		}
+	});
+});
+</script>
+{% endblock %}

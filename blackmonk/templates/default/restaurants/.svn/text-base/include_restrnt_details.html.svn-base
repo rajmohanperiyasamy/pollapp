@@ -1,0 +1,418 @@
+{% load thumbnail %}
+{% load comparison %}
+{% load ds_utils %}
+{% load truncate_filter %}
+{% load i18n %}
+    <div class="row-fluid buz_block" id="buz_home" style="{% if view != 'home' %}display:none;{% endif %}">
+        <div class="span12">
+            <div class="row-fluid rLvE">
+                <div class="span8 main mRb0">
+                    <div class="row-fluid mRb20mI980">                    
+                        <section class="sCn pD0 rLvE">
+                        	<span class="dVdR hMp"></span>
+                            <div class="row-fluid mRb20mI980 fLdED">
+                            	<div class="dTs-cRd span6">
+                                    <div class="pD15 pDb0mX480">
+                                        <h5>{% trans 'Description' %}</h5>
+                                        {% if restaurant.description %}
+                                            {% if restaurant.description|length|get_digit:"-1" > 600 %} 
+                                                <div class="dSc sMl cLr-dRk mRb20" id="less_synopsis">
+                                                    {% autoescape off %}{{ restaurant.description|truncatechars:601 }}{% endautoescape %}<a onclick="show_toggle()" href="javascript:void(0)">{% trans 'More' %}</a>
+                                                </div>
+                                                <div class="dSc sMl cLr-dRk mRb20" id="more_synopsis" style="display:none;">
+                                                    {% autoescape off %}{% spaceless %}{{ restaurant.description|rstrip_cont }}{% endspaceless %}{% endautoescape %}<a onclick="show_toggle()" href="javascript:void(0)">{% trans 'Less' %}</a>
+                                                </div>
+                                            {% else %}
+                                                <div class="dSc sMl cLr-dRk mRb20" id="all_synopsis">
+                                                    {% autoescape off %}{{ restaurant.description }}{% endautoescape %}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                         
+                                        {% if restaurant.paymentoptions.all %}
+                                        <div class="row-fluid mRb20">
+                                            <h5>{% trans 'Payment Options' %}</h5>
+                                            <p class="fS12">
+                                                {% for po in restaurant.paymentoptions.all %}<span  class="sPrTr">{{po.name}}</span>{% endfor %}
+                                            </p>
+                                        </div>
+                                        {% endif %}
+                                        {% if restaurant.fb_url or restaurant.twitter_url or restaurant.gooleplus_url %}
+                                        <div class="row-fluid mRb10">
+                                            <div class="span6">
+                                                <h5>{% trans 'Also visit us on' %}</h5>
+                                                <ul class="nav nav-list iCnC-lSt iCn12">                                        
+                                                    {% if restaurant.fb_url %}<li><a href="{{restaurant.fb_url}}" target="_blank"><i aria-hidden="true" class="bUi-iCn-fB-16"></i>{% trans 'Facebook' %}</a></li>{% endif %}        
+                                                    {% if restaurant.twitter_url %}<li><a href="{{restaurant.twitter_url}}" target="_blank"><i aria-hidden="true" class="bUi-iCn-tWr-16"></i>{% trans 'Twitter' %}</a></li>{% endif %}
+                                                    {% if restaurant.gooleplus_url %}<li><a href="{{restaurant.gooleplus_url}}" target="_blank"><i aria-hidden="true" class="bUi-iCn-gOo-pLs-16"></i>{% trans 'Google+' %}</a></li>{% endif %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="dTs-cRd span6">
+                                    <div class="pD15 pDb0mX480">
+                                        <div class="row-fluid mRb20">
+                                            <h5>{% trans 'Cuisines' %}</h5>
+                                            <p class="fS12">
+                                                {% for cuisine in restaurant.cuisines.all %}<span class="sPrTr">{{cuisine.name}}</span>{% endfor %}
+                                            </p>
+                                        </div>
+                                        <div class="row-fluid mRb20">
+                                            <h5>{% trans 'Business Type' %}</h5>
+                                            <p class="fS12">
+                                                {% for bt in restaurant.categories.all %}<span class="sPrTr">{{bt.name}}</span>{% endfor %}
+                                            </p>
+                                        </div>
+                                        {% if restaurant.meal_types.all %}
+                                        <div class="row-fluid mRb20">
+                                            <h5>{% trans 'Meal Type' %}</h5>
+                                            <p class="fS12">
+                                                {% for mt in restaurant.meal_types.all %}<span class="sPrTr">{{mt.name}}</span>{% endfor %}
+                                            </p>
+                                        </div>
+                                        {% endif %}
+                                        {% if restaurant.features.all %}
+                                        <div class="row-fluid mRb20">
+                                            <h5>{% trans 'Features' %}</h5>
+                                            <p class="fS12">
+                                                {% for feature in restaurant.features.all %}<span class="sPrTr">{{feature.name}}</span>{% endfor %}
+                                            </p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fLd-bTn vOp"><a href="javascript:void(0)">Read More <i class="bUi-iCn-aNg-b-12" aria-hidden="true"></i></a></div>
+                        </section>
+                    </div>
+                </div>
+                <aside class="sD-bR span4 pStN-rT0mI980">
+                    {% if restaurant.restaurant_images.all %}
+                    <section class="mSnRy">
+                        <section class="sCn pD15">
+                            <div class="mP-wPr">
+                                {% with restaurant.restaurant_address.all.0 as address %}
+                                <div class="mP-iN">
+                                    <img class="Rlb" src="https://maps.googleapis.com/maps/api/staticmap?center={{address.pointer_lat}},{{address.pointer_lng}}&zoom=14&size=450x160&markers={{address.pointer_lat}},{{address.pointer_lng}}&sensor=false" style="" />
+                                    <div class="mP-aCtN">
+                                        <a href="#" class="btn btn-large btn-light"><i aria-hidden="true" class="bUi-iCn-dRt-16"></i></a>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                                <ul class="iCnC-lSt iCn16 tHcL mRb0 pD15 hide">
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i>
+                                    </li>
+                                    <li class="iCnC-lSt-iTm">
+                                        <i class="bUi-iCn-cAl-12"></i>
+                                    </li>
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-tAg-12"></i>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>    
+                    </section>
+                    {% endif %}
+                    {% if restaurant.restaurant_images.all %}
+                    <section class="mSnRy">
+                        <section class="sCn">
+                            <div class="sCn-tTl">
+                                <h3><span>{% trans 'Photos' %}</span> <a href="javascript:void(0);" onclick="show_block('photos');" class="tXt-lNk rGhT">{% trans 'View all' %}</a></h3>
+                            </div>
+                            <ul class="tMbS tHcL pDfX mRb0">
+                                {% for image in restaurant.restaurant_images.all|slice:":3" %}
+                                <li>
+                                    <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox" href="{{image.photo.url}}">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+                                                        <img class="mDa-oT" src="{% thumbnail image.photo 0x191 %}" alt="{{photo.title}}" />
+                                                        <span class="vRtL-aLn">
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </li>
+                                {% endfor%}
+                            </ul>
+                        </section>    
+                    </section>
+                    {% endif %}
+                    {% if offers and business.payment.offer_coupon == 'Y' %}
+                    <section class="mSnRy">
+                        <section class="sCn mDa-lT-mNi">
+                            <div class="sCn-tTl sCn-tTl-bR">
+                                <h3>
+                                    <span>
+                                       {% trans 'Offers' %}<!-- a href="#" class="btn btn-danger btn-small pLrT">Share</a--><a href="javascript:void(0);" onclick="show_block('offers');" class="tXt-lNk rGhT">{% trans 'View all' %}</a>
+                                    </span>
+                                </h3>
+                            </div>
+                            <ul class="mDa-lT mDa-oT-lT">
+                                {% for ofr in offers|slice:":2" %} 
+                                <li class="mDa">
+                                    <div class="mDa-iN">
+                                        <div class="mDa-wPr"> 
+                                            <a class="bUi-tMb-wPr bUi-tMb-sQr tMb-100 fLxiMgH" href="javascript:void(0);" onclick="$('.buz_tab').removeClass('active');$('.buz_tab_offers').addClass('active');show_block_detail('offers',{{ofr.id}});">
+                                                <span class="bUi-tMb">
+                                                    <span class="bUi-tMb-pRpL">
+                                                        <span class="bUi-tMb-cLp">
+                                                            <span class="bUi-tMb-cLp-iN">
+                                                                <img class="mDa-oT" src="{% thumbnail ofr.photo 600x0 %}" title="{{ofr.title}}" alt="{{ofr.title}}" />
+                                                                <span class="vRtL-aLn">
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </a> 
+                                        </div>
+                                        <div class="mDa-bDy">
+                                            <h5 class="mDa-hD" title="{{ofr.title}}"><a href="javascript:void(0);" onclick="$('.buz_tab').removeClass('active');$('.buz_tab_offers').addClass('active');show_block_detail('offers',{{ofr.id}});">{{ofr.title}}</a></h5>
+                                            <div class="mDa-dTa">
+                                               <div class="fS12 cLr-gRy">{% autoescape off %}{{ ofr.description|striptags|truncate_chars:114 }}{% endautoescape %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </section>    
+                    </section>
+                    {% endif %}
+                    {% if restaurant.fb_url %}
+                    <section class="mSnRy">
+                        <section class="sCn">
+                            <iframe src="//www.facebook.com/plugins/likebox.php?href={{ restaurant.fb_url }}&amp;width=100&amp;height=258&amp;connections=12&amp;show_faces=true&amp;colorscheme=light&amp;stream=false&amp;show_border=false&amp;header=false" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100%;height:240px;margin-left:-8px;" allowTransparency="true"></iframe>
+                        </section>    
+                    </section>
+                    {% endif %}
+                </aside>
+            
+             </div>
+        </div>
+        <div class="span8 main">
+            <div class="sCn-tTl">
+                <h3><span>1,130 Reviews </span></h3>
+           
+            </div>
+            <ol class="cMnTs bBl aVtR-cRcL rWrT mRb30">
+                <li class="cMnT-pSt">
+                    <div class="cMnT-pSt-iN">
+                        <form class="cMnT-fRm mRb0">
+                            <div class="vCrD pLlT">
+                                <span class="bBl-aRw">
+                                    <span class="aRw a1"></span>
+                                    <span class="aRw a2"></span>
+                                </span>
+                                <a href="#">
+                                    <img class="aVtR" src="https://lh3.googleusercontent.com/-BjGdxYCAQ6Y/AAAAAAAAAAI/AAAAAAAAApY/uI1iYqGwERc/s46-c-k-no/photo.jpg" />
+                                </a>
+                            </div>
+                            <div class="cMnT-bDy">
+                                <div class="cMnT-bDy-iN">
+                                    <div class="cMnT-tXtArA-wRp">
+                                        <div class="sTr-rT nEdS-fCsk">
+                                            <span class="sTr-wPr sTr-rT-aCt iCn16 rEd"></span>
+                                            <span class="rT-sCr"></span>    
+                                        </div>
+                                        <textarea id="" class="cMnT-tXtArA" placeholder="Describe your experience at Magnolia Bakery." name="comment" data-focus="true" data-expand="true"></textarea>
+                                    </div>
+                                    <p class="fS11 cLr-gRy nEdS-fCs pLlT">Replying as <a href="#" class="cLr-lTbLu">Bilal Ck</a></p>
+                                    <div class="cMnT-pSt-bTn pLrT nEdS-fCs">
+                                        <button type="submit" class="btn disabled" disabled="disabled">Post</button>    
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+                <li class="cMnT">
+                    <div class="cMnT-iN">
+                        <div class="vCrD pLlT">
+                            <span class="bBl-aRw">
+                                <span class="aRw a1"></span>
+                                <span class="aRw a2"></span>
+                            </span>
+                            <a href="#">
+                                <img class="aVtR" src="http://cf3.fancyimgs.com/UserImages/abhirockxxx_879170126c89.jpg" />
+                            </a>
+                        </div>
+                        <div class="cMnT-bDy">
+                            <div class="cMnT-bDy-iN">
+                                <header class="cMnT-hD">
+                                    <span class="pBlSr"><a href="#">Dennis Morgans</a></span><div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span> <!--span id="rw0001" class="rT-sCr fS14 pDr0">3.8</span --></div><span class="tM sPrTr" title="Friday, June 14 2013 1:25 AM">a day ago</span> 
+                                </header>
+                                <div class="cMnT-tXt">
+                                    <p>Overall the Magnolia Bakery was pretty good, however, I don't feel that it has the value. The food was well designed and looked pretty appetizing, however, to be honest with you there are several other bakeries in the area that I preferred. From what I have been reading though, the pudding is the best, so my experience is limited to the cupcakes.  I would recommend to give the place a try, especially the pudding, I will be going to check that out.</p>                               
+                                </div>
+                                <footer class="cMnT-fTr">
+                                    <span class="cMnT-vTnG ">
+                                        <a href="#" class="cMnT-rTg-uP">
+                                            <span class="cMnT-rTg-pStV" title="13 up, 3 down">233</span>
+                                            <i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i>
+                                        </a>
+                                        <a href="#" class="cMnT-rTg-dWn">
+                                            <!--span class="cMnT-rTg-nGtV" title="3 down">3</span-->
+                                            <i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i>
+                                        </a>
+                                    </span>
+                                    <span class="rPlY sPrTr"><a href="#">Reply</a></span>
+                                    <span class="fS11 sPrTr"><i aria-hidden="true" class="bUi-iCn-rPl-rT-12 ib" title="in reply to"></i> <a href="#" class="pRnT-lNk cLr-lTbLu">dylanmagruder</a> <a href="#" class="sHw-pRnT cLr-lTbLu" data-action="show-parent">(Show the comment)</a></span>
+                                </footer>                                            
+                                <div class="cMnT-oPtN btn-group">
+                                    <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu pLrT mNi">
+                                        <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                                        <li><a href="#" class="comment-link">Direct link</a></li>
+                                        <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                                        <li><a href="#" class="btn-mention_user">Mention user</a></li>
+                                        <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+                                    </ul>
+                                </div>
+                            </div> <!-- /.cMnT-bDy-iN -->
+                        </div><!-- /.cMnT-bDy -->                                        
+                    </div> <!-- /.cMnT-iN -->
+                </li> <!-- /.cMnT -->
+                <li class="cMnT">
+                    <div class="cMnT-iN">
+                        <div class="vCrD pLlT">
+                            <span class="bBl-aRw">
+                                <span class="aRw a1"></span>
+                                <span class="aRw a2"></span>
+                            </span>
+                            <a href="#">
+                                <img class="aVtR" src="https://lh3.googleusercontent.com/-NHzO0tpw844/AAAAAAAAAAI/AAAAAAAAYK0/tB0yQpp4OOY/s46-c-k-no/photo.jpg" />
+                            </a>
+                        </div>
+                        <div class="cMnT-bDy">
+                            <div class="cMnT-bDy-iN">
+                                <header class="cMnT-hD">
+                                    <span class="pBlSr"><a href="#">Junhow Wei</a></span><div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span> <!--span id="rw0001" class="rT-sCr fS14 pDr0">3.8</span --></div> <span class="tM sPrTr" title="Friday, June 14 2013 1:25 AM">a day ago</span>
+                                </header>
+                                <div class="cMnT-tXt">
+                                    <p>Everyone goes to Magnolia for the cupcakes, but that is the least interesting thing on the menu. Instead, try the banana pudding, which is the best in the city. There is a line, but it moves quickly and is part of the appeal of going, actually. The staff is always very friendly and helpful.</p>                               
+                                </div>
+                                <footer class="cMnT-fTr">
+                                    <span class="cMnT-vTnG ">
+                                        <a href="#" class="cMnT-rTg-uP">
+                                            <span class="cMnT-rTg-pStV" title="13 up, 3 down">63</span>
+                                            <i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i>
+                                        </a>
+                                        <a href="#" class="cMnT-rTg-dWn">
+                                            <!--span class="cMnT-rTg-nGtV" title="3 down">3</span-->
+                                            <i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i>
+                                        </a>
+                                    </span>
+                                    <span class="rPlY sPrTr"><a href="#">Reply</a></span>
+                                </footer>                                            
+                                <div class="cMnT-oPtN btn-group">
+                                    <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu pLrT mNi">
+                                        <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                                        <li><a href="#" class="comment-link">Direct link</a></li>
+                                        <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                                        <li><a href="#" class="btn-mention_user">Mention user</a></li>
+                                        <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li> <!-- /.cMnT -->
+                <li class="cMnT">
+                    <div class="cMnT-iN">
+                        <div class="vCrD pLlT">
+                            <span class="bBl-aRw">
+                                <span class="aRw a1"></span>
+                                <span class="aRw a2"></span>
+                            </span>
+                            <a href="#">
+                                <img class="aVtR" src="https://si0.twimg.com/profile_images/3708611177/c6f49f76c7972e8e4d3ffd1ab8594e89_normal.jpeg" />
+                            </a>
+                        </div>
+                        <div class="cMnT-bDy">
+                            <div class="cMnT-bDy-iN">
+                                <header class="cMnT-hD">
+                                    <span class="pBlSr"><a href="#">Eric Weberr</a></span><div class="sTr-rT ib mRb0 sPrTr"><span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-4"></span> <!--span id="rw0001" class="rT-sCr fS14 pDr0">3.8</span --></div> <span class="tM sPrTr" title="Friday, June 14 2013 1:25 AM">4 days ago</span>
+                                </header>
+                                <div class="cMnT-tXt">
+                                    <p>These are hands down the best cupcakes in New York City. Every flavor is fantastic and beautifully crafted. I recommend the red velvet!</p>                               
+                                </div>
+                                <footer class="cMnT-fTr">
+                                    <span class="cMnT-vTnG ">
+                                        <a href="#" class="cMnT-rTg-uP">
+                                            <span class="cMnT-rTg-pStV" title="13 up, 3 down"></span>
+                                            <i aria-hidden="true" class="bUi-iCn-lIkE-uP-16"></i>
+                                        </a>
+                                        <a href="#" class="cMnT-rTg-dWn">
+                                            <!--span class="cMnT-rTg-nGtV" title="3 down">3</span-->
+                                            <i aria-hidden="true" class="bUi-iCn-lIkE-dW-16"></i>
+                                        </a>
+                                    </span>
+                                    <span class="rPlY sPrTr"><a href="#">Reply</a></span>
+                                </footer>
+                                <div class="cMnT-oPtN btn-group">
+                                    <a class="btn-link dropdown-toggle oPtN-tGl" data-toggle="dropdown" href="#"><span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu pLrT mNi">
+                                        <li><a href="#" class="btn-comment-share">Share Comment</a></li>
+                                        <li><a href="#" class="comment-link">Direct link</a></li>
+                                        <li><a href="#" class="btn-translate">Translate Comment</a></li>
+                                        <li><a href="#" class="btn-mention_user">Mention user</a></li>
+                                        <li><a href="#" class="btn-mention_user">Flag for Spam</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <ol class="cLdRn">
+                                <li class="cMnT-pSt">
+                                    <div class="cMnT-pSt-iN">
+                                        <form class="cMnT-fRm mRb0">
+                                            <div class="vCrD pLlT">
+                                                <span class="bBl-aRw">
+                                                    <span class="aRw a1"></span>
+                                                    <span class="aRw a2"></span>
+                                                </span>
+                                                <a href="#">
+                                                    <img class="aVtR" src="https://lh4.googleusercontent.com/-ACCV6sZR-MM/AAAAAAAAAAI/AAAAAAAAMJE/hkQBn7HwyWg/s28-c-k-no/photo.jpg" />
+                                                </a>
+                                            </div>
+                                            <div class="cMnT-bDy">
+                                                <div class="cMnT-bDy-iN">
+                                                    <div class="cMnT-tXtArA-wRp">
+                                                        <!-- label class="MnT-tXtArA-lBl">click to leave a comment</label -->
+                                                        <textarea id="" class="cMnT-tXtArA" placeholder="Write a comment..." name="comment" data-focus="true"></textarea>
+                                                    </div>
+                                                    <p class="fS11 cLr-gRy nEdS-fCs pLlT">Replying as <a href="#" class="cLr-lTbLu">Bilal Ck</a></p>
+                                                    <div class="cMnT-pSt-bTn pLrT nEdS-fCs">
+                                                        <button type="submit" class="btn disabled" disabled="disabled">Post</button>    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div><!-- /.cMnT-bDy -->                                        
+                    </div> <!-- /.cMnT-iN -->
+                </li> <!-- /.cMnT -->
+            </ol> <!-- /.cMnTs -->
+          </div>  
+      </div>
+    
+    <!-- About End Here -->
+	             
+<script type="text/javascript">
+function show_toggle(){
+	$('#less_synopsis').toggle();
+	$('#more_synopsis').toggle();
+}
+</script>

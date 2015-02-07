@@ -1,0 +1,181 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "classifieds" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Add Classifieds Listing' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+ <div id="userHub-platform" class="group">
+    <div class="header-bar has-sub">
+    	<h2>{% trans 'Classifieds' %}</h2>
+        <section class="sub-header-bar">
+            <div class="group">
+                  <div class="filter-view-tabs">
+                       <a href="{% url 'user_classified_home' %}" class="text-link"><span>&larr; Back to classifieds</span></a>
+                  </div>
+                  <div class="add-section-right"></div> 
+            </div>
+        </section>                           
+	</div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap">
+                <div id="business-add" class="group">
+                    <div id="add-new-business">
+						<div class="contentpricing group">
+						<form method="post" id="mform" name="mform" action="{% url 'user_add_classifieds_listing' classifieds.id %}">{% csrf_token %}
+                             <div class="table_data">
+                                <div class="table_wrap group">
+								<div class="col_feature price-column1">
+                                        <ul>
+                                            <li class="col_head column"></li>
+                                            <li class="column"><span class="feature_label">Exposure & Response</span></li>
+                                            <li class="column"><span class="feature_label">Images</span></li>
+                                            <li class="column"><span class="feature_label">Comments</span> </li>
+                                            <li class="column"><span class="feature_label">Share Buttons</span> </li>
+                                            <li class="column"><span class="feature_label">Newsletter Promotion</span> </li>
+                                            <li class="column"><span class="feature_label">Social Media Promotion</span> </li>
+                                        </ul>
+                                    </div>
+									{% for cls_price in classifieds_price_objects %}
+									{% if forloop.first %}
+										<input type="hidden" name="payment_level" id="payment_level" value="{{cls_price.level}}">
+									{% endif %}
+									<div id="select_button_top_{{cls_price.level}}" class="col_108 price-column{% if forloop.count == 1 %}2{% else %}{% if forloop.count == 2 %}3{% else %}4{% endif %}{% endif %} {% if forloop.first %}active{% endif %} select_button_top">
+                                        <ul>
+                                            <li class="col_head column">
+                                                <h2>{{cls_price.level_label}}</h2>
+												{% if cls_price.level != 'level0' %}
+													<h1>
+														{% if cls_price.level == 'level1' %}
+															{{ globalsettings.currency }}{{ sp_price }}
+														{% else %}
+															{{ globalsettings.currency }}{{ cls_price.price }}
+														{% endif %}
+														<span>/&nbsp;{{cls_price.contract_period}} {% trans 'Month(s)' %}</span>
+													</h1>
+												{% else %}
+													<h1 class="free">FREE</h1>
+												{% endif %} 
+                                                <a class="btn-txt-blue sponsored-business" href="javascript:show_contents('{{cls_price.level}}')"><span class="btn-txt">Select</span></a> 
+                                            </li>  
+                                            <li class="column">
+                                            	<span class="feature_label">{{cls_price.get_exposure}}</span>
+                                            </li>                                             
+                                            <li class="column">
+                                            	{% if cls_price.images == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li> 
+                                            <li class="column">
+                                            	{% if cls_price.comments == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li> 
+                                            <li class="column">
+                                            	{% if cls_price.share_buttons == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li>
+                                            <li class="column">
+                                            	{% if cls_price.newsletter == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li> 
+                                            <li class="column">
+                                            	{% if cls_price.social_media == 'Y' %}
+                                            		<img src="{{STATIC_URL}}themes/green/images/ico/tick_green.png" alt="yes" />
+												{% endif %}
+                                            </li>
+                                        </ul>
+                                    </div> 
+						{% endfor %}
+						</div>
+						</div>
+						{% for cls_price in classifieds_price_objects %}
+							<div id="level_{{cls_price.level}}" class="fields hform" style="{% if not forloop.first %}display:none;{% endif %};">
+								<div class="field-group"  id="levels_{{cls_price.level}}">
+									{% if cls_price.level == 'level0'  %}
+	                                    <div class="field text-field">	
+	                                        <div class="label"></label></div>	
+											<div class="value">
+										 		<p>{% trans 'Your business listing will be set as' %} <b>{{cls_price.level_label}}</b>.</p>
+											</div>
+										</div>
+									{% endif %}
+									{% if cls_price.level != 'level0' %}
+										<div class="field text-field">	
+											<div class="label"><label>{% trans 'Total Price' %}</label></div>	
+											<div class="value">
+												{% if cls_price.level == 'level1' %}
+													{{ globalsettings.currency }}{{ sp_price }}
+												{% else %}
+													{{ globalsettings.currency }}{{ cls_price.price }}
+												{% endif %}
+									/&nbsp;{{cls_price.contract_period}} {% trans 'Month(s)' %}
+											</div>
+										</div>
+										<div class="field text-field">	
+											<div class="label"><label>{% trans 'Payment Mode' %}</label></div>	
+											<div class="value">
+												{% if payment_settings.invoice_payment %}
+												<span>
+													<input type="radio" name="payment_mode{{cls_price.id}}" value="offline" {% if not payment_settings.online_payment %}checked="checked"{% endif %}>{% trans 'Offline' %}
+												</span>
+												{% endif  %}
+												{% if payment_settings.online_payment %}
+												<span>
+													<input type="radio" name="payment_mode{{cls_price.id}}" value="online" checked="checked">{% trans 'Online' %}
+												</span>
+												{% endif  %}
+											</div>
+										</div>
+									{% endif %}
+								</div>
+								</div>
+							{% endfor %}
+							<div class="form-submit right group trp-bg">
+							   <button type="submit" name="publish" class="cform-button prime" role="button"><span class="cform-button-text">SUBMIT</span></button>
+                            </div>
+						</form>
+						</div>
+					</div>																	                                        
+                </div> <!-- end table -->                                    
+            </div><!-- end page wrap -->
+        </div>  <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+			{#% include 'classifieds/staff/faq.html' %#}
+		</div>        
+	</div>                            
+</div>
+{% endblock %}
+{% block footer_include %}
+<script type="text/javascript">
+	function show_contents(level){
+		$('.select_button_top').removeClass('active');
+		$('#select_button_top_'+level).addClass('active');
+		$('#payment_level').val(level);
+		if(level=='level2'){
+			$('#level_level2').show();
+			$('#level_level1').hide();
+			$('#level_level0').hide();
+		}
+		else if(level == 'level0'){
+			$('#level_level0').show();
+			$('#level_level1').hide();
+			$('#level_level2').hide();
+		}
+		else{
+			$('#level_level1').show();
+			$('#level_level2').hide();
+			$('#level_level0').hide();
+		}
+	}
+</script>
+{% endblock %}
+

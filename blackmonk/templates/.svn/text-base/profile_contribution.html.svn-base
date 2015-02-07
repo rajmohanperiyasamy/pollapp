@@ -1,0 +1,36 @@
+{% load tabs %}
+<div class="wdt_140">
+    <div class="user_stats group">
+        <dl>
+            <dt><a href="javascript:goto_module('{% url 'ajax_profile_module_deatils' profile.profile_slug 'articles' %}','articles')" class="sidenav articles {% if view == 'articles' %}active{% endif %}">Articles</a></dt>
+            <dd class="totalArticles">0</dd>
+            <dt><a href="javascript:goto_module('{% url 'ajax_profile_module_deatils' profile.profile_slug 'events' %}','events')" class="sidenav events {% if view == 'events' %}active{% endif %}">Events</a></dt>
+            <dd class="totalEvents">0</dd>
+            <dt><a href="javascript:goto_module('{% url 'ajax_profile_module_deatils' profile.profile_slug 'photos' %}','photos')" class="sidenav photos {% if view == 'photos' %}active{% endif %}">Photos</a></dt>
+            <dd class="totalPhotos">0</dd>
+            <dt><a href="javascript:goto_module('{% url 'ajax_profile_module_deatils' profile.profile_slug 'videos' %}','videos')" class="sidenav videos {% if view == 'videos' %}active{% endif %}">Videos</a></dt>
+            <dd class="totalVideos">0</dd>                                    
+            <dt><a href="javascript:goto_module('{% url 'ajax_profile_module_deatils' profile.profile_slug 'discussion' %}','discussion')" class="sidenav discussion {% if view == 'discussion' %}active{% endif %}">Discussions</a></dt>
+            <dd class="totalForum">0</dd>
+            <dt class="br_0"><a href="javascript:goto_module('{% url 'ajax_profile_module_deatils' profile.profile_slug 'classifieds' %}','classifieds')" class="sidenav classifieds {% if view == 'classifieds' %}active{% endif %}">Classifieds</a></dt>
+            <dd class="totalClassifieds br_0">0</dd>                                    
+        </dl>
+    </div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$.ajax({
+			dataType: "GET",
+			url: "{% url 'ajax_contribution' profile.profile_slug %}",
+			dataType:'JSON',
+			success: function(data){
+				$('.totalArticles').html(String(data.article));
+				$('.totalEvents').html(String(data.events));
+				$('.totalPhotos').html(String(data.photos));
+				$('.totalVideos').html(String(data.videos));
+				$('.totalForum').html(String(data.discussion));
+				$('.totalClassifieds').html(String(data.classifieds));
+			}
+		});
+	});
+</script>

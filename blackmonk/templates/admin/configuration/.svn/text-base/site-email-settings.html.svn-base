@@ -1,0 +1,140 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+    {% activetab 'topnav' 'config' %}
+    {{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Website E-Mail Sending Configuration' %} {% endblock %}
+{% block head %}
+<style>
+.msg-succes {
+    background-color: #6fd74e !important;
+    border-radius: 2px 2px 2px 2px;
+    color: #FFFFFF !important;
+    display: inline-block;
+    font-weight: bold;
+    margin-top: 8px;
+    margin-left:16px;
+    border-color:#56b03b;
+    padding: 8px 20px 10px;
+}
+
+.msg-error {
+    background-color: #f34f2f !important;
+    border-radius: 2px 2px 2px 2px;
+    color: #FFFFFF !important;
+    display: inline-block;
+    font-weight: bold;
+    float:left;
+    margin-top: 8px;
+    border-color:#c53114;
+    padding: 8px 20px 10px;
+}  
+</style>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    
+function save_smtp_settings(){
+    var flag = $('#mform').validate().form()
+    var id=0;
+    if(flag==true){
+        var dataString='email_host='+encodeURIComponent($('#id_email_host').val());
+        dataString+='&email_port='+encodeURIComponent($('#id_email_port').val());
+        dataString+='&secure_type='+encodeURIComponent($('input[name=secure_type]:checked', '#mform').val()); 
+        dataString+='&email_host_user='+encodeURIComponent($('#id_email_host_user').val());
+        dataString+='&email_host_password='+encodeURIComponent($('#id_email_host_password').val());
+        $('#ajax_content').hide();
+        $('#ajax_content_loading').show();
+        $.ajax({
+        type: "POST",
+        url: "{% url 'admin_configuration_update_smtp_email_settings' %}",
+        data: dataString,
+        dataType:'JSON',
+        success: function(data){
+                $('#ajax_content_loading').hide()
+                $('#ajax_content').show();
+                if(data.status){
+                    show_msg(data.msg,data.mtype);
+                }
+                else{alert(gettext('Oops !!! Not able to process your request.'))}
+            }
+        });
+    }
+}
+
+function test_smtp_connection(){
+   var flag = $('#mform').validate().form()                             
+   if(flag==true){
+        var dataString='email_host='+encodeURIComponent($('#id_email_host').val());
+        dataString+='&email_port='+encodeURIComponent($('#id_email_port').val());
+        dataString+='&secure_type='+encodeURIComponent($('input[name=secure_type]:checked', '#mform').val()); 
+        dataString+='&email_host_user='+encodeURIComponent($('#id_email_host_user').val());
+        dataString+='&email_host_password='+encodeURIComponent($('#id_email_host_password').val());
+        
+        $('#id_smtp_connect').hide();
+        $('#id_smtp_loading').show();   
+        
+        $.ajax({
+        type: "POST",
+        url: "{% url 'admin_configuration_test_smtp_connection' %}",
+        data: dataString,
+        dataType:'JSON',
+        success: function(data){
+                $('#id_smtp_loading').hide();    
+                if(data.status){$('#id_smtp_msg').removeClass('msg-error').addClass('msg-succes');}
+                else{$('#id_smtp_msg').removeClass('msg-succes').addClass('msg-error');}        
+                $('#id_smtp_msg').html(data.result_msg).fadeIn(2000);
+                
+                setTimeout(function(){
+                    $('#id_smtp_msg').hide();
+                    $('#id_smtp_connect').show();
+                },10000);
+                
+            }
+        });
+    }
+}
+    
+</script>
+
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+    <div id="admin-platform" class="group">
+        <div class="header-bar">
+            <div id="nav-roll">
+                <ul>
+                    <li id="config-index" class="first"><a href="{% url 'admin_configuration' %}" style="width:120px;z-index:9"><span class="icon"></span>{% trans 'Settings' %}</a></li>
+                    <li><a href="{% url 'admin_configuration_site_email_settings' %}" style="z-index:8">{% trans 'Email Settings' %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="core-wraper" class="group">
+            <div class="admin-main col_12">
+                {% block leftnavigation %}
+                    {% activetab 'topnav' 'config' %}
+                    {% activetab 'leftnav' 'email-config' %}
+                    {% activetab 'leftnavsub' 'email-config' %}
+                    {{ block.super }}
+                {% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+                    <div class="page-wrap">
+                        <div class="page-head br_0">
+                            <h2>{% trans 'Website  E-Mail Sending Configuration' %}</h2>
+                            <!--p class="ltxt80">{% trans "Related Contents Goes Here......." %}</p-->
+                        </div>
+                        {% include 'admin/configuration/include_site_email_config.html' %}
+                    </div>
+                </div>
+            </div>
+			{% include 'admin/configuration/email-config-faq.html' %}
+            {% include 'admin/configuration/MC-nwesletter-faq.html' %}
+            {#% include 'admin/portal/api/CC-nwesletter-faq.html' %#}
+        </div>
+    </div>
+</div>
+{% endblock %}

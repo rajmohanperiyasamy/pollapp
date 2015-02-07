@@ -1,0 +1,145 @@
+{% extends 'default/locality/map/base.html' %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load mptt_comments_tags %}
+{% load comparison %}
+{% load i18n %}
+{% load tabs %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% block pagetitle %}{{seo.seo_title}} | {{ globalsettings.domain }} {% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+    
+{% endblock %}
+{% block navigation %}
+    {% activetab "modulenav" "business" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div id="site">
+        <div class="row-fluid">
+            <div id="site" >
+                <div class="expolre">
+                    <div class="gGl-mP-cNvS">
+                        <div id="map-canvas"></div>
+                    </div>
+                    <div class="result-container" id="id_result_div"> 
+                        <!--<div class="sCn">
+                            <ul class="nav nav-tabs mRb0 pD015 getdirection">
+                                <li class="devider"><a href="#"><span class="icon"></span></a></li>
+                                <li><a href="#" class="drive"><span class="icon"></span></a></li>
+                                <li><a class="transit" href="#"><span class="icon"></span></a></li>
+                                <li><a class="walk" href="#"><span class="icon"></span></a></li>
+                                <li><a class="bicycle" href="#"><span class="icon"></span></a></li>
+                                <li><a class="fly" href="#"><span class="icon"></span></a></li>
+                            </ul>
+                            <form class="form-search rLvE mRb0" style="margin-top: 20px; margin-left: 15px;">
+                                <div class="control-group" style="margin-bottom: 20px;">
+                                    <div class="controls"> <img src="static/img/icons/a-small.png" class="direction-a" />
+                                        <input id="directionFrom" type="text" style="height: 35px; width: 290px;" class="" value="30 S El Camino Real, San Mateo" autofocus>
+                                    </div>
+                                </div>
+                                <div class="control-group cLrFx mRb20" style="">
+                                    <div class="controls"> <img src="static/img/icons/b-small.png" class="direction-b" />
+                                        <address style="display: inline-block; width: 290px;" class="pLlT mRb0">
+                                        <strong style="margin-bottom: 5px; display: block;"><a href="#">Magnolia Bakery</a></strong> <span style="font-size: 12px; color: rgb(102, 102, 102); line-height: 1.2;">795 Folsom Ave, Suite 600,  San Francisco, CA 94107</span>
+                                        </address>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 15px;" class="control-group">
+                                    <div class="controls"> <a href="javascript:void(0)" id="getDir" class="btn btn-primary fS12 fW-bLd " style="margin-left: 30px;">Get Direction</a> </div>
+                                </div>
+                            </form>
+                            <div id="directions-panel"></div>
+                        </div>-->
+                        <div class="sCn">
+                            <div class="" style="padding: 15px; margin-bottom: 11px; background-color: rgb(245, 245, 245); border-bottom: 1px solid rgb(221, 221, 221);">
+                                <form class="form-search rLvE mRb0" method="GET" action="{% url 'locality_map_business' %}">
+                                    <input type="hidden" name="search" value="true">
+                                    <input type="text" id="id_q" name="q" value="{% if q %}{{ q }}{% endif %}" placeholder="Nearby business" class="search-query iSp9 fS14 h35" style="width: 100% ! important; border-color: rgb(221, 221, 221);">
+                                    <button type="submit" class="btn btn-primary fS12 fW-bLd lH1 aBsLt rGt0 t0 " style="border-radius: 0px 2px 2px 0px; padding: 8px 12px; background-color: transparent; color: rgb(187, 187, 187);"> <i aria-hidden="true" class="bUi-iCn-sRh-16 "></i></button>
+                                </form>
+                            </div>
+                            <input type="hidden" id="load_more_url" value="{% url 'locality_map_ajax_filter_business' %}">
+                            <input type="hidden" id="id_search_status" value="{{search}}">
+                            <input type="hidden" id="page_number" value="{{next}}">
+                            <input type="hidden" id="id_fl_counter" value="{{fl_counter}}">
+                            <ul class="modulesBrowseData mDa-lT mDa-oT-lT iNsT-10 mRl15" id="id_content_ul">
+                                {% include 'default/locality/map/ajax-business-list.html' %}
+                            </ul>
+                            <span style="display: none; background: none repeat scroll 0% 0% white; z-index: 2147483647; height: 50px; left: 0px; right: 0px; text-align: center; width: 100%; position: absolute; bottom: 0px; border-top: 2px solid rgba(0, 0, 0, 0.1);" id="id_loading_txt"><h5 style="margin-top: 18px;">{% trans 'Loading...' %}</h5></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #site-wrapper --> 
+<script type="text/javascript" src="{{STATIC_URL}}js/locality/global-map-location.js"></script> 
+<script type="text/javascript">
+var markers=[];
+var icon_lrg = "{{STATIC_URL}}themes/img/icons/map-pointer.png";
+var icon_sml = "{{STATIC_URL}}themes/img/icons/a-small.png";
+
+$(document).ready(function(){
+    {% for b in businesslist %}
+            {% with b.address.all.0 as addr %}
+                var marker = new Object();
+                marker["lat"] = {{addr.lat}};
+                marker["lng"] = {{addr.lon}};
+                marker["zoom"] = {{addr.zoom}};
+                marker["icon"] = icon_lrg;
+                
+                var contentString = '<ul id="map-view'+{{b.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+                contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ b.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+                contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp"> <span class="bUi-tMb-cLp-iN">';
+                contentString+='<img src="{% if b.logo.logo %}{% thumbnail b.logo.logo 290x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{addr.lat}},{{addr.lon}}&zoom=14&size=450x180&markers={{addr.lat}},{{addr.lon}}&sensor=false{% endif %}" class="mDa-oT"> <span class="vRtL-aLn"> </span> </span> </span> </span> </span> </a> </div>';
+                contentString+='<div class="mDa-bDy pD0"> <h4 class="mDa-hD tRnCt0 rLvE mRb0"><a class="tRnCt" href="{{ b.get_absolute_url }}">{{ b.name }}</a> </h4>';
+                contentString+='<div class="mDa-dTa"><div class="cLrFx mRb12"><span class="sTr-wPr sTr-rT-rD rEd iCn16 lH1 ib" data-rating="{{b.ratings}}"></span><a href="{{b.get_absolute_url}}#comments" class="review_count sPrTr ib">{% get_mptt_comment_count for b as comment_count %}{{comment_count}} {% trans "reviews" %}</a></div>';
+                contentString+='<ul class="iCnC-lSt iCn10 iCn-gRy"> <li class="iCnC-lSt-iTm "><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i><a href="javascript:void(0);">{{ addr.address1 }}{% if addr.address2 %}, {{addr.address2}}{% endif %}{% if addr.city %}, {{addr.city}}{% endif %}{% if addr.zip %} - {{addr.zip }}{% endif %}</a> </li>';
+                {% if addr.telephone1 or addr.mobile %}
+                contentString+='<li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-cAl-12"></i> {% if addr.telephone1 %}{{addr.telephone1}}{% endif %}{% if addr.mobile %}, {{ addr.mobile }}{% endif %} </li>';
+                {% endif %}
+                contentString+='<li class="iCnC-lSt-iTm"> <i aria-hidden="true" class="bUi-iCn-tAg-12"></i><a href="{{ b.categories.all.0.get_absolute_url }}">{{ b.categories.all.0.name }}</a><!--span class="sPrTr">$$$$ </span--></li> </ul>';
+                contentString+='<a href="{% url "locality_map_map_get_direction" %}?aid={{addr.id}}&objid={{b.id}}&src=business" title="{% trans "Directions" %}" class="aBsLt bR10"><i aria-hidden="true" class="bUi-iCn-dRt-20 fS12 "></i></a></div> </div> </li></ul>';
+                
+                marker['content_info'] = contentString;
+                markers.push(marker);
+            {% endwith %}
+    {% endfor %}
+    
+    {% if other_business %}
+        {% for b in other_business %}
+                {% with b.address.all.0 as addr %}
+                    var marker = new Object();
+                    marker["lat"] = {{addr.lat}};
+                    marker["lng"] = {{addr.lon}};
+                    marker["zoom"] = {{addr.zoom}};
+                    marker["icon"] = icon_sml;
+                    
+                    var contentString = '<ul id="map-view'+{{b.id}}+'" class="cLrFx map-info modulesBrowseData mDa-lT mDa-oT-lT">';
+                    contentString+='<li class="mDa mR0"> <div class="mDa-wPr mRr5mP"> <a href="{{ b.get_absolute_url }}" class="bUi-tMb-wPr tMb-100 fLxiMgH bUi-tMb-100">';
+                    contentString+='<span class="bUi-tMb"> <span class="bUi-tMb-pRpL"> <span class="bUi-tMb-cLp"> <span class="bUi-tMb-cLp-iN">';
+                    contentString+='<img src="{% if b.logo.logo %}{% thumbnail b.logo.logo 290x0 %}{% else %}https://maps.googleapis.com/maps/api/staticmap?center={{addr.lat}},{{addr.lon}}&zoom=14&size=450x180&markers={{addr.lat}},{{addr.lon}}&sensor=false{% endif %}" class="mDa-oT"> <span class="vRtL-aLn"> </span> </span> </span> </span> </span> </a> </div>';
+                    contentString+='<div class="mDa-bDy pD0"> <h4 class="mDa-hD tRnCt0 rLvE mRb0"><a class="tRnCt" href="{{ b.get_absolute_url }}">{{ b.name }}</a> </h4>';
+                    contentString+='<div class="mDa-dTa"><div class="cLrFx mRb12"><span class="sTr-wPr sTr-rT-rD rEd iCn16 lH1 ib" data-rating="{{b.ratings}}"></span><a href="{{b.get_absolute_url}}#comments" class="review_count sPrTr ib">{% get_mptt_comment_count for b as comment_count %}{{comment_count}} {% trans "reviews" %}</a></div>';
+                    contentString+='<ul class="iCnC-lSt iCn10 iCn-gRy"> <li class="iCnC-lSt-iTm "><i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i><a href="javascript:void(0);">{{ addr.address1 }}{% if addr.address2 %}, {{addr.address2}}{% endif %}{% if addr.city %}, {{addr.city}}{% endif %}{% if addr.zip %} - {{addr.zip }}{% endif %}</a> </li>';
+                    {% if addr.telephone1 or addr.mobile %}
+                    contentString+='<li class="iCnC-lSt-iTm"><i aria-hidden="true" class="bUi-iCn-cAl-12"></i> {% if addr.telephone1 %}{{addr.telephone1}}{% endif %}{% if addr.mobile %}, {{ addr.mobile }}{% endif %} </li>';
+                    {% endif %}
+                    contentString+='<li class="iCnC-lSt-iTm"> <i aria-hidden="true" class="bUi-iCn-tAg-12"></i><a href="{{ b.categories.all.0.get_absolute_url }}">{{ b.categories.all.0.name }}</a><!--span class="sPrTr">$$$$ </span--></li> </ul>';
+                    contentString+='<a href="{% url "locality_map_map_get_direction" %}?aid={{addr.id}}&objid={{b.id}}&src=business" title="{% trans "Directions" %}" class="aBsLt bR10"><i aria-hidden="true" class="bUi-iCn-dRt-20 fS12 "></i></a></div> </div> </li></ul>';
+                   
+                    marker['content_info'] = contentString;
+                    markers.push(marker);
+                {% endwith %}
+        {% endfor %}
+     {% endif %}   
+    
+    setTimeout(function(){load_global_map('map-canvas',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }}, markers, false)},500);
+});
+</script>
+{% endblock %} 

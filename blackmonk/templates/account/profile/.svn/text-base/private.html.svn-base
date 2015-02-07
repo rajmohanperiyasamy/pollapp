@@ -1,0 +1,42 @@
+{% extends base %}
+{% load tabs %}
+{% load thumbnail %}
+{% load ds_utils %}
+{% load i18n %}
+{% block pagetitle %}{{ globalsettings.domain }} {{profile.user}}'s Public Profile{% endblock %}
+{% block meta %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content=""/>
+	<meta name="keywords" content=""/>
+{% endblock %}
+{% block head %}
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+<div id="content-container">
+    <div class="container-fluid">
+		<div class="row-fluid">                    
+            
+            	{% include 'account/profile/profile-block.html' %}
+            
+            <div class="main span9 pDl0 pLlT iM">
+				<section class="sCn pD0">
+					<div class="hT500 rLvE">
+                 		<div class="tBl-bLk pDt0">
+							<div class="tBl-cEl">
+								<span class="iCn-bRdR80 oP50"><i aria-hidden="true" class="bUi-iCn-lOk-16 fS42-1 cLr-lTgRy ib"></i></span>
+								<p class="bLk mRt20 fS18 fW-bLd cLr-gRy oP50">This user's profile is private.</p>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+            
+		</div>
+		                
+    </div>
+</div>
+{% endblock %}

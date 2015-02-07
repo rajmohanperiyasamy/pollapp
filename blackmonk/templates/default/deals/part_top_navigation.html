@@ -1,0 +1,20 @@
+{% load tabs %}
+{% load i18n %}
+			<div id="deal_hdr_bar" class="group">
+            	<h4>{{ globalsettings.domain }} {% trans 'Daily Deal' %}</h4>
+                <ul class="nav">
+                	 <li><a href="{% url 'deal_deals_home' %}" {% ifactivetab "dealnav" "featured" %} class="active"{% endifactivetab %}>{% trans 'Featured Deals' %}</a></li>
+                	<li><a href="{% url 'deal_all_deals' %}" {% ifactivetab "dealnav" "all" %} class="active"{% endifactivetab %}>{% trans 'All Deals' %}</a></li>
+                    <li><a href="{% url 'deal_how' %}" {% ifactivetab "dealnav" "how" %} class="active"{% endifactivetab %}>{% trans 'How it Works' %}</a></li>
+                    <li><a href="{% url 'deal_faqs' %}" {% ifactivetab "dealnav" "faq" %} class="active"{% endifactivetab %}>{% blocktrans %}FAQ's{% endblocktrans %}</a></li>
+                    <li><a href="{% url 'deal_contact' %}" {% ifactivetab "dealnav" "contact" %} class="active"{% endifactivetab %}>{% trans 'Contact Us' %}</a></li>
+					{% if user.is_authenticated %}<li class="prom"><a href="{% url deal_order_list %}">{% trans 'My Orders' %}</a></li>{% endif %}
+					<!-- <li class="br_0"><a href="/deals/invite/" {% ifactivetab "dealnav" "invite" %} class="active"{% endifactivetab %}>Invite Friends</a></li> -->
+                </ul>
+				
+                <div id="nav_right" class="flt_right">
+                	<div id="nav_right" class="flt_right" style="width:100px;padding-top:7px">
+	                    <div class="clear"></div>
+	                </div>
+                </div>                
+            </div>

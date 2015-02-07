@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load tabs %}
+<div class="span2 sP3mX979 sP12mX767">
+	<section class="sCn pD15p">
+		<h2 class="fS16 mRt0 mRb20 hP">{% trans 'Settings' %}</h2>
+		<ul class="nav nav-list bRdb bDrR0 oTsT-hRz fS12 hP">
+			<li class="nav-header">{% trans 'Account' %}</li>
+			<li {% ifactivetab 'selmodule' 'profile' %}class="active"{% endifactivetab %}><a href="{% url 'usermgmt_viewprofile' %}"><i aria-hidden="true" class="bUi-iCn-uSr-12 fS16 cLr-gRy"></i> <span>{% trans 'Profile' %}</span></a></li>
+			<li {% ifactivetab 'selmodule' 'contact_info' %}class="active"{% endifactivetab %}><a href="{% url 'contact_info' %}"><i aria-hidden="true" class="bUi-iCn-eNv-aLt-16"></i> <span>{% trans 'Contact Info' %}</span></a></li>
+			<li {% ifactivetab 'selmodule' 'passord_change' %}class="active"{% endifactivetab %}><a href="{% url 'usermgmt_password_change' %}"><i aria-hidden="true" class="bUi-iCn-lOk-16 cLr-gRy"></i> <span>{% trans 'Password' %}</span></a></li>
+			<!--<li><a href="#"><i aria-hidden="true" class="bUi-iCn-nTFiC-16 cLr-gRy"></i> <span>{% trans 'Notifications' %}</span></a></li>-->
+			<li {% ifactivetab 'selmodule' 'privacy' %}class="active"{% endifactivetab %}><a href="{% url 'profile_privacy' %}"><i aria-hidden="true" class="bUi-iCn-sTg-16 cLr-gRy"></i> <span>{% trans 'Preferences' %}</span></a></li>
+			<li class="nav-header">Payments</li>
+			<li {% ifactivetab 'selmodule' 'payment_history' %}class="active"{% endifactivetab %}><a href="{% url 'user_view_payment_history' %}"><i aria-hidden="true" class="bUi-iCn-dR-16 fS16 cLr-gRy"></i> <span>{% trans 'Transactions' %}</span></a></li>
+		</ul>
+        <span class="pLlT im pDt10 vP" href="#"><span class="fS22 cLr-dRk">{% trans 'Settings' %}</span></span>
+        <select data-link="true" class="discussion fS13 pLrT im">
+        	<optgroup label="Account">
+            	<option data-icon="bUi-iCn-uSr-12 fS16 mRr5 cLr-gRy" data-location="{% url 'usermgmt_viewprofile' %}" {% ifactivetab 'selmodule' 'profile' %}selected="selected"{% endifactivetab %}>{% trans 'Profile' %}</option>
+            	<option data-icon="bUi-iCn-eNv-aLt-16 fS16 mRr5 cLr-gRy" data-location="{% url 'contact_info' %}" {% ifactivetab 'selmodule' 'contact_info' %}selected="selected"{% endifactivetab %}>{% trans 'Contact Info' %}</option>
+                <option data-icon="bUi-iCn-lOk-16 mRr5 cLr-gRy" data-location="{% url 'usermgmt_password_change' %}" {% ifactivetab 'selmodule' 'passord_change' %}selected="selected"{% endifactivetab %}>{% trans 'Password' %}</option>
+                <!-- option data-icon="bUi-iCn-nTFiC-16 mRr5 cLr-gRy">{% trans 'Notifications' %}</option -->
+                <option data-icon="bUi-iCn-sTg-16 mRr5 cLr-gRy" data-location="{% url 'profile_privacy' %}" {% ifactivetab 'selmodule' 'privacy' %}selected="selected"{% endifactivetab %}>{% trans 'Preferences' %}</option>
+        	</optgroup>
+        	<optgroup label="Payments">
+              <option data-icon="bUi-iCn-dR-16 fS16 mRr5 cLr-gRy"data-location="{% url 'user_view_payment_history' %}" {% ifactivetab 'selmodule' 'payment_history' %}selected="selected"{% endifactivetab %}>{% trans 'Transactions' %}</option>
+            </optgroup>
+        </select>
+	</section>
+</div>

@@ -1,0 +1,239 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load ds_utils %}
+{% load i18n %}
+{% load upload_tags %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "movies" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Theatre Preview ' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+                <div id="staff-platform" class="group">
+                  	<div class="header-bar has-preview-head">
+                        <h2><a href="{% url 'staff_theatre_listing' %}">{% trans 'Theatre' %}</a></h2>
+                        <section class="sub-header-bar">
+                            <div class="preview-head">
+                                <div class="item-title">
+                                    <h1>{{theatre_preview.name}}</h1>
+								</div>                                   
+                            </div>                                
+                        </section>                          
+                    </div>
+                    <div id="core-wraper" class="group">
+                        <div class="staff-main">
+						    <div class="page-wrap" >
+                                <div id="articles-preview"  style="display:{% if showtimes %}none;{% else %}block;{% endif %}" class="preview-center group">
+                                    <div class="preview-items">
+                                        <div class="preview-group">  
+                                        	<div class="preview-items-head">
+                                            	<h3 style="vertical-align:top">{% trans 'Theatres Details'%}</h3>
+                                            </div>            
+                                            <div class="preview-item title">
+                                                <div class="label"><h4>{% trans 'Name'%}</h4></div>
+                                                <div class="value">{{theatre_preview.name}}</div>
+                                            </div> 
+                                            <div class="preview-item date-time">
+                                                <div class="label"><h4>{% trans 'Address '%}</h4></div>
+                                                <div class="value">
+                                                	<div class="inline-block map-preview"  style="width: 190px; height: 150px;" id="map"></div>
+                                                	<span class="date">{{theatre_preview.address.address1}}</span> <span class="time"></span>
+												</div>
+                                            </div>
+                                                                   
+                                            <div class="preview-item url">
+                                                <div class="label"><h4>{% trans 'Website/Profiles' %}</h4></div>
+                                                <div class="value">
+                                                	<span class="url">
+                                                        <a href="{{theatre_preview.address.website}}" target="_blank">{% if theatre_preview.address.website %}{{theatre_preview.address.website}}{% else %}{% trans 'N/A'%}{% endif %}</a><br>
+                                                    </span>
+												</div>
+                                            </div>
+                                            <div class="preview-item phone">
+                                                <div class="label"><h4>{% trans 'Box office phone No:'%}</h4></div>
+                                                <div class="value">
+                                                	<span class="price">{% if theatre_preview.boxoffice_no %}{{theatre_preview.boxoffice_no}}{% else %}{% trans 'N/A'%}{% endif %}</span>
+												</div>
+                                            </div>                                            
+                                            <div class="preview-item url">
+                                                <div class="label"><h4>{% trans 'Online Ticket' %}</h4></div>
+                                                <div class="value">
+                                                	<span class="price"><a href="{{theatre_preview.tkt_url}}" target="_blank">{% if theatre_preview.tkt_url %}{{theatre_preview.tkt_url}}{% else %}{% trans 'N/A'%}{% endif %}</a></span>
+												</div>
+                                            </div>  
+											       
+						
+											                                                 
+                                            <div class="preview-item description">
+                                                <div class="label"><h4>{% trans 'Multiplex' %}</h4></div>
+                                                <div class="value">
+                                                	<div class="description basic-editor-content">
+                                                    	<p>{% if theatre_preview.is_multiplex %}{% trans 'Multiplex'%}{% else %}{% trans 'N/A'%}{% endif %}</p>
+                                                	</div>
+												</div>
+                                            </div>
+                          					{% if theatre_preview.image %}
+                                            <div class="preview-item medias">
+                                                <div class="label"><h4>{% trans 'Image'%}</h4></div>
+                                                <div class="value">
+                                                    <div class="item-photos">
+														 <ul class="fxslider">
+                                                            <li class="inline-block" data-src="{{theatre_preview.image.url}}">
+                                                                <div class="photos-preview"><img src="{% thumbnail theatre_preview.image 110x0 %}"><a class="icon-view preview-item" title="Large preview" href="#"></a></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+												</div>
+                                            </div>
+											{% endif %}                                                                                        
+                                        </div>   
+                                    </div>                                            
+                                </div><!-- end table -->
+								
+								
+								<!------------------  Showtimes -->
+								
+								<div id="showtimes" style="display:{% if showtimes %}block;{% else %}none;{% endif %}" class="preview-center group">
+                                	<div class="preview-group">
+                                       {% if theatre_preview.get_movies %}
+                                        <div class="preview-items-head group">
+                                            <div class="right-item movie-showtimes" title ="Add Showtime "href="{% url 'staff_theatre_ajax_add_showtime' %}?theatre_id={{theatre_preview.id}}"><div class="cform-button prime"><span>Add Showtimes</span></div></div>
+                                      <!--   <h3>{% trans 'showtimes .' %}</h3>
+                                      --></div> 
+									 {% endif %}
+										
+										<!--<div class="preview-items-head">
+                                            <div class="right-item theatres-showtimes" href="{% url 'staff_theatre_ajax_add_showtime' %}?theatre_id={{theatre_preview.id}}"><div class="cform-button prime"><span>Add Showtimes</span></div></div>
+                                            <h3>{% trans 'Showtimes'%}</h3>
+                                        </div>-->
+										<ol class="data-table-inset">
+                                        	<li class="table-list-row-head">
+                                            	<div class="table-list-row-inner group">
+                                                    <div class="table-list-coloumn w220 txt-right">{% trans 'Movie' %}</div>	
+                                                    <div class="timings">{% trans 'Showtimes'%}</div>	
+												</div>                                                    
+                                            </li>
+											{% for a in added %}
+                                        	<li class="table-list-row manage-items" id="show_times_li_{{a.id}}">
+											    <div class="table-list-row-inner group">
+                                                	<div class="table-list-coloumn w220 txt-right">
+														<h3>{{a.movie.title}}</h3>
+													</div>
+													<div class="timings">
+														{% autoescape off %}
+												        {% for show in a.get_shows %}
+                                                    	<div class="rw">
+                                                            <span class="date">{{show.date|date:"D, dS M"}}</span>
+                                                            <p class="grid">{% split_show_times show.show_times %}</p>
+                                                    	</div>
+														{% endfor %}
+				                                        {% endautoescape %}
+                                                    </div>
+													 <div class="action-buttons">
+													    <a href="{% url 'staff_theatre_edit_show_details' %}?id={{a.id}}"  class="tttxt-n edit_movie_lightbox" title="Edit showtime"><span class="action-icon icon-edit"></span></a>
+													    <a href="javascript:void(0)" class="tttxt-n" onclick="delete_showtime({{ a.id}});" original-title="Delete"><span class="action-icon icon-delete"></span></a>
+                                                  	</div>
+                                                </div>
+											</li>
+                                        {% endfor %} 
+                                        </ol> <!-- end table -->
+										 {% if not  theatre_preview.get_movies %}
+										  <div class="no-data">
+                                        	<p>{% trans 'No showtimes found for this theatre.'%}</p>
+                                            <div class="button-insde">
+                                            	<span class="btn-txt-inline-prime edit_movie_lightbox" href="{% url 'staff_theatre_ajax_add_showtime' %}?theatre_id={{theatre_preview.id}}" title="Add Showtime"><span class="btn-txt">{% trans 'Add Showtimes' %}</span></span>
+                                            </div>
+                                         </div>
+										{% endif %}
+										
+										
+									</div>
+                                </div>
+								
+								<!---  Show Times End -->
+								
+								
+                            </div> <!-- end page wrap -->
+							
+							
+                        </div> <!-- end main-col -->                            
+                        <div id="aside" class="side-bar">
+                        	<div class="preview-aside-meta group">
+                                <ul class="side-navigation">
+                                    <li id="theatre_preview" {% if showtimes %} class="inactive" {% else %} class="active" {% endif %}><a href="javascript:void(0)" onclick="showtimes_show_preview()">{% trans 'Theatre Details'%}</a></li>
+                                    <li id="theatre_show" {% if showtimes %} class="active"  {% endif %}><a onclick="showtimes_show_theatre()" href="javascript:void(0)">{% trans 'Showtimes'%}</a></li>
+                                </ul>
+							</div>                                
+                            <div class="section">
+                               {# include 'movies/staff/theatre-preview-faq.html' #}   </div>                                    
+                        </div>                            
+                    </div>                                                    
+				</div>
+
+{% endblock %}				
+{% block footer_include %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/movies/staff_theatre.js"></script>
+<script>
+$(document).ready(function(){
+ $(".fxslider").fxslider();
+});
+
+ function showtimes_show_theatre(){
+ 	$('#articles-preview').hide();
+ 	$('#showtimes').show();
+	$('#theatre_preview').removeClass('active');
+	$('#theatre_show').addClass('active');
+	
+	
+ }
+  function showtimes_show_preview(){
+ 
+ 	$('#showtimes').hide();
+ 	$('#articles-preview').show();
+	$('#theatre_preview').addClass('active');
+	$('#theatre_show').removeClass('active');
+ }
+	
+function delete_showtime(id){
+	var con = 	confirm('Are you sure you want to delete the showtime ?');
+	if (con){
+   var url = "{% url 'staff_movies_delete_theatre_showtime' %}";
+   var dataString = "id="+id;
+   $.ajax({
+   type: "GET",
+   url: url,
+   data: dataString,
+   dataType:'JSON',
+   success: function(data){
+		$('#showtimes').empty().html(data.html)
+		//$('#show_times_li_'+id).fadeIn('slow').remove();
+		$(".edit_movie_lightbox").colorbox({width: "880", initialWidth: "880", height:"auto", top:"5%"});// This one i am using for edit theatre lightbox after adding colorbox
+
+		show_msg(data.msg,data.mtype);
+	
+	}
+});
+}	
+	}
+</script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script src="{{STATIC_URL}}themes/js/fxslider.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ui/css/fxslider.css" />
+<script type="text/javascript">
+$(document).ready(function(){
+	{% if theatre_preview.address.lat and theatre_preview.address.lon and theatre_preview.address.zoom %}
+		load("map",{{ theatre_preview.address.lat }}, {{ theatre_preview.address.lon }}, {{ theatre_preview.address.zoom }},"{{ theatre_preview.address.city }}");
+	{% else %}
+		load("map",{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},"{{ globalsettings.city }}");
+	{% endif %}		
+})
+</script> 
+{% endblock %}
+
+
+
+

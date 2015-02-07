@@ -1,0 +1,154 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "bm_shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'BM Shop - Variants' %} {% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+{% endblock %}
+{% block content %}
+ <div id="staff-platform" class="group">
+                  	<div class="header-bar has-sub">
+					<h2>{% trans 'Variants' %}</h2>
+                        <section class="sub-header-bar">
+                            <div class="group">
+                                  <div class="filter-view-tabs">
+                                        <form action="#" id="article-search-form" class="module-search">
+                                            <button role="button" class="cform-button search-button" id="btnSearch" type="button" onclick="$('#id_search').val('true'),hm_search();"><span class="search-icon">{% trans 'Search' %}</span></button>
+                                            <div class="inline-block relative-block">
+                                                <!--span onclick="clear_search();" class="reset txt-button tttxt" id="close_search" title="{% trans 'Clear Search' %}" style="{% if not search %}display:none;{% endif %}">Clear search</span-->
+												<input type="text" placeholder="{% trans 'Search Variants' %}" onkeydown="if (event.keyCode == 13) document.getElementById('btnSearch').click();" onkeyup="$('.search_adv2').val(this.value);" name="search_keyword" id="id_search_keyword" class="search-list-items search_adv1">
+											</div>                                                
+                                        </form>
+                                  </div>
+								  
+								<div class="add-section-right has_icon">
+			                      <a href="{% url 'staff_bmshop_add_varient' %}" class="btn-txt-prime" title="{% trans 'Add New Variant' %}"><span class="btn-txt">{% trans 'Add Variant' %}</span></a>
+			                  </div> 
+                            </div>
+                        </section>                          
+                 		</div>
+						<div id="core-wraper" class="group">
+                        	<div class="staff-main">
+                              	<div class="page-wrap">
+									<div id="articles" class="group">
+                                        <section class="toolbars">
+                                            <div class="group">
+                                                <ul class="toolbar left">
+                                                	<li class="tool">                                                       
+                                                        <label class="inline-block">{% trans 'Sort by:' %}</label>
+                                                        <select id="orderSelect" onchange="$('#id_sort').val($(this).val()),hm_sort();" style="width:140px;" class="select-menu">
+	                                                          <option value="-id" selected="">{% trans 'Newest' %}</option>
+	                                                          <option value="id">{% trans 'Oldest' %}</option>
+	                                                          <option value="name">{% trans 'Name' %}</option>
+                                                        </select>                                                    
+                                                    </li>
+                                                </ul>
+                                                {% include 'common/pagination_top.html'%} <!-- pagination top -->  
+                                            </div>
+                                        </section>
+										<input type="hidden" name="is_bottom_page" value="false" id="id_is_bottom_page">
+										<span id="ajax_content_loading" class="load-list-items" style="display:none">
+										 	<img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+										</span>
+										<div style="display:none;" class="info-bar" id="top_info_bar"></div>
+										<div id="id_content_listing" class="group">
+	                                          {% include 'bmshop/staff/include_varient_listing.html'%} 
+										</div>	                                       
+                                    </div> <!-- end table -->
+                              </div>  <!-- end page wrap -->
+                        </div>  <!-- end main-col -->                            
+                        <div id="aside" class="side-bar">
+							<ul class="side-navigation">
+			                    <li><a href="{%url 'staff_bmshop_product_list' %}">{% trans 'Product' %}</a></li>
+								<li><a href="{%url 'staff_bmshop_group_property_list' %}">{% trans 'Property Group' %}</a></li>
+			                    <li><a href="staff_bmshop_property_list">{% trans 'Property' %}</a></li>
+			                    <li class="active"><a href="javascript:void(0)">{% trans 'Variants' %}</a></li>
+			                    <li><a href="{%url 'staff_bmshop_payment_orders' %}">Orders</a></li>
+			                </ul>
+                            {#% include 'article/staff/article-faq.html' %#}  
+							                                                
+                        </div>                            
+					</div>                                                    
+				</div>
+{% endblock %}			
+{% block footer_include%}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>    
+<script type="text/javascript">
+function filter_content(id){
+	var ids=[]
+	var dataString='';
+	var url= $('#id_listarticle_url').val();
+	dataString+="sort="+$('#id_sort').val();
+	if($('#id_pagentn').val()!='' && $('#id_pagentn').val()!=null){
+		dataString+="&page="+$('#id_pagentn').val();
+	}
+	if($('#id_item_per_page').val()!='' && $('#id_item_per_page').val()!=null){
+		dataString+="&item_perpage="+$('#id_item_per_page').val();
+	}
+	if($('#id_search').val()!='' && $('#id_search').val()!=null){
+		dataString+="&search=true";
+		dataString+="&kwd="+$('#id_search_keyword').val();
+	}
+	if(id){
+		dataString+="&del=true";
+		dataString+="&did="+id;
+	}
+	$('#site_loader').fadeIn(150);
+	$('#id_content_listing').css('opacity','0.5');
+	hide_top_info_bar();
+	$.ajax({
+	type: "GET",
+	url: url,
+	data: dataString,
+	dataType:'JSON',
+	success: function(data){	
+			show_top_info_bar('Varients');
+			$('#id_pagentn').val('');
+			$('#id_action').val('');
+			
+			$('#id_content_listing').css('opacity','0');
+			$('#id_content_listing').empty().html(data.html);
+			$('#id_content_listing').css('opacity','1');
+			$('#site_loader').fadeOut(150);
+			if ($('#id_is_bottom_page').val()=='true'){
+				$('html,body').animate({scrollTop: $("#staff-platform").offset().top-62},'slow');
+				$('#id_is_bottom_page').val(false);
+			}	
+			
+			if(data.search){$('#close_search').show();}
+			if(data.next){$('#top_pge_next').removeClass('inactive');}
+			else{$('#top_pge_next').addClass('inactive');}
+			if(data.previous){$('#top_pge_previous').removeClass('inactive');}
+			else{$('#top_pge_previous').addClass('inactive');}
+			$('#id_from_to').html(data.pagerange);
+			$('#top_item_count').html(data.count);
+			if(id){show_msg(data.msg,data.mtype);}
+			$('.light_box').colorbox({width: "560",initialWidth: "560", top:"60", initialHeight: "200"});
+		}
+	});
+}
+function clear_search(){
+	$('#id_search').val('');
+	$('#id_search_keyword').val('');
+	$('#close_search').hide();
+	$('#id_pagentn').val('1')
+	filter_content();
+}
+function hm_search(){
+	if($('#id_search_keyword').val()!=''){
+    	hm_sort()
+	}	
+}
+function hm_sort(){
+	$('#id_pagentn').val('1')
+	filter_content();
+}
+	
+</script>
+{% endblock %}					

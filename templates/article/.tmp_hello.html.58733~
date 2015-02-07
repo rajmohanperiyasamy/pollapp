@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>Sample " Django Application</title>
+  </head>
+  <body background="/bootstrap-3.1.1/Firefox_wallpaper.png">
+
+    <table border="0" cellpadding="10">
+      <tr>
+        <td>
+          
+        </td>
+        <td>
+          <h1>Sample Django Application</h1>
+        </td>
+      </tr>
+    </table>
+
+<!--
+    <ul>
+      <li>To a <a href="http://127.0.0.1:8008/test">JSP page</a>.
+      <li>To a <a href="http://127.0.0.1:8008">servlet</a>.
+    </ul>
+-->
+  </body>
+</html>

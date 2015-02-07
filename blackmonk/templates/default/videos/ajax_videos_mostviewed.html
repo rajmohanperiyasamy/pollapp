@@ -1,0 +1,60 @@
+{% load truncate_filter %}
+{% load i18n %}
+
+{% for v in videos %}
+<input type="hidden" id="fbids" name="fbids" class="bids" value="{{v.id}}">
+    <li class="gallery_rule">
+    <a class="thumb" name="{{v.title}}" href="{{v.get_absolute_url}}"><span id="vimeo_{{v.video_id}}" style="background:#000 url({{v.get_thumb}}) no-repeat 0 0;display:block;float:left;width:75px;height:50px;overflow:hidden;text-indent:-9999px;font-size:10px;font-weight:normal;">{{v.title|truncate_chars:45}}</span></a> 
+    <div class="as_gallery_thumbnail_ie_fix">
+        <p class="cat"><a name="{{v.category.name}}" title="{{v.category.name}}" href="javascript:void(0);">{{v.category.name}}</a></p>
+        <h4><a title="{{v.title}}" name="{{v.title}}" href="{{v.get_absolute_url}}" class="url">{{v.title|truncate_chars:45}}</a></h4>
+        <span class="views">{% trans 'VIEWS:' %} {{v.video_view}}</span>
+    </div>
+    <div class="clear"></div>
+</li><!-- /gallery_rule -->
+ {% endfor %}  
+<script type="text/javascript">
+setTimeout(function(){
+	{% for cat in videos %}
+	{% if cat.is_vimeo %}
+	    $.ajax({
+	        type:'GET',
+	        url: 'http://vimeo.com/api/v2/video/{{cat.video_id}}.json',
+			jsonp: 'callback',
+	        dataType: 'jsonp',
+	        success: function(data){
+	            var thumbnail_src = data[0].thumbnail_small;
+	            $('#vimeo_{{cat.video_id}}').attr('style','background:#000 url('+thumbnail_src+') no-repeat 0 0;display:block;float:left;width:75px;height:50px;overflow:hidden;text-indent:-9999px;font-size:10px;font-weight:normal;');
+	        }
+	    });
+	{% endif %}
+	{% endfor %}	
+},500);
+</script> 
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+<script type="text/javascript">
+	var pathname = window.location.pathname;
+	org_path=pathname;
+	$(document).ready(function(){
+	var bids=new Array();
+	var cat='';
+	var category=new Array();
+	var category_name='';
+	var click = false;
+	 $('.bids').each(function(){
+			bids.push($(this).val());
+		});
+		$('.bicts').each(function(){
+			var cat=$(this).val();
+			cat=cat.toString();
+			var a='&';
+			var b='and';
+			category_name=cat.replace(a,b)
+	        category.push(category_name);
+	        });
+	reports_data(pathname,bids,category,org_path,click)
+	});
+	
+	</script>
+
+                      

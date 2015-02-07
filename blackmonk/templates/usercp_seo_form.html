@@ -1,0 +1,28 @@
+{% load i18n %}
+{% if form.errors %}
+<div class="messageerror" style="background:#FCF4F4;padding:10px;color:#FF9902; box-shadow:0 0 2px rgba(0, 0, 0, 0.1);border-bottom:1px solid #e1e1e1">
+	<strong style="font-weight:bold;">{% trans 'There is a problem with your submission' %}</strong>
+    <ul style="list-style:square;margin-left:20px;">
+   		{% for field in form %}
+   			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+  	 	{% endfor %}
+	</ul>
+</div>
+{% endif %}
+<form id="mform" class="form-horizontal uSr-aCnT mRb0">{% csrf_token %}
+    <input type="hidden" id="bus_id" value="{{business.id}}">
+    <div class="control-group">
+        <label class="control-label" >{% trans 'Title' %}<em class="cLr-rEd">*</em></label>
+        <div class="controls">
+            {{form.seo_title}}
+			<span class="help-block bm-error-txt-spn fS12">{% trans "Write a short meta title for your website. This title is used in the search results of search engines like Google." %}</span>
+        </div>
+    </div>
+	<div class="control-group">
+        <label class="control-label" >{% trans 'Description' %}<em class="cLr-rEd">*</em></label>
+        <div class="controls">
+            {{form.seo_description}}
+			<span class="help-block bm-error-txt-spn fS12">{% trans "In one or two short sentences to describe your website. This description is used in the search results of search engines like Google." %}</span>
+        </div>
+    </div>
+</form>

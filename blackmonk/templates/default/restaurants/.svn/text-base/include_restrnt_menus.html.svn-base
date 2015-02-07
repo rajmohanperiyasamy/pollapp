@@ -1,0 +1,280 @@
+{% load i18n %}
+{% load bm_restaurant_tags %}
+<!-- Menu listing start here -->
+  <div class="row-fluid buz_block" id="buz_menus" style="{% if view != 'menus' %}display:none;{% endif %}">
+    <div class="pD200 mRb30">
+        <div class="tLbR mRb10">
+            <div class="tLbR-iR">
+                <div class="sCn-tTl mRb10mX480">
+                    <h2><span>{{restaurant.name}} {% trans 'Menu' %}</span></h2>
+                </div>
+                {% get_restaurants_meal_types as menu_categories %}
+                <ul class="nav nav-pills" id="id_menu_categories">
+                    {% for mc in menu_categories %}
+                        <li><a href="javascript:void(0);"  onclick="retrieve_menus($(this),'{{mc.id}}');" class="fS12">{{mc.name}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="menu_msnry pDfX cLpDfXmX480">
+                <div class="span6">
+                    <section class="sCn mDa-lT-mNi pD30 bPdmX480" id="id_menu_list_section">
+                        <!--div class="sCn-tTl hide">
+                            <h2><span class="cLr-oRg">Starters</span></h2>
+                            <p class="mRb0">All entrees served with starch and vegetable of the day.</p>
+                        </div>
+                        <hr-->
+                        <ul class="mDa-lT mRb20">
+                            {% for menu in restaurant.restaurant_menus.all %}
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        {% if menu.price %}<span class="pLrT fS14 fW-bLd tXt-rT iM">{{globalsettings.currency}}{{menu.price}}</span>{% endif %}
+                                        <h4 class="mDa-hD" title="{{menu.title}}"><a href="javascript:void(0);">{{menu.title}}</a></h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">{{menu.description}}</p>
+                                        </div>
+                                        <div class="mRt10 hide">
+                                            <a class="fS11 cLr-lTgRy" href="#"><i aria-hidden="true" class="bUi-iCn-bBlS-12"></i> 13 reviews</a>
+                                            <a class="fS11 sPrTr cLr-lTgRy" href="#"><i aria-hidden="true" class="bUi-iCn-pHt-12"></i> 3 photos</a>
+                                        </div>
+                                        <ul class="tMbS pDfX pDmNi mRb0 mRt20 tWlCl hide">
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh6.googleusercontent.com/-hnNK-rWTIlQ/UGR5NnDMsSI/AAAAAABZE68/UppL-S2r0EY/s768-no/Everglades+Restaurant">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh6.googleusercontent.com/-hnNK-rWTIlQ/UGR5NnDMsSI/AAAAAABZE68/UppL-S2r0EY/s768-no/Everglades+Restaurant" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh4.googleusercontent.com/-DKtRQthzQsY/UGSYBAmgAkI/AAAAAABY-IA/wwRiR6SJg9c/s768-no/Everglades+Restaurant">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh4.googleusercontent.com/-DKtRQthzQsY/UGSYBAmgAkI/AAAAAABY-IA/wwRiR6SJg9c/s768-no/Everglades+Restaurant" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh6.googleusercontent.com/-UmL7GgcGLgc/UDSzmEIg6KI/AAAAAAB8B74/FiRY6YP4s7w/w1229-h819-no/Roy%2527s+Los+Angeles">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh6.googleusercontent.com/-UmL7GgcGLgc/UDSzmEIg6KI/AAAAAAB8B74/FiRY6YP4s7w/w1229-h819-no/Roy%2527s+Los+Angeles" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" href="#" title="Add Photo">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <i aria-hidden="true" class="bUi-iCn-pLs-16 ib cLr-gRy"></i>
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                </div>
+                <!--div class="span6">
+                    <section class="sCn mDa-lT-mNi pD30 bPdmX480">
+                        <div class="sCn-tTl">
+                            <h2><span class="cLr-oRg">Signature Salads</span></h2>
+                            <p class="mRb0">Add chicken, shrimp, ahi tuna, 310 ribeye or salmon to any salad.</p>
+                        </div>
+                        <hr>
+                        <ul class="mDa-lT mRb20">
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        <span class="pLrT fS14 fW-bLd tXt-rT iM">$10.00<br>$6.00</span>
+                                        <h4 class="mDa-hD" title="#"><a href="#">310 Garden Salad</a></h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">Mixed garden greens topped with grape tomatoes, cucumbers, carrots, bermuda onions and crumbled goat cheese. sprinkled with craisins and sunflower kernels. served with our raspberry vinaigrette.</p>
+                                        </div>
+                                        <div class="mRt10">
+                                            <a class="fS11 cLr-lTgRy" href="#"><i aria-hidden="true" class="bUi-iCn-bBlS-12"></i> 30 reviews</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        <span class="pLrT fS14 fW-bLd tXt-rT iM">$10.00<br>$6.00</span>
+                                        <h4 class="mDa-hD" title="#">Caesar Salad</h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">Crisp hearts of romaine tossed with our own caesar dressing and topped with fresh grated grana padano cheese and croutons. our caesar dressing is made with raw eggs.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        <span class="pLrT fS14 fW-bLd tXt-rT iM">$10.00<br>$6.00</span>
+                                        <h4 class="mDa-hD" title="#">Caesar Salad</h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">Crisp hearts of romaine tossed with our own caesar dressing and topped with fresh grated grana padano cheese and croutons. our caesar dressing is made with raw eggs.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        <span class="pLrT fS14 fW-bLd tXt-rT iM">$12.00<br>$7.00</span>
+                                        <h4 class="mDa-hD" title="#">Mediterranean Salad</h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">Mixed garden greens tossed in our signature balsamic vinaigrette with tomatoes, cucumbers, kalamata olives, fried capers and ditalini pasta. topped with onions, carrots and feta cheese.</p>
+                                        </div>
+                                        <ul class="tMbS pDfX pDmNi mRb0 mRt20 tWlCl">
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh6.googleusercontent.com/-hnNK-rWTIlQ/UGR5NnDMsSI/AAAAAABZE68/UppL-S2r0EY/s768-no/Everglades+Restaurant">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh6.googleusercontent.com/-hnNK-rWTIlQ/UGR5NnDMsSI/AAAAAABZE68/UppL-S2r0EY/s768-no/Everglades+Restaurant" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh4.googleusercontent.com/-YTDiMh-ohRM/T4qiT3a8oyI/AAAAAAAGpEE/zxHvuq0nGOA/w700-h525-no/Bonefish+Grill">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh4.googleusercontent.com/-YTDiMh-ohRM/T4qiT3a8oyI/AAAAAAAGpEE/zxHvuq0nGOA/w700-h525-no/Bonefish+Grill" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox1 bS-bRdR" href="https://lh6.googleusercontent.com/-UmL7GgcGLgc/UDSzmEIg6KI/AAAAAAB8B74/FiRY6YP4s7w/w1229-h819-no/Roy%2527s+Los+Angeles">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh5.googleusercontent.com/-HCFR1ZR-Cl0/Tn6Bz1S4TGI/AAAAAAAAAAM/iAtmmHAHmVM/w648-h430-no/Amura_-_Steak-1.jpg__.jpg" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="span1">
+                                                <a class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" href="#" title="Add Photo">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <i aria-hidden="true" class="bUi-iCn-pLs-16 ib cLr-gRy"></i>
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        <span class="pLrT fS14 fW-bLd tXt-rT iM">$13.00</span>
+                                        <h4 class="mDa-hD" title="#">Seafood Salad</h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">Calamari, shrimp and scallops marinated with onion, garlic, peppers, scallions and extra virgin olive oil. served on a bed of mixed greens.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mDa">
+                                <div class="mDa-iN">
+                                    <div class="mDa-bDy">
+                                        <span class="pLrT fS14 fW-bLd tXt-rT iM">$17.00</span>
+                                        <h4 class="mDa-hD" title="#">Tuna Filet Salad</h4>
+                                        <div class="mDa-dTa mRt4 w85P">
+                                           <p class="fS11-125 cLr-gRy">Ahi tuna filet, pan seared, sliced and served over mixed garden greens, tossed in a soy ginger dressing with mandarin oranges, cucumbers and grape tomatoes. topped with bermuda onions, carrots and crispy noodles.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                </div-->
+            </div>
+        </div>
+        <div class="mRt30">
+            <p class="fS11 cLr-lTgRy"><span class="uC">Menu Desclimer:</span> Menu items and prices are subject to change.</p>
+        </div>
+    </div>
+  </div>
+<!-- Menu listing end  -->
+<script type="text/javascript">
+function retrieve_menus(hobj,mid){
+    $('#id_menu_categories li').removeClass('active');
+    $(hobj).parent('li').addClass('active');
+    $.ajax({
+        type: "get",
+        url: '{% url 'restaurants_retrieve_menus_by_type' %}?rid={{restaurant.id}}',
+        data: 'mid='+mid,
+        dataType:'json',
+        success: function(data){
+                if(data.status){
+                    $('#id_menu_list_section').fadeOut(300, function(){
+                        $('#id_menu_list_section').empty().html(data.html).fadeIn(300);
+                    });
+                }
+                else{alert('Oops !!! Not able to process your request.');}                
+        }
+    });
+}
+</script>

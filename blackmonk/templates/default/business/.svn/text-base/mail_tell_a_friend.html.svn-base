@@ -1,0 +1,21 @@
+{% load i18n %}
+<b>{% trans 'Hey!' %} {{ to_name }},</b>
+<br />
+<p>{% trans 'Your friend' %} <b>{{ from_name }}</b> {% trans 'has sent you business details of' %} 
+<b>"{{ business.name }}"</b> from <a href='{{globalsettings.website_url}}' target="_blank">{{globalsettings.domain}}</a>
+ {% trans 'city portal. You might be interested in it too. It’s a website with useful information about business,movies,events,stories and much more' %}.<b>{% trans 'Check it out!' %}</b>
+<br /><br />
+		
+"<a href='{{globalsettings.website_url}}{{ business.get_absolute_url }}' target="_blank">{{globalsettings.website_url}}{{ business.get_absolute_url }}</a>"
+
+<br /><br />
+<i>"{{ msg }}"</i>
+
+<br>
+<div><hr size="1" color="#cccccc" noshade="noshade"></div>
+<a href="{{globalsettings.website_url}}/" target="_blank">{% trans 'Home' %}</a>&nbsp;|&nbsp;
+<a href="{{globalsettings.website_url}}/privacy-policy.html" target="_blank">{% trans 'Privacy Policy' %}</a>&nbsp;|&nbsp;
+<a href="{{globalsettings.website_url}}/terms-of-use.html" target="_blank">{% trans 'Terms of Use' %}</a>&nbsp;|&nbsp;
+<a href="{{globalsettings.website_url}}/contact/" target="_blank">{% trans 'Contact Us' %}</a>
+
+

@@ -1,0 +1,8 @@
+{% load i18n %}
+<span class="load-item" data-placeholder="{% trans 'Select a Category' %}" id="cat_loading" style="padding-left:140px;display:none;"><img src="{{STATIC_URL}}ui/images/global/loading-s.gif" alt="...."></span>
+<select data-placeholder="{% trans 'Select sub Category '%}" name="category" id="category" style="width:334px;" class="select-menu">
+<option value=""></option>
+    {% for cat in category_list %}
+		<option {% if classifieds.category.id == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">{{cat}}</option>
+	{% endfor %}
+</select>   

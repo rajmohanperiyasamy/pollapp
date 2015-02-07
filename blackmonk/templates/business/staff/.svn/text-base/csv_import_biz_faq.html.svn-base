@@ -1,0 +1,20 @@
+{% load i18n %}
+<div class="section">
+	   <h6>{% trans 'Importing Business Listing' %}</h6>
+       <p>{% trans "Download sample CSV file form above link and add your business in that file in same format." %}</p>
+	   <p>{% trans "Don't change anything in First Row(TITLE).Second row contains sample you can remove and add listing details from second row.You will receive conformation mail after Importing." %}</p>
+		<p>{% trans "Note:Any change in Title(First Row) will result in Error." %}</p>
+	   <p>{% trans "Make sure category/sub category name is already exist.(If category or sub category mismatch with existing category/subcategory system will skip the listing with out importing) " %}</p>
+       <hr>
+       <h6>{% trans 'Business Details' %}</h6>
+       <p>{% trans "Add descriptive info about the business.Upload logo which reflects the brand of the business.(This business name shows in the search results)" %}</p>
+       <hr>
+       <h6>{% trans "Categories & Attributes" %}</h6>
+       <p>{% trans "Select appropriate category of the business which displays the attributes based on the category selected." %}</p>
+	   <hr>
+       <h6>{% trans "Hours Of Operation" %}</h6>
+       <p>{% trans "Specify the business hours and when it's closed." %}</p>
+	   <hr>
+       <h6>{% trans "Pricing" %}</h6>
+       <p>{% trans "The pricing chart of the business module can be updated in the Admin CP where the labels, duration and the prices can be set dynamically in the price chart." %}</p>
+</div>

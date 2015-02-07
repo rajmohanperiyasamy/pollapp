@@ -1,0 +1,10 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4">
+	<div class="section">
+		<a href="https://docs.google.com/document/pub?id=12wUL4bUex8RrBMzXOu8jCU-c-mYNE3svjKJc5AxTLag#id.34cmpz2oni0d" target="_blank" class="btn-txt-prime bm-upload-videos" title="Quick Demo"><span class="btn-txt" id="aeaoofnhgocdbnbeljkmbjdmhbcokfdb-mousedown">Quick Demo</span></a>
+	    <hr>
+        <h5>{% trans 'Categories' %}</h5>
+		<p>Click on ‘Add New Category’ and enter relevant category details and save.</p>
+        <p>{% trans 'Try to add the category that best fits in the buzz module.For example: 'Nightlife' as a category.' %}</p>
+	</div>                                    
+</div>   

@@ -1,0 +1,89 @@
+{% load i18n %}
+{% load ds_utils %}
+{% load thumbnail %}
+{% load bm_articletags %}
+<div class="mSnRy">
+    <section class="sCn mDa-lT-mNi">
+        <div class="sCn-tTl sCn-tTl-bR pDb0">
+            <h3 class="clearfix oFl">
+                <span class="ib pLlT">{% trans 'Articles' %}</span>
+                <ul class="nav nav-tabs mRb0 pLrT" id="id_tabs_ul">
+                    <li class="active bm-tabs-li">
+                        <a href="javascript:void(0);" id="id_latest">                                            
+                            <i aria-hidden="true" class="bUi-iCn-tMe-aLt-16"></i>
+                            <span>{% trans 'Latest' %}</span>
+                        </a>
+                    </li>
+                    <li class="bm-tabs-li">
+                        <a href="javascript:void(0);" id="id_popular">
+                            <i aria-hidden="true" class="bUi-iCn-dRp-16"></i>
+                            <span>{% trans 'Popular' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </h3>
+        </div>
+        <ul class="mDa-lT mDa-oT-lT bm-tabs_content" id="id_latest_articles">
+            {% get_latest_article number=6 as latest_articles %}
+            {% for article in latest_articles %}
+            <li class="mDa">
+                <input type="hidden"  name="fbids" class="bids" value="{{article.id}}">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                        <a class="bUi-tMb-wPr bUi-tMb-60 tMb-100 fLxiMgH bS-bRdR" href="{{article.get_absolute_url}}" alt="{{article.title}}" title="{{article.title}}">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if article.get_first_article_photo %}{% thumbnail article.get_first_article_photo 260x0 %}{% elif article.get_img_from_html %}{{ article.get_img_from_html }}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{article.title}}">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="mDa-bDy">
+                        <h5 class="mDa-hD" title="{{article.title}}"><a href="{{article.get_absolute_url}}">{{article.title}}</a></h5>
+                        <div class="mDa-dTa mRt4">
+                           <span class="fS11 cLr-lTgRy">{{article.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <ul class="mDa-lT mDa-oT-lT bm-tabs_content hide" id="id_popular_articles">
+            {% get_popular_article number=6 as popular_articles %}
+            {% for article in popular_articles %}
+            <li class="mDa">
+                <input type="hidden"  name="fbids" class="bids" value="{{article.id}}">
+                <div class="mDa-iN">
+                    <div class="mDa-wPr"> 
+                        <a class="bUi-tMb-wPr bUi-tMb-60 tMb-100 fLxiMgH bS-bRdR" href="{{article.get_absolute_url}}" alt="{{article.title}}" title="{{article.title}}">
+                            <span class="bUi-tMb">
+                                <span class="bUi-tMb-pRpL">
+                                    <span class="bUi-tMb-cLp">
+                                        <span class="bUi-tMb-cLp-iN">
+                                            <img class="mDa-oT" src="{{STATIC_URL}}/images/grey.gif" data-src="{% if article.get_first_article_photo %}{% thumbnail article.get_first_article_photo 260x0 %}{% elif article.get_img_from_html %}{{ article.get_img_from_html }}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{article.title}}">
+                                            <span class="vRtL-aLn">
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="mDa-bDy">
+                        <h5 class="mDa-hD" title="{{article.title}}"><a href="{{article.get_absolute_url}}">{{article.title}}</a></h5>
+                        <div class="mDa-dTa mRt4">
+                           <span class="fS11 cLr-lTgRy">{{article.published_on|timesince|time_up_to:','}} {% trans 'ago' %}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>

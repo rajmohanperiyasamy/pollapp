@@ -1,0 +1,84 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "privacy" %}
+{% include "account/account_side_bar.html" %}
+{% endblock %}
+{% block pagetitle %}{% trans 'Preferences' %} {% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+{% endblock %}
+{% block content %}
+<div class="span10 sP9mX979 sP12mX767">
+    <div class="row-fluid">
+		<div class="main span9">
+			<section class="sCn pD0">
+				<div class="cLrFx pD20">
+					<div class="pLlT">
+						<h3 class="mR0 fS16 fW-bLd tRnCt">{% trans 'Edit Preferences' %}</h3>
+					</div>
+				</div>
+				<hr class="mRb12 mRt0">
+				<div class="pD20">
+					<form class="uSr-aCnT mRb0" method="post" action=".">{% csrf_token %}
+						<div class="row-fluid">
+							<h4 class="fS15 fW-bLd mRt0 mRb20 pLlT">{% trans 'Privacy' %}</h4>
+							<fieldset class="span9 pLrT">
+                                <div class="control-group">
+                                    <label class="control-label">{% trans 'Profile' %}</label>
+                                    <p>{% trans 'Manage who can see your activity and content you posted on your' %} {{ globalsettings.domain }} {% trans 'profile.' %}</p>
+                                	<div class="controls">
+                                    	<label for="visibility1" class="radio inline fW-nRmL mRr20"><input type="radio" name="is_public" id="visibility1" value="True" {% if profile.is_public %}checked="checked"{% endif %}> {% trans 'Everyone' %}</label>
+                                    	<label for="visibility2" class="radio inline fW-nRmL"><input type="radio" name="is_public" id="visibility2" value="False"{% if not profile.is_public %}checked="checked"{% endif %}><i aria-hidden="true" class="bUi-iCn-lOk-16 fS11 cLr-gRy"></i> {% trans 'Only you' %}</label>
+									</div>
+                                    <div class="controls mRt20 pDl20">
+                                    	<p>{% trans 'Show these profile tabs to visitors' %} ({% trans 'they are always visible to you' %})</p>
+                                        <ul class="unstyled">
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_community_post }} {% trans 'Community Posts' %}</label></li>
+											<!--li><label for="" class="checkbox fW-nRmL">{{ form.show_reviews }}{% trans ' Reviews' %} &amp; {% trans 'Comments' %}</label></li-->
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_articles }} {% trans 'Articles' %}</label></li>
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_events }} {% trans 'Events' %}</label></li>
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_photos }} {% trans 'Photos' %}</label></li>
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_videos }} {% trans 'Videos' %}</label></li>
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_business }} {% trans 'Businesses' %}</label></li>
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_classifieds }} {% trans 'Classifieds' %}</label></li>
+											<li><label for="" class="checkbox fW-nRmL">{{ form.show_bookmarks }} {% trans 'Bookmarks' %}</label></li>
+                                        </ul>
+                                    </div>
+                                    <div class="controls mRt20">
+                                    	<label for="send-email" class="checkbox fW-nRmL">{{ form.show_email_form }}{% trans ' Allow people to send you an email from your profile.' %}</label>
+                                    </div>
+                                    <div class="controls">
+                                    	<label for="contact-info" class="checkbox fW-nRmL">{{ form.show_contact }} {% trans 'Show your contact informations on your' %} {{ globalsettings.domain }} {% trans 'profile.' %}</label>
+                                    </div>
+                                </div>
+							</fieldset>
+						</div>					                                
+                        <hr class="oTsT-hRz20 mRb0">         
+                        <div class="row-fluid">
+							<span class="pLlT"></span>
+							<div class="span9 pLrT">
+                                <div class="form-actions pD0">
+								  <button type="submit" class="btn btn-primary fS12 fW-bLd">{% trans 'Save Changes' %}</button>
+								</div>
+                        	</div>
+                        </div>
+                    </form>
+				</div>
+			</section>
+		</div> <!-- /.main -->
+		<aside class="sD-bR span3">
+			<div>
+				<section class="tXt-cTr pD0 bNr-aD"> 
+                   
+                </section>
+			</div>
+		</aside>
+	</div>  <!-- /.row-fluid -->
+</div>  <!-- /.span10 -->
+{% endblock %}			
+{% block footerarea %}
+{% endblock %}	
+

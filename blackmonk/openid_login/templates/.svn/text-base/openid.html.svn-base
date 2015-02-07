@@ -1,0 +1,6 @@
+<form method="post" action="{% url 'openid_begin' %}" id="openidform">{% csrf_token %}
+	<input type="hidden" name="openid_url" value="https://www.google.com/accounts/o8/id" id="id_openid_url" /></p>
+</form>
+<script>
+document.getElementById("openidform").submit();
+</script>

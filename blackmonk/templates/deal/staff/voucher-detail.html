@@ -1,0 +1,168 @@
+{% load i18n %}		
+{% load currency %}
+{% load humanize %}
+<style>
+    .odd_light {
+        border:1px #e6e6e6 solid;
+		vertical-align:top;
+    }
+	td.odd_light{ padding:10px;}
+	tr.head{ color:#CCC; font-size:11px;}
+	tr.head th{ padding:4px 0; text-indent:6px;}
+	
+	span.delivered-date{ color:#888; font-size:11px;}
+	td.odd_light p{ color:#444; font-size:12px; margin:0; line-height:18px;}
+	td.odd_light p.title{  font-weight:bold; margin-bottom:5px;}
+	td.odd_light a{ color:#444; font-size:12px;}
+		ul.voucher-detail li{ 
+		border-right: 1px solid #DDDDDD;
+		color: #444444;
+		display: block;
+		float: left;
+		font-size: 14px;
+		margin-right: 10px;
+		padding-right: 10px;
+		text-shadow: 1px 1px white;
+	}
+	ul.voucher-detail li span{ 
+		margin-left:5px;
+		font-weight:bold;
+	}
+	ul.voucher-detail li.br-0{ 
+		border:none;
+	}
+.voucher-detail-cont{
+	background: -moz-linear-gradient(center top , #FCFCFC, #F1F1F1) repeat scroll 0 0 transparent;
+    border: 1px solid #D2D2D2;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.12);
+    margin-bottom: 10px;
+    padding: 10px;
+    width:827px;
+	}
+.no-data {
+    padding: 6em 0;
+    text-align: center;
+}
+.no-data p {
+    color: #CCCCCC;
+    font-size: 16px;
+}
+</style>
+<body>
+	{% with deal.get_revenue_generated as revenue_generated %}
+    <div id="content" style="padding: 20px; min-width:830px; ">
+        <div class="group">
+            <div class="main_col" style="float:left;">
+                    <div class="group voucher-detail-cont" style="width: auto;">
+                    	<ul class="voucher-detail">
+                            <li> {% trans 'Total vouchers' %} <span>:</span> <span>{{ deal.get_voucher_count }}</span></li>
+                            <li> {% trans 'Redeemed vouchers' %} <span>:</span> <span>{{ deal.get_voucher_used_count }}</span></li>
+                            <li class="br-0"> {% trans 'Unused vouchers' %} <span>:</span> <span>{{ deal.get_count_pending_voucher }}</span></li>
+                        </ul>
+                    </div>
+					{% if deal_payments %}
+					<div style="overflow: auto; height: 321px;">
+                    <table style="margin-top: 0; width: 100%;" class="staff content" align="center" cellspacing="0" cellpadding="0">               
+                        <tbody>
+                            <tr class="head">
+                                <th class="thumb"><div>{% trans 'S/No' %}</div></th>                                
+                                <th class="company"><div>{% trans 'User' %}</div></th>
+                                <!-- 
+                                <th class="company"><div>{% trans 'Voucher Send Address' %}</div></th>
+                                 -->
+                                <th class="company"><div>{% trans 'Payment Details' %}</div></th>
+                                <th class="company"><div>{% trans 'Voucher Code' %}</div></th>
+                                <th class="company"><div>{% trans 'Status' %}</div></th>
+                            </tr>
+							{% for d_paymnt in deal_payments %}
+    						<tr class="row" >
+                                <td class="odd_light">{{ forloop.counter }}</td>
+                                <td class="odd_light">
+                                    <p class="title" style="font-weight:bold;">{{ d_paymnt.name }}</p>
+                                    <p>{{ d_paymnt.address }}</p>
+                                    {% if d_paymnt.mobile %}<p>{% trans 'Mobile:' %} {{ d_paymnt.mobile }}</p>{% endif %}
+                                    <a href="mailto:{{ d_paymnt.email }}">{% trans 'Email:' %} {{ d_paymnt.email }}</a>
+                                </td>
+                                <!-- 
+                                <td class="odd_light">
+                                	{% if d_paymnt.is_friend %}
+                                	<p style="color:#FF9E48;font-weight:bold;">{% trans 'Gifted Item' %}</p>
+                                    <p style="font-weight:bold;">{{ d_paymnt.gift_addr.g_name }}</p>
+                                    {% if d_paymnt.gift_addr.g_mobile %}<p>{% trans 'Mob:' %} {{ d_paymnt.gift_addr.g_mobile }}</p>{% endif %}
+                                    <a href="mailto:{{ d_paymnt.gift_addr.g_email }}">{{ d_paymnt.gift_addr.g_email }}</a>
+									{% else %}
+										<p style="font-weight:bold;">{% trans 'Same Address' %}</p>
+									{% endif %}	
+                              	</td>
+                                 -->
+                                <td class="odd_light">
+                                	{% if d_paymnt.is_paid %}
+                                    <ul class="group">
+                                        <li style="float:left; display:block; color:#888;">{% trans 'Txn Id' %}</li>
+                                        <li style="width:5px; float:left; display:block; color:#888;">:</li>
+                                        <li style="float:left; display:block;">{{ d_paymnt.transaction_no }}</li>
+                                    </ul>
+                                    <ul class="group">
+                                        <li style="float:left; display:block; color:#888;">{% trans 'Quantity' %}</li>
+                                        <li style="width:5px; float:left; display:block; color:#888;">:</li>
+                                        <li style="float:left; display:block;">{{ d_paymnt.quantity }}</li>
+                                    </ul>
+                                    <ul class="group">
+                                        <li style="float:left; display:block; color:#888;">{% trans 'Amount' %}</li>
+                                        <li style="width:5px; float:left; display:block; color:#888;">:</li>
+                                        <li style="float:left; display:block;">{{ d_paymnt.total_price|floatformat:0|moneyfmt }}</li>
+                                    </ul>
+                                    <ul class="group">
+                                        <li style="float:left; display:block; color:#888;">{% trans 'Purchased On' %} </li>
+                                        <li style="width:5px; float:left; display:block; color:#888;">:</li>
+                                        <li style="float:left; display:block;">{{ d_paymnt.created_on  }}</li>
+                                    </ul>
+									{% else %}
+									<span>{% trans 'Payment Not Received' %}</span>
+									{% endif %}	
+                                </td>
+                                <td class="odd_light">
+                                    <b style="font-weight:bold; font-size:12px;">{{ d_paymnt.dealkey }}</b>
+                                </td>
+                                <td class="odd_light">
+                                	{% if d_paymnt.status == 'S' %}
+										<p style="color:red;font-weight:bold;">{% trans 'Not Redeemed' %}</p>
+									{% elif d_paymnt.status == 'D' %}
+                                  		<p style="color:green;font-weight:bold;">{% trans 'Redeemed' %}</p>
+                                   <span class="delivered-date">{{ d_paymnt.delivered_date|date:"N,d,Y"}}</span>
+                                   {% else %}
+                                   	<p style="color:red;font-weight:bold;">{% trans 'Payment Failed' %}</p>
+								   {% endif %}
+                          		</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+					{% else %}
+					<div class="no-data"><p>{% trans 'No vouchers found' %}</p></div>
+					{% endif %}
+					<div class="group voucher-detail-cont" style="margin-top: 10px; width: 48%; float: left;">
+                    	<ul class="voucher-detail">
+                            <li class="br-0" style="width: 100%;"> <span style="font-weight: normal; margin: 0px; display: inline-block; width: 160px; font-size: small;">{% trans 'Total Deal Sold' %}</span> <span>:</span> <span>{{ deal.get_total_reg_count }}</span></li>
+                            <li class="br-0" style="width: 100%;"> <span style="font-weight: normal; margin: 0px; display: inline-block; width: 160px; font-size: small;">{% trans 'Remaining Deals' %}</span> <span>:</span> <span>{{ deal.get_count_remaining_deals }}</span></li>
+                            <li class="br-0" style="width: 100%;"> <span style="font-weight: normal; margin: 0px; display: inline-block; width: 160px; font-size: small;">{% trans 'Total Revenue Generated' %}</span> <span>:</span> <span>{{globalsettings.currency}}{{ revenue_generated.total|floatformat:2|intcomma }}</span> ({{globalsettings.currency}}{{deal.discount_price|floatformat:2|intcomma}} / deal)</li>
+                        </ul>
+                    </div>
+                    <!-- 
+                    <div class="group voucher-detail-cont" style="margin-top: 10px; width: 46%; float: right;">
+                    	<ul class="voucher-detail">
+                            <li class="br-0" style="width: 100%;"> <span style="font-weight: normal; margin: 0px; display: inline-block; width: 160px; font-size: small;">Website Owner's Revenue</span> <span>:</span> <span>{{globalsettings.currency}}{{ revenue_generated.myamount|floatformat:2|intcomma }}</span> ({{globalsettings.currency}}{{revenue_ratio.myamount|floatformat:2|intcomma}} / deal)</li>
+                            <li class="br-0" style="width: 100%;"> <span style="font-weight: normal; margin: 0px; display: inline-block; width: 160px; font-size: small;">Business Owner's Revenue</span> <span>:</span> <span>{{globalsettings.currency}}{{ revenue_generated.bizamount|floatformat:2|intcomma }}</span> ({{globalsettings.currency}}{{revenue_ratio.bizamount|floatformat:2|intcomma}} / deal)</li>
+                        </ul>
+                    </div>
+                     -->
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    {% endwith %}
+    <div class="modal-base form-submit group">
+       <button type="button" onclick="$.colorbox.close();" class="cform-button prime right" role="button"><span class="cform-button-text">{% trans 'OK' %}</span></button>
+    </div>

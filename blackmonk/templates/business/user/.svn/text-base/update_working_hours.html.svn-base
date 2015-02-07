@@ -1,0 +1,168 @@
+<div class="control-group fLd-mNi"  id="opt_hour" {% if not business.operating_hours %} style="display:none;" {% endif %}>
+    <div class="controls mRb10">
+        <span class="ib W40">Mon</span>
+		{{wform.mon_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.mon_end}}
+        <label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_1"{% if business %}{% if not business.workinghours.mon_start and not business.workinghours.mon_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_1" {% if business %}{% if business.workinghours.mon_start == business.workinghours.mon_end and business.workinghours.mon_start %}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+        <a class="btn btn-link pD0 fS12" id="apply_all">Apply to all</a>
+    </div>
+    <div class="controls mRb10">
+        <span class="ib W40">Tue</span>
+		{{wform.tue_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.tue_end}}
+        <label class="checkbox inline fW-nRmL mRl5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_2" {% if business %}{% if not business.workinghours.tue_start and not business.workinghours.tue_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_2" {% if business %}{% if business.workinghours.tue_start == business.workinghours.tue_end and business.workinghours.tue_start %}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+    </div>
+    <div class="controls mRb10">
+        <span class="ib W40">Wed</span>
+		{{wform.wed_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.wed_end}}
+        <label class="checkbox inline fW-nRmL mRl5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_3" {% if business %}{% if not business.workinghours.wed_start and not business.workinghours.wed_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_3" {% if business %}{% if business.workinghours.wed_start == business.workinghours.wed_end and business.workinghours.wed_start %}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+    </div>
+    <div class="controls mRb10">
+        <span class="ib W40">Thu</span>
+		{{wform.thu_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.thu_end}}
+        <label class="checkbox inline fW-nRmL mRl5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_4" {% if business %}{% if not business.workinghours.thu_start and not business.workinghours.thu_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_4" {% if business %}{% if business.workinghours.thu_start == business.workinghours.thu_end and business.workinghours.thu_start %}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+    </div>
+    <div class="controls mRb10">
+        <span class="ib W40">Fri</span>
+		{{wform.fri_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.fri_end}}
+        <label class="checkbox inline fW-nRmL mRl5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_5" {% if business %}{% if not business.workinghours.fri_start and not business.workinghours.fri_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_5" {% if business %}{% if business.workinghours.fri_start == business.workinghours.fri_end and business.workinghours.fri_start%}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+    </div>
+    <div class="controls mRb10">
+        <span class="ib W40">Sat</span>
+		{{wform.sat_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.sat_end}}
+        <label class="checkbox inline fW-nRmL mRl5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_6" {% if business %}{% if not business.workinghours.sat_start and not business.workinghours.sat_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_6" {% if business %}{% if business.workinghours.sat_start == business.workinghours.sat_end and business.workinghours.sat_start %}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+    </div>
+    <div class="controls">
+        <span class="ib W40">Sun</span>
+		{{wform.sun_start}}
+        <span style="" class="ib">-</span> 
+        {{wform.sun_end}}
+        <label class="checkbox inline fW-nRmL mRl5">
+        	<input type="checkbox" class="checkbox mrl0 w_closed" id="id_closed_7" {% if business %}{% if not business.workinghours.sun_start and not business.workinghours.sun_end %}checked="checked"{% endif %}{% endif %}> Closed
+        </label>
+		<label class="checkbox inline fW-nRmL mRl5 mRr5">
+        	<input type="checkbox" class="checkbox mrl0 w_open" id="id_allday_7" {% if business %}{% if business.workinghours.sun_start == business.workinghours.sun_end and business.workinghours.sun_start %}checked="checked"{% endif %}{% endif %}> All Day
+        </label>
+    </div>
+	<div class="controls">
+        <span class="ib W40">Notes</span>
+		<input id="id_notes" class="fl" type="text" title="Notes" value='{% if business %}{% if business.workinghours.notes %}{{business.workinghours.notes}}{% endif %}{% endif %}' placeholder="Notes" name="notes" maxlength="150" autocomplete="off" style="width: 320px; margin-top: 13px;">
+    </div>
+</div>
+<script type="text/javascript">
+var mySource = [{ id: 1, name: '12:00 AM'}, { id: 2, name: '12:30 AM'}, { id: 3, name: '01:00 AM'}, { id: 3, name: '01:30 AM'}, { id: 3, name: '02:00 AM'}, { id: 3, name: '02:30 AM'}, { id: 3, name: '03:00 AM'}, { id: 3, name: '03:30 AM'}, { id: 3, name: '04:00 AM'}, { id: 3, name: '04:30 AM'}, { id: 3, name: '05:00 AM'}, { id: 3, name: '05:30 AM'}, { id: 3, name: '06:00 AM'}, { id: 3, name: '06:30 AM'}, { id: 3, name: '07:00 AM'}, { id: 3, name: '07:30 AM'}, { id: 3, name: '08:00 AM'}, { id: 3, name: '08:30 AM'}, { id: 3, name: '09:00 AM'}, { id: 3, name: '09:30 AM'}, { id: 3, name: '10:00 AM'}, { id: 3, name: '10:30 AM'}, { id: 3, name: '11:00 AM'}, { id: 3, name: '11:30 AM'},{ id: 1, name: '12:00 PM'}, { id: 2, name: '12:30 PM'}, { id: 3, name: '01:00 PM'}, { id: 3, name: '01:30 PM'}, { id: 3, name: '02:00 PM'}, { id: 3, name: '02:30 PM'}, { id: 3, name: '03:00 PM'}, { id: 3, name: '03:30 PM'}, { id: 3, name: '04:00 PM'}, { id: 3, name: '04:30 PM'}, { id: 3, name: '05:00 PM'}, { id: 3, name: '05:30 PM'}, { id: 3, name: '06:00 PM'}, { id: 3, name: '06:30 PM'}, { id: 3, name: '07:00 PM'}, { id: 3, name: '07:30 PM'}, { id: 3, name: '08:00 PM'}, { id: 3, name: '08:30 PM'}, { id: 3, name: '09:00 PM'}, { id: 3, name: '09:30 PM'}, { id: 3, name: '10:00 PM'}, { id: 3, name: '10:30 PM'}, { id: 3, name: '11:00 PM'}, { id: 3, name: '11:30 PM'}];
+$(document).ready(function(){
+	$('#id_mon_start').typeahead({ source: mySource });
+	$('#id_mon_end').typeahead({ source: mySource });
+	$('#id_tue_start').typeahead({ source: mySource });
+	$('#id_tue_end').typeahead({ source: mySource });
+	$('#id_wed_start').typeahead({ source: mySource });
+	$('#id_wed_end').typeahead({ source: mySource });
+	$('#id_thu_start').typeahead({ source: mySource });
+	$('#id_thu_end').typeahead({ source: mySource });
+	$('#id_fri_start').typeahead({ source: mySource });
+	$('#id_fri_end').typeahead({ source: mySource });
+	$('#id_sat_start').typeahead({ source: mySource });
+	$('#id_sat_end').typeahead({ source: mySource });
+	$('#id_sun_start').typeahead({ source: mySource });
+	$('#id_sun_end').typeahead({ source: mySource });
+});
+$('.workinghour').bind("change", function(){
+    $("#mform").validate().element($(this));
+});
+
+//jQuery(function(){time=$('.W80').autocomplete({source:availableTags});});
+	$('#apply_all').click(function(){
+	    $('.starttime.on').val($('#id_mon_start').val());
+		$('.endtime.on').val($('#id_mon_end').val());
+
+		if($('#id_closed_1').prop('checked')){
+			$('.w_closed').attr('checked','checked');
+			$('.starttime').attr('disabled','disabled')
+			$('.endtime').attr('disabled','disabled')
+		}
+		if($('#id_allday_1').prop('checked')){
+			$('.w_open').attr('checked','checked');
+		}
+		if(!$('#id_closed_1').prop('checked')){
+			$('.w_closed').removeAttr('checked');
+			$('.starttime').removeAttr('disabled')
+			$('.endtime').removeAttr('disabled')
+			$('.starttime').addClass('on')
+			$('.endtime').addClass('on')
+			if($('#id_mon_start').val() == ''){
+				$('.starttime').attr('placeholder','09:00 AM');
+			}
+			if($('#id_mon_end').val() == ''){
+				$('.endtime').attr('placeholder','06:00 PM');
+			}
+		}
+		if(!$('#id_allday_1').prop('checked')){
+			$('.w_open').removeAttr('checked');
+		}
+	});
+	$('.w_closed').click(function(){
+		if($(this).is(':checked')){
+			$(this).parent().parent().find('input[type=text]').val('');
+			$(this).parent().parent().find('input[type=text]').attr('placeholder','');
+			$(this).parent().parent().find('input[type=text]').attr('disabled','disabled');
+			$(this).parent().parent().find('input[type=text]').removeClass('on');
+			$(this).parent().parent().find('.w_open').removeAttr('checked');
+		}
+		else{
+			$(this).parent().parent().find('.starttime').attr('placeholder','09:00 AM');
+			$(this).parent().parent().find('.endtime').attr('placeholder','06:00 PM');
+			$(this).parent().parent().find('input[type=text]').removeAttr('disabled');
+			$(this).parent().parent().find('input[type=text]').addClass('on');
+		}
+	});
+	$('.w_open').click(function(){
+		if($(this).is(':checked')){
+			$(this).parent().parent().find('.starttime').val('12:00 AM');
+			$(this).parent().parent().find('.endtime').val('12:00 AM');
+			$(this).parent().parent().find('input[type=text]').removeAttr('disabled');
+			$(this).parent().parent().find('input[type=text]').addClass('on');
+			$(this).parent().parent().find('.w_closed').removeAttr('checked');
+		}
+	});
+</script>

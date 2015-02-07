@@ -1,0 +1,181 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Bookmark SEO' %} {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{STATIC_URL}}ui/css/colorbox.css" type="text/css" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+function save_category_seo(){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag==true){
+		var dataString='id='+$('#id_id').val();
+		dataString+='&slug='+encodeURIComponent($('#id_slug').val());
+		dataString+='&seo_title='+encodeURIComponent($('#id_seo_title').val());
+		dataString+='&seo_description='+encodeURIComponent($('#id_seo_description').val());
+		dataString+='&ajax=true';
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_portal_bookmarks_seo_category_update' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#ajax_content_loading').html(data.msg);
+				$('#ajax_content').empty();
+				if(data.status){
+					show_msg(data.msg,data.mtype);
+					$.colorbox.close();
+				}
+				$('#ajax_content').html(data.lightbox_html);
+				setTimeout(function(){
+					$('#ajax_content_loading').hide();
+				    $('#ajax_content').fadeIn(2000);
+					$.colorbox.resize();
+				},1000);
+				
+			}
+		});
+	}
+}
+function save_seo(){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag==true){
+		var dataString='meta_title='+encodeURIComponent($('#id_meta_title').val());
+		dataString+='&meta_description='+encodeURIComponent($('#id_meta_description').val());
+		dataString+='&meta_keywords='+encodeURIComponent($('#id_meta_keywords').val());
+		dataString+='&ajax=true';
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_portal_bookmarks_seo_update' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#ajax_content_loading').html(data.msg);
+				$('#ajax_content').empty();
+				if(data.status){
+					show_msg(data.msg,data.mtype);
+					$.colorbox.close();
+				}
+				$('#ajax_content').html(data.lightbox_html);
+				setTimeout(function(){
+					$('#ajax_content_loading').hide();
+				    $('#ajax_content').fadeIn(2000);
+					$.colorbox.resize();
+				},1000);
+				
+			}
+		});
+	}
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_portal_bookmarks' %}" style="z-index:8">{% trans 'Bookmark' %}</a></li>
+                    <li><a href="{% url 'admin_portal_bookmarks_seo' %}" style="z-index:7">{% trans 'SEO' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+            	{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'bookmarks' %}
+					{% activetab 'leftnavsub' 'bkmrk_seo' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'SEO Center' %}</h2>
+							<p class="ltxt80">{% trans "SEO is the active practice of optimizing a web site by improving internal and external aspects in order to increase the traffic the site receives from search engines." %}</p>
+						</div>
+                        <div id="article-seo" class="cat-list group">
+                        	<section class="toolbars">
+                            	<div class="group">
+                                	<h3 class="list_title left">{% trans 'SEO for Bookmark home' %}</h3>
+                                </div>
+                            </section>                                    	
+                            <ul>
+                            	<li class="cat-list-row">
+                                	<div class="cat-list-row-inner group">
+                                    	<div class="cat-list-column cat-name">
+                                        	<h2>{% trans 'Home' %}</h2>
+                                        </div>
+                                        <div class="cat-list-column action-buttons">
+                                        	<div class="group">
+                                            	<a href="{% url 'admin_portal_bookmarks_seo_update' %}" title="{% trans 'Update Meta Tags' %}" class="tttxt-n bm-add-gadget"><span class="icon icon-edit"></span></a>
+                                                <!--a title="{% trans 'View Stats' %}" class="tttxt-n" href="#"><span class="icon icon-stats"></span></a-->
+                                            </div>                                                            
+                                        </div>
+									</div>
+								</li>
+							</ul>                                                                                                                                     
+                            <section class="toolbars">
+                            	<div class="group">
+                                	<h3 class="list_title left">{% trans 'SEO for bookmark categories' %}</h3>
+								</div>
+							</section>
+                            <ul class="cat-list-container">
+                            	{% for cat in category %}
+                                <li class="cat-list-row">
+                                	<div class="cat-list-row-inner group">
+                                		<div class="cat-list-column cat-name">
+                                        	<h3>{{cat}}</h3>
+                                        </div>
+                                        <div class="cat-list-column action-buttons">
+                                        	<div class="group">                                                                    
+												<a href="{% url 'admin_portal_bookmarks_seo_category_update' %}?id={{cat.id}}" title="{% trans 'Update Category SEO' %}" class="tttxt-n bm-add-gadget"><span class="icon icon-edit"></span></a>
+                                            	<!--a title="{% trans 'View Stats' %}" class="tttxt-n" href="#"><span class="icon icon-stats"></span></a-->
+											</div>                                                            
+                                       	</div>
+                                	</div>
+                            	</li>  
+								{% endfor %}                    
+							</ul>                          
+						</div>
+					</div>
+				</div>                       
+			</div>                            
+			{% include 'admin/portal/seo-faq.html' %}                       
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

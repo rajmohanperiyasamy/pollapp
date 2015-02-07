@@ -1,0 +1,477 @@
+{% extends "staff_base.html" %}
+{% load get_filename %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "movies" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{{ globalsettings.domain }} | Staff | Movies {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/base.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/videos/lightbox.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/movies/lightbox.css">
+
+
+<script type="text/javascript">
+	<!--
+		function goto_list(p){
+			var url="{{url}}/?page="+p;
+			window.location.replace(url);
+		}//-->
+	//-->
+	</script>
+		<script type="text/javascript">
+	function moreactions(objselect)
+	{
+		if(objselect.value!='')
+		{
+			var v = objselect.value;
+			var win = window.document.theatreform;
+			if(v=='0')
+			{return 0;
+			}
+			else if(v.length==1)
+			{
+				window.location.replace('/staff/company/filter/?filter='+v);
+				return 0;
+			}
+			else
+			{
+				for(var i=0;i<win.trashchecked.length;i++)
+				{
+					if(win.trashchecked[i].checked==true)
+					{
+					if(v=='active')
+					{
+						if(confirm("Are you sure  you want to activate all selected Theatre(s)??"))
+						{
+						document.getElementById('theatreform').action='/staff/movies/multipleaction/';
+						document.getElementById('to').value = 'active';
+						document.getElementById('theatreform').submit();
+						return 1;
+						}
+						else
+						{
+							return 0;
+						}
+					}
+					if(v=='deactive'){
+						if(confirm("Are you sure  you want to Deavtivate all selected Theatre?")){
+						document.getElementById('theatreform').action='/staff/movies/multipleaction/';
+						document.getElementById('to').value = 'deactive';
+						document.getElementById('theatreform').submit();
+						return 1;
+						}else{
+							return 0;
+							}
+						}
+					if(v=='del'){
+						if(confirm("Are you sure  you want to Delete all selected Theatre?")){
+						document.getElementById('theatreform').action='/staff/movies/deletemultiplemovies/';
+						document.getElementById('theatreform').submit();
+						return 1;
+						}else{
+							return 0;
+							}
+						}
+					}
+				}
+				try{
+					if(win.trashchecked.checked==true){
+						if(v=='active'){
+						if(confirm("Do you want to activate all selected Movie(s)??")){
+						document.getElementById('theatreform').action='/staff/movies/changestatus/';
+						document.getElementById('to').value = 'active';
+						document.getElementById('theatreform').submit();
+						return 1;
+						}else{
+							return 0;
+							}
+						}
+					if(v=='deactive'){
+						if(confirm("Do you want to deactivate all selected Movie(s)??")){
+						document.getElementById('theatreform').action='/staff/movies/changestatus/';
+						document.getElementById('to').value = 'deactive';
+						document.getElementById('theatreform').submit();
+						return 1;
+						}else{
+							return 0;
+							}
+						}
+					if(v=='del'){
+						if(confirm("Do you want to delete all selected Theatre(s)??")){
+						document.getElementById('theatreform').action='/staff/movies/deletemultiplemovies/';
+						document.getElementById('theatreform').submit();
+						return 1;
+						}else{
+							return 0;
+							}
+						}
+					}
+				}catch(e){}
+				alert("Please select Theatre(s).");
+				objselect.value="0";
+				return 0;
+			}
+		}
+	}
+	</script>
+	<script type="text/javascript">
+	deleteConfirm = function(url){
+		if(confirm('Are you sure you want to delete the selected Theatres?')){
+			window.location.href=url;
+			
+		}
+	}
+	</script>
+	<script type="text/javascript">
+	checkall = function(){
+		var check_ = document.getElementById('sall');
+		if(!check_.checked){
+			$(".cb").removeAttr('checked');
+		}
+		if(check_.checked){
+			$(".cb").attr('checked','true');
+		}
+	}
+	</script>	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</script>
+	<script type="text/javascript">
+	deleteConfirm = function(url){
+		if(confirm('Are you sure you want to delete selected Theatre(s)?')){
+			window.location.href=url;
+		}
+	}
+	</script>
+
+	<!--google code -->
+ 
+   <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAALh1ulOWiiFcxxtWqUVwrCRQfAUeJBRl9cfanZEiXXaSNmDMtHRSnp4-NW4ZZauIVSCRhBCxlY0oNJA" type="text/javascript"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+
+
+    var iconGreen = new GIcon(); 
+    iconGreen.image = '{{ STATIC_URL }}images/map/marker_green.png';
+    iconGreen.shadow = '{{ STATIC_URL }}images/map/shadow.png';
+    iconGreen.iconSize = new GSize(20, 34);
+    iconGreen.shadowSize = new GSize(37, 34);
+    iconGreen.iconAnchor = new GPoint(9, 34);
+    iconGreen.infoWindowAnchor = new GPoint(5, 1);
+
+    
+    var opt  
+	opt = {}
+	opt.draggable = true  
+	opt.clickable = true  
+	opt.dragCrossMove = true 
+
+	var marker;
+	var map,map1;
+	
+	function load(lat,lng,zoom,type,name,address,locality) {
+		if (GBrowserIsCompatible()) {
+			map = new GMap2(document.getElementById("map"));
+			map.addControl(new GSmallMapControl());
+			map.addControl(new GMapTypeControl());
+			map.setCenter(new GLatLng(lat,lng), zoom);
+	
+			var point = new GLatLng(lat, lng);
+			marker = createMarker(point, name, address, type);
+			map.addOverlay(marker);
+		}
+    }
+
+    function createMarker(point, name, address, type) {
+    	opt.icon = iconGreen
+		var marker = new GMarker(point, opt);
+		var html = "<b>" + name + "</b> <br/>" + address;
+		GEvent.addListener(marker, 'click', function() {
+			marker.openInfoWindowHtml(html);
+		});
+		return marker;
+    }
+    //]]>
+</script>
+  	
+{% endblock %}
+{% block content %}
+		<!-- Lightbox code begin -->   
+     		<div class="lightbox_outer" >
+			<div class="lightbox_content_holder">
+     			<a href= "#" class="call_lightbox lb_close fix_ie6png enlarge click_pvnt"></a>
+				<div class="lightbox_content">
+				<!-- Put all your contents only inside this "lightbox_content" div -->
+					
+					<div id="id_theter_details"></div>
+						
+				<!-- put your contents only iside "lightbox_content" div -->		
+				</div>			
+			</div>
+			</div>
+			<div class="lightbox_background"></div>
+	<!-- Lightbox code end -->
+
+
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="#" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff Home</a></li>
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Theatres</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Manage Theatres</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Options</h3>
+                	<ul class="side_menus">
+                        <li><a href="/staff/movies/" class="side_menu">Manage Movies</a></li>  
+                        <li><a href="/staff/movies/managetheatres/" class="side_menu on">Manage Theatres</a></li>
+						<li><a href="/staff/movies/manage-critics-reviews/" class="side_menu">Manage Critics Reviews</a></li>
+                    </ul>
+                </div> 	
+                
+            	<div class="main_col" style="float:left; width:740px;">
+				
+					
+        	 <div id="formContainer" class="add_cat clearfix" style="display:none">  
+        	  	  		<!-- <div id="formContainer" class="add_cat clearfix" > --> 
+					
+						
+					<!-- <div id="formContainer" class="add_cat clearfix">  -->
+        	  	  		<form action="/staff/videos/searchresult" name="mform" id="mform" method="get" class="add_category">{% csrf_token %}
+ 							<fieldset>
+                	    		<div class="title"><h2>Search</h2></div>
+                   					<dl class="vertical">
+                          				<dt><label for="quest"><b>Search Keywords: </b></label></dt>
+                          					<dd>
+                          					<input name="keyword" id="question" class="textField longer" type="text" value="{{kw}}"/>
+                          					<em></em></dd>
+                            <dt>
+                            <label for="qna_cat"><b>Search By Status:</b></label>
+                            </dt>
+                           
+                            <dd>
+                                <select name="searchbystatus" id="category" class="textField normal">
+                                        <option value="0" {% ifequal searchbystatus '0' %} selected="selected"{% endifequal %}>-- Search By Status --</option>
+                                        <option value="actv" {% ifequal searchbystatus 'actv' %} selected="selected" {% endifequal %}>Active </option>
+                                        <option value="dactv" {% ifequal searchbystatus 'dactv' %} selected="selected" {% endifequal %}>Deactive </option>
+                                </select>
+                            </dd>
+                            
+                            <dt>
+                            <label for="qna_cat"><b>Search By:</b></label>
+                            </dt>
+                           
+                            <dd>
+                                <select name="searchby" id="category" class="textField normal">
+                                        <option value="all" {% ifequal searchby 'all'%} selected="selected"{% endifequal %}>--Search By Order--</option>
+                                        <option value="most_viewed" {% ifequal searchby 'most_viewed'%} selected="selected"{% endifequal %}>Most Viewed</option>
+                                        <option value="most_recent" {% ifequal searchby 'most_recent'%} selected="selected"{% endifequal %}>Most Recently</option>
+										<option value="most_rated" {% ifequal searchby 'most_rated'%} selected="selected"{% endifequal %}>Most Rated</option>	                                        
+                                </select>
+                            </dd>
+                            <dt>
+                            <label for="qna_cat"><b>Videos Category</b></label>
+                            </dt>
+                           
+                            <dd>
+                                <select name="category" id="category" class="textField normal">
+                                        <option value="0">-- Choose a Category -- </option>
+                                        {% for v in categories %}
+                                        <option value="{{v.id}}" {% ifequal cat v.id %} selected="selected" {% endifequal %}>{{v.name}}</option>
+                                        {% endfor %}
+                                 </select>
+                            </dd>
+                                    <dd>
+                                    <div class="buttons" style="padding-top: 10px;">
+                                    <input class="inputsubmit on" id="search_button" name="" value="Search" type="submit">
+                                    <input class="inputsubmit on" id="" name="" value="Clear" type="reset">
+                                    </div>
+                                    </dd>     
+                   			 </fieldset>      
+                   		</form>
+						</div>
+				
+
+            	{%if message%}
+					<div id="m" style="padding:10px;background:lightyellow;color:#333;margin-top:5px;width:100%;">
+						{{message}}
+						<script type="text/javascript">
+						setTimeout('hideMessage()',5 * 1000); //5 sec
+						hideMessage = function(){
+							$("#m").fadeOut();
+						}
+						</script>
+					</div>
+				{%endif%}
+					<div class="page_title group" style="display:block; overflow:hidden; padding-top:10px;">
+                	
+					
+					<div class="all_control" style="width:120px;">
+                            <select onChange="moreactions(this);"  name="category" id="qna_cat" class="textField small" style="width:110px;">
+                                <option value="">More actions</option>
+                                <option value="del">&nbsp;Delete</option>
+                             </select>                            
+              		</div>	
+					<div class = "search-theatre">		 
+				      <form action="/staff/movies/searchresult-home/" style=" background:none !important; width:auto !important; float:left;" class="add_category" method="get"  name="jform" action="/staff/videos/searchresult-home/">
+				              <fieldset>
+                          					<dd style="display: block; float: left;">
+                          					 <input type="text" value="{{kw}}" class="textField longer" id="question" name="keyword">
+                          					<em></em></dd>
+				                     <dd style="float:left;">
+                                    <div style="float: left; margin: 0pt 5px;" class="buttons">
+                                    <input type="submit" value="Search" name="" id="search_button" class="inputsubmit on">
+                                    </div>
+                                    </dd>     
+                            </fieldset>      
+                       </form>
+					 </div>  
+                        <div class="quick_nav">							
+                            <a href="/staff/movies/addtheatres/" class="thick_link_plus">Add New Theater</a>
+                        </div>                        
+           			 </div>            
+           			 {% if theatres %}               
+						<table class="staff content" align="center" cellpadding="0" cellspacing="0" width="740">
+							<colgroup>
+								<col width="15">
+								<col width="300">
+								<col width="70">							
+								<col width="100">
+							</colgroup>				
+							<tbody>
+								<tr class="head" style="">
+								    <th class="check"><span class="cform-checkbox-container"><input id="sall" name="selectall" onclick="checkall()" value="" type="checkbox"><span class="cform-checkbox-element"></span></span></th>
+									<th class="posted_by"><div>Theatre Details</div></th>
+									<th class="status" style="text-align: left;"><div>Movies Playing</div></th>								
+									<th class="action" style="text-align: left;"><div>Actions</div></th>
+								</tr>	
+								<form id="theatreform" name="theatreform" action="/staff/movies/deletemultipletheatre">{% csrf_token %}
+								{% for th in theatres %}				
+								<tr class="row">
+									<td class="check">
+										<span class="cform-checkbox-container"><input name="trashchecked" class="cb" value="{{th.id}}" type="checkbox"><span class="cform-checkbox-element"></span></span>
+									</td>	                                
+									<td class="in_picture">
+										<div class="in_picture_details">
+											<h5 style="margin:0 0 3px 0; padding:0"><a href="javascript:void(0);"  onclick ="ajax_view_call({{th.id}});" title="See article details">{{th.name}}</a></h5>
+                                            <P style="line-height:16px;padding:0 0 5px 0;">
+                                            {{th.address1}}&nbsp;
+                                            {% if th.address2%}{{th.address2}}{% endif %}
+                                            <span style="display:block; font-size:11px;margin-top:3px; color:#808080">Phone: {{th.phone|default:"N/A"}}</span>
+                                            </P>
+
+										</div>
+									</td>                           
+									<td class="date status">
+										<div>
+											{{th.get_movies_count}} Movies
+										</div>
+									</td>
+									<td class="action">
+										<div class="action_link">
+											<div class="action_nav">
+											<span><a href="javascript:void(0);"  onclick ="ajax_view_call({{th.id}});" class="view">View</a>&nbsp;|&nbsp;<a href="/staff/movies/editdetails/?id={{th.id}}" class="edit">Edit</a>&nbsp;|&nbsp;<a href="/staff/movies/managetheatres/?message={{th.id}}&page={{page}}" onclick='deleteConfirm("/staff/movies/deletetheatre/?trashchecked={{th.id}}");' class="delete">Delete</a></span>
+                                            <a href="/staff/movies/editshowdetails/?tid={{th.id}}" class="edit">Change Showtime</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								 {% endfor %}    
+							</tbody>
+						</table>
+						{% else %}                                                                          
+								 
+								 {% endif %}
+                        <div style="width:740px; text-align:center; margin:20px 0">
+                           {% if is_paginated %}                  
+  						<div style="width:740px; text-align:center; margin:20px 0">
+							<div class="Paginator">
+							{% if has_previous %}
+								{% ifequal num page %}
+										<span class="this-page">{{ num }}</span>
+								{% else %}
+									<a href="{{ url }}/?page={{ prev }}" onclick="goto_list('{{ prev }}');return false;" class="Prev" title="Previous Page">&laquo; Prev</a> 
+								{% endifequal %}
+							{% endif %}
+						 
+							{% if not in_leading_range %}
+								{% for num in pages_outside_trailing_range %}
+									{% ifequal num page %}
+										<span class="active">{{ num }}</span>
+									{% else %}
+										<a href="{{ url }}/?page={{ num }}" onclick="goto_list('{{ num }}');return false;" >{{ num }}</a> 
+									{% endifequal %}
+								{% endfor %}
+								<span class="break">&hellip;</span>
+							{% endif %}
+							 
+							{% for num in page_numbers %}
+								  {% ifequal num page %}
+								    	<span class="active">{{ num }}</span>
+								  {% else %}
+								  		<a href="{{ url }}/?page={{ num }}" onclick="goto_list('{{ num }}');return false;" title="Page {{ num }}">{{ num }}</a> 
+								  {% endifequal %}
+							{% endfor %}
+							 
+							{% if not in_trailing_range %}
+								<span class="break">&hellip;</span>
+								{% for num in pages_outside_leading_range reversed %}
+									{% ifequal num page %}
+										<span class="active">{{ num }}</span>
+									{% else %}
+										<a href="{{ url }}/?page={{ num }}" onclick="goto_list('{{ num }}');return false;" >{{ num }}</a> 
+									{% endifequal %}
+								{% endfor %}
+							{% endif %}
+							 
+							{% if has_next %}
+								<a href="{{ url }}/?page={{ next }}" onclick="goto_list('{{ next }}');return false;" class="Next" title="Next Page">Next &raquo;</a> 
+							{% endif %}
+							<span class="Results">&nbsp;({{ count }} Theatres)</span>
+						</div>
+						</div>
+						{% endif %}
+                     	</div>   
+                </div> 
+                <hr />
+            </div>
+        </div>
+		
+<script>
+function ajax_view_call(id){
+	
+	$.ajax({
+			type: "GET",
+			url: "/staff/movies/getdetails/",
+			data: "id="+id,
+			success: function(responseText){
+				$('#id_theter_details').html(responseText);
+				show_content('id_theter_details');
+			}
+		});
+	
+}	
+
+</script>	
+	
+{% endblock %}
+	  
+	  
+	  
+	  

@@ -1,0 +1,68 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#on_add').change(function(){
+		if($("#on_add").is(':checked') || $("#on_update").is(':checked')){
+			$('#on_update_email').show();
+		}else{$('#on_update_email').hide();}
+	});
+	$('#on_update').change(function(){
+		if($("#on_add").is(':checked') || $("#on_update").is(':checked')){
+			$('#on_update_email').show();
+		}else{$('#on_update_email').hide();}
+	});
+	
+	$('#on_purchase').change(function(){$('#on_purchase_email').toggle();})
+	{% if business %}$('#on_claim').change(function(){$('#on_claim_email').toggle();}){% endif %}
+    $.validator.addMethod("multiemail", function(value, element) {
+        if (this.optional(element)) {return true;}
+        var emails =value.split( new RegExp( "\\s*,\\s*", "gi" ) );
+        valid = true;
+        for(var i in emails) {value = emails[i];valid=valid && $.validator.methods.email.call(this, value,element);}return valid;
+    }, "Invalid email format");
+    $("#mform").validate({
+        highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass('error');},
+        unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass('error');},
+        errorPlacement: function(error, element){},
+		rules:{
+			{% if deal_settings %}
+				on_purchase_email: {
+					multiemail:true,
+					required:{depends:function(element) {return $("#on_add:checked")}}
+				}
+			{% else %}
+				{% if business %}
+					on_claim_email: {
+						multiemail:true,
+						required:{depends: function(element) {return $("#on_update:checked")}}
+					},
+				{% endif %}
+				{% if classifieds %}
+					api_key:"required",
+					radius:"required number",
+					region:{
+			            required: function(){
+			                  return ($("#id_location").val() == "")?true:false;
+			            }
+			      	},
+					location:{
+			            required: function(){
+			                  return ($("#id_region").val() == "")?true:false;
+			            }
+			      	},
+				{% endif %}
+				//on_add_email: {
+				//	multiemail:true,
+				//	required:{depends:function(element) {return $("#on_add:checked")}}
+				//},
+				on_update_email: {
+					multiemail:true,
+					required:{depends: function(element) {
+						if($("#on_add").is(':checked') || $("#on_update").is(':checked')){return true}
+						else{return false;} 
+					}}
+				}
+			{% endif %}
+		}
+    });
+});
+</script>

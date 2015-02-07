@@ -1,0 +1,25 @@
+{% load i18n %}
+<b>{% trans 'Hi' %},</b>
+<br /><br />
+<table>
+<tr>
+	<td><b>{% trans "Username/Email" %}</b></td>
+	<td>: {{usr.display_name}}/<a href="mailto:{{usr.email}}">{{usr.useremail}}<a></td>
+</tr>
+<tr>
+	<td><b>{% trans "Action" %}</b></td>
+	<td>: {{action}} "{{obj_title|truncatechars:50}}"</td>
+</tr>
+<tr>
+	<td><b>{% trans "Date" %}</b></td>
+	<td>: {{updatedon|time:'P'}} {{updatedon|date:'M d, Y'}}</td>
+</tr>
+<tr>
+	<td><b>{% trans "URL" %}</b></td>
+	<td>: <a href='{{url}}' target="_blank">{{url}}</a></td>
+</tr>
+</table>
+
+<br>
+<div><hr size="1" color="#cccccc" noshade="noshade"></div>
+{% trans 'Copyright' %} © 2011-2012 "{{globalsettings.domain}}". {% trans 'All rights reserved' %}.

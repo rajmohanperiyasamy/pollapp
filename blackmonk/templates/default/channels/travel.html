@@ -1,0 +1,135 @@
+{% extends base %}
+{% load modulotag %}
+{% load comparison %}
+{% load tabs %}
+{% load i18n %}
+{% load thumbnail %}
+{% load currency %}
+{% load bm_channeltags %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% seo_format_tag module='Articles' title=channel.seo_title code='MT' as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{ channel.seo_description }}" />
+{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/channels/channels.js"></script>
+	<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+	<script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+	<!--  Featured Carousel -->
+	<script>
+		$(function(){
+			$('#tMbpGrpRw').bUiSlider({
+				pagerCustom: '#tMbpGr',
+				onSliderLoad:function(){
+                    $('.fLxiMgW').setrSpVWidth(0);
+                    $('.fTrD-bL').setfTrDtXtHeight(); 
+                }
+			});
+		})
+	</script>
+	
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "articles" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+		<div class="pG-hD ">
+	        <h2 class="fW-bLd">{{ channel.title }}</h2>
+	    </div>
+	    <div class="row-fluid">
+	        <div class="main mRb0mX979 span8">
+	            
+				<!-- Featured Article starts-->
+
+				{% include  "default/channels/featured_article.html" %}
+
+				<!-- Featured Article ends-->
+
+
+	            <!-- Featured row end-->
+	            <div class="row-fluid">
+	                {% include  "default/channels/featured_business.html" %}
+
+					<!-- Attraction row end-->
+
+					{% include  "default/channels/channel_attraction.html" %}
+
+					<!-- Attraction row end-->
+
+	                <!-- Featured Gallery Starts-->
+
+                {% include  "default/channels/gallery.html" %}
+
+				<!-- Featured Gallery ends-->
+
+	                <div class="row-fluid">
+	                    <!-- Latest Business Starts-->
+				
+						{% with business_title='Best Places' %}
+						{% include  "default/channels/latest_business.html" %}
+						{% endwith %}
+		
+						<!-- Latest Business ends-->
+
+	                    <!-- Latest Reviews starts-->
+
+						{% include  "default/channels/channel_reviews.html" %}
+		
+		                <!-- Latest Reviews ends-->
+	                </div>
+	            </div>
+	        </div>
+	        <aside class="sD-bR span4">
+
+				<!--Events Start-->
+
+				{% include  "default/channels/channel_upcoming_events.html" %}
+
+				<!-- Events End -->
+
+
+	            <div>
+	                <section class="tXt-cTr pDt0  pD15 bNr-aD" id="banner_placement_right"></section>
+	            </div>
+	            <!--Deals Listing Start-->
+
+				{% include  "default/channels/channel_deals.html" %}
+
+				<!-- Deals Listing End -->
+
+				<!-- Polls Listing Start -->
+
+				{% include  "default/channels/channel_polls.html" %}
+
+				<!-- Polls Listing End -->
+
+	            <!-- Offers Listing Start-->
+
+				{% include  "default/channels/channel_offers.html" %}
+
+				<!-- Offers Listing End -->
+	            <div>
+					{% include 'default/likebox.html' %}
+	            </div>
+	        </aside>
+	    </div>
+	</div>
+
+<script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script>
+<script src="{{STATIC_URL}}themes/js/jquery.calendarPicker.js"></script>
+<script src="{{STATIC_URL}}themes/js/jquery.mousewheel.js"></script>
+<script src="{{STATIC_URL}}themes/js/main.js"></script>
+<script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>
+<script src="{{STATIC_URL}}themes/js/bm-date-format.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.countdown.js"></script>
+<script type="text/javascript">
+var latest_business_ajax_url = "{% url 'latest_business_ajax' channel.slug %}";
+var event_url = "{% url 'channel_events_ajax_get_events_by_date' channel.slug %}";
+var auto_suggest_business_url = "{% url 'auto_suggest_business' %}";
+var auto_suggest_business_address_url = "{% url 'auto_suggest_business_address' %}";
+</script>
+{% endblock %}        

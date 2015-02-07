@@ -1,0 +1,523 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n ds_utils %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "profile" %}
+{% include "account/account_side_bar.html" %}
+{% endblock %}
+{% block pagetitle %}{% trans 'Your Account' %} {% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+{% endblock %}
+{% block content %}
+<div class="span10 sP9mX979 sP12mX767">
+    <div class="row-fluid">
+		<div class="main span9">
+			<section class="sCn pD0">
+				<div class="cLrFx pD20">
+					<div class="pLlT">
+						<h3 class="mR0 fS16 fW-bLd tRnCt">{% trans 'Edit Profile Setting' %}s</h3>
+					</div>
+				</div>
+				<hr class="mRb12 mRt0">
+				<div class="pD20">
+					<form id="myform" class="uSr-aCnT mRb0" method="post" action".">{% csrf_token %}
+						<div class="row-fluid">
+							{% for field in form %}
+			           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+			          	 	{% endfor %}
+							<h4 class="fS15 fW-bLd mRt0 mRb20 pLlT">{% trans 'Profile' %}</h4>
+							<fieldset class="span9 pLrT">
+                                <div class="control-group">
+                                    <label class="control-label" >{% trans 'Full Name' %}<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        <input id="id_display_name" type="text" class="iSp8" maxlength="25" name="display_name" value="{% if form.display_name.value %}{{ form.display_name.value }}{% endif %}">
+                                    </div>
+                                </div>
+								<div class="control-group {% if form.website.errors %}error{% endif %}">
+                                    <label class="control-label" >{% trans 'Website' %}</label>
+                                    <div class="controls">
+										<input type="text" name="website" maxlength="255" id="id_website" value="{% if form.website.value %}{{ form.website.value|remove_url_protocol }}{% endif %}" class="iSp8 {% if form.website.errors %}error{% endif %}" placeholder="{% trans 'Example: http://www.websitename.com' %}">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >{% trans 'Location' %}</label>
+                                    <div class="controls">
+                                        <!--input type="text" name="location" maxlength="255" id="id_location" value="{% if form.location.value %}{{ form.location.value }}{% endif %}" class="iSp8" placeholder="e.g. New York, NY"-->
+										{{ form.location }}
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >{% trans 'About' %}</label>
+                                    <div class="controls">
+                                        {{ form.about }}
+                                        <span class="help-block iSp10">{% trans 'Write something about yourself.' %} <strong class="pLrT" id="noOfChar">{% if form.about.value|length %}{% with form.about.value|length as vlaue %}{{ 180|subtract:vlaue }}{% endwith %}{% else %}180{% endif %}</strong></span>
+                                    </div>
+                                </div>
+							</fieldset>
+						</div>
+						<hr class="oTsT-hRz20">
+                        <div class="row-fluid">
+							<h4 class="fS15 fW-bLd mRt0 mRb20 pLlT">{% trans 'Account' %}</h4>
+							<fieldset class="span9 pLrT">
+								<div class="control-group">
+                                    <label class="control-label">{% trans 'Email' %}<em class="cLr-rEd">*</em></label>
+                                    <div class="controls">
+                                        <!--input type="text" class="iSp8" name="useremail" id="id_useremail" maxlength="75" value="{% if form.useremail.value %}{{ form.useremail.value }}{% endif %}"-->
+										{{ form.useremail }}
+                                        <p class="help-block">Email will not be publicly displayed.</p>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >{% trans 'Gender' %}</label>
+                                    <div class="controls">
+										{% for gender in  form.gender %}
+										<label class="radio inline fW-nRmL">{{ gender.tag }}{{ gender.choice_label }}</label>
+										{% endfor %}
+                                        
+                                    </div>
+                                </div>
+							</fieldset>
+						</div>     
+						<hr class="oTsT-hRz20">
+                        <div class="row-fluid">
+							<h4 class="fS15 fW-bLd mRt0 mRb20 pLlT">{% trans 'Photo' %}</h4>
+							<fieldset class="span9 pLrT">
+                                <div class="control-group">
+									<div id="fileupload" >
+	 									<div class="fileupload-content">
+	    									<ul class="files bm-uploader-list mR0"></ul>
+										</div><div class="clear"></div>
+										<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+        								{% csrf_token %}<div class="clear"></div>
+       									 <div class="upload-button-wrapper w160" id="upload-button-wrapper"{% if profile.image %} style="display:none" {% endif %}>
+           									 <a class="btn btn-primary fS12 fW-bLd">{% trans 'UPLOAD YOUR PHOTO' %}</a>
+                							 <div class="fileinput-button">
+                    							 <input type="file" name="photo" id="id_photo" accept="image/*" tabindex="-1">
+                							 </div>
+           								 </div>
+									</div>
+                                </div>
+							</fieldset>
+						</div>
+						<hr class="oTsT-hRz20">
+                        <div class="row-fluid">
+							<h4 class="fS15 fW-bLd mRt0 mRb20 pLlT">{% trans 'Networks' %}</h4>
+							<fieldset class="span9 pLrT">
+								<div class="control-group">
+                                    <label class="control-label" >{% trans 'Facebook' %}</label>
+                                    <div class="controls">
+                                        <input type="text" name="fb_url" maxlength="150" id="id_fb_url" value="{% if form.fb_url.value %}{{ form.fb_url.value }}{% endif %}" class="iSp8" placeholder="{% trans 'Example: https://www.facebook.com/profilename' %}">
+                                    </div>
+                                </div>
+								<div class="control-group">
+                                    <label class="control-label" >{% trans 'Google' %}</label>
+                                    <div class="controls">
+                                        <input type="text" name="gooleplus_url" maxlength="150" id="id_gooleplus_url" value="{% if form.gooleplus_url.value %}{{ form.gooleplus_url.value }}{% endif %}" class="iSp8" placeholder="{% trans 'Example: https://plus.google.com/108000335' %}">
+                                    </div>
+                                </div>
+								<div class="control-group">
+                                    <label class="control-label" >{% trans 'Twitter' %}</label>
+                                    <div class="controls">
+                                        <input type="text" name="twitter_url" maxlength="150" id="id_twitter_url" value="{% if form.twitter_url.value %}{{ form.twitter_url.value }}{% endif %}" class="iSp8" placeholder="{% trans 'Example: https://twitter.com/profilename' %}">
+                                    </div>
+                                </div>
+								{% comment  %}
+                                 <div class="control-group">
+                                    <div class="controls mRb10">
+                                    	<div class="cLrFx">
+                                        	<label class="pDt8 ib mRr5 W80">{% trans 'Facebook' %}</label>
+                                            <div class="ib">
+                                                <input checked type="checkbox" data-toggle='switch'>
+                                            </div>
+                                            <!-- before connected -->
+                                            <span class="help-block pDt10 hide">{% trans 'Connect and use your Facebook login to sign in.' %}</span> 
+                                            <!-- after connected -->
+                                            <span class="help-block pDt10">{% trans 'Connected to Facebook as' %} <strong class="cLr-gRy">bilalck</strong>.</span>
+                                        </div>
+                                    </div>
+                                    <div class="controls mRb10">
+                                    	<div class="clearfix">
+                                        	<label class="pDt8 ib mRr5 W80">{% trans 'Google' %}</label>
+                                            <div class="ib">
+                                                <input type="checkbox" checked data-toggle='switch'>                      
+                                            </div>
+                                            <!-- before connected -->
+                                            <span class="help-block pDt10 hide">{% trans 'Connect and use your Google login to sign in.' %}</span> 
+                                            <!-- after connected -->
+                                            <span class="help-block pDt10">{% trans 'Connected to Google as' %} <strong class="cLr-gRy">bilalck</strong>.</span>					                          
+                                        </div>
+                                    </div>
+                                    <div class="controls mRb10">
+                                    	<div class="clearfix">
+                                        	<label class="pDt8 ib mRr5 W80">{% trans 'Twitter' %} </label>
+                                            <div class="ib">
+                                                <input type="checkbox" data-toggle='switch'>                       
+                                            </div>
+                                            <!-- before connected -->
+                                            <span class="help-block pDt10">{% trans 'Connect and use your Twitter login to sign in.' %}</span> 
+                                            <!-- after connected -->
+                                            <span class="help-block pDt10 hide">{% trans 'Connected to twitter as' %} <strong class="cLr-gRy">bilalck</strong>.</span>					                         
+                                        </div>
+                                    </div>
+                                </div> 
+								{% endcomment %}
+							</fieldset>
+						</div>					                                
+                        <hr class="oTsT-hRz20 mRb0">        
+                        <div class="row-fluid">
+							<span class="pLlT"></span>
+							<div class="span9 pLrT">
+                                <div class="form-actions pD0">
+								  <button type="submit" class="btn btn-primary fS12 fW-bLd ">{% trans 'Save Profile' %}</button>
+								  <!-- button type="button" class="btn btn-light fS12 fW-bLd">Cancel</button -->
+								</div>
+                        	</div>
+                        </div>
+                    </form>
+				</div>
+			</section>
+		</div> <!-- /.main -->
+		<aside class="sD-bR span3">
+			<div>
+				<section class="tXt-cTr pD0 bNr-aD"> 
+                   
+                </section>
+			</div>
+		</aside>
+	</div>  <!-- /.row-fluid -->
+</div>  <!-- /.span10 -->
+<script src="{{STATIC_URL}}themes/js/bootstrap-switch.js"></script>
+{% endblock %}			
+{% block footerarea %}
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		file_upload_profile('{% url 'usermgmt_ajax_upload_photos' %}?id={{ profile.id }}',1);
+		$("#mform1").validate({
+			highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass("error");},
+			unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass("error");},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	email_fld: {
+					required: true,
+					email: true
+					},
+		   	}
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		/*$.validator.addMethod("urlcheck", function(value, element) {
+				alert("hi");
+				var url = $('#id_website').val();
+				var p = /((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+				var matches = (url.match(p)) ? true : false;
+				alert(matches);
+				return matches
+            },"Please enter correct url.");*/
+
+		$("#mform2").validate({
+			highlight: function(element, errorClass){$(element).parent('div').addClass('field-error');$(element).addClass("error");},
+			unhighlight: function(element, errorClass){$(element).parent('div').removeClass('field-error');$(element).removeClass("error");},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	social_url: {
+					required: true,
+					url: true
+					},
+				website:{
+					required: true,
+					url: true
+					},
+		   	}
+		});
+		count_profiles();
+		
+		$('#id_website').focusin(function(){
+		if($('#id_website').val()==""){ 
+				$('#id_website').val('http://www.');
+		}
+		  
+		});
+		$('#id_website').focusout(function(){
+		if($('#id_website').val()=='http://www.'){
+				$('#id_website').val('');
+			}
+		});
+	});
+</script>
+<script type="text/javascript">
+	function count_profiles(){
+		var n = $('.class_update_li').length;
+		if(n>='5'){
+			$('#id_add_social_url').hide();
+		}
+	}
+	function add_url(){
+		
+		$('#id_add_social_url').hide();
+		$('#id_social_url').val('');
+		$('#id_social_label').val('');
+		$('#id_edit_social').fadeIn(1000);
+		
+	}
+	function save_url(id){
+	var flag = $('#mform2').validate().form()
+	if(flag==true){	
+		dataString ='id='+id
+		dataString+='&media='+$('#id_social_media').val();
+		dataString+='&url='+$('#id_social_url').val();
+		dataString+='&label='+$('#id_social_label').val();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'usermgmt_ajax_add_social_profiles' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				if(data.status){
+					$('#id_edit_social').hide();
+					$('#id_show_profile').replaceWith(data.html).fadeIn(1000);
+					count_profiles();
+				}else{
+					show_msg(data.msg,data.mtype);
+					}
+			}
+		});
+	  }	
+	}
+	function remove_url(id,pid){
+		dataString ='id='+id+'&pid='+pid
+		$('#id_edit_social').hide();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'usermgmt_ajax_delete_social_profiles' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				if(data.status){
+					$('#id_show_profile').replaceWith(data.html).fadeIn(1000);
+					count_profiles();
+				}else{
+					show_msg(data.msg,data.mtype);
+					}
+			}
+		});
+	}
+	function edit_url(id,pid){
+	 	$('.class_dispaly_update').hide();
+		$('.class_update_li').show();
+	 	$('#id_update_li_'+id).hide();
+		$('#id_display_update_div_'+id).show();
+	 }
+	function update_url(id,pid){
+	 var flag = $('#mform2').validate().form()
+	 if(flag==true){	
+	 	dataString ='id='+id+'&pid='+pid
+		dataString+='&url='+$('#id_social_url_'+id).val();
+		dataString+='&label='+$('#id_social_label_'+id).val();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'usermgmt_ajax_update_social_profiles' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				if(data.status){
+					$('#id_show_profile').replaceWith(data.html).fadeIn(1000);
+					count_profiles();
+				}else{
+					show_msg(data.msg,data.mtype);
+					}
+			}
+		});
+	   }	
+	 }
+</script>
+<script type="text/javascript">
+	function file_upload_profile(url,limit) {
+    'use strict';
+    // Initialize the jQuery File Upload widget:
+    $('#fileupload').fileupload({
+ 	   sequentialUploads:true,
+	   maxNumberOfFiles:limit,
+	   autoUpload:true,
+	   //uploadTemplate:$('#template-upload-profile'),
+	   //downloadTemplate:$('#template-download-profile'),
+	   url:url,
+	   acceptFileTypes:/(\.|\/)(gif|jpe?g|png)$/i
+ 	
+ 	  
+    });
+	
+ // Load existing files:
+   get_pimages(url)
+    // Open download dialogs via iframes,
+    // to prevent aborting current uploads:
+    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+        e.preventDefault();
+        $('<iframe style="display:none;"></iframe>')
+            .prop('src', this.href)
+            .appendTo('body');
+        setTimeout(function(){
+        	profile_inline_text()
+        },1000);
+    });
+   //inline_text()
+}
+function get_pimages(url){
+	 $.getJSON(url, function (files) {
+	        var fu = $('#fileupload').data('fileupload');
+	        fu._adjustMaxNumberOfFiles(-files.length);
+	        fu._renderDownload(files)
+	            .appendTo($('#fileupload .files'))
+	            .fadeIn(function () {
+	                // Fix for IE7 and lower:
+	                $(this).show();
+	            });
+	    });
+}
+function inline_text(){
+	try{
+		$.colorbox.resize();
+		if($('.bm-uploader-file').length>=1){$('.upload-button').html(gettext('Upload More Photos'));}
+		else{$('.upload-button').html(gettext('UPLOAD A PHOTO'));}
+	}catch(ex){}
+	}
+$('#fileupload').bind('fileuploadstart', function (e, data) {$('#upload-button-wrapper').hide();});
+	$('#fileupload').bind('fileuploaddestroy', function (e, data) {
+		setTimeout(function(){
+			$('#upload-button-wrapper').show();
+			$('#upload-button').html(gettext('Attach Logo'));
+		},700);
+		setTimeout(function(){$('#upload-button').html(gettext('Attach Logo'));},1050);
+	});
+	
+</script>
+<script type="text/javascript">	
+	function save_profile(id,a){
+		dataString ='id='+id
+		dataString+='&name='+escape($('#id_edit_fld').val());
+		dataString+='&bio='+escape($('#id_bio_fld').val());
+		
+		$.ajax({
+		type: "POST",
+		url: "{% url 'usermgmt_ajax_update_profile' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				if(data.status){
+					$('#id_edit_'+a).hide();
+					$('#id_show_'+a).show();
+
+					if(a == 'name'){
+						$('#id_dsply_name').html(data.name);
+						$('#id_edit_fld').val(data.name);
+					}else{
+						$('#id_dsply_bio').html(data.bio);
+						$('#id_bio_fld').html(data.bio);
+					}
+					
+					
+				}else{
+					show_msg(data.msg,data.mtype);
+					}
+			}
+		});
+	}
+	function hide_box(a){
+		$('#id_edit_'+a).hide();
+		$('#id_show_'+a).show()
+	}
+	function update_email(id){
+	var flag = $('#mform1').validate().form()
+	if(flag==true){	
+		dataString ='id='+id
+		dataString+='&email='+$('#id_email_fld').val();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'usermgmt_ajax_update_email' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				if(data.status){
+					$('#id_edit_email').hide();
+					$('#id_show_email').show();
+					$('#id_dsply_email').html(data.email);
+					$('#id_email_fld').val(data.email);
+
+				}else{
+					show_msg(data.msg,data.mtype);
+					}
+			}
+		});
+	 }//flag end	
+	}	
+</script>
+<script type="text/javascript">
+$(document).ready(function () {
+
+    $('#myform').validate({
+		ignore:'',
+		highlight: function(element, errorClass){
+			$(element).parent('div').parent('div').addClass('error');
+			$(element).addClass('error');
+		},
+		unhighlight: function(element, errorClass){
+			$(element).parent('div').parent('div').removeClass('error');
+			$(element).removeClass('error');
+		},
+		errorPlacement: function(error, element){}, 
+        rules: {
+            display_name: {
+                required: true,
+            },
+            useremail: {
+                required: true,
+				email: true,
+            },
+			fb_url: {
+                url: true,
+            },
+			twitter_url: {
+                url: true,
+            },
+			gooleplus_url: {
+                url: true,
+            },
+			
+        }
+    });
+
+	function updateCount ()
+    {
+       var qText = jQuery("#id_about").val();
+
+       if(qText.length < 180) {
+       	   jQuery("#noOfChar").html(180 - qText.length);
+       } else {
+           jQuery("#noOfChar").html(0);
+    	   jQuery("#id_about").val(qText.substring(0,180));
+       }
+    }
+
+    $("#id_about").keyup(function () {
+        updateCount();
+    });
+    $("#id_about").keypress(function () {
+        updateCount();
+    });
+    $("#id_about").keydown(function () {
+        updateCount();
+    });
+
+});
+</script>	
+{% endblock %}	
+

@@ -1,0 +1,47 @@
+{% load i18n %}
+{% if attribute_group %}
+	{% for attr in attribute_group %}
+		{% ifchanged attr.attribute_group %}
+			<hr class="oTsT-hRz20">
+			<h5>{{attr.attribute_group}}:</h5>
+		{% endifchanged %}
+		<div class="control-group">
+		    <label class="control-label pDt0">{{attr}}</label>
+		    <div class="controls clearfix">
+				{% if attr.type == 'C' %}
+					<input type="text" id="attr_{{attr.id}}" name="attr_{{attr.id}}" value="{% for ba in bizatr %}{% if ba.key == attr and attr.type == 'C' %}{{ba.textbox_value}}{% endif %}{% endfor %}" maxlength="200" class="iSp8">
+				{% endif %}
+				{% if attr.type == 'K' %}
+					<div class="iSp8"> 
+			   			{% for attr_valur in attr.get_default_values %}
+							<div class="span6 pLlTmP pD0 sP6mP">
+		                        <label class="checkbox inline fW-nRmL">
+		                            <input type="checkbox" name="attr_{{attr.id}}" value= "{{attr_valur.id}}" id="{{attr_valur.id}}"
+									{% for ba in bizatr %}{% if ba.key == attr %}{% for bav in ba.value.all %}{% if bav.id == attr_valur.id %}checked="checked"{% endif %}{% endfor %}{% endif %}{% endfor %}>
+		                            {{attr_valur}}</label>
+		                    </div>
+			   			{% endfor %}
+					</div>
+				{% endif %}
+				{% if attr.type == 'R' %}
+					<div class="iSp8">
+			   			{% for attr_valur in attr.get_default_values %}
+			                <div class="span6 pLlTmP pD0 sP6mP">
+			                    <label class="radio inline fW-nRmL">
+			                        <input type="radio" value="{{attr_valur.id}}" id="{{attr_valur.id}}" name="attr_{{attr.id}}" {% for ba in bizatr %}{% if ba.key == attr %}{% for bav in ba.value.all %}{% if bav.id == attr_valur.id %}checked="checked"{% endif %}{% endfor %}{% endif %}{% endfor %}>
+			                        {{attr_valur}}</label>
+			                </div>
+			   			{% endfor %}
+					</div>
+				{% endif %}
+				{% if attr.type == 'S' %}
+					<select name="attr_{{attr.id}}" class="iSp8 bM-sLt">
+						{% for attr_valur in attr.get_default_values %}
+							<option value="{{attr_valur.id}}" {% for ba in bizatr %}{% if ba.key == attr %}{% for bav in ba.value.all %}{% if bav.id == attr_valur.id %}selected="selected"{% endif %}{% endfor %}{% endif %}{% endfor %}> {{attr_valur}} </option>
+						{% endfor %}
+					</select>
+				{% endif %}
+			</div>
+		</div>
+	{% endfor %}
+{% endif %}

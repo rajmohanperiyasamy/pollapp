@@ -1,0 +1,51 @@
+{% load i18n %}
+<!-- Module Search -->
+<div class="pD2015 bM-bX sRcHbR">
+    <div class="row-fluid">
+        <div class="span9 fRm">
+            <form class="form-search mRb0" action="{% url 'restaurants_list_restaurants_by_types' %}" method="get">
+                <input type="hidden" name="search" value="true" />
+                <div class="mDl">
+                    <h3 class="mDl-nM">
+                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-16"></i>
+                        <span class="ib">{% trans 'Restaurants' %}
+                            <i aria-hidden="true" class="bUi-iCn-aNg-rT-12 cLr-lTgRy"></i>
+                        </span>
+                    </h3>
+                </div>
+                <div class="span5">
+                    <input type="text" class="" autocomplete="off" id="id_find" name="q" value="{{kw}}" placeholder="{% trans 'Search for american, fine dining and more' %}">
+                </div>
+                <div class="span3">
+                    <input type="text" class="" autocomplete="off" id="id_location" name="location"  value="{{location}}" placeholder="{% trans 'Location' %}">
+                </div>
+                <div class="ib sUb-bTn mRl12">
+                    <button type="submit" class="btn btn-primary">
+                    <i aria-hidden="true" class="bUi-iCn-sRh-16"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="AD-bTn">
+            <div class="pLrT">
+                <button type="submit" class="btn btn-danger">
+                <i aria-hidden="true" class="bUi-iCn-pLs-16"></i>
+                {% trans 'Add' %} <span class="hMp"></span> {% trans 'Restaurant' %}</button>
+            </div>
+        </div>
+        <a data-toggle-icon="bUi-iCn-cRt-t-12" data-target="#browse-options" data-toggle="collapse" class="cLr-lTbLu fS13 browse pLlT vOp mRt20" href="javascript:void(0)">Browse options <i class="bUi-iCn-cRt-b-12 cLr-lTgRy bUi-iCn-cRt-b-12 ib" aria-hidden="true"></i></a>
+    </div>
+</div>
+<!-- Module Search -->
+<script>
+$(function () {
+    $('#id_find').typeahead({
+        ajax: { url: '{% url 'restaurants_auto_suggest_restaurants' %}',type: "GET",
+                triggerLength: 1 }
+    });
+    $('#id_location').typeahead({
+        ajax: { url: '{% url 'restaurants_auto_suggest_restaurant_locations' %}',type: "GET",
+                triggerLength: 1 }
+    });           
+});
+</script>

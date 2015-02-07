@@ -1,0 +1,89 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'user' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Manage Staff' %} {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+            <input type="hidden" name="url" id="id_hidden_url" value="{% url 'admin_ajax_display_staff' %}">    
+            <input type="hidden" name="url" id="id_hidden_action_url" value="{% url 'admin_ajax_staff_action' %}">    
+            <input type="hidden" name="change_status_url" id="id_change_status_url" value="{% url 'admin_ajax_change_user_status' %}">
+            <input type="hidden" name="deactivate_status_url" id="id_deactivate_status_url" value="{% url 'admin_ajax_deactivate_user_status' %}">
+            <input type="hidden" name="delete_url" id="id_delete_url" value="{% url 'admin_ajax_delete_user' %}">
+            <div id="admin_wrapper">
+                <div id="admin-platform" class="group">
+                    <div class="header-bar">
+                    </div>
+					<div id="core-wraper" class="group">
+                        <div class="admin-main col_12">
+							<div class="page-wrap" style="padding: 20px 40px;">
+                                <div class="page-head br_0">
+									<span class="pLrT"> <a href="{% url 'admin_display_users' %}"> + Manage User</a></span>
+                                    <h2>{% trans 'Staff Account' %}</h2>
+									<p class="ltxt80">{% trans 'Manage staff account and assign privileges to the staff members. Each staff member can be assigned privileges to access limited modules only.' %}</p>   
+								</div>
+                                <div id="member-account-list" class="cat-list group">
+                                	<section class="toolbars">
+                                        <div class="group">
+                                        	<ul class="toolbar left">
+                                                <li class="tool">                                                       
+                                                	<label for="" style="color:#AAA; padding:5px 8px 0 0;float:left">{% trans 'View:' %} </label>
+	                                                <select id="orderSelect" class="select-menu" style="width:120px;" onchange="$('#id_view_by').val($(this).val()),filter_content();">
+	                                                  <option value="staff" selected="">{% trans 'All Staff' %}</option>
+													  {% for group in groups %}	
+	                                                  	<option value="{{group.id}}">{{group.name|title}}</option>
+													  {% endfor %}	
+	                                                </select>                                               
+                                                </li>
+                                            </ul>
+                                        	<div class="right">
+                                                <form class="search-items" id="member-search-form" action="javascript:void(0);">
+                                                    <input type="text" class="search-field" name="search_keyword" placeholder="{% trans 'Search site managers' %}" id="id_search_keyword">
+                                                    <button type="button" class="cform-button search-button" onclick="if($('#id_search_keyword').val()!=''){$('#id_search').val('true'),$('#id_pagentn').val('1'),filter_content();}" role="button"><span class="search-icon">{% trans 'Search' %}</span></button>
+                                                </form>                                                
+											</div>
+                                        </div>
+                                    </section>  
+									<div id="ajax_content_loading" style="display:none;padding-top:96px;text-align:center;">
+										<img src="{{STATIC_URL}}ui/images/global/loading.gif"><br><p>{% trans 'Loading...' %}</p>
+									</div>                             
+                                    <div id="id_users_listing">                                
+                            			{% include 'admin/usermgmt/ajax-display-staffs.html' %} 
+                               		</div>                                                         
+                            	</div>
+							</div>                                                       
+                        </div>                            
+                        <div id="aside" class="side-bar col_4">
+							<div class="section hT-aT" id="role-mngt">
+								{% include 'admin/usermgmt/admin-roles-side-nav.html' %}
+                            </div>                        
+							{% include 'admin/usermgmt/admin-staff-faq.html' %}
+                        </div> 
+                           
+					</div>                                                    
+				</div>
+			</div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/admin/admin_staff.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+	$('#master_check').live("click",function(){
+		if($("#master_check").is(':checked')){$(".cbox").attr('checked',true);}
+		else{$(".cbox").attr('checked',false);}
+	});
+	$('.cbox').live("click",function(){
+		var flag=true;
+		$('.cbox').each(function(){if($(this).is(':checked')==false){flag=false}})
+		if(flag){$("#master_check").attr('checked',true);}
+		else{$("#master_check").attr('checked',false);}
+	});
+	});
+</script>
+{% endblock %}	
+	

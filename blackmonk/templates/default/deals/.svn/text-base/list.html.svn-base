@@ -1,0 +1,132 @@
+{% extends base %}
+{% load tabs %}
+{% load i18n %}
+{% load currency %}
+{% load thumbnail %}
+{% load modulotag %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Deals' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Deals' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{{seo.seo_description}}" />
+{% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/deal.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/lightbox.css">
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+		<script type="text/javascript">
+	    $(document).ready(function(){
+		 $('.bids').each(function(){
+				bids.push($(this).val());
+			});
+	        module_listing(bids,category);
+		});
+		
+		</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "deals" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+	{% include 'default/deals/part_lightbox.html' %}
+			{% activetab "dealnav" "all" %}
+			{% include 'default/deals/part_top_navigation.html' %}
+			<style>
+				#recent_list .active_lst_wrap {
+				    background-color: #FFFFFF;
+				    border: 2px dashed #C7D8E2;
+				    border-radius: 6px 6px 6px 6px;
+				    display: block;
+				    margin-bottom: 10px;
+				    padding: 12px;
+				}
+				.deal_pic a{
+					position:relative
+				} 
+				.deal-overlay{
+					background: none repeat scroll 0 0 #000000;
+				    height: 193px;
+				    position: absolute;
+				    top: 0;
+				    width: 302px;
+					opacity:0;
+					-moz-transition:opacity 0.25s ;
+				}
+				.deal_pic a:hover .deal-overlay{
+					opacity:0.9;
+				} 
+			</style>
+			{% if message %}
+					<div class="flash_info_alert" id="id_topmessage" style="background-color:#FFC; padding:3px 10px;color:#000;font-size:14px "><h2>{% autoescape off %}{{ message }}{% endautoescape %}</h2></div>
+					<script type="text/javascript">
+						setTimeout("window.document.getElementById('id_topmessage').style.display='none';",30000);
+					</script>
+			{% endif %}
+            <div class="group">
+                <div class="col_11">
+                    <div id="recent_list" class="list_wrap group">
+                    	{% if deals %}
+                    	{% for deal in deals %}
+						
+                        {% cycle '<ul class="recent_list_row">' '' %}
+                            {% cycle '<li>' '<li class="mr_0">' %}
+                                <div class="recent_lst_wrap">
+									<input type="hidden" id="fbids" name="fbids" class="bids" value="{{deal.id}}" />
+									 <h2 class="deal_title">{{ deal.title|truncatechars:34 }}</h2>
+                                    <div class="deal_pic">
+                                        <a style="display: block; height: 193px;  overflow: hidden; width: 302px;" href="javascript:void(0)">
+										{% if deal.get_deal_image.photo %}
+											<img src="{% thumbnail deal.get_deal_image.photo 330x0 %}" width="302px">
+											<div class="deal-overlay"><span style="position:absolute;top:82px;left:100px;" class="super button large red" onclick="window.location.replace('{{ deal.get_absolute_url }}')"><span class="btn_xl">{% trans 'View Deal' %}</span></span></div>
+										{% else %}
+											<span class="iCn-bRdR50 oP25" title="{{deal.title}}"><i aria-hidden="true" class="bUi-iCn-dEaL-24 cLr-gRy ib"></i></span><div class="vRtL-aLn"></div>
+										{% endif %}
+										</a>
+                                    </div>
+                                    <div class="deal_info">
+                                        <div class="brought_number" style="">
+                                            <span class="pieces">{{ deal.get_count_total_sold }}</span>
+                                            <p>{% trans 'Bought' %}</p>
+                                        </div>
+                                        <div class="deal_info_wrap" class="group">                                       
+                                            <dl class="price group">
+                                              <dt>{{ deal.discount_price|floatformat:0|moneyfmt }}</dt>
+                                              <dd>{% trans 'Price' %}</dd>
+                                            </dl>
+                                            <dl class="value group">
+                                              <dt>{{ deal.original_price|floatformat:0|moneyfmt }}</dt>
+                                              <dd>{% trans 'Value' %}</dd>
+                                            </dl>
+                                            <dl class="save group">
+                                              <dt>{{ deal.get_savings|floatformat:0|moneyfmt }}</dt>
+                                              <dd>{% trans 'You Save' %}</dd>
+                                            </dl>
+                                            <div class="clear"></div>
+                                        </div>                                     
+                                    </div>                                	
+                                </div>
+                            </li>
+							{% cycle '' '</ul><div class="clear"></div>' %}
+							{% endfor %}
+							{% else %}
+								<div class="active_lst_wrap group">
+									<h2 class="deal_title">{% trans 'No active DEALS at the moment' %}</h2>
+								</div>
+							{% endif %}
+                                              
+                    </div>
+                </div>
+                <div class="col_5 mr_0">
+                    <div id="alert_signup" style="margin-bottom:10px;">
+                    	{% include 'default/deals/part_subscribe.html' %}
+                    </div>
+					<!-- Facebook likebox starts -->
+                        {% include 'default/likebox.html' %}
+						<!-- Facebook likebox ends -->
+                </div> <!-- /secondary -->
+			</div>
+            <div class="clear"></div>
+{% endblock %}
+{% block busines_footer %}
+{% endblock %}

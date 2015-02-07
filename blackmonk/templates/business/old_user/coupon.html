@@ -1,0 +1,192 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% load thumbnail %}
+{% block navigation %}
+	{% activetab "selmodule" "business" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Coupon - Business' %} {% endblock %}
+{% block head %}
+<!-- CALENDER -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+<!-- CALENDER -->
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+  	<div class="header-bar has-preview-head">
+        <h2 onclick="window.location.replace('{% url 'user_manage_business' %}')" style="cursor:pointer;">Business</h2>
+        <section class="sub-header-bar">
+            <div class="preview-head">
+            	{% if business.featured_sponsored == 'F' %}
+        			<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+				{% else %}
+					{% if business.featured_sponsored == 'S' %}
+	        			<span class="list-type sponsored-item"><a class="tttxt" original-title="{% trans 'Item listed as sponsored' %}" href="javascript:void(0);">{% trans 'sponsored' %}</a></span>
+			 		{% endif %}
+				{% endif %}
+                <div class="item-title">
+                    <h1>{{ business }}</h1>
+                    <p class="ltxt80">By <a href="#">{{business.created_by.display_name}}</a> <span class="divider12">|</span> {{business.created_on|date:"M d, Y"}}</p>
+				</div>                                   
+                <ul class="status-tabs group">
+                	<li> <a href="javascript:void(0)">{{business.most_viewed}}<span class="meta">{% trans 'views' %}</span></a> </li>
+                    <!--li> <a href="#">4<span class="meta">{% trans 'comments' %}</span></a> </li-->
+                </ul>                                
+            </div>                                
+        </section>                          
+    </div>
+    <div id="core-wraper" class="group">
+        <div class="userHub-main">
+            <div class="page-wrap">
+                <div id="coupons" class="preview-center group">
+                	<div class="preview-group">
+						<div class="preview-items-head" id="add_head" style="{% if not coupons %}display:none;{% endif %}">
+                            <div class="right-item"><div class="cform-button prime bm-add-coupon" href="{% url 'user_business_coupon_add' business.id %}" title="{% trans 'Add New Coupon' %}"><span>{% trans 'Add new coupon' %}</span></div></div>
+                            <h3>{% trans 'Coupon' %}</h3>
+                        </div>
+						<ol class="data-table-inset" id="coupon_list">
+							<li class="table-list-row" style="text-align:center;padding:10px;display:none;" id="ajax_content_loading_list">
+								<img src="{{STATIC_URL}}ui/images/global/loading-s.gif">
+							</li>
+							{% if coupons %}
+							{% for coupon in coupons %}
+                        	<li class="table-list-row manage-items has-thumb90" id="li_{{coupon.id}}">
+                                <div class="table-list-row-inner group">
+                                    <div class="item-media">
+                                        <span class="item-thumb thumb-90">
+                                            <span class="thumb-in">
+												<span class="thumb"><img src="{% if coupon.photo %}{% thumbnail coupon.photo 110x0 %}{% else %}{{STATIC_URL}}themes/green/images/global/nophoto_90.jpg{% endif %}" alt="{{coupon.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                                            </span>
+                                        </span>
+                                    </div>   
+									<div class="item-detail">
+                                    	<h4>{{coupon.title}}/{% if coupon.type == 'C'%}{% trans 'Coupon' %}{% else%}{% trans 'Offer' %}{% endif %}</h4>
+                                    	<div class="description"><p>{% if coupon.description %}{% autoescape off %}{{coupon.description}}{% endautoescape %}{% endif %}</p></div>
+                                        <p class="ltxtAA txt11">{% if coupon.start_date %}<span>{% trans 'Starts' %} {{coupon.start_date}}</span> <span class="divider12">|</span>{% endif %}<span>{% trans 'Expires' %} {{coupon.end_date}}</span></p>
+                                    </div>
+                                   	<div class="action-buttons">
+                                        <div>
+                                            <a href="{% url 'user_business_coupon_update' business.id coupon.id %}" class="tttxt-w bm-add-coupon" original-title="{% trans 'Edit Coupon' %} {{coupon}}"><span class="action-icon icon-edit"></span></a>
+                                            <a href="javascript:delete_coupon({{coupon.id}})" class="tttxt-w" original-title="Delete"><span class="action-icon icon-delete"></span></a>
+										</div>                                                            
+                                  	</div>
+                                </div>
+							</li>
+							{% endfor %}
+							{% endif %}
+                        </ol> <!-- end table --> 
+                        <div class="no-data" style="{% if coupons %}display:none;{% endif %}">
+                        	<p>{% trans 'No Coupon found for this business.Add Now!' %}.</p>
+                            <div class="button-insde">
+                            	<span class="btn-txt-inline-prime bm-add-coupon" href="{% url 'user_business_coupon_add' business.id %}" title="{% trans 'Add new coupon' %}"><span class="btn-txt">{% trans 'Add new coupon' %}</span></span>
+                            </div>
+                        </div>
+					</div>
+                </div><!-- end table -->
+            </div> <!-- end page wrap -->
+        </div> <!-- end main-col -->                            
+        <div id="aside" class="side-bar">
+        	<div class="preview-aside-meta group">
+                <ul class="side-navigation">
+                    <li><a href="{% url 'user_preview_business' business.id %}">Business Details</a></li>
+					<li><a href="{% url 'user_business_images' business.id %}">Images</a></li>
+                    <li><a href="{% url 'user_business_product' business.id %}">Product</a></li>
+                    <li class="active"><a href="{% url 'user_business_coupon' business.id %}">Coupon</a></li>
+                </ul>
+				<div class="preview-item-stats">
+					<a href="{% url 'user_preview_business' business.id %}" class="btn-txt-blue" style="display:block; text-align:center"><span class="btn-txt">{% trans 'Preview this Business' %}</span></a>
+                </div>                              
+			</div>    
+             {#% include 'business/user/faq.html' %#}        
+        </div>                            
+    </div>                                                    
+</div>
+{% endblock %}
+{% block footer_include %}
+<script src="{{ STATIC_URL }}js/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ui/js/listing_settings.js"></script>
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/business/staff.js"></script>
+<script type="text/javascript">
+function save_coupon(){
+	var flag = $('#mform').validate().form()
+	if(flag==true){
+		var dataString='&title='+encodeURIComponent($('#id_title').val());
+		dataString+='&description='+encodeURIComponent(CKEDITOR.instances.id_description.getData());
+		dataString+='&start_date='+encodeURIComponent($('#id_start_date').val());
+		dataString+='&end_date='+encodeURIComponent($('#id_end_date').val());
+		dataString+='&type='+$('input[name=type]:checked').val();
+		$('#ajax_content_coupon').hide();
+		$('#ajax_content_loading_coupon').show();
+		$.ajax({
+		type: "POST",
+		url: $("#mform").attr("action"),
+		data: dataString,
+		dataType:'JSON',
+		success: function(responseData){
+				try{$('.no-data').hide();$('#add_head').show();}
+				catch(e){}
+				$('#ajax_content_loading_coupon').html(responseData.msg);
+				if(responseData.status){
+					$("#coupon_id").val(responseData.id);
+					if(imageIsThere){$(".start").trigger('click');}
+					$('#ajax_content_loading_list').show();
+					try{$('#li_'+responseData.id).remove();}
+					catch(e){}
+					setTimeout(function(){
+						load_append_html(responseData.id)
+					},2000);
+					show_msg(responseData.msg,responseData.mtype);
+					$.colorbox.close();
+				}else{
+					$('div#ajax_content_coupon_outer').replaceWith(responseData.html);
+					$.colorbox.resize();
+				}
+			}
+		});
+	}
+}
+function load_append_html(id){
+	$.ajax({
+		type: "POST",
+		url:'{% url 'user_business_coupon_load_html' %}',
+		data:'id='+id,
+		dataType:'JSON',
+		success: function(responseData){
+			try{$('#li_'+id).remove();}
+			catch(e){}
+			$('#ajax_content_loading_list').hide();
+			$(responseData.html).insertAfter("#ajax_content_loading_list")
+			$(".bm-add-coupon").colorbox({width:"700",height:"593",initialWidth: "700", top:"5%", initialHeight: "200",title:function(){return getLBTitle($(this));}});
+		}
+	});
+}
+function delete_coupon(id){
+	if(confirm(gettext('Are you sure want to delete this coupon ?'))){
+		$.ajax({
+			type: "POST",
+			url:'{% url 'user_business_coupon_delete' %}',
+			data:'id='+id,
+			dataType:'JSON',
+			success: function(responseData){
+				show_msg(responseData.msg,responseData.mtype);
+				if(responseData.status==1){
+					$('#li_'+id).remove();
+					if($('#coupon_list').find('li').length==1){
+						$('.no-data').show();
+						$('#add_head').hide();
+					}
+				}
+			}
+		});
+	}
+}
+</script>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "admin/admin_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load get_example %}
+{% block navigation %}
+	{% activetab 'topnav' 'site' %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'Videos Category' %} {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{STATIC_URL}}ui/css/colorbox.css" type="text/css" />
+<script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#master-check').click(function(){
+		if($("#master-check").is(':checked')){$(".check-overflow").attr('checked',true);}
+		else{$(".check-overflow").attr('checked',false);}
+	});
+});
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script type="text/javascript">
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+
+function save_category(option){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag==true){
+		var dataString='name='+encodeURIComponent($('#id_name').val());
+		try{
+			dataString+='&id='+$('#id_id').val();
+			id=$('#id_id').val();
+		}catch(ex){}
+		dataString+='&slug='+encodeURIComponent($('#id_slug').val());
+		dataString+='&seo_title='+encodeURIComponent($('#id_seo_title').val());
+		dataString+='&seo_description='+encodeURIComponent($('#id_seo_description').val());
+		dataString+='&ajax=true';
+		$('#ajax_content').hide();
+		$('#ajax_content_loading').show();
+		$.ajax({
+		type: "POST",
+		url: "{% url 'admin_portal_videos_category_update' %}",
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				$('#div_'+id).remove();
+				$('#category').append(data.append_html);
+				$('#edit_link'+data.id).colorbox({width: "560",initialWidth: "560", top:"0", initialHeight: "200"});
+				$('#ajax_content_loading').html(data.msg);
+				$('#ajax_content').empty();
+				if(data.status){
+					if(option==0){
+						show_msg(data.msg,data.mtype);
+						$.colorbox.close();
+					}
+				}
+				$('#ajax_content').html(data.lightbox_html);
+				$('.modal-form .select-menu').chosen({disable_search_threshold:10});
+	  			$('.field-group [title]').tipsy({trigger: 'focus', gravity: 'w',ftip:true});
+				setTimeout(function(){
+					$('#ajax_content_loading').hide();
+				    $('#ajax_content').fadeIn(2000);
+					$.colorbox.resize();
+				},1000);
+			}
+		});
+	}
+}
+function delete_category(ids){
+	if(ids==0){
+		var ids=[];
+		$('.check-overflow').each(function(){
+			if($(this).is(':checked')){
+				ids.push($(this).val());
+			}
+		});
+	}
+	if(ids=='' || ids==null){
+		alert(gettext('Please select category(s).'))
+	}
+	else{
+		if(confirm(gettext('Are you sure want to delete seleced category(s) ?'))){
+			$.ajax({
+			type: "GET",
+			url: "{% url 'admin_portal_videos_category_delete' %}",
+			data: 'id='+ids,
+			dataType:'JSON',
+			success: function(data){
+					if(data.status==1){
+						try{
+							$('#div_'+ids).remove();
+						}catch(ex){}
+						for(i=0;i<ids.length;i++){
+							$('#div_'+ids[i]).remove();
+						}
+					}
+					show_msg(data.msg,data.mtype);
+				}
+			});
+		}
+	}
+}
+</script>
+{% endblock %}
+{% block content %}
+<div id="admin_wrapper">
+	<div id="admin-platform" class="group">
+    	<div class="header-bar">
+        	<div id="nav-roll">
+            	<ul>
+                	<li id="modules-index" class="first"><a href="{% url 'admin_portal' %}" style="z-index:9"><span class="icon"></span>{% trans 'Modules' %}</a></li>
+                    <li><a href="{% url 'admin_portal_videos' %}" style="z-index:8">{% trans 'Videos' %}</a></li>
+                    <li><a href="{% url 'admin_portal_videos_category' %}" style="z-index:7">{% trans 'Categories' %}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="core-wraper" class="group">
+        	<div class="admin-main col_12">
+        		{% block leftnavigation %}
+					{% activetab 'topnav' 'site' %}
+					{% activetab 'leftnav' 'videos' %}
+					{% activetab 'leftnavsub' 'videos_cat' %}
+					{{ block.super }}
+				{% endblock %}
+                <div class="left-nav-list-bg"></div>
+                <div class="col_9 mr_0">
+					<div class="page-wrap">
+                    	<div class="page-head br_0">
+                        	<h2>{% trans 'Categories' %}</h2>
+							<p class="ltxt80">{% trans "Try to add the category that best fits in the videos module.For example: 'Sports' as a category." %}</p>
+						</div>
+                        <div id="article-categories" class="cat-list group">
+                        	<section class="toolbars">
+                            	<div class="group">
+                                	<ul class="toolbar left">
+                                    	<li class="mas-check"><span class="checkbox-wrap tttxt-n" title="{% trans 'Select' %}">
+										<span class="cform-checkbox-container"><input type="checkbox" id="master-check" name="master-check" class="master-check"><span class="cform-checkbox-element"></span></span>
+										</span></li>  
+                                        <li class="mas-delete"><a href="javascript:delete_category(0)" title="{% trans 'Delete' %}" class="tttxt-n inactive"><span class="icon icon-delete"></span></a></li>
+									</ul>
+                                    <span style="float:right">
+                                    	<a href="{% url 'admin_portal_videos_category_update' %}" title="{% trans 'Add New Category' %}" class="btn-txt-inline-prime bm-add-gadget"><span class="btn-txt">{% trans 'Add New Category' %}</span></a>
+									</span>
+								</div>
+							</section>
+                            <ul class="cat-list-container" id="category">
+                            	{% for atr in category %}
+								<li class="cat-list-row" id="div_{{atr.id}}">
+                                	<div class="cat-list-row-inner group">
+                                    	<span class="checkbox-wrap">
+										<span class="cform-checkbox-container"><input type="checkbox" id="category" value="{{atr.id}}" name="category" class="check-overflow"><span class="cform-checkbox-element"></span></span>
+										</span>
+                                        <div class="cat-list-column cat-name"><h3>{{atr}}</h3></div>
+                                        <div class="cat-list-column action-buttons">
+                                        	<div class="group">
+                                            	<!--a title="{% trans 'View Stats' %}" class="tttxt-n" href="#"><span class="icon icon-stats"></span></a-->
+                                                <a href="{% url 'admin_portal_videos_category_update' %}?id={{atr.id}}" title="{% trans 'Update Category' %}" class="tttxt-n bm-add-gadget"><span class="icon icon-edit"></span></a>
+                                                <a title="{% trans 'Delete' %}" class="tttxt-n" href="javascript:delete_category({{atr.id}})"><span class="icon icon-delete"></span></a>
+                                            </div>                                                            
+										</div>
+									</div>
+								</li>  
+								{% endfor %}                                           
+							</ul>                          
+                    	</div>
+                	</div>
+            	</div>                       
+            </div>                            
+			{% include 'admin/portal/videos/cat-faq.html' %}                       
+		</div>                                                    
+	</div>
+</div>
+{% endblock %}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

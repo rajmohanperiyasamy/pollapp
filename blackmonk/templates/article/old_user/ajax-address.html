@@ -1,0 +1,25 @@
+{% load i18n %}
+<div id="id_ven_address_div" class="ven_addr_size">
+<input type="hidden" name="address_ids" value="{{ ven.id }}"/>
+    <div class="group address_block">
+        <div class="action">
+            <span>
+                <span style="margin-bottom:5px;" onclick="remove_venue();" role="button" title="{% trans 'Remove' %}" class="icon-remove inline-block o3"></span>
+                {% if can_edit %}<a href="#" title="{% trans 'Edit Address' %}" class="add-venue txt-button">
+                	<span  role="button" title="{% trans 'Edit' %}" class="icon-edit inline-block o3"></span>
+                {% endif %}</a>
+            </span>
+        </div>
+         <div class="address">
+            <h4 class="venue-title">{{ ven.venue }}</h4>
+            <p class="venue-address">{{ ven.address1 }}{% if ven.address2 %}, {{ven.address2}}{% endif %}{% if ven.zip %}, {{ven.zip}}{% endif %}</p>
+            <p class="venue-contact">{% if ven.telephone %} <span>{% trans 'Phone:' %}</span> {{ven.telephone}}</br>{% endif %}
+            {% if ven.email %} <span>{% trans 'Email:' %}</span> {{ven.email}}</br>{% endif %}
+            {% if ven.website %} <span>{% trans 'Web:' %}</span> {{ven.website}}{% endif %}</p>
+        </div>
+
+    </div>
+</div>
+
+
+ 

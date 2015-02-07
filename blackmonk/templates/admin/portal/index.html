@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Manage Configuration</title>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-screen.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-form.css" type="text/css" media="screen, projection" title="MB Staff Screen Styles" />
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/mb-staff-print.css" type="text/css" media="print" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/menu/superfish.css" media="screen">
+<script type="text/javascript" src="{{ STATIC_URL }}js/menu/hoverIntent.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/menu/superfish.js"></script>
+<script type="text/javascript">
+jQuery(function(){
+	jQuery('ul.sf-menu').superfish();
+});
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-1.4.4.min.js"></script>
+<!--[if IE]>
+<link rel="stylesheet" href="{{ STATIC_URL }}staff/css/ds-ie.css" type="text/css" media="screen, projection" title="MB Staff IE styles" charset="utf-8" />
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/admin.css" />
+{% block head %}
+{% endblock %}
+</head>
+<body id="mb_staff">
+	<!--// Header \\-->
+    <div id="header" style="background-color:#294572">
+  		<div class="container group">
+            <div class="main">
+              <div id="mb_logo">
+                    <a href="/"><img src="{{ globalsettings.staff_logo }}" alt="{{ globalsettings.city }}" class="logo"  /></a>
+              	</div>
+                <div id="mb_top_nav">
+                	<p style="display:inline; font-weight:bold; color:#D3CFBC; padding-right:10px;"><span style="color:#6F685B">Hello,</span> Admin</p>
+                    <div class="nav_container">
+                        <a href="/">Home</a><strong>&bull;</strong>
+                        <a href="/staff/">Staff CP</a><strong>&bull;</strong>
+                        <a href="/accounts/overview/">My Account</a><strong>&bull;</strong>
+                        <a href="/accounts/signout/">Sign out</a>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	<!--/ End Header \-->
+	<!--// Main Nav \\-->
+	<!--/ End Main Nav \-->
+    <div id="content">
+    	<div class="container group">
+			<div class="main" style="margin-bottom:20px;margin-top:10px;">
+				<div style="padding:2px;border:solid;border-width:1px;border-radius:4px;border-color:#aaa;height:25px;width:188px;margin-left:6px;">
+					<ul class="side_menus" style="border:none !important;margin-top:0px;">
+                        <li><a href="{% url 'admin_portal' %}" style="" class="side_menu on active">Portal</a></li>
+						<li><a href="{% url 'admin_configuration_general' %}" style="border-right:solid #ffffff;" class="side_menu on inactive">Configuration</a></li>
+						<li><a href="javascript:void(0)" class="side_menu on inactive">Design</a></li>
+                    </ul>
+				</div><hr/>
+				<div class="right_col" style="float:left;border:solid;border-top:solid;border-radius:4px;padding:10px;width:700px;"><br>
+					<div class="title"><h2 id="id_s_message">Modules</h2></div>
+					<div class="dashboard_tab">
+						<div style="float:left;">
+							<div class="dashboard_tab_menu">Manage&nbsp;&#187;</div>
+							<div class="dashboard_tab_option">
+								<ul class="sf-menu">
+									<li>
+										<a href="javascript:void(0)">Category</a>
+										<ul>
+											<li><a href="{% url 'admin_portal_attraction_category' %}">Attraction</a></li>
+											<li><a href="{% url 'admin_portal_business_category' %}">Business</a></li>
+											<li><a href="{% url 'admin_portal_classifieds_category_type' %}">Classifieds</a></li>
+											<li><a href="{% url 'admin_portal_event_category' %}">Events</a></li>
+											<li><a href="{% url 'admin_portal_forum_category' %}">Forum</a></li>
+											<li><a href="{% url 'admin_portal_gallery_category' %}">Gallery</a></li>
+											<li><a href="{% url 'admin_portal_videos_category' %}">Videos</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="javascript:void(0)">SEO</a>
+										<ul>
+											<li><a href="{% url 'admin_portal_attraction_seo' %}">Attraction</a></li>
+											<li><a href="{% url 'admin_portal_business_seo' %}">Business</a></li>
+											<li><a href="{% url 'admin_portal_classifieds_seo' %}">Classifieds</a></li>
+											<li><a href="{% url 'admin_portal_event_seo' %}">Events</a></li>
+											<li><a href="{% url 'admin_portal_forum_seo' %}">Forum</a></li>
+											<li><a href="{% url 'admin_portal_gallery_seo' %}">Gallery</a></li>
+											<li><a href="{% url 'admin_portal_locality_venue_seo' %}">Locality</a></li>
+											<li><a href="{% url 'admin_portal_videos_seo' %}">Videos</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div style="float:right;">
+							<div class="dashboard_tab_menu">Setup&nbsp;&#187;</div>
+							<div class="dashboard_tab_option">
+								<ul class="sf-menu">
+									<li>
+										<a href="javascript:void(0)">Pricing</a>
+										<ul>
+											<li><a href="{% url 'admin_portal_business_price' %}">Business</a></li>
+											<li><a href="{% url 'admin_portal_classifieds_price' %}">Classifieds</a></li>
+											<li><a href="{% url 'admin_portal_event_price' %}">Events</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="javascript:void(0)">Approval</a>
+										<ul>
+											<li><a href="{% url 'admin_portal_business_approval' %}">Business</a></li>
+											<li><a href="{% url 'admin_portal_classifieds_approval' %}">Classifieds</a></li>
+											<li><a href="{% url 'admin_portal_event_approval' %}">Events</a></li>
+											<li><a href="{% url 'admin_portal_gallery_approval' %}">Gallery</a></li>
+											<li><a href="{% url 'admin_portal_videos_approval' %}">Videos</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<ul>
+						<!--a href="javascript:void(0)" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/article.jpg"  width="86" height="86"/>Article
+							</li>
+						</a-->
+						<a href="{% url 'admin_portal_attraction' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/attraction.png"  width="86" height="86"/>Attraction
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_business' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/business.jpg"  width="86" height="86"/>Business
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_classifieds' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/classifieds.png"  width="86" height="86"/>Classifieds
+							</li>
+						</a>
+						<!--a href="javascript:void(0)" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/deals.jpg"  width="86" height="86"/>Deals
+							</li>
+						</a-->
+						<a href="{% url 'admin_portal_event' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/event.jpg"  width="86" height="86"/>Events
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_forum' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/forum.png"  width="86" height="86"/>Forum
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_gallery' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/gallery.png"  width="86" height="86"/>Gallery
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_locality' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/locality.jpg"  width="100" height="80"/>Locality
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_usermanagement' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/user_management.gif"  width="100" height="80"/>User&nbsp;Management
+							</li>
+						</a>
+						<a href="{% url 'admin_portal_videos' %}" style="text-align:center;">
+							<li class="dashborad_menu">
+								<img src="{{STATIC_URL}}images/admin/video.png"  width="86" height="86"/>Videos
+							</li>
+						</a>
+					</ul>
+                </div>
+				<div class="right_col" style="float:left;margin-left:5px;border:solid;padding:5px;width:180px;height:447px;border-width:1px;border-radius:4px;border-color:#aaa;">
+					<h3>Help Text</h3>
+                </div>	
+                <hr />
+            </div>
+        </div>
+    	<hr/>
+	</div>
+	<div class="footer" style="height:120px; background-color:#FBF9F7; margin-top:20px;">
+    	<div class="container group" style="text-align:center; padding-top:15px;color:#aaa">
+        	Copyright &copy; 2008-2010 {{ globalsettings.domain }}. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

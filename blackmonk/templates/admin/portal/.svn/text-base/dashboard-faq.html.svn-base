@@ -1,0 +1,17 @@
+{% load i18n %}
+<div id="aside" class="side-bar col_4 mr_0">
+    <div class="section">
+        <a class="quick_help" href="https://docs.google.com/a/doublespring.com/document/d/156Uk5kBmlq8ThOO2UDmXP02gFuLrF6pFMyHeaH8aeBE/edit#bookmark=id.v0j0t1mq04y2" target="_blank"><span class="icon">?</span>Quick help</a>
+        <hr>
+        <h5>{{globalsettings.domain}}</h5>
+        <h6>{% trans 'Modules' %}</h6>
+        <p>{% trans 'Modules allow you to configure your locale, search engine keywords, categories, attributes, pricing and other settings which will reflect in the Staff CP.' %}</p>
+        <p>{% trans 'Select modules instantly by clicking on the settings icon.' %}</p>
+        <hr>
+        <h6>{% trans 'API Services' %}</h6>
+        <p>{% trans 'API services are integrated in application. You can choose which API service you would like to include in the website.' %}</p>
+        <hr>
+        <h6>{% trans 'Site Pages' %}</h6>
+        <p>{% trans "Site pages are the website footer pages like terms and conditions, privacy policy which can be updated whenever there is change required in the content." %}</p>
+    </div>
+</div>

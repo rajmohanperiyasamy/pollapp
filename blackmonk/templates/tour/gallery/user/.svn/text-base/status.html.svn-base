@@ -1,0 +1,13 @@
+<div class="tour_content">
+<h1>Status</h1>
+<p class="bold">Filter listings based on status like Pending, Published, Blocked or Rejected. </p>
+
+<ul>
+<li>Displays all status.</li>
+<li>Filters "Pending listing" awaiting for approval.</li>
+<li>Filters "Published listing" which are LIVE.</li>
+<li>Filters "Rejected listing" by Staff member</li>
+<li>Filters "Blocked listing" by Staff member</li>
+</ul>
+
+</div>

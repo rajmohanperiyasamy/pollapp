@@ -1,0 +1,301 @@
+{% extends "staff_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% load upload_tags %}
+{% block navigation %}
+	{% activetab "selmodule" "article" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% if article %}{% trans 'Edit Article' %}{% else %}{% trans 'Article - Add New Article' %}{% endif %} {% endblock %}
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}themes/green/css/LE_MetaId99.css">
+	<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/bm.jfp.ui.css">
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}ui/css/jquery.tagit.css">
+{% endblock %}
+{% block content %}
+  <div id="staff-platform" class="group">
+                    <div class="header-bar {% if article %}has-preview-head has-sub{% endif %}">
+                    	<h2><a href="{% url 'staff_article_home' %}"><span class="go_back"></span></a>{% if article %}{% trans 'Edit Article' %}{% else %}{% trans 'Add Article' %}{% endif %}</h2>
+                      	{% if article %}
+                        <section class="sub-header-bar">
+							<div class="preview-head">
+                            	{% if article.featured %}
+				        		<span class="list-type featured-item"><a class="tttxt" original-title="{% trans 'Item listed as featured' %}" href="javascript:void(0);">{% trans 'Featured' %}</a></span>
+						 		{% endif %}
+                                <div class="item-title">
+                                    <h1>{{ article.title }}</h1>
+                                    <p class="ltxt80">{% trans 'By' %} <a href="#">{{article.created_by.display_name}}</a> <span class="divider12">|</span> {{article.created_on|date:"M d, Y"}}</p>
+								</div>                                   
+                                <ul class="status-tabs group">
+                                    <li>{{article.most_viewed}}<span class="meta">{% trans 'views' %}</span> </li>
+                                    <!--li> <a href="javascript:void(0)">0<span class="meta">{% trans 'comments' %}</span></a> </li-->
+                                </ul>                                
+                            </div>  
+                        </section>                           
+						{% endif %}
+					</div>
+                    <div id="core-wraper" class="group">
+                        <div class="staff-main">
+                            <div class="page-wrap">
+                                <div id="Articles-add" class="group">
+                                    <div id="add-new-Article">
+                                    	{% if form.errors %}
+										<div class="messageerror" style="background:#FCF4F4;padding:10px;color:#FF9902; box-shadow:0 0 2px rgba(0, 0, 0, 0.1);border-bottom:1px solid #e1e1e1">
+											<strong style="font-weight:bold;">{% trans 'There is a problem with your submission' %}</strong>
+										    <ul style="list-style:square;margin-left:20px;">
+										   		{% for field in form %}
+										   			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+										  	 	{% endfor %}
+											</ul>
+										</div>
+										{% endif %}
+                                         <form action="{% url 'staff_article_add_article' %}{%if article %}?aid={{article.id}}{%endif%}" name="mform1" id="mform1" method="post" class="add_venue">{% csrf_token %}
+                                            <div class="fields hform">
+                                                <div class="field-group">  
+                                                    <div class="field text-field fd-title">
+                                                        <div class="label"><label for="">{% trans 'Title' %}<span class="required-field">*</span></label></div>
+                                                         <div class="value" >
+                                                        	{{ form.title }}
+		                                                    <span class="tip">{{ globalsettings.website_url }}/articles/mmyy/<input type="text" onkeyup="fillslug(this.value)" name="slug" value="{% if slug %}{{ slug }}{% endif %}" id="id_slug" class="default-url"></span>
+														</div>
+                                                    </div>
+                                                </div>
+												<input type="hidden" value="{% if article.article_type %}{{article.article_type}}{% else %}{{article_tpe}}{% endif %}" name="article_type" id="id_article_type">
+												{% if price %}
+													<input type="hidden" value="{{price}}" name="price" id="id_price">
+												{% endif %}
+                                                <div class="field-group">
+                                                	<div class="fields-head"></div> 
+                                                    <div class="field select-field">
+                                                        <div class="label"><label for="">{% trans 'Category' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value">
+                                                            {{ form.category }}                                      
+                                                        </div>
+                                                    </div>
+                                                    <div class="field text-field">	
+                                                        <div class="label"><label>{% trans 'Summary' %}<span class="required-field">*</span></label></div>	
+                                                        <div class="value">{{ form.summary }}</div>	
+                                                    </div>
+                                                    <div class="field text-field">	
+                                                        <div class="label"><label>{% trans 'Content' %}<span class="required-field">*</span></label></div>	
+                                                        <div class="value">{{ form.content }}</div>	
+                                                    </div>
+                                                    <div class="field text-field">	
+                                                        <div class="label">
+															<label>{% trans 'Tags' %}</label>
+															<span class="tool-tip tttxt-fs" original-title="Add multiple tags separated by comas ',' or use 'tab' key">?</span>
+														</div>
+                                                        <div class="value has-fd-icon">
+                                                        	<input id='tags' type="hidden" class='tags' name="tags" value="" >
+                                                        	<!--img class="fd-icon" src="{{STATIC_URL}}ui/images/icons/b/66.png" alt=""-->
+                                 							<ul id="mytags" class="fl" ></ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field text-field">
+                                                        <div class="label"><label for="">{% trans 'Published on' %}<span class="required-field">*</span></label></div>
+                                                        <div class="value has-fd-icon">
+                                                            {{ form.published_on }}
+                                                       	</div>
+                                                    </div>
+													</br>
+													<div class="fields-head"></div>
+	                                                <!--div class="field text-field">
+	                                                        <div class="label"><label for="">{% trans 'Gallery URL' %}</label></div>
+	                                                        <div class="value has-fd-icon">
+	                                                            {{form.gallery_url}}
+	                                                       </div>
+                                                    </div-->
+                                                     <div class="field text-field">	
+                                                        <div class="label"><label for=""></label></div>	
+                                                        <div class="value">
+                                                        	<div id="fileupload" >
+							 									<div class="fileupload-content">
+							    									<ul class="files bm-uploader-list"></ul>
+																</div>
+																<div class="clear"></div>
+					    										<div id="bm-dropzone_area" class="dropzone">{% trans 'Drop the files here' %}</div>
+					            								{% csrf_token %}<div class="clear"></div>
+					           									 <div class="upload-button-wrapper">
+					               									 <a class="upload-button">{% trans 'Add Images' %}</a>
+					                    							 <div class="fileinput-button">
+					                        							 <input type="file" name="photo" id="id_photo" multiple=""  accept="image/*" tabindex="-1">
+					                    							 </div>
+					               								 </div>
+															</div>
+														</div>	
+                                                     </div>	
+                                                </div>
+                                                                                                                                                            
+                                            </div> 
+                                            <div class="form-submit right group">
+                                               <button class="cform-button" type="button" roll="button" onclick="location.replace('{% url 'staff_article_home' %}')"><span class="cform-button-text">{% trans 'Cancel' %}</span></button>
+                                               {% if article.status == 'P' or article.status == 'S' or article.status == 'B' or article.status == 'N' %}
+													<button role="button" value="save" name="save_button" class="cform-button prime" type="submit"><span class="cform-button-text">{% if article.status == 'D' or article.status == 'P' or article.status == 'S' or article.status == 'B' or article.status == 'N' %}{% trans 'Update' %}{%else%}{% trans 'Save as Draft' %}{%endif%}</span></button>
+												{% else %}
+													<button role="button" value="save" name="save_button" class="cform-button prime" type="submit"><span class="cform-button-text">{% if article.status == 'D' or article.status == 'P' or article.status == 'S' or article.status == 'B' or article.status == 'N' %}{% trans 'Update' %}{%else%}{% trans 'Save as Draft' %}{%endif%}</span></button>
+													{% if perms.article.publish_article %}
+														<button role="button" name="save_button" class="cform-button prime" value="publish" type="submit"><span class="cform-button-text">{% trans 'PUBLISH' %}</span></button>
+												   	{%endif%}
+												{%endif%}      
+                                            </div>                                                
+                                        </form>
+                                        
+                                        
+                                    </div>																	                                        
+                                                                            
+                                </div> <!-- end table -->                                    
+                            </div><!-- end page wrap -->
+                        </div>  <!-- end main-col -->                            
+                        <div id="aside" class="side-bar">
+                        	{% if article %}
+                        	<div class="preview-aside-meta group">
+                                <ul class="side-navigation">
+                                    <li class="active"><a href="javascript:void(0);">{% trans 'Article Details' %}</a></li>
+                                    <!--li><a href="#">{% trans 'Comments' %}</a></li-->
+                                </ul>
+								<div class="preview-item-stats">
+									<a href="{% url 'staff_article_preview' article.id %}" class="btn-txt-blue" style="display:block; text-align:center"><span class="btn-txt">{% trans 'Preview this Article' %}</span></a>
+                                </div>                                
+							</div> 
+							{% endif %}
+                            {% include 'article/staff/article-faq-addpge.html' %}                                            
+                        </div>                            
+					</div>                                                    
+				</div>
+{% endblock %}
+{% block footer_include%}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/article/article_staff.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/tag-it.js"></script>
+
+
+{% upload_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.jfp.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.fup.appln.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false{% if globalsettings.google_map_key %}&key={{ globalsettings.google_map_key }}{% endif %}" type="text/javascript"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/general/google_map.js"></script>
+<script type="text/javascript">
+var edt;
+function resizeEditor() {
+  	edt.resize('100%',edt.config.height+50);
+}
+	$(document).ready(function(){
+			/*$('#id_article_address').bind('keypress', function(e) {
+				var code = (e.keyCode ? e.keyCode : e.which);
+			 	if(code == 13) {return false;}
+			});*/
+			{% if article %}
+				file_upload('{% url 'staff_article_ajax_upload_photos' %}{%if article.id%}?id={{article.id}}{%endif%}',10);
+			{% endif %}
+			{% if not article %}
+				{% if new_pic %}
+					get_images('{% url 'staff_article_ajax_get_default_photos' %}?ids={% for np in new_pic %}{{np}}{% if not forloop.last %},{% endif %}{% endfor %}')
+				{% endif %}
+			{% endif %}
+			$("#mytags").tagit({
+				singleField: true,
+				allowSpaces:true,
+			    singleFieldNode: $('#tags'),
+				tagSource: function( request, response ) {
+				  $.ajax({
+			        url: '{% url 'article_auto_suggest_tag' %}',
+			        data: { term:request.term },
+			        dataType: "json",
+			        success: function( data ) {
+			       	 response( $.map( data, function( item ) {
+			       	 return {label: item.label, value: item.value }
+			       	 }));
+			        }
+			      });
+				} 
+			});
+			{% if article %}
+				$('.form-submit').addClass('form-submit-original');
+				easy_form_submit();
+			{% endif %}
+			{% if article_tags %}
+			  	{% for tag in article_tags %}
+					$("#mytags").tagit("createTag", '{{tag}}');
+				{% endfor %}
+			{% endif %}
+			$('.select-menu').bind("change", function(){
+				$("#mform1").validate().element($(this));
+			});
+			CKEDITOR.on( 'instanceCreated', function( e ){
+               e.editor.addCss('body { font-size:12px; font-family:Arial, "Times New Roman", Verdana;}');
+            });
+			edt=CKEDITOR.replace( 'id_content',
+                {                   
+                    customConfig : '{{ STATIC_URL }}js/ckeditor/custome_config.js',
+                   	toolbar : 'Full',
+                    width:500,height:400,
+                    filebrowserImageUploadUrl : '{%url 'staff_article_upload_from_editor' %}',
+          	});
+			setTimeout(function(){resizeEditor();},1000);
+			edt.on('key', function(event) {updateTextArea();});
+			alert('s');
+	});
+function updateTextArea(){
+    CKEDITOR.tools.setTimeout( function(){ 
+        $('#id_content').val(edt.getData());
+        $("#id_content").trigger('keyup');
+    }, 0);  
+}	
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.ui.datepicker.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		if($("#id_published_on").length){
+			$("#id_published_on").datepicker({ dateFormat: "mm/dd/yy" });
+		}
+		{% if not article %}
+			var d = new Date();
+			m = d.getMonth()+1;
+			if(m<10){m="0"+m};
+			dt = d.getDate();
+			if(dt<10){m="0"+dt};
+			$("#id_published_on").val(m+"/"+dt+"/"+d.getFullYear());
+		{% endif %}
+
+		{% if article %}
+		  {% if article.status == 'N' %}
+			var d = new Date();
+			m = d.getMonth()+1;
+			if(m<10){m="0"+m};
+			dt = d.getDate();
+			if(dt<10){m="0"+dt};
+			$("#id_published_on").val(m+"/"+dt+"/"+d.getFullYear());
+		  {% endif %}
+		{% endif %}
+/*
+    	$("#id_published_on").change(function(){
+	        cdate = $(this).datepicker('getDate');
+	    	ctime = new Date(cdate.getTime());
+	    	ctime.setDate(ctime.getDate());
+	    	$("#id_published_on").datepicker("option", "minDate", ctime);
+    	});
+*/
+		$.validator.addMethod("desc_required", function(value, element) {  
+		    	$('#id_content').val(edt.getData());
+				if($('#id_content').val()!=''){return true;}
+				else{return false;}
+			},"Please enter a description.");
+			$("#mform1").validate({
+					ignore:'',
+					highlight: function(element, errorClass){$(element).parent().parent().addClass('field-error');$(element).addClass('error');},
+					unhighlight: function(element, errorClass){$(element).parent().parent().removeClass('field-error');$(element).removeClass('error');},
+					errorPlacement: function(error, element){},
+				   	rules:{
+				    	title: "required",
+						slug: "required",
+				    	category: "required",
+				    	summary: "required",
+				    	content: "desc_required",
+						published_on: "required",
+				   	}
+			});
+	}); 			
+</script>
+{% endblock %}			

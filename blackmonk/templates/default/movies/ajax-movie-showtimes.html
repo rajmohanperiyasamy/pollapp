@@ -1,0 +1,65 @@
+{% load i18n %}
+{% load bm_movie_tags %}
+
+{% if showtimes %}
+<hr class="oTsT-hRz mRb10 mRt15">
+<div class="tLbR mRb10">
+    <div class="tLbR-iR">
+        <div class="pLlT fS11 mRt4">
+            <span class="uC cLr-lTgRy">{% if today == selected_date %}{% trans 'Today' %}, {% now "F j" %}{% else %}{{selected_date|date:"l, F d"}}{% endif %}</span><span class="cLr-lTgRy sPrTr">{{showtimes.count}} theaters playing near you.</span>
+        </div>
+    </div>
+</div>
+<ul class="showtimeData mDa-lT  mDa-oT-lT" id="id_showtimes_ul">
+    {% for thr in showtimes %}
+    {% with thr.movietime.theatre as theater %}
+    <li class="mDa">
+        <div class="mDa-iN wLl mRb0 pD10">                                        
+            <div class="mDa-bDy pD0">
+                <span class="pLlT mRr10"><i aria-hidden="true" class="bUi-iCn-mP-mKr-16 cLr-rEd mRt10 fS24 ib"></i></span>
+                <div class="cLr-lT">
+                    {% if theater.tkt_url %}<a href="{{theater.tkt_url}}" target="_blank" class="btn btn-warning fS11 pD612 cLr-wHt pStN-rT">Get Tickets</a>{% endif %}
+                    <h5 class="mDa-hD tRnCt mR50 rLvE" title="{{theater.name}}"><a href="{{theater.get_absolute_url}}" class="fW-bLd">{{theater.name}}</a></h5>
+                    <div class="mDa-dTa fS12 cLr-gRy">
+                        <span>{{theater.address1}}{% if theater.address2 %}, {{theater.address2}}{% endif %}{% if theater.city %}, {{theater.city}}{% endif %}{% if theater.zip %} {{theater.zip}}{% endif %}</span>{% if theater.phone %}<span class="sPrTr">{{theater.phone}}</span>{% endif %}
+                    </div> 
+                    <div class="cLrFx mRt10 mRb30">
+                        <div class="tMlN hRz">
+                            <ol class="inline tMs">
+                                {% for st in thr.show_times|get_showtime_format %}
+                                    <li><a href="javascript:void(0);" class="tM-gD" style="left:{{st.position}}%" ><span class="dOt"></span><span class="tM"><span class="aRw"></span> {{st.showtime}}</span></a></li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    </div> 
+                </div> 
+            </div>
+        </div>
+    </li>
+    {% endwith %}
+    {% endfor %}
+</ul>
+{% endif %}
+
+<script type="text/javascript">
+{% if showtimes %}
+var markers=[];
+$(document).ready(function(){
+    {% for thr in showtimes %}
+        {% with thr.movietime.theatre as theater %}
+                var marker = new Object();
+                marker["lat"] = {{theater.address.lat}};
+                marker["lng"] = {{theater.address.lon}};
+                marker["zoom"] = {{theater.address.zoom}};
+                marker["name"] = "{{ b.name }}";
+                marker["title"] = "2";
+                //marker["label"] = "{{forloop.counter}}",
+                marker["address"] = "{{ theater.address.address1|escape|linebreaks }}{{ theater.address.city }} - {{theater.address.zip }}";
+                marker["icon"]="{{STATIC_URL}}themes/img/icons/marker-regular.png";
+                markers.push(marker);
+         {% endwith %}
+    {% endfor %}
+    load_multi_marker_with_numeric_overlay('map-canvas',{{ globalsettings.google_map_lat }}, {{ globalsettings.google_map_lon }}, {{ globalsettings.google_map_zoom }},markers)            
+});
+{% endif %}
+</script>

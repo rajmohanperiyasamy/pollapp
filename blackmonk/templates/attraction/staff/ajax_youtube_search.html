@@ -1,0 +1,146 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<style type="text/css">
+	.video_show{width:120px;float:left;pagging:10px;margin:5px;}
+	.selected{background-color:#aaa;border:solid 2px green;}
+	.unselected{background-color:#fff;border:solid 2px #fff;}
+</style>
+
+<script type="text/javascript">
+var start_index=1;
+var order_by='relevance';
+function next(){
+	start_index=start_index+30;
+	if(start_index>30){
+		$('#previous').attr('disabled', false);
+	}
+	else{
+		$('#previous').attr('disabled', true);
+	}
+	youtube_search()
+}
+function go_previous(){
+	start_index=start_index-30;
+	if(start_index>30){
+		$('#previous').attr('disabled', false);
+	}
+	else{
+		$('#previous').attr('disabled', true);
+	}
+	youtube_search()
+}
+function change_order(){
+	order_by=$('input:radio[name=order_by]:checked').val();
+	youtube_search()
+}
+function youtube_search(){
+	var search_input = $('#search_input').val();
+	if(search_input !="" && search_input!=null){
+		var keyword= encodeURIComponent(search_input);
+		var display_html='';
+		var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&orderby='+order_by+'&start-index='+start_index+'&max-results=30&v=2&alt=jsonc'; 
+		$.ajax({
+			type: "GET",
+			url: yt_url,
+			dataType:"jsonp",
+			success: function(response){
+				$('#search_result').show();
+				if(response.data.items){
+					$.each(response.data.items, function(i,data)
+					{
+						var video_id=data.id;
+						var video_frame="<img onclick=\"show_box('"+video_id+"')\" height='90' width='120' src='http://img.youtube.com/vi/"+video_id+"/2.jpg' >";
+						display_html+="<div id='v_"+video_id+"' class='unselected' style='float:left;margin:5px;padding:5px;'>"+video_frame+"<br><a id='btn_"+video_id+"' href='javascript:add_video(\""+video_id+"\")'>Add</a></div>";
+					});
+					$("#result").html(display_html);
+	
+				}else{
+					$("#result").html("<div id='no'>No Video</div>");
+				}
+			}
+		});
+	}else{alert('Please enter search keywor.');}
+}
+function add_video(url){
+	var dataString="id={{attraction.id}}&url="+url;
+	$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_attraction_ajax_add_youtube_video' %}",
+		data: dataString,
+		success: function(data){
+			if(data!=0){
+				$('#video_ajax').append(data);
+				$('#v_'+url).removeClass('unselected');
+				$('#v_'+url).addClass('selected');
+				$('#btn_'+url).remove();
+			}else{
+				alert('Oops !!! Not able to process your request.');
+			}
+		}
+	});
+}
+function delete_video(id){
+	if(confirm('Are you sure you want to remove this video ?')){
+		$.ajax({
+		dataType: "html",
+		url: "{% url 'staff_attraction_ajax_add_url_delete' %}",
+		data: "id="+id,
+		success: function(data){
+			if(data!=0){
+				$('#video_show'+id).remove();
+			}else{
+				alert('Oops !!! Not able to process your request.');
+			}
+		}
+	});
+	}
+}
+$(document).ready(function(){
+	$('#search_input').bind('keypress', function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+		 if(code == 13) {
+		   youtube_search();
+		 }
+	});	
+});
+</script>
+<form action="javascript:void(0)" name="catmform" id="catmform" method="post" class="add_category" style="width:720px;">{% csrf_token %}
+<fieldset id="basic_info" style="width:720px;">
+	<div class="title"><h2>Youtube Search</h2>
+		<p>You can add multiple youtube video.</p>
+	</div>
+	<div style="width:600px;" id="video_ajax">
+		{% for video in videos %}
+		<div class="video_show" id="video_show{{video.id}}" >
+			<img onclick="show_box('{{video.video_url}}')" src="http://img.youtube.com/vi/{{video.video_url}}/2.jpg">
+			<a href="javascript:void(0)" onclick="delete_video('{{video.id}}')" style="float:right;">X</a>
+		</div>
+		{% endfor %}
+	</div><br>
+	<dl class="horizontal" id="main_area">
+		<dt>
+			<input type="text" class='textField long' id="search_input" style="padding:5px;" />&nbsp;
+			<input type="button" class="inputsubmit on" value="Search" onclick="youtube_search()"></dt>
+		<dt>
+			<b>Order By :</b>
+			<span class="cform-radio-container"><input type="radio" onclick="change_order()" name="order_by" id="relevance" value="relevance" CHECKED><span class="cform-radio-element"></span></span>Relevance
+			<span class="cform-radio-container"><input type="radio" onclick="change_order()" name="order_by" id="published" value="published"><span class="cform-radio-element"></span></span>Published Date
+			<span class="cform-radio-container"><input type="radio" onclick="change_order()" name="order_by" id="viewCount" value="viewCount"><span class="cform-radio-element"></span></span>View Count
+			<span class="cform-radio-container"><input type="radio" onclick="change_order()" name="order_by" id="rating" value="rating"><span class="cform-radio-element"></span></span>Rating
+		</dt>
+	</dl>
+</fieldset>
+<div id="search_result" style="display:none;">
+	<div id="result" style="width:720px;"></div>
+	<dl class="horizontal">
+		<dt>&nbsp;</dt>
+		<dd style="margin-left:250px;">
+			<input type="button" value="&#171; Previous" disabled="disabled" id="previous" onclick="go_previous()">
+			<input type="button" value="Next &#187;" onclick="next()">
+		</dd>
+	</dl>
+</div>
+</form>
+
+

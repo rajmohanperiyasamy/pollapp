@@ -1,0 +1,27 @@
+{% load thumbnail %}
+{% if user.is_authenticated %}
+       <div class="pLrT mRt5" id="site-account">
+       <div class="fS13 ib">
+           <div class="btn-group pLrT iM tXt-lT aCnT-nAv">
+               <a onclick="location.href='{% url 'user_profile' request.user.profile_slug %}'" class="btn btn-link btn-small dropdown-toggle pD0 mRt6">
+                   <img width="22" height="22" src="{% if user.image %}{% thumbnail user.image 36x36 crop %}{% else %}{{STATIC_URL}}themes/img/cmnts-default-avatar.jpg{% endif %}" alt="" class="mRr10"><span class="cLr-wHt">{{ user.display_name }}</span>
+                   <i class="bUi-iCn-cRt-b-12 mRl5 ib" aria-hidden="true"></i>
+               </a>
+               <ul class="dropdown-menu pLrT">
+                   <li><a href="/user">Content Manager</a></li>
+                   <li><a href="{% url 'usermgmt_user_invite' %}">Invite Friends</a></li>
+                   <li class="divider"></li>
+                   <li><a href="{% url 'usermgmt_viewprofile' %}">Settings</a></li>
+                   <li><a href="{% url 'signout' %}">Sign Out</a></li>
+               </ul>
+           </div>
+       </div>
+       <span class="ib hAtO"></span>
+   </div>
+{% else %}
+   <ul id="site-account" class="nav pLrT">
+       <li><a href="/account/signin/">Sign In</a></li>
+       <li><a href="/account/signup/"><i class="bUi-iCn-uSr-12 fS9" aria-hidden="true"></i> Sign Up</a></li>
+   </ul>
+{% endif %}
+ 

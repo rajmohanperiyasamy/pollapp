@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="main_col lb_seo" id="ajax_content_seo">
+	<form class="add_category">
+		<div class="modal-form">
+			<div class="fields vform no_head">
+				<div id="meta-tags" class="field-group">
+					<div class="field text-field">
+			            <div class="label"><label for=""><h3>Name:</h3> {{contact_detail.name}}</label></div>
+			        </div> 
+					<div class="field text-field">
+			            <div class="label"><label for=""><h3>Email:</h3> {{contact_detail.email}}</label></div>
+			        </div>
+					<div class="field text-field">
+			            <div class="label"><label for=""><h3>Phone no:</h3> {{contact_detail.phone_no}}</label></div>
+			        </div>
+					<div class="field text-field">
+			            <div class="label"><label for=""><h3>Subject:</h3> {{contact_detail.subject}}</label></div>
+			        </div>
+					<div class="field text-field">
+			            <div class="label"><label for=""><h3>Message:</h3> {{contact_detail.message}}</label></div>
+			        </div> 
+				</div>
+			</div>
+		</div>
+	</from>
+</div>

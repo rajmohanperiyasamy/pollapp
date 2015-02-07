@@ -1,0 +1,15 @@
+{% extends 'default/base.html' %}
+{% load i18n %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/forum.css">
+<div style="margin: 20px 0">
+	<h1 style="font:18px arial, sans-serif;font-weight:bold;color:#990000">
+		{% trans "Are you sure you want to unsubscribe form" %} {{topic.name}} ?
+	</h1>
+	<form action="{% url 'forum_unsubscribe' topic.id %}" method="post">{% csrf_token %}
+    	<p><input type="submit" value="{% trans "Yes, I am sure." %}" />
+    	&nbsp;<input type="button" onClick="javascript:window.location.replace('{% url 'forum_topic' topic.id %}');" value="{% trans "Cancel" %}" /></p>
+	</form>
+</div>
+{% endblock %}
+ 

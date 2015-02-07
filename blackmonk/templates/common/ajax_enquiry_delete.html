@@ -1,0 +1,33 @@
+{% load i18n %}
+<!-- script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script -->
+{% if contacts_list %} 
+	{% for contact in contacts_list %}	
+		{% for ni in new_id %}
+		{% ifequal ni contact.id %}
+			<li class="table-list" id="li_{{contact.id}}">
+				<div class="table-list-container check-item group">
+					<span class="checkbox-wrap">
+						<span class="cform-checkbox-container"><input type="checkbox" onclick="enable_action()" status="{{contact.status}}" value="{{contact.id}}" id="id_checkbox_{{contact.id}}" name="{{contact.name}}" class="check-overflow cbox_enq check_action"><span class="cform-checkbox-element"></span></span>
+					</span>
+					<div class="item-info relative-block">
+		                <h3 class="title"><a title="{{contact.name}}" onclick="contact_click({{contact.id}});" class="bm-add-gadget light_box" href="{% url 'staff_enquiry_detail' contact.id %}">{{contact.subject}}</a></h3>
+		                <p class="ltxt80">by: {{contact.name}}<span class="divider12">|</span>{{contact.created_on|date:"M d, Y"}}</p>
+		            </div>
+		            <div class="action-buttons {% if forloop.counter == 1 %}tip tip9{% endif %}">
+		                <div class="relative-block">
+		                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{contact.id}}" onclick="display_settings({{contact.id}});"><span class="action-icon icon-manage"></span></span>
+		                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{contact.id}}" style="display:none">
+								<li><a onclick="if(confirm(gettext('Are you sure you want to Mark this Enquiry as Read?'))){filter_action({{contact.id}},'R');return false;}" href="javascript:void(0)" {% if contact.status == 'R' %}style='display:none;'{% endif %} id="contact_read_{{contact.id}}">{% trans 'Mark as read' %}</a></li>
+								<li><a onclick="if(confirm(gettext('Are you sure you want to Mark this Enquiry as Unread?'))){filter_action({{contact.id}},'NR');return false;}" href="javascript:void(0)" {% if contact.status == 'NR' %}style='display:none;'{% endif %} id="contact_unread_{{contact.id}}">{% trans 'Mark as unread' %}</a></li>
+								<li><a onclick="if(confirm(gettext('Are you sure you want to delete this Enquiry ?'))){filter_action({{contact.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+		                    </ul>
+						</div>                                                              	                                                         
+		            </div>
+			    </div>
+			</li> 
+		{% endifequal %}
+	 	{% endfor %}
+	{% endfor %}
+{% else %}
+	<div class="no-data"><p>{% trans 'Sorry , No Enquires found !' %}</p></div>
+ {% endif %}

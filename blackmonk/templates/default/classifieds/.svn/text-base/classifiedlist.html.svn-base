@@ -1,0 +1,202 @@
+{% extends base %}
+{% load tabs %}
+{% load thumbnail %}
+{% load modulotag %}
+{% load i18n %}
+{% load truncate_filter %}
+{% load ds_utils %}
+{% block pagetitle %}{% if category %}{% seo_format_tag module='Classifieds' title=category.seo_title code='LT' category=category.name as seo_meta_title %}{% else %}{% seo_format_tag module='Classifieds' title=seo.seo_title code='MT' as seo_meta_title %}{% endif %}{{seo_meta_title}} {% if page > 1 %}| page {{ page }} {% endif %}{% endblock %}
+{% block meta %}
+{% if seo %}
+<meta name="Description" content="{{seo.seo_description}}">
+{% else %}
+<meta name="Description" content="Classifieds listed under {{type.name}}. Refine classifieds for {% for key in type.get_category %}{{key.name}} | {% endfor %}{{ globalsettings.domain }}">
+{% endif %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{% endblock %}
+{% block head %}
+<script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+<script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+	<script type="text/javascript">
+    $(document).ready(function(){
+	 $('.cids').each(function(){
+			bids.push($(this).val());
+		});
+        module_listing(bids,category);
+	});
+	
+	</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "classifieds" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+	{% include 'default/classifieds/part_search.html' %}    
+	<ul class="bRdCrB" itemscope itemtype="http://schema.org/WebPage">
+        <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb">
+			<a itemprop="url" href="/classifieds/"><span itemprop="title">{% trans "Classifieds" %}</span></a>
+            <span class="sPrTr"></span>
+        </li>
+		{% if category.parent %}
+		<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb">
+            <a itemprop="url" href="{{category.parent.get_absolute_url}}"><span itemprop="title">{{category.parent}}</span></a>
+            <span class="sPrTr"></span>
+        </li>
+		{% endif %}
+		{% if search %}
+			<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb" class="aCtV"><span itemprop="title">{% trans "Search" %}</span></li>
+		{% else %}
+			<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb" class="aCtV"><span itemprop="title">{{category}}</span></li>
+		{% endif %}
+    </ul>
+    <div class="row-fluid">
+		<div class="pG-hD">
+			{% if not search %}
+				<h3><span><a href="javascript:void(0)" class="cLr-dRk" data-toggle="collapse" data-target="#parent-category">{{category}} {% if not category.parent %}<i aria-hidden="true" class="bUi-iCn-cRt-b-12 cLr-lTgRy"></i>{% endif %}</a></span></h3>
+			{% endif %}
+		</div>
+		{% if not category.parent and not search %}
+		<div id="parent-category" class="collapse">
+			<ul class="pD015 nav nav-list cMpCt mRb30 fOcL pDfX fW-bLd fS12 sP12mX767 fOmX767">
+				{% for cat in category.get_child_category %}
+				<li><a href="{{cat.get_absolute_url}}">{{cat}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+	</div>
+	<div class="row-fluid">
+		<div class="main span8 mRb0mX769">
+			<div class="row-fluid">
+				{% include 'default/classifieds/part_left.html' %}    
+				<div class="span9 sP12mX767">
+					<section class="sCn">
+						{% if category %}
+						<div class="sCn-tTl sCn-tTl-bR mRb10">
+                        	<h3><span>{{category|capfirst}} {% trans "near" %} {{globalsettings.city}}</span></h3>
+                        </div>
+						{% endif %}
+                        {% if classifiedlist %}
+                        <div class="tLbR mRb10 hP">
+                            <div class="tLbR-iR">
+                            	<div class="pLlT">
+									<form name='srtform' method="GET" action="{% if category %}{% url 'classified_listing' category.slug %}{% else %}{% url 'classified_search' %}{% endif %}" id="cls_form">{% csrf_token %}
+	                                    <select id="cls_sort" class="bUiSlCtbtn-link tXt-sMl" name="srt" onchange="srtform.submit();" >
+	                                        <option  value="re" {% ifequal sort 're'  %} selected="selected" {% endifequal %}>{% trans "Recent" %} </option>
+											<option  value="ol" {% ifequal sort 'ol'  %} selected="selected" {% endifequal %}>{% trans "Oldest" %} </option>
+	                                        <!--option  value="lh" {% ifequal sort 'lh'  %} selected="selected" {% endifequal %}>{% trans "Price: Low" %} &#8594; {% trans "High" %}</option>
+	                                        <option  value="hl" {% ifequal sort 'hl'  %} selected="selected" {% endifequal %}>{% trans "Price: High" %} &#8594; {% trans "Low" %}</option-->
+	                                    </select>
+										{% if search %}
+											<input type="hidden" name="search" value="{{ search }}">	
+											<input type="hidden" name="find" value="{{ q }}">
+										{% endif %}
+										{% if val %}<input type="hidden" name="val" value="{{ val }}">	{% endif %}
+										{% if at_id %}<input type="hidden" name="at_id" value="{{ at_id }}">	{% endif %}
+						                {% if tp %}<input type="hidden" name="fp" id="fp" value="{{fp}}">{% endif %}
+										{% if tp %}<input type="hidden" name="tp" id="tp" value="{{tp}}">{% endif %}
+									</form>
+                            	</div>
+								<div class="tLbR mRb5 hP">
+		                            <div class="tLbR-iR">
+		                                <div class="btn-toolbar pLrT">
+		                                    <div id="media-toggle" class="btn-group" data-toggle="buttons-radio">	                                        
+		                                        <button type="button" title='Grid View' class="btn btn-link {% if view_type == 'grid' %}active{% endif %} c-gD" onclick="change_url_parm('grid');"><i class="bUi-iCn-tH-lR-aLt-16" aria-hidden="true"></i></button>
+		                                        <button type="button" title='List View' class="btn btn-link c-lT mRl5 {% if view_type == 'list' %}active{% endif %}" onclick="change_url_parm('list');"><i class="bUi-iCn-rE-oDr-aLt-16" aria-hidden="true"></i></button>
+		                                    </div>
+		                                </div>
+		                            </div>
+		                        </div>
+                                <!--div class="btn-toolbar pLrT">
+                                    <div id="media-toggle" class="btn-group" data-toggle="buttons-radio">	                                        
+                                        <button type="button" class="btn btn-link c-lT"><i class="bUi-iCn-lSt-16" aria-hidden="true"></i></button>
+                                        <button type="button" class="btn btn-link active c-gD"><i class="bUi-iCn-tH-16" aria-hidden="true"></i></button>
+                                    </div>
+                                </div-->
+                            </div>
+                        </div>
+                        <ul class="modulesBrowseData tHcL {% if view_type == 'list' %}mDa-lT mDa-oT-lT{% else %} mDa-gD nObG dSgDwDt pDfX {% endif %}">
+							{% for clas in classifiedlist %}
+                            <li class="mDa" itemscope itemtype="http://schema.org/LocalBusiness">
+								<input type="hidden" id="fbids" name="fbids" class="cids" value="{{clas.id}}" />
+                                <div class="mDa-iN">
+                                    <div class="mDa-wPr"> 
+                                    	<a class="bUi-tMb-wPr tMb-75 fLxiMgW bUi-tMb-cLsFd" href="{{clas.get_absolute_url}}">
+                                            <span class="bUi-tMb">
+                                                <span class="bUi-tMb-pRpL">
+                                                    <span class="bUi-tMb-cLp">
+                                                        <span class="bUi-tMb-cLp-iN"> 
+															{% if clas.get_first_classified_photo %}
+																<img class="mDa-oT" src="{% thumbnail clas.get_first_classified_photo 220x0 %}" alt="{{ clas.title }}" itemprop="image">
+															{% else %}
+																<span class="iCn-bRdR50 oP25" title="{{ clas.title }}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 cLr-gRy ib"></i></span>
+															{% endif %}
+                                                            <span class="vRtL-aLn"> </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="mDa-bDy pD0 pDt5">
+										<h2 class="mDa-hD tRnCt0 mR50 rLvE h35 fS14" title="{{clas}}" itemprop="name">
+                                        <a href="{{clas.get_absolute_url}}" itemprop="url">{{clas}}</a></h2>
+                                        <p class="fS12 cLr-gRy hD-gD" itemprop="description">{% autoescape on %}{{clas.description|striptags|truncatewords:30}}{% endautoescape %}</p>
+                                        <div class="mDa-dTa mRt4">
+											<p class="cLr-gRy fS11 mRb0">by <a href="{% url 'user_profile' clas.created_by.profile_slug %}" class="cLr-lTbLu" ><span itemprop="name">{{clas.created_by.display_name}}</span></a><span class="sPrTr cLr-lTgRy" >{{clas.created_on|timesince|time_up_to:','}} {% trans 'ago' %}</span></p>
+                                        </div>                                            
+                                        <div class="mDa-hVr" itemscope itemtype="http://schema.org/Offer">
+											{% if clas.classified_price %}<a data-toggle="tooltip" data-placement="right" title="Price" class="iCn-lNk btn btn-mini fW-bLd fS13 mRl5-gD mRr5" href="javascript:void(0)"><i class="BUI-icon-63"></i><span itemprop="price">{{globalsettings.currency}}{{ clas.classified_price|floatformat:2 }}</span></a>{% endif %}
+											<!--a data-toggle="tooltip" data-placement="right" title="Share" class="iCn-lNk btn btn-mini" href="javascript:void(0)"><i class="BUI-icon-63"></i>Share</a-->
+										</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+						{% include 'default/classifieds/pagination.html' %}
+                        {% else %}
+                            <div class="hT400 rLvE">
+                                <div class="tBl-bLk pDt0">
+                                    <div class="tBl-cEl">
+                                        <span class="iCn-bRdR80 oP25"><i aria-hidden="true" class="bUi-iCn-cLfD-24 fS42-1 cLr-lTgRy ib"></i></span>
+                                        <p class="bLk mRt20 fS16 cLr-lTgRy oP75">No classifieds Found!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+					</section>
+				</div>
+			</div>
+		</div>
+		{% include 'default/classifieds/part_right.html' %}    
+	</div>
+</div>
+<script>
+function change_url_parm(value){
+	    $(".bm_pgntn_anchr").each(function(){
+			$(this).attr("href", function(i,origValue){
+	            return origValue.replace(/(view=)[a-z]+/ig,'view='+value); 
+	        });
+		});
+	}	
+$(function(){
+	$('.fTrD-cRsL').bUiSlider({
+        pager:true,
+		speed:600,
+		//auto:true,
+		slideWidth: 5000,
+		adaptiveHeight: true,
+	    minSlides:3,
+	    maxSlides: 3,
+	    slideMargin: 12,
+        onSliderLoad:function(){$('.fLxiMgW').setrSpVWidth(0);}
+	});
+})
+</script>
+{% endblock %}

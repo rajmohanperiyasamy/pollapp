@@ -1,0 +1,6 @@
+{{ object.title }}
+{{ object.category.name }}
+{% autoescape off %}{{ object.about }}{% endautoescape %}
+{% autoescape off %}{{ object.hihlights }}{% endautoescape %}
+{% autoescape off %}{{ object.fineprint }}{% endautoescape %}
+    

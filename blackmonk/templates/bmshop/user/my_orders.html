@@ -1,0 +1,156 @@
+{% extends "user_base.html" %}
+{% load tabs %}
+{% load i18n %}
+{% block navigation %}
+	{% activetab "selmodule" "shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}{% trans 'My Orders' %} {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+{% endblock %}
+{% block content %}
+<div id="userHub-platform" class="group">
+  	<div class="header-bar"><h2>{% trans 'My Orders' %}</h2></div>
+	<div id="core-wraper" class="group">
+    	<div class="userHub-main">
+          	<div id="shop" class="page-wrap">
+				<div id="transaction-history" class="cat-list group">
+                    <section class="toolbars" style=" background:none; border:none; padding:10px 0;">
+                    <div class="group">
+                    	<div class="inline-block" style="width:380px">
+                        	<label for="" style="color:#AAA; padding:5px 8px 0 0;float:left">View: </label>
+							<input type="hidden" id="filter" value="{% if filter %}{{filter}}{% endif %}">
+                            <select onchange="filter($(this).val());" id="orderSelect" dataplaceHolder="Filter By" class="select-menu" style="width:160px;" onchange="$('#id_view_by').val($(this).val()),filter_content();">
+							  <option value="">{% trans 'All' %}</option>
+							   <optgroup label="{% trans 'Payment Gateway' %}">
+								   <option {% if filter == 'Paypal' %}selected="selected"{% endif %} value="PP">{% trans 'PayPal' %}</option>
+								   <option {% if filter == 'Googlecheckout' %}selected="selected"{% endif %} value="GC">{% trans 'GoogleCheckout' %}</option>
+							   </optgroup>
+							   <optgroup label="{% trans 'Status' %}">
+								   <option {% if filter == '1' %}selected="selected"{% endif %} value="1">{% trans 'Paid' %}</option>
+								   <option {% if filter == '0' %}selected="selected"{% endif %} value="0">{% trans 'Not Paid' %}</option>
+								   <option {% if filter == '4' %}selected="selected"{% endif %} value="4">{% trans 'Pending' %}</option>
+								</optgroup>
+                            </select> 
+                        </div>
+                    	<div class="right">
+                            <form class="search-items module-search" id="member-search-form" action="javascript:void(0);">
+                            	<input type="hidden" id="id_search" value="{% if search %}true{% endif %}">
+								<div class="inline-block relative-block" style="position:absolute;">
+									<span onclick="clear_search();" class="reset txt-button tttxt" id="close_search" title="{% trans 'Clear Search' %}" style="{% if not search %}display:none;{% endif %}">Clear search</span>
+								</div>
+                                <input type="text" class="search-field" value="{% if search %}{{search}}{% endif %}" name="search_keyword" placeholder="{% trans 'Search Order Number' %}" id="id_search_keyword">
+                                <button type="button" class="cform-button search-button" onclick="if($('#id_search_keyword').val()!=''){sort_search();}" role="button"><span class="search-icon">Search</span></button>
+                            </form>                                                
+						</div>
+                       
+                    </div>
+                </section>
+				<div id="content_ajax_loading" style="display:none;">
+					<ul class="cat-list-container">
+					    <li class="cat-list-row hdr-rw">
+					        <div class="cat-list-row-inner group">
+					            <div class="cat-list-column transaction-id">
+					            	{% trans 'Order No.' %}                                                
+					            </div>
+					            <div class="cat-list-column transaction-status">
+					            	{% trans 'Status' %}
+					            </div>
+					            <div class="cat-list-column transaction-date">
+					            	{% trans 'Date' %}
+					            </div>
+					            <div class="cat-list-column transaction-amount">
+					            	{% trans 'Amount' %}
+					            </div>
+					            <div class="cat-list-column transaction-system">
+					            	{% trans 'Payment Method' %}
+					            </div>
+							</div>
+						</li>
+					</ul>
+					<div style="text-align:center; padding-top:75px;">
+						<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"></p>
+					</div>
+				</div>     
+				<div id="content_ajax">
+					{% include 'bmshop/user/include_my_orders.html' %}    
+				</div>   
+            </div> <!-- end table -->
+          </div>  <!-- end page wrap -->
+    </div>  <!-- end main-col -->                            
+    <div id="aside" class="side-bar">
+    	<div class="preview-aside-meta group">
+	        <ul class="side-navigation">
+	            <li class="contrib_tab events"><a href="{%url 'bmshop_user_wish_list' %}">{% trans 'My Wishlist' %}</a></li>
+	        	<li class="contrib_tab article active"><a href="javascript:void(0)">{% trans 'My Orders' %}</a></li>
+			</ul>
+	 	</div> 
+        {#% include 'payments/user/faq.html' %#}                                    
+    </div>                            
+</div>
+</div>
+{% endblock %}			
+{% block footer_include %}
+<script type="text/javascript">
+function filter(value){
+	$('#filter').val(value);
+	var dataString="&filter="+value;
+	if($('#id_search').val()=='true'){dataString+="&search="+$('#id_search_keyword').val();}
+	$('#content_ajax').hide();
+	$('#content_ajax_loading').show();
+	$.ajax({
+		type: "GET",
+		url: '{% url 'bmshop_user_ajax_view_my_orders' %}',
+		data: dataString,
+		success: function(data){
+			$('#content_ajax').show();
+			$('#content_ajax_loading').hide();
+			$('#content_ajax').empty().html(data);
+		}
+	});
+}
+function sort_search(){
+	$('#close_search').show();
+	$('#id_search').val('true');
+	var dataString="&search="+$('#id_search_keyword').val();
+	if($('#filter').val()!=''){dataString+="&filter="+$('#filter').val();}
+	$('#content_ajax').hide();
+	$('#content_ajax_loading').show();
+	$.ajax({
+		type: "GET",
+		url: '{% url 'bmshop_user_ajax_view_my_orders' %}',
+		data: dataString,
+		success: function(data){
+			$('#content_ajax').show();
+			$('#content_ajax_loading').hide();
+			$('#content_ajax').empty().html(data);
+		}
+	});
+}
+function goto_list(page){
+	var dataString='page='+page;
+	if($('#filter').val()!=''){dataString+="&filter="+$('#filter').val();}
+	if($('#id_search').val()=='true'){dataString+="&search="+$('#id_search_keyword').val();}
+	$('#content_ajax').hide();
+	$('#content_ajax_loading').show();
+	$.ajax({
+		type: "GET",
+		url: '{% url 'bmshop_user_ajax_view_my_orders' %}',
+		data: dataString,
+		success: function(data){
+			$('#content_ajax').show();
+			$('#content_ajax_loading').hide();
+			$('#content_ajax').empty().html(data);
+		}
+	});
+}
+function clear_search(){
+	$('#id_search').val('');
+	$('#id_search_keyword').val('');
+	$('#close_search').hide();
+	filter($('#filter').val());
+}
+</script>
+{% endblock %}	
+				

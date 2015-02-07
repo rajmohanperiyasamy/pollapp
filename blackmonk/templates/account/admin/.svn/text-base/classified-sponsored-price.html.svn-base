@@ -1,0 +1,156 @@
+{% extends "admin_base.html" %}
+{% load ds_utils %}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "pricing" %}
+	{{ block.super }}
+{% endblock %}
+{% block pagetitle %}Admin | Manage Classified Sponsored Price{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/base.js"></script>
+	
+	<script type="text/javascript">
+		function validate()
+		{
+			var success=true;
+			$('.sponsoredprice').each(function(){
+				
+				if($.trim($(this).val())==''){
+					$(this).addClass('error');
+					success=false;
+				}
+				else if(isNaN ($.trim($(this).val()))){
+					$(this).addClass('error');
+					success=false;
+				}
+				
+				else{
+					$(this).removeClass('error');
+				}
+			});
+			if(success){
+				return true;
+			}
+			else{
+				alert('Oops! Error in submission, Please correct the fields marked in red.')
+				return false;
+			}
+			
+		}
+	</script>	
+	
+{% endblock %}
+{% block content %}
+
+			<div class="container group">
+        	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+            	<div class="bread-crumb clearfix">
+                    <ul>
+                        <li><a href="/admin/users/" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Admin Home</a></li>
+
+                        <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666">Pricing</li>
+                    </ul>
+                </div> 
+            </div>
+			<div class="page_title group" style="display:block; overflow:hidden;">
+                <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Pricing</h2> 
+            </div>            
+        	<div class="main" style="margin-bottom:20px;">
+            	<div class="left_col">
+                	<h3>Sections</h3>
+                	<ul class="side_menus">
+                        <li><a href="/admin/article_pricing/" class="side_menu">Articles</a></li>  
+                        <li><a href="/admin/event_pricing/" class="side_menu">Events</a></li>  
+                        <li><a href="/admin/business_pricing/" class="side_menu">Business</a></li>   
+                        <li><a href="/admin/classified_pricing/" class="side_menu">Classifieds</a></li> 
+						<ul class="sub">
+							<a href="/admin/classified_sponsored/" class="side_menu on">Sponsord Price</a></li> 
+						</ul>                                                                      
+                    </ul>
+                </div> 	
+           		<div class="main_col">
+           			{% if message %}
+						<div class="result" id="id_success_msg" style="background:lightyellow;color:#333;"><h3>{{message}}</h3></div>
+							<script>
+								setTimeout("$('#id_success_msg').fadeOut(1000)",10000)
+							</script>
+					{% endif %}
+					
+					{% if form.errors %}
+						<div class="messageerror" >
+							<span style="font-size:1.2em;font-weight:250;"><strong>There is a problem with your submission</strong></span>
+		                    <ul>
+		           			 {% for field in form %}
+		           			 	{% if field.errors%}
+		           	            	<li>
+		           	            	{%for error in field.errors%}
+		           	            		{{error}}
+		               	            {%endfor%}
+									</li>
+		       	             {% endif %}
+		          	 		 {% endfor %}
+							</ul>
+		 		 		 		 </div>
+					{% endif %}
+ 
+					<div class="page_title group" style="display:block; overflow:hidden; padding-top:10px;">
+                		<!--div class="all_control">
+                            <select name="category" id="qna_cat" class="textField small" style="width:105px;">
+                                    <option value="">More actions</option>
+                                    <option value="2">&nbsp;Reset price</option>                                    
+                                    <option value="5">&nbsp;Clear Price</option>
+                             </select>                            
+              			</div-->	
+           			 </div>
+				<form name="cls_sp_price_form" id="id_cls_sp_price_form" method="post" action="/admin/classified_sponsored/" onsubmit="return validate();">	 
+						<table class="staff content" align="center" cellpadding="0" cellspacing="0" width="740">
+							<colgroup>
+								<col width="15">
+								<!--col width="100"-->
+								<col width="280">                                                                
+							</colgroup>				
+							<tbody>
+								<tr class="head">
+									<th class="check"><!--input name="selectall" onclick="checkall()" value="" type="checkbox"--></th>
+									<th class="title"><div>Categories</div></th>
+									<th class="action"><div style="padding-right:300px;">Sponsored Price</div></th>                                    
+								</tr>
+								{% for category in categories %}
+								<tr class="row">
+									<td class="check">
+										<!--input name="trashchecked" value="73" type="checkbox"-->
+									</td>	                                
+									<td class="title">
+										<div class="module_title">
+											<h5 style="font:bold 14px/22px Arial, Helvetica, sans-serif; margin:0; ">
+												<a href="#" title="See price details" style="text-decoration:none">
+													{{ category.name }}
+												</a>
+											</h5>
+										</div>
+									</td>
+									
+									<td class="price" id="id_priceview{{ category.id }}">
+										{{ globalsettings.currency }} <input type="text" name="sp_price{{ category.id }}" value="{% if category.sp_price %}{{category.sp_price}}{% endif %}" id="price{{ category.id }}" class="textField price sponsoredprice" style="width:70px;"/>
+									</td>
+									                                                                        	
+									<!--td class="action">
+                                    	<div  style="text-align:center">
+                                        	<a href="#" onclick="savePrice({{ category.id }});return false;" class="thick_link_plus">Save</a>
+										</div>                                            
+									</td-->
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>  
+						<br/>
+					<div style="text-align:center;">
+						<input type="button" class="inputsubmit off" value="Reset" onclick="location.replace('/admin/classified_sponsored/')" name="continue" style="font-size:14px; padding:5px 10px !important; font-weight:bold;"> 
+						<input type="submit" id="id_submit_btn "class="inputsubmit on" value="Update" name="continue" style="font-size:14px; padding:5px 10px !important;  font-weight:bold;">
+					</div>
+                </div> 
+      		 </form>		      
+				<hr />
+            </div>
+
+{% endblock %}

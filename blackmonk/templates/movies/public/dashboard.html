@@ -1,0 +1,180 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load tabs %}
+{% load modulotag %}
+{% block pagetitle %}{{ seo.seo_title }}{% endblock %}
+{% block meta %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "movies" %}
+	{{ block.super }}
+{% endblock %}
+{% block head %}
+
+
+
+<!-- Always keep these three js files in the same order -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery-mini.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/stepcarousel.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/movies/movie_stepcarousel_init.js"></script>
+{% endblock %}
+{% block content %}
+			<input type = "hidden" id = "call_from" value="movie_index" />
+			<!-- Movie search begin -->
+			<!-- Movie search end -->         
+        <div class="fmovie_wrapper group">
+            <div id="slider99">
+                <div class="switch_tab group">
+                   <ul>
+                      <li class="movies_slider_btn on" id="theaters_now" ><a href="javascript:stepcarousel.loadcontent('galleryc','/movies/ajax_nowplaying')" class="left_cap">Now Playing</a></li>
+                      <li class="movies_slider_btn" id="coming_soon" ><a href="javascript:stepcarousel.loadcontent('galleryc','/movies/ajax_upcoming')" class="right_cap ">Upcoming</a></li>
+                   </ul>
+               </div>            	
+                <div class="slider99_mask">
+                	<div id="galleryc" class="stepcarousel">
+					<div class="belt">
+						
+					</div>
+					</div>
+                </div>
+                <div class="slider_ctrls">
+                	<a href="javascript:stepcarousel.stepBy('galleryc', -1)" class="prev_btn fix_ie6png">&lt;</a>
+					<a href="javascript:stepcarousel.stepBy('galleryc', 1)" class="next_btn fix_ie6png">&lt;</a>
+				</div>
+            </div>        
+			<div class="clear"></div>
+			<div class="group">
+				<div class="main">
+					<div id="featured_story">
+                        <div class="f_story_slide whole_slider_wrapper">
+<div class="f_story_slide_inner" style="background-color:black;"> 
+{% for articles in articlefeatureds %}
+<div class="featured_content_div" {% if forloop.first %} style="display:block;" {% endif %} id="{{ articles.id }}" >
+<a href="{{ articles.feature_url }}" class="f_story_slide_image">
+<img src="{{ articles.image_url }}" alt="{{ articles.title }}"  height="222" width="362">
+</a>
+<div class="f_story_summary">
+<div class="f_story_summary_inner">
+<h3><a href="{{ articles.feature_url }}">{{ articles.title|truncate_chars:35}}</a></h3>
+</div>
+</div>
+</div>
+{% endfor %}
+<div class="f_story_slide_nav">
+<div class="prev">Prev</div>
+<div class="pages">
+<ul id="ftrd_nav_ul">
+{% for articles in articlefeatureds %}
+<li {% if forloop.first %} class="nav active first_li click_pvnt" {% endif %} {% if forloop.last %} class="nav last_li click_pvnt" {% else %} class="nav click_pvnt" {% endif %}><a href="" name="{{ articles.id }}">{{ forloop.counter }}</a></li>
+{% endfor %}
+</ul>
+</div>
+<div class="next">Next</div>
+</div>                                   
+</div>
+</div> <!-- close f_story_slide -->
+                        <div class="clear"></div><br>     
+					</div> <!-- close featured_story -->
+                    <div class="clear"></div>
+					<input type ="hidden" id="as_theatre" autocomplete="off" value="no" />   
+					<div id="showtime_list" class="thick_box mr_8">
+						<div class="thick_box_core pb_10 group">
+                            
+							<ul id="movie_status" class="thick_tabs by2">
+                                <li id="tab_movies_st" class="active"><a href="/movies/showtimes/" name="Movies Showtimes" class="first click_pvnt">Showtime by Movies</a></li>
+                                <li id="tab_theatres_st"><a href="/movies/theatre-showtimes/" class="click_pvnt last">Showtime by Theaters</a></li>
+                            </ul>
+							
+							<div id="theatre_showtime_content"> <!-- theatre_showtime_content -->
+							
+							<div class="list_actions group as_theatre_ie_fix">
+                                <div class="sort col_4">
+                                    <form class="group">{% csrf_token %}
+					                    <p class="find_theatres search_ex" >
+					                    	<input style="width:170px;" name="find" id="theatre_search" class="theatre_tips_input"  tabindex="1" type="text" value="" >
+					                        <button class="super small blue button click_pvnt single_submit as_theatre_button_ie_fix" name="theatre_search" type="submit" id="search_submit"><span class="theater_search">Search</span></button>
+					                    </p>
+									</form>										
+                                </div>
+                            </div>
+							<div id="t_lst">
+								<div class="mod_theaters group rel_block">
+	                                <ol class="theatre_list rel_block">
+	                                </ol>                              	
+			                     </div><!-- /mod_theaters -->
+                			</div><!-- /mod_486 -->
+						
+							</div><!-- theatre_showtime_content div end -->
+						
+							<div id="movie_showtime_content"><!-- movie_showtime_content -->
+								<div class="list_actions group">
+								
+								<!--div class="col_4" style="width:260px;">
+                                    <form name="form1">{% csrf_token %}
+                                        <label for="movie_sort">Sort By</label>
+                                        <select id="movie_sort" name="sort">
+                                           <option selected="selected"  value="release-date">Release Date</option-->
+                                           <!--option {% ifequal sortby '-user-rating' %} selected="selected" {% endifequal %} value="user-rating">User Rating</option-->
+                                           <!--option value="movie-title">Movie Titile</option>
+                                        </select>
+                                    </form>
+                                </div-->
+								<div class="filter col_6 mr_0">
+                                    <div id="movie_industry_list" class="industry" style="text-align:left;padding:5px;">
+                                        <a href="/movies/showtimes/" name="all" class="on click_pvnt as_sort_lang">All</a>
+                                        {% for lang in movie_language %}
+				       <a href="/movies/showtimes/{{lang}}/" class="click_pvnt as_sort_lang" name="{{lang}}">{{lang}}</a>
+				       					{% endfor %}
+                                    </div>
+                                </div>
+								<div class="clear"></div>
+                            </div>
+							<div id="till_pagination_content">
+                            
+							<!-- Movie Showtimes begin -->
+							<div class="place_list pb_0" id="movies_list">
+								{% for movie in movies %}
+								{% if movie.get_active_movies %}
+							    
+								<div class="all_lang_hide{% for lang in movie_language %}
+								{% for l in movie.get_lang_split %}
+									{% ifequal l lang %} as_{{lang}} {% endifequal %}{% endfor %}{% endfor %}
+							 {% cycle 'item group' 'item group alt' %}{% if forloop.last %} br_0 {% endif %}">
+							        <div class="col_8">
+							            <!--p class="review_rating_trans mt_2"><span class="star stars_4-5">Rob gave  a <strong>4/5</strong> star rating</span></p-->          
+							            <h4 class="movie_title"><a  href="/movies/{{ movie.slug }}.html">{{ movie.title }}</a></h4><div class="lang">{% if display_lang %}({{ movie.language}}){% endif %}</div>
+							        </div>
+									
+							        <div class="col_02 mr_0"><a href="/movies/{{ movie.slug }}.html#showtimes" class="button super white small"><span><strong>Showtimes</strong></span></a></div>
+							        <div class="footer"></div>    
+							    </div>
+								{% endif %} 
+								{% endfor %}
+							<div class="clear"></div>          
+							</div> 
+							<!-- Movie Showtimes End  -->	
+							
+							</div><!-- till pagination div end -->	
+							</div><!-- movie_showtime_content div end -->
+						
+						</div>
+					</div>
+                </div>
+                <div class="secondary">
+                    <div class="advt ad_300x250">
+                    	<span class="declare">Advertisement</span>
+                    	<div class="display_ad">
+                    	 
+                    	</div>
+                    </div><!-- /ad_300x250 -->
+					
+					<!-- Movie user reviews begin -->
+					<!-- Movie user reviews end -->
+
+                </div> <!-- /secondary -->
+			</div>                                            
+<script type="text/javascript" src="{{ STATIC_URL }}js/movies/movies.js"></script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% load i18n %}
+	<div class="group relative-block">
+		<div class="modal-left-col">
+            <section id="steps-info">
+                <ol>
+                    <li class="step0 selected"><div><span class="step">1</span><h3>Create Gallery</h3> <p>Each gallery can have a name, category, description and keywords too.</p></div></li>
+                    <li class="step1"><div><span class="step">2</span><h3>Upload</h3><p>You can upload photos from your computer or choose from flickr public photos.</p></div></li>
+                    <li class="step2"><div><span class="step">3</span><h3>Add Caption and more...</h3><p>Finaly, you can add the title and description, or even add copyright of your photos.</p></div></li>
+                </ol>
+                <!-- p class="foo-help"><span class="icon-help16 o3"></span><a href="#" class="txt-button">Learn more</a></p -->
+            </section>	        
+        </div>
+        <div class="upload-gadget-main has-left-col">
+            <form class="modal-form" id="mform">
+                <div class="fields hform">
+                    <div class="field-group"> 
+                    	<div class="fields-head">
+                        	<h3>Step 1: Create Gallery</h3>
+                            <p class="ltxt80">{% trans 'It is important to create a gallery before uploading the pictures.Each gallery will have a name, category, description and tags.' %}</p> 
+                        </div> 
+						{% if form.errors %} 
+							<div class="field">
+								<div class="messageerror" >
+									<strong>{% trans 'There is a problem with your submission' %}</strong>
+						            <ul style="list-style:square;margin-left:20px;">
+						           		{% for field in form %}
+						           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+						          	 	{% endfor %}
+									</ul>
+							 	</div>
+	                        </div>  
+						{% endif %}               
+                        <div class="field type-text">
+                            <div class="label"><label>Gallery Name <span class="required-field">*</span></label></div>
+                            <div class="value">{{form.title}}</div>
+                        </div> 
+                        <div class="field select-field">
+                            <div class="label"><label>Category <span class="required-field">*</span></label></div>
+                            <div class="value"> {{form.category}}</div>
+                        </div>
+                        <div class="field text-field">	
+                            <div class="label"><label for="-button">Description</label></div>	
+                            <div class="value">{{form.summary}}</div>	
+                        </div>
+                        <div class="field text-field">	
+                            <div class="label"><label for="-button">Tags</label></div>
+                            <div class="value has-fd-icon">
+                                <input id='tags' type="hidden" class='tags' name="tags"  value="">
+								<ul id="mytags" class="fl"></ul>
+								<span class="tip">{% trans "Add multiple tags separated by comas ',' or use 'tab' key" %}</span>
+                            </div>
+                        </div>                            
+                    </div>            
+                </div>    
+                <div class="modal-base form-submit group">
+                   <button role="button" class="cform-button prime bm-upload-photos" type="button" onclick="save_album()" title="Upload photos"><span class="cform-button-text">{% trans 'Next Step: Upload Photos' %}</span></button>
+                </div>           
+            </form>
+        </div>            
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#mytags").tagit({
+		singleField: true,
+		singleFieldNode: $('#tags'),
+		allowSpaces:true,
+		tagSource: function( request, response ) {
+		 $.ajax({
+		       url: '{% url 'gallery_auto_suggest_tag' %}',
+		       data: { term:request.term },
+		       dataType: "json",
+		       success: function( data ) {
+		       response( $.map( data, function( item ) {
+		       return {
+			   	label: item.label, value: item.value 
+				}}
+			));
+			}
+		});
+		},
+		onTagAdded: function(event, tag) {
+	        $.colorbox.resize();
+	    },
+		onTagRemoved: function(event, tag) {
+	        $.colorbox.resize();
+	    }
+	});
+})
+$(document).ready(function(){
+	$("#mform").validate({
+		ignore: "",
+		highlight: function(element, errorClass){add_error_class(element)},
+		unhighlight: function(element, errorClass){remove_error_class(element)},
+		errorPlacement: function(error, element){},
+	   	rules:{
+	    	title: "required",
+			category:"required"
+	   	}
+	});
+	$('.select-menu').bind("change", function(){
+		$("#mform").validate().element($(this));
+	});
+});
+</script>

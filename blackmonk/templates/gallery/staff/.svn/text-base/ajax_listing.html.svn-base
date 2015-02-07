@@ -1,0 +1,143 @@
+{% load i18n %}	
+{% load thumbnail %}	
+<input type="hidden" value="{{status}}" name="id_status" id="id_status">
+<input type="hidden" value="{{listing_type}}" name="id_listing_type" id="id_listing_type">
+<input type="hidden" value="{{created}}" name="id_created" id="id_created">
+<input type="hidden" value="{{sort}}" name="id_sort" id="id_sort">
+<input type="hidden" value="" name="id_action" id="id_action">
+<input type="hidden" value="{% if search %}{{search}}{% endif %}" name="id_search" id="id_search">
+<input type="hidden" value="{{catgy}}" name="search_cat" id="id_search_cat">
+{% if gallery %} 
+<ol class="data-table table-lists-container" id="ajax_content_list">
+	{% for gal in gallery %}	
+	<li class="table-list" id="li_{{gal.id}}">
+			<div class="table-list-container check-item has-thumb110 group">
+		 	{% if gal.is_featured %}
+		 		<span class="list-type featured-item"><a class="tttxt" title="{% trans 'Item listed as featured' %}" href="#">{% trans 'Featured' %}</a></span>
+			{% endif %}
+		 	<span class="checkbox-wrap">
+				<span class="cform-checkbox-container"><input type="checkbox" onclick="fix_action()" status="{{gal.status}}" value="{{gal.id}}" id="id_checkbox_{{gal.id}}" name="artCulture" class="check-overflow cbox check_action"><span class="cform-checkbox-element"></span></span>
+			</span>
+            <div class="item-media">
+            	<a href="{% url 'staff_gallery_detail' gal.id %}" class="inline-block">
+                    <span class="item-thumb thumb-110">
+                        <span class="thumb-in">
+                            {% with gal.new_cover_image as cover %}
+                            <span class="thumb"><img src="{% if cover.photo %}{% thumbnail cover.photo 110x0 %}{% else %}{{ cover }}{% endif %}" alt="{{gal.title}}" class="inline-block"><span class="inline-block h100"></span></span>
+                            {% endwith %}
+                        </span>
+                    </span>
+				</a>                                                            
+            </div> 
+			<div class="item-info relative-block">
+                <h3 class="title"><a href="{% url 'staff_gallery_detail' gal.id %}">{{gal.title}}</a></h3>
+                <p class="ltxt80">{{gal.category.name}} <span class="divider12">|</span> {% trans 'By' %} <a href="{% url 'user_profile' gal.created_by.profile_slug %}">{{gal.created_by.get_full_name}}</a> <span class="divider12">|</span>{{gal.created_on|date:"M d, Y"}}</p>
+                <ul class="quick-stats group">
+                    <li class="views"><a class="tttxt" href="javascript:void(0)" title="{% trans 'Viewers' %}"><span class="inline-block icon-view-stats"></span>{{gal.most_viewed}}</a></li>
+                    <!--li class="cmnt"><a class="tttxt"title="{% trans 'View comments' %}" href="#"><span class="inline-block icon-cmnt-stats"></span>46</a></li-->
+                </ul>
+                <div class="item-status {% if forloop.counter == 1 %}tip tip8{% endif %} {% if not perms.gallery.publish_photoalbum %}no-options{% endif %} dev_hide_list_status" onclick="display_change_status({{gal.id}},$('#id_estatus_{{gal.id}}').attr('name'));">
+                	<span class="status-inside inline-block" id="id_span_chge_sts_{{gal.id}}">
+					<span title="{{gal.get_status|capfirst}}" name="{{gal.status}}" id="id_estatus_{{gal.id}}" class="inline-block tttxt status-idty icon-{{gal.get_status}}"></span>	 
+					{% if not perms.gallery.publish_photoalbum %}</span>{% endif %}
+					{% if perms.gallery.publish_photoalbum %}
+	                    <span class="arrow"></span></span>
+						<ul class="dropdown-list" id="change_status_id_{{gal.id}}">
+							<li><strong>{% trans 'Update status to...' %}</strong></li>
+							<ul id="id_dis_status_{{gal.id}}">
+	                       	</ul>
+	                    </ul>
+					{% endif %}
+                </div>                                                        
+            </div>
+            <div class="action-buttons {% if forloop.counter == 1 %}tip tip9{% endif %}">
+                <div class="relative-block">
+                    <span class="item-manage inline-block dev_hide_list_settings" id="id_span_settings_{{gal.id}}" onclick="display_settings({{gal.id}});"><span class="action-icon icon-manage"></span></span>
+                    <ul class="dropdown-list dev_settingsdrpdwn" id="settings_id_{{gal.id}}" style="display:none">
+                        <li><a href="javascript: set_cover_photo_lightbox({{gal.id}})" >{% trans 'Set Cover Image' %}</a></li>
+                        {% if perms.gallery.promote_photoalbum %}
+							<li><a href="javascript:void(0)" onclick="if(confirm(gettext('Are you sure you want to {% if gal.is_featured %}Non-Feature{% else %}Feature{% endif %} the Gallery ?'))){$('#id_action').val('{% if gal.is_featured %}False{% else %}True{% endif %}');filter_action({{gal.id}},'#')}">{% if gal.is_featured %}{% trans 'Non-Feature this' %}{% else %}{% trans 'Feature this' %}{% endif %}</a></li>
+							<li><span class="line-break"></span></li>
+						{% endif %}
+						{% if perms.gallery.change_photoalbum or perms.gallery.add_photoalbum %}
+							<li><a title="{% trans 'Add Photos to' %} {{gal.title|capfirst}}" href="{% url 'staff_add_gallery_add_photos' gal.id %}?type=photos" class="bm-add-gadget add-photo-gallery">{% trans 'Add Photos' %}</a></li>
+						{% endif %}
+						{% if perms.gallery.change_photoalbum %}
+							<li><a title="{% trans 'Edit this Gallery' %}" href="{% url 'staff_gallery_update' gal.id %}" class="bm-update-gallery">{% trans 'Edit' %}</a></li>
+							<li><a title="{% trans 'Title / Description (SEO)' %}" href="{% url 'staff_gallery_seo' gal.id %}" class="bm-add-gadget light_box">{% trans 'Update SEO' %}</a></li>
+						{% endif %}
+							<li><a title="{% trans 'view Stats' %}" href="{% url 'common_get_modules_elements_views' gal.id 'gallery' 0 %}">{% trans 'View Stats' %}</a></li>
+							<li><a title="{% trans 'Gallery Logs' %}" class="bm-add-gadget light_box" href ="{% url 'common_log' %}?obj_id={{ gal.id }}&type=photos">Audit Logs</a></li>
+							<li><span class="line-break"></span></li>
+						{% if perms.gallery.delete_photoalbum %}
+            	        	<li><a onclick="if(confirm(gettext('Are you sure you want to delete the Gallery?'))){filter_action({{gal.id}},'DEL');return false;}" href="javascript:void(0)">{% trans 'Delete' %}</a></li>
+						{% endif %}
+                    </ul>
+				</div>                                                              	                                                         
+            </div>
+        </div>
+    </li> 
+	{% endfor %}
+	</ol>
+ 	<div id="pagenation">
+		{% include 'common/pagination_ajax.html'%}  
+	</div>
+	<!-- script type="text/javascript" src="{{STATIC_URL}}ui/js/application.js"></script -->
+	<script>
+				function status_function(id,status){
+						$('#id_dis_status_'+id).html('');
+						if(status=='P'){
+							ahtml = '<li><a onclick="save_status('+id+',\'B\');" href="javascript:void(0);">{% trans 'Blocked' %}</a></li>'
+							$('#id_dis_status_'+id).append(ahtml);
+						}
+						else if(status=='N'){
+							ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+							ahtml+= '<li><a onclick="save_status('+id+',\'R\');" href="javascript:void(0);" >{% trans 'Reject' %}</a></li>'
+							$('#id_dis_status_'+id).append(ahtml);
+						}
+						else if(status=='B'){
+							ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+							$('#id_dis_status_'+id).append(ahtml);
+						}
+						else if(status=='R'){
+							ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+							$('#id_dis_status_'+id).append(ahtml);
+						}
+						else if(status=='D'){
+							ahtml = '<li><a onclick="save_status('+id+',\'P\');" href="javascript:void(0);" >{% trans 'Publish' %}</a></li>'
+							$('#id_dis_status_'+id).append(ahtml);
+						}
+						else{
+							$('#change_status_id_'+id).hide();
+							$('#id_span_chge_sts_'+id).removeClass('active')
+							return false;
+						}
+					}
+				function save_status(id,status){
+					$('#id_estatus_'+id).addClass('loading');
+					var DataString="id="+id+"&status="+status;
+					$.ajax({
+						type: "GET",
+						url: "{% url 'staff_change_status_gallery' %}",
+						data: DataString,
+						success: function(data){
+							if(data!=0){
+								$('#id_estatus_'+id).removeClass('loading');
+								$('#id_estatus_'+id).replaceWith(data);
+								$('#change_status_id_'+id).hide();
+								$('#id_span_chge_sts_'+id).removeClass('active')
+								$('#id_checkbox_'+id).attr('status',status);
+								show_count('all');
+							}else{
+								$('#change_status_id_'+id).hide();
+								$('#id_span_chge_sts_'+id).removeClass('active')
+								$('#id_estatus_'+id).removeClass('loading');
+								alert(gettext('Oops!!! Not able to process your request.'));
+							}
+						}
+					});
+				}
+			</script>
+	{% else %}
+<div class="no-data"><p>{% trans 'Sorry , No Gallery found !' %}</p></div>
+{% endif %}   

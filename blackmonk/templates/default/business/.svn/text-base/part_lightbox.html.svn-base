@@ -1,0 +1,146 @@
+{% load i18n %}
+
+<input type = "hidden" id = "as_exec_respond" value="yes" />
+<input type="hidden" name="hashkey" id="id_hashkey" value="{{ scaptcha.hash }}" />
+
+
+<!-- Lightbox code begin -->   
+<div class="lightbox_outer" >
+<div class="lightbox_content_holder">
+<a href= "#" class="call_lightbox lb_close fix_ie6png enlarge click_pvnt"></a>
+<div class="lightbox_content">
+<!-- Put all your contents only inside this "lightbox_content" div -->
+
+<!-- map start -->
+<div  class="allhide" id="id_alladdress" style="padding:10px; font:12px/1.2 arial, san-serif; background-color:#f8f8ed;width:620px;height:520px">
+	<div style="float:left; width:290px;height:500px;overflow:auto; margin-right:25px;">
+		{% for address in business.address.all %}
+			<div style="cursor:pointer;{% if not forloop.first %}margin:10px 0 10px 0;padding-top:10px;border-top:1px dotted #7d7d7d;{% endif %}" onclick="map1.setCenter(new GLatLng({{ address.lat }}, {{ address.lon }}), {{ address.map_zoom }});">
+			<strong style="display:block;font:16px/1.2 georgia, serif;margin-bottom:3px;">{% if address.address1 %}{{ address.address1 }}{% endif %} </strong>
+			{% if address.address1 %}{{ address.address1 }}{% endif %}
+			{% if address.address2 %}{{ address.address2 }}{% endif %}
+			 {{ address.city }}{% if address.zip %} - {{ address.zip }}{% endif %}
+			{% if address.telephone1 or address.telephone2 or address.mobile %}
+			<br/>Phone:{% if address.mobile %}&nbsp;{{ address.mobile }},{% endif %}{% if address.telephone1 %}&nbsp;{{ address.telephone1 }}{% endif %}{% if address.telephone2 %}&nbsp;{{ address.telephone2 }}{% endif %}
+			{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+	<div style="float:left; width:290px;">
+		<div id="map1" style="width:290px; height:490px;border:1px solid #666;"></div>
+	</div>
+	<div class="clear"></div>	
+</div>
+<!-- map end -->
+
+					
+<!-- Tell a friend begin -->
+<div id="respond_to_div" class="allhide">
+<input type="hidden" id="content_id" name="content_id" value = "{{ business.id }}" />
+<input name="respond_hashkey" id="respond_hashkey" value="" type="hidden" />	
+<div class="tellfriend" style="padding:0px;">
+    <h3>{% trans 'Tell a Friend' %}</h3>
+	<form id="respond_form" method="get" action="/business/a/ajax-tell-a-friend/">{% csrf_token %}
+		<label for="from_name">{% trans 'Your Name' %}:</label>
+		<p>
+			<input type="text" maxlength="15" autocomplete="off" size="30" name="from_name" id="from_name" class="input_text">
+    	</p>
+
+		<label for="to_name">{% trans "Your Friend's Name" %}:</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="to_name" id="to_name" class="input_text">
+		</p>
+		
+		<label for="to_email">{% trans "Your Friend's Email" %}:</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="to_email" id="to_email" class="input_text">
+    	</p>
+		<label>{% trans 'Subject' %}:</label>
+		<p style="width:410px" class="field">{{ globalsettings.domain }} - <span id="keyup_name"><b>{% trans 'Your Name' %}</b></span> {% trans 'sent you business details of' %} "{{ business.name }}" </p>
+		<label for="msg">{% trans 'Message' %}:</label>
+        <textarea rows="5"  name="msg" id="msg" cols="30" class="medium field"></textarea>
+   		
+		<div class="form_footer">
+			<button type="submit" class="button super green large respond_submit"><span>{% trans 'Submit' %}</span></button>
+			<p id="respondstatus"></p>
+		</div>
+    </form>
+</div>
+</div>
+<!-- Tell a friend end -->
+
+<!-- include the suggest to friend start -->
+	{#% include 'default/suggest_to_friend_lightbox.html' %#}
+<!-- include the suggest to friend end -->
+
+<!-- Contact  begin-->
+<div id="respond_to_contact" class="allhide">
+<input type="hidden" id="clsf_id" name="clsf_id" value = "{{ business.id }}" />
+<input type="hidden" id="respond_sunject" name="respond_sunject" value="Contact" />
+<input name="respond_hashkey" id="contact_hashkey" value="" type="hidden" />	
+<div class="tellfriend" style="padding:0px;">
+    <h3>{% trans 'Send an Inquiry to' %} {{ business.name }} </h3>
+	<form id="contact_form" method="get" action="/">
+        <label style="font-size:12px">{% trans 'From' %}:</label>
+		<label for="respond_name">{% trans 'Name' %}:</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="respond_name" id="respond_name" class="input_text">
+    	</p>
+		<label for="respond_email">{% trans 'Phone' %}:</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="respond_phone" id="respond_phone" class="input_text">
+    	</p>
+		<label for="respond_email">{% trans 'Email' %}:</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="respond_email" id="respond_email" class="input_text">
+    	</p>
+	    <label style="font-size:12px">{% trans 'To' %}:</label>
+		<p>{{ business.name }} {% trans 'staff' %}</p>
+		
+		<label for="respond_msg">{% trans 'Message' %}:</label>
+        <textarea rows="7"  name="respond_msg" id="respond_msg" cols="30" class="medium"></textarea>
+		
+		<div class="form_footer">
+			<button type="submit" class="button super green large respond_submit"><span>{% trans 'Submit' %}</span></button>
+			<p id="contactrespond_status"></p>
+		</div>
+    </form>
+</div>
+</div>
+<!-- Contact End -->
+
+
+<!-- MAP GET DIRECTION  	start -->
+<div id="id_map_get_direction" class="allhide" style="background-color:#F2F7FD;width:800px;height:450px;padding:5px;-moz-border-radius:5px;">
+	
+	<!-- get direction form -->
+	<div style="padding-bottom:10px;" align="center" class="search_ex">
+	<form action="javascript:getDirections()" style="">
+	<label style="font-size:11px;font-weight:bold;line-height:16px;color:#3d3d3d;">{% trans 'From' %}:</label>
+	<input type="text" maxlength="40" name="saddr" id="saddr" value="" style="width:200px;border-color:#069;-moz-border-radius:3px 3px 3px 3px;-webkit-border-radius:3px 3px 3px 3px;-khtml-border-radius:3px 3px 3px 3px;border-radius:3px 3px 3px 3px;background:#FFF url(../images/global/input_bg.png) no-repeat scroll 0 0;border:1px solid #b2b2b2;color:#3d3d3d;display:inline-block;font:13px/18px Helvetica Neue,Helvetica,Verdana,sans-serif;margin:0 0 0px 0;padding:3px 5px;text-shadow:0 0 1px #FFFFFF;" />
+	<label style="font-size:11px;font-weight:bold;line-height:16px;color:#3d3d3d;padding-left:10px;">{% trans 'To' %}:</label>
+	<select id="daddr" style="width:200px;-moz-border-radius:3px 3px 3px 3px;-webkit-border-radius:3px 3px 3px 3px;-khtml-border-radius:3px 3px 3px 3px;border-radius:3px 3px 3px 3px;background:#FFF url(../images/global/input_bg.png) no-repeat scroll 0 0;border:1px solid #b2b2b2;color:#3d3d3d;display:inline-block;font:13px/18px Helvetica Neue,Helvetica,Verdana,sans-serif;margin:0 0 0px 0;padding:3px 5px;text-shadow:0 0 1px #FFFFFF;">
+		{% for address in business.address.all %}
+			<option value="{{ address.address1 }}@{{ address.lat }},{{ address.lon }}">{{ address.address1 }} ({{ business.name }})</option>
+		{% endfor %}
+	</select>
+	<input type="hidden" name="walk" id="walk" />
+	<input type="hidden" name="highways" id="highways" />
+	<button type="submit" name="saddr" value="Get Directions" class="button super black small single_submit"><span>Get Directions</span></button>
+	</form>
+	</div>
+	<!-- get direction form end -->
+	
+	<span id="map_getdirection" style="float:left;width:450px; height:400px;-moz-border-radius:5px;border:#D4E5F3 solid 2px;" align="left"></span>
+	<div id="directions" style="overflow:auto;width:330px;height:400px;padding:0px 5px 5px;" align="right"></div>
+	
+</div>
+<!-- MAP GET DIRECTION  	end -->
+
+					
+<!-- put your contents only iside "lightbox_content" div -->		
+</div>			
+</div>
+</div>
+<div class="lightbox_background"></div>
+<!-- Lightbox code end -->

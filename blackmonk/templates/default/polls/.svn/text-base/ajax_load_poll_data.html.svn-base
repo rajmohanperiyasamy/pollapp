@@ -1,0 +1,6 @@
+{% load i18n %}
+{% if poll.expiry <= 0 or status == 'voted' %}
+    {% include 'default/polls/ajax-poll-results.html' %}
+{% else %}    
+    {% include 'default/polls/ajax-poll-view.html' %}
+{% endif %}  

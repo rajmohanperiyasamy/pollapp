@@ -1,0 +1,79 @@
+{% load tabs %}
+{% load i18n %}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.left-nav-container').click(function(){
+		$('.left-nav-container').removeClass('selected-child');
+		$(this).addClass('selected-child');
+		$('.nav-expand').addClass('nav-collaps').removeClass('nav-expand');
+		$(this).children('a').children('span:last-child').addClass('nav-expand');
+	});
+});
+</script>
+<div class="left-nav-list modules col_3">
+    <ul>
+        
+		<!--li class="left-nav-container {% ifactivetab "leftnav" "cars" %}selected-child{% endifactivetab %}">
+          <a href="javascript:void(0)" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="events"></span>
+              <span class="display-name">{% trans 'Cars' %}</span><span class="{% ifactivetab "leftnav" "cars" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+          </a>
+        </li-->
+        
+        <!--li class="left-nav-container {% ifactivetab "leftnav" "flights" %}selected-child{% endifactivetab %}">
+            <a href="javascript:void(0)" class="left-nav">
+                  <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="photos"></span>
+                  <span class="display-name">{% trans 'Flights' %}</span><span class="{% ifactivetab "leftnav" "flights" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+            </a>
+        </li-->
+
+		<li class="left-nav-container {% ifactivetab "leftnav" "flowers" %}selected-child{% endifactivetab %}">
+            <a href="{% url 'admin_api_flower_configuration' %}" class="left-nav">
+                  <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="photos"></span>
+                  <span class="display-name">{% trans 'Flowers' %}</span><span class="{% ifactivetab "leftnav" "flowers" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+            </a>
+        </li>
+
+        <!--li class="left-nav-container {% ifactivetab "leftnav" "jobs" %}selected-child{% endifactivetab %}">
+            <a href="javascript:void(0)" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="videos"></span>
+                <span class="display-name">{% trans 'Jobs' %}</span><span class="{% ifactivetab "leftnav" "jobs" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+        </li-->
+
+        <li class="left-nav-container {% ifactivetab "leftnav" "hotel" %}selected-child{% endifactivetab %}"">
+            <a href="{% url 'admin_api_hotels_configuration' %}" class="left-nav">
+                <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="movies"></span>
+                <span class="display-name">{% trans 'Hotels' %}</span><span class="{% ifactivetab "leftnav" "hotel" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>
+            </a>
+        </li>
+
+        <li class="left-nav-container {% ifactivetab "leftnav" "weather" %}selected-child{% endifactivetab %}">
+          <a href="{% url 'admin_api_weather_configuration' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="discussion"></span>
+              <span class="display-name">{% trans 'Weather' %}</span><span class="{% ifactivetab "leftnav" "weather" %}nav-expand{% else %}nav-collaps{% endifactivetab %}">&rsaquo;</span>                                            
+          </a>
+        </li>
+		
+        <li class="left-nav-container parent">
+          <a href="{% url 'admin_portal_articles' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="api-services"></span>
+              <span class="display-name">{% trans 'Modules' %}</span><span class="nav-collaps">&rsaquo;</span>
+          </a>
+        </li> 
+
+        <li class="left-nav-container parent">
+          <a href="{% url 'admin_page' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="pages"></span>
+              <span class="display-name">{% trans 'Pages' %}</span><span class="nav-collaps">&rsaquo;</span>
+          </a>
+        </li>
+		<!-- li class="left-nav-container parent">
+          <a href="{% url 'admin_channel_manage_channel' %}" class="left-nav">
+              <span class="icon"><img alt="" src="{{STATIC_URL}}ui/images/global/020112bm-pixel.gif" class="pages"></span>
+              <span class="display-name">{% trans 'Channels' %}</span><span class="nav-collaps">&rsaquo;</span>
+          </a>
+        </li -->       
+                                                
+    </ul> 
+</div>

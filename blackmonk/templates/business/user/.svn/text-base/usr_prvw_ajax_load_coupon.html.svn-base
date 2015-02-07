@@ -1,0 +1,34 @@
+{% load thumbnail %}
+{% load i18n %}
+{% load truncate_filter %}
+<li class="mDa" id="coupon_li_{{ofr.id}}"  style="display:none;">
+    <div class="mDa-iN bM-bX">
+        <div class="mDa-wPr"> 
+            <a class="bUi-tMb-wPr tMb-50 fLxiMgW" href="javascript:void(0);">
+                <span class="bUi-tMb">
+                    <span class="bUi-tMb-pRpL">
+                        <span class="bUi-tMb-cLp">
+                            <span class="bUi-tMb-cLp-iN">
+                                <img class="mDa-oT" src="{% thumbnail ofr.photo 285x0 %}" alt="{{ ofr.title }}" title="{{ ofr.title }}" />
+                                <span class="vRtL-aLn">
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </a> 
+        </div>
+        <div class="mDa-bDy pD15">
+            <h4 class="mDa-hD h3mX480" title="{{ ofr.title }}"><a href="javascript:void(0);">{{ofr.title}}</a></h4>
+            <div class="mDa-dTa">
+                <div class="fS11 cLr-dRk fS12mX480">{% autoescape off %}{{ ofr.description|striptags|truncate_chars:95 }}{% endautoescape %}</div>
+                <ul class="iCnC-lSt iCn12">
+                    <li class="iCnC-lSt-iTm cLr-gRy">
+                        <i class="bUi-iCn-cLdR-12 iCn-rEd"></i>{% trans 'Starts' %} {{ ofr.start_date|date:'M d, o' }}{% if ofr.end_date %} - {% trans 'Expires' %} {{ ofr.end_date|date:'M d, o' }}{% endif %} 
+                    </li>
+                </ul>
+            </div>
+            <div class="mRt10 cLrFx"><a class="fS12 cLr-gRy pLrT mRl10" href="javascript:delete_coupon({{ofr.id}})">Delete</a><a href="{% url 'user_business_coupon_update' ofr.business.id ofr.id %}" data-target="#addCoupon" class="fS12 cLr-gRy pLrT">Edit</a></div>
+        </div>
+    </div>
+</li>

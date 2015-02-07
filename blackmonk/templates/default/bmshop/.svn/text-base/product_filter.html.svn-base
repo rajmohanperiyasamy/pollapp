@@ -1,0 +1,199 @@
+{% extends base %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load i18n %}
+{% load currency %}
+{% load tabs %}
+{% load ds_utils %}
+{% block pagetitle %}{% if cat_obj %}{% seo_format_tag module='Shop' title=cat_obj.meta_title code='LT' category=cat_obj.name as seo_meta_title %}{% endif %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+	<meta name="description" content="{% if cat_obj %}{{ cat_obj.meta_description }}{%else%}{% trans 'Shop' %}{%endif%}" />
+{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}themes/green/css/store.css">
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "shop" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+	{% include 'default/bmshop/include_search.html' %}		
+	<div class="page_wraper" id="product_list">
+	        <div class="group">
+	        	<div class="mrl_0" id="breadcrumbs"><a href="{%url 'bmshop_product_home' %}">{% trans 'Home' %}</a>{%for parent_cat in cat_obj.get_parents %}&nbsp;»&nbsp;<a href="{{parent_cat.get_absolute_url}}">{{parent_cat.name}}</a>{%endfor%}&nbsp;»&nbsp;<span class="here">{{cat_obj.name}}</span></div>
+	            <div style="width:228px; margin-right:20px;" class="col_4" id="search_refine_bar">
+					<div class="search_refine">
+	                	<div class="inner">
+							<div class="refinement category" id="refine_category">
+	                        	<h4>{% trans 'Categories' %}<span class="arrow"></span><span class="icon"></span></h4>
+	                            <div class="refine_attributes">
+	                            	<div class="group">
+	                                    <ul>
+											{%for category_ob in cat_obj.get_parents%}
+	                                        	<li><a href="{{category_ob.get_absolute_url}}">{{category_ob.name}}</a></li>
+	                                        {%endfor%}
+											<li><a href="{{cat_obj.get_absolute_url}}">{{cat_obj.name}}</a></li>
+	                                    </ul>
+									</div>                                                
+								</div>                                            
+	                        </div>
+							{%if manufactures%}
+	                    	<div class="refinement brand has_scroll" id="refine_brand">
+	                        	<h4>{% trans 'Brand' %}<span class="arrow"></span><span class="icon"></span></h4>
+	                            <div class="refine_attributes" style="height: auto;">
+	                            	<div class="group scroll_pane jspScrollable" style="overflow: hidden;height:auto; padding: 0px; width: 228px;" tabindex="0">
+	                                    
+									<div class="jspContainer" style="width: 228px; height: auto;"><div class="jspPane" style="padding: 0px; width: 216px; top: 0px;"><ul>
+										{%for man_obj in manufactures%}
+                                    	<li><input type="checkbox" value="{{man_obj.id}}" class="brand" id="id_brand" onclick="filter_product()" name="brand">{{man_obj.name}}</li>
+										{%endfor%}
+	                                 </ul></div><div class="jspVerticalBar"><div class="jspCap jspCapTop"></div><div class="jspTrack" style="height: auto;"><div class="jspDrag" style="height: auto; top: 0px;"><div class="jspDragTop"></div><div class="jspDragBottom"></div></div></div><div class="jspCap jspCapBottom"></div></div></div></div>                                                
+								</div>  
+	                        </div>  
+	                        {%endif%}
+							{%if price_options%}
+	                    	<div class="refinement brand has_scroll" id="refine_brand">
+	                        	<h4>{% trans 'Price' %}<span class="arrow"></span><span class="icon"></span></h4>
+	                            <div class="refine_attributes" style="height: auto;">
+	                            	<div class="group scroll_pane jspScrollable" style="overflow: hidden; height:auto; padding: 0px; width: 228px;" tabindex="0">
+									<div class="jspContainer" style="width: 228px; height: auto;"><div class="jspPane" style="padding: 0px; width: 216px; top: 0px;"><ul>
+										{%for item in price_options%}
+                                    		<li><input type="checkbox" value="{{item.min}}-{{item.max}}" class="price_filter" id="id_price_filter" onclick="filter_product()" name="price_filter">{{item.min|floatformat:0|moneyfmt}} - {{item.max|floatformat:0|moneyfmt}} ({{item.quantity}})</li>
+										{%endfor%}
+	                                 </ul></div><div class="jspVerticalBar"><div class="jspCap jspCapTop"></div><div class="jspTrack" style="height: auto;"><div class="jspDrag" style="height: auto; top: 0px;"><div class="jspDragTop"></div><div class="jspDragBottom"></div></div></div><div class="jspCap jspCapBottom"></div></div></div></div>                                                
+								</div>  
+	                        </div>  
+	                        {%endif%} 
+							{%if property_objs%}
+	                    	<div class="refinement brand has_scroll" id="refine_brand">
+	                        	<h4>{% trans 'Features' %}<span class="arrow"></span><span class="icon"></span></h4>
+	                            <div class="refine_attributes" style="height: auto;">
+	                            	<div class="group scroll_pane jspScrollable" style="overflow: hidden; height:auto; padding: 0px; width: 228px;" tabindex="0">
+									<div class="jspContainer" style="width: 228px; height: auto;"><div class="jspPane" style="padding: 0px; width: 216px; top: 0px;"><ul>
+										{%for pty in property_objs%}
+                                    		<li><input type="checkbox" value="{{pty.id}}" class="property_ft" id="id_property_filter" onclick="filter_product()" name="price_filter">{{pty.title}}</li>
+										{%endfor%}
+	                                 </ul></div><div class="jspVerticalBar"><div class="jspCap jspCapTop"></div><div class="jspTrack" ><div class="jspDrag" style="height: auto; top: 0px;"><div class="jspDragTop"></div><div class="jspDragBottom"></div></div></div><div class="jspCap jspCapBottom"></div></div></div></div>                                                
+								</div>  
+	                        </div>  
+	                        {%endif%}                                   
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="main col_12 mr_0" style="width:733px;">
+	                <div class="list_wraper">
+	                    <div class="list_controls group">
+	                    	<div class="total_items">
+	                        	Showing <span class="count">{{product_count}}</span>  Items.
+	                        </div>
+	                        <div class="sort">
+	                            <label for="movie_sort">Sort By</label>
+									<form method="post" style="display: inline-block" action="/chic-boutique/set-sorting">
+								        <div style="display:none"><input type="hidden" value="q3fiaKIC5Rz7FV9OOXe5AC7IJlQMNkv4" name="csrfmiddlewaretoken"></div>
+								        <select onchange="filter_product()" id="id_sorting" name="sorting">
+								            <option selected="selected" value="default">Default</option>
+								            <option value="high_to_low">Price High To Low</option>
+								            <option value="low_to_high">Price Low To High</option>
+											<option value="a_to_z">Alphabetically (A-Z)</option>
+											<option value="z_to_a">Alphabetically (Z-A)</option>
+								        </select>
+								        <noscript>
+								            &lt;input type="submit" value="Go!" /&gt;
+								        </noscript>
+								    </form>
+	                        </div>
+	                    </div>
+	                    <div class="featured" style="">
+	                        <h2 style="">{{cat_obj.name}}</h2>
+	                    </div>   
+						<input type="hidden" value="{{cat_obj.id}}" name="category" id="id_category">
+						<input type="hidden" value="1" name="page_val" id="id_page_val">     
+						<input type="hidden" value="{{has_next}}" name="has_next" id="id_has_next">     
+						<input type="hidden" value="true" name="has_load" id="id_has_load">  
+						<span id="ajax_content_loading" class="load-list-items" style="display: none; text-align: center; padding-top: 6em;">
+						 	<img align="..." src="/static/ui/images/global/loading.gif">
+						</span>                    
+	                    <div class="place_list group" id="product_content">
+	                    	{% include 'default/bmshop/include_product_filter.html' %}
+	                    </div>
+						<span style="display:none;text-align:center" class="load-list-items" id="ajax_more_loading">
+						 	<img align="..." src="/static/ui/images/global/loading.gif">
+						</span> 
+					</div>                              
+	            </div> 
+	        </div>
+	    </div>
+<script type="text/javascript">
+
+	function filter_product(page){
+		var dataString='';
+		var manufacture_ids=[];
+		var cat_ids=[];
+		var price_range_ids=[];
+		var property_ids=[];
+		
+	
+		cat_ids.push($('#id_category').val());
+		
+		dataString+="cat_id="+cat_ids;
+		
+		dataString+="&sort="+$('#id_sorting').val()
+		
+		$('.brand:checked').each(function(){
+			manufacture_ids.push($(this).val());
+		});
+		dataString+="&manufacture="+manufacture_ids;
+		$('.price_filter:checked').each(function(){
+			price_range_ids.push($(this).val());
+		});
+		dataString+="&price_range="+price_range_ids;
+		$('.property_ft:checked').each(function(){
+			property_ids.push($(this).val());
+		});
+		dataString+="&property="+property_ids;
+		if(page){
+			dataString+="&page="+page;
+			$('#id_has_load').val(false);
+			$('#ajax_more_loading').css('display','block');
+		}else{
+			$('#product_content').hide();	
+			$('#ajax_content_loading').css('display','block');
+		}	
+
+		$.ajax({
+		type: "GET",
+		url: '{% url 'bmshop_product_filter_products' %}',
+		data: dataString,
+		dataType:'JSON',
+		success: function(data){
+				if(page){
+					$('#ajax_more_loading').hide();
+					$('#id_has_next').val(data.has_next);
+					$('#product_content').append(data.html);
+					$('#id_has_load').val(true);
+				}else{
+					$('#ajax_content_loading').hide();
+					$('#product_content').empty().html(data.html);
+					$('#product_content').show();	
+					$('.count').empty().html(data.product_count);
+				}
+				$('#id_page_val').val(data.page);
+				//window.history.pushState({},"", '?'+dataString);
+				
+			}
+		});	
+	
+     }
+ 
+$(window).scroll(function(){
+    if  ($(window).scrollTop() == $(document).height() - $(window).height()){
+		if($('#id_has_next').val() == 'true' && $('#id_has_load').val() == 'true'){
+       		filter_product($('#id_page_val').val());
+		}	
+    }
+});   
+   
+</script>	
+{% endblock %}

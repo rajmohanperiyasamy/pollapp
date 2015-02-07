@@ -1,0 +1,75 @@
+{% load i18n %}
+<div id="ajax_lb_loading" style="display:none;padding-top:122px;padding-bottom:122px;text-align:center;">
+	<img src="{{STATIC_URL}}ui/images/global/loading-s.gif"><br><p>{% trans 'Saving Property Group' %}</p>
+</div>
+<div class="main_col" id="ajax_content">
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#mform").validate({
+			highlight: function(element, errorClass){$(element).parent('div').parent('div').addClass('field-error');$(element).addClass('error');},
+			unhighlight: function(element, errorClass){$(element).parent('div').parent('div').removeClass('field-error');$(element).removeClass('error');},
+			errorPlacement: function(error, element){},
+		   	rules:{
+		    	name: "required",
+		   	}
+		});
+		
+		
+	});
+	</script>
+	{% if msg %}<div class="message">{{msg}}</div>{% endif %}
+	{% if form.errors %}
+		<div class="messageerror" >
+			<strong>{% trans 'There is a problem with your submission' %}</strong>
+            <ul style="list-style:square;margin-left:20px;">
+           		{% for field in form %}
+           			{% if  field.errors%}<li>{%for error in field.errors%}{{error}}{%endfor%}</li>{% endif %}
+          	 	{% endfor %}
+			</ul>
+	 	</div>
+	{% endif %}
+	<div id="add-new-category" class="modal-form" style="width:560px !important;">
+    <form action="{% url 'staff_bmshop_add_property_group' %}" name="mform" id="mform" method="post" class="add_category">{% csrf_token %}
+    	<div class="fields hform">
+            <div class="field-group">              
+                <div class="fields-head">
+                    <p class="ltxt80">{% trans "Try to add the property that best fits in the product module." %}</p> 
+                </div>             
+                <div class="field text-field">
+                    <div class="label"><label>{% trans 'Group Name' %}<span class="required-field">*</span></label></div>
+                    <div class="value">
+                    	{{ form.name }}
+						{% if group_obj %}<input type="hidden" value="{{group_obj.id}}" name="id" id="id_id">{% endif %}
+					</div>
+                </div>
+				 <div class="field text-field">
+                    <div class="label"><label>{% trans 'Properties' %}</label></div>
+                    <div class="value">
+                    	<select name="properties" class="select-menu fm" onchange="$.colorbox.resize();" data-placeholder="{% trans 'Select Properties' %}" id="id_properties" multiple="multiple">
+						{% for pty_obj in prpty_objs %}
+							<option value="{{pty_obj.id}}" {%for go_obj in group_property_obj%}{%ifequal go_obj.property.id pty_obj.id %}selected{%endifequal%}{% endfor %}>{{pty_obj.name}}</option>
+						{% endfor %}
+						</select>
+					</div>
+                </div> 
+				<div class="field text-field">
+                    <div class="label"><label>{% trans 'Position' %}</label></div>
+                    <div class="value">
+                    	{{ form.position }}
+					</div>
+                </div> 
+                <div class="field text-field">
+                    <div class="label"><label>{% trans 'Categories' %}</label></div>
+                    <div class="value">
+                    	{{form.categories}}
+					</div>
+                </div> 
+            </div>            
+		</div>    
+        <div class="modal-base form-submit group">
+			<button role="button" class="cform-button prime right" type="button" style="margin-right:10px !important;" onclick="save_property_group()"><span class="cform-button-text">{%if group_obj%}{% trans 'Update' %}{%else%}{% trans 'Save' %}{%endif%}</span></button>
+		</div>           
+    </form>
+    <script type="text/javascript" src="{{STATIC_URL}}ui/js/inline.js"></script>
+ </div>
+</div>

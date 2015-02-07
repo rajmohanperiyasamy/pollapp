@@ -1,0 +1,160 @@
+{%extends "staff_base.html"%}
+{% load tabs %}
+{% block navigation %}
+	{% activetab "selmodule" "videos" %}
+	{{ block.super }}
+{% endblock %}
+{% block head %} 
+  
+{%endblock%}
+{%block content%}
+	<div class="page_title group" style="display:block; overflow:hidden; padding:10px 0 20px 0;">
+    	<div class="bread-crumb clearfix">
+            <ul>
+                <li><a href="/staff" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Staff Home</a></li>
+                <li><a href="/staff/videos" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Videos</a></li>
+                <li><a href="/staff/videos/managecategory" style="background:#666;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#FFF">Video Details</a></li>
+              <!--  <li style="background:#eee;font-size:12px; padding:2px 4px; -moz-border-radius:4px;color:#666"></li>   -->
+            </ul>
+        </div> 
+    </div>
+	<div class="page_title group" style="display:block; overflow:hidden;">
+        <h2 style="display:block; margin:0; padding-left:10px; line-height:normal">Video Details</h2> 
+    </div>            
+	<div class="main" style="margin-bottom:20px;">
+    	<div class="left_col">
+        	<h3>Options</h3>
+        	<ul class="side_menus">
+            	<li><a href="/staff/videos" class="side_menu">Videos Home</a>
+            		<ul class="sub">
+                    	<li><a href="#" class="side_menu on">Video Details</a></li>
+                    </ul>
+            	</li>
+                    	<li><a href="/staff/videos/feature" class="side_menu">Featured Videos</a></li>
+                    	<li><a href="/staff/videos/managecategory" class="side_menu">Manage Categories</a></li>
+						<li><a href="/staff/videos/search" class="side_menu">Search</a></li>
+						<li><a href="/staff/videos/seo" class="side_menu">SEO</a></li>
+            </ul>
+        </div> 	
+    	<div class="main_col">
+			<div id="formContainer" class="add_cat clearfix"> 
+ 							<fieldset>
+        	    		
+        	    		<div class="error" style="display:none;background:lightyellow;padding:5px;">
+        	    			<strong style="color:maroon;">Error(s):</strong>
+        	    			<ul style="list-style:square;color:red;margin-left:20px;">
+        	    				<li>Type name required</li>
+        	    			</ul>
+        	    		</div>
+        	    		  {% if form.errors %}
+        	    		 <script>
+		      	    		 	$(function($){
+		      	    		 		document.getElementById('linkForm').style.display = 'block';
+		      	    		 		document.getElementById('linkOption').checked = true;
+		      	    		 		
+		      	    		 	});    
+        	    		 </script>
+									<div class="messageerror" style="background:lightyellow;padding:10px;color:red">
+										<strong>There is a problem with your submission</strong>
+				                        <ul style="list-style:square;margin-left:20px;">
+				               			 {% for field in form %}
+				               			 	{% if  field.errors%}
+				               	            	<li>
+				               	            	{%for error in field.errors%}
+				               	            		{{error}}
+					               	            {%endfor%}
+												</li>
+				           	             {% endif %}
+				              	 		 {% endfor %}
+										</ul>
+             		 		 		 </div>
+								{% endif %}
+        	    		{%if message%}
+        	    		<div id="m" style="padding:10px;background:lightyellow;color:#333;margin-top:5px;">
+        	    			{{message}}
+        	    			<script type="text/javascript">
+        	    			setTimeout('hideMessage()',5 * 1000); //5 sec
+        	    			hideMessage = function(){
+        	    				$("#m").fadeOut();
+        	    			}
+        	    			</script>
+        	    			
+        	    		</div>
+        	    		{%endif%}
+        	    		<script>
+        	    			uploadOption = function(option){
+        	    			var linkForm = document.getElementById('linkForm')
+        	    				if(option.value=='addvideolink')
+        	    				{
+        	    					linkForm.style.display = '';
+        	    				}else if(option.value=='addvideo'){
+        	    					linkForm.style.display = 'none';
+        	    					window.location.href = '/staff/videos/upload/';
+        	    				}
+        	    			}
+        	    			</script>
+        	    		<form action="/staff/videos/edit/" name="mform" id="mform" method="post" enctype="multipart/form-data" class="add_category">{% csrf_token %}
+ 						<input type="hidden" name="vid" value="{{video.id}}">
+ 						<fieldset>
+        	    		<div class="title"><h2>Video Details</h2></div>
+        	    		<div class="error" style="display:none;background:lightyellow;padding:5px;">
+        	    			<strong style="color:maroon;">Error(s):</strong>
+        	    			<ul style="list-style:square;color:red;margin-left:20px;">
+        	    				<li>Type name required</li>
+        	    			</ul>
+        	    		</div>
+        	    		 {% if form.errors %}
+									<div class="messageerror" style="background:lightyellow;padding:10px;color:red">
+										<strong>There is a problem with your submission</strong>
+				                        <ul style="list-style:square;margin-left:20px;">
+				               			 {% for field in form %}
+				               			 	{% if  field.errors%}
+				               	            	<li>
+				               	            	{%for error in field.errors%}
+				               	            		{{error}}
+					               	            {%endfor%}
+												</li>
+				           	             {% endif %}
+				              	 		 {% endfor %}
+										</ul>
+             		 		 		 </div>
+								{% endif %}
+        	    		{%if message%}
+        	    		<div id="m" style="padding:10px;background:lightyellow;color:#333;margin-top:5px;">
+        	    			{{message}}
+        	    			<script type="text/javascript">
+        	    			setTimeout('hideMessage()',5 * 1000); //5 sec
+        	    			hideMessage = function(){
+        	    				$("#m").fadeOut();
+        	    			}
+        	    			</script>
+        	    			<script>
+        	    				if(!{{token}}){
+        	    					window.location.href = '/staff/videos/';
+        	    				}
+        	    			</script>
+        	    		</div>
+        	    		{%endif%}
+        	    		<div><iframe name="mv" border="0" src="{{video.get_video_url}}" width="500px" height="400px;" style="padding:5px;	"></iframe></div>
+			</div>
+        	    				 		
+           		 		  	<dl class="horizontal">
+                  		<p>	<dt><label for="cat_name"><b>Title:</b>&nbsp;&nbsp;{{video.title}}</label></dt></p>
+          					
+          				<p>	<dt><label for="cat_name"><b>Youtube Link:</b>&nbsp;&nbsp;{{video.get_video_url}}</label></dt></p>
+          				<p>	<dt><label for="cat_name"><b>Category:</b>&nbsp;&nbsp;{{video.category}} </label></dt> </p>
+                        <p> <dt><label for="keywords"><b>Tags:</b>&nbsp;&nbsp;{%for kw in video.keywords.all%}{{kw}}{%endfor%} </label></dt></p>
+                        <p> <dt><label for="description"><b>Description:</b> &nbsp;&nbsp;{{video.description}} </label></dt></p>
+                            
+                            </div>
+                            </dd> 
+                            </dl>                                           
+           			 </fieldset>                              
+				</form> 
+				                                      
+           			 </fieldset>                              
+				
+        	</div>
+
+        </div> 
+       {%endblock%}

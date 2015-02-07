@@ -1,0 +1,346 @@
+{% extends base %}
+{% load truncate_filter %}
+{% load tabs %}
+{% load thumbnail %}
+{% load i18n %}
+{% load modulotag %}
+{% load comparison %}
+{% load ds_utils %}
+{% block pagetitle %}{% seo_format_tag module='Classifieds' title=classified.seo_title code='DT' category=category.name as seo_meta_title %}{{seo_meta_title}} {% endblock %}
+{% block meta %}
+	<meta name="description" content="{{classified.description|striptags|truncatewords:'30'}}" />
+
+<!-- Facebook-->
+	<meta property="og:type" content="business.business"/>
+	<meta property="og:url" content="{{globalsettings.website_url}}{{classified.get_absolute_url}}"/>
+	<meta property="og:title" content="{{ classified.title }}"/>
+	{% if classified.album.get_gallery_uploaded_images.all.0.photo %}<meta property="og:image" content="{{globalsettings.website_url}}{{ classified.album.get_gallery_uploaded_images.all.0.photo.url }}"/>{% endif %}
+	<meta property="og:site_name" content="{{globalsettings.domain}}"/>
+	<meta property="og:description" content="{{classified.description|striptags|truncatewords:200}}"/>
+<!-- Twitter-->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:url" content="{{globalsettings.website_url}}{{classified.get_absolute_url}}">
+	<meta name="twitter:title" content="{{ classified.title }}">
+	<meta name="twitter:description" content="{{classified.description|striptags|truncatewords:200}}">
+	{% if classified.album.get_gallery_uploaded_images.all.0.photo %}<meta name="twitter:image" content="{{globalsettings.website_url}}{{ classified.album.get_gallery_uploaded_images.all.0.photo.url }}">{% endif %}
+	<meta name="twitter:domain" content="{{globalsettings.domain}}">
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{STATIC_URL}}ui/css/colorbox.css" type="text/css" />
+<script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+<script src="{{STATIC_URL}}themes/js/fxslider.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery/jquery.validate.min.js"></script>
+<script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/get_report_data.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	bids.push({{classified.id}});
+	details_pages(bids);
+	});
+	
+	</script>
+{% endblock %}
+{% block navigation %}
+	{% activetab "topnav" "classifieds" %}
+	{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+	{% include 'default/classifieds/part_search.html' %}
+	<ul class="bRdCrB" itemscope itemtype="http://schema.org/WebPage">
+		 <li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb">
+            <a itemprop="url" href="/classifieds/"><span itemprop="title">{% trans "Classifides" %}</span></a>
+            <span class="sPrTr"></span>
+        </li>
+		{% if classified.category.parent %}<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb"><a itemprop="url" href="{{classified.category.parent.get_absolute_url}}"><span itemprop="title">{{classified.category.parent}}</span></a>  <span class="sPrTr"></span></li>{% endif %}
+		{% if classified.category %}<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb"><a itemprop="url" href="{{classified.category.get_absolute_url}}"><span itemprop="title">{{classified.category}}</span></a><span class="sPrTr"></span></li>{% endif %}
+		<li itemscope itemtype="http://www.data-vocabulary.org/Breadcrumb" class="aCtV"><span itemprop="title">{{classified.title}}</span></li>
+	</ul>
+	<div class="row-fluid">
+		<div class="main span8">
+			<section class="sCn pD15 rLvE" itemscope itemtype="http://schema.org/LocalBusiness">
+				<div class="pStN-rB ">
+					{% if classified.payment.share_buttons == 'Y' %}
+                        {% with classified as object %}
+                        {% include 'default/social-share-links.html' %}
+                        {% endwith %}
+                    {% endif %}
+				</div>
+				<h2 class="mRb0" itemprop="name">{{classified}}</h2>
+				<p class="cLr-gRy"><span class="fS12">Posted by <a href="{% url 'user_profile' classified.created_by.profile_slug %}" class="cLr-dRk">{{classified.created_by.display_name}}</a></span><span class="sPrTr fS12">{{classified.created_on|timesince}} {% trans "ago" %}</span><meta itemprop="foundingDate" content="{{classified.created_on|get_iso_time_format }}"><!--a href="#" class="sPrTr fS12 cLr-lTbLu hide">{% trans "View all ads" %}</a--></span></p>
+				<div class="row-fluid">
+					<div class="span6 pDl0" itemscope itemtype="http://schema.org/Place">
+						<span class="ib mRr10">
+							<span class="cLr-dRk" style="font-size:18px;font-weight:200;display:block;margin-bottom:5px;" itemprop="telephone">{{classified.phone_no}}</span>
+							<!--a href="#" class="fS12 cLr-lTgRy">{% trans "SMS this ad to me" %}</a-->
+						</span>
+						<a href="{% url 'classifieds_contact' %}?cid={{classified.id}}" data-target="#reply_to_ad" id="contact_from" title="Reply to this Ad" class="btn btn-primary ib btn-medium"><i aria-hidden="true" class="bUi-iCn-rPl-rT-12"></i> {% trans "Reply to this Ad" %}</a>
+					</div>
+				</div>
+			</section>
+			<div class="row-fluid">
+				<div class="{% if classified.payment.images == 'Y' and classified.get_first_classified_photo %}span6{% else %}span12{% endif %}">
+					<section class="sCn">
+                        <div class="sCn-tTl">
+                            <h4><span>{% trans "Details" %}</span></h4>
+                        </div>
+                        <div class="dTs-cRd">
+                        	<dl class="dl-horizontal" itemscope itemtype="http://schema.org/LocalBusiness">
+                        		{% if classified.classified_price %}
+								<dt><span class="dT-iN">{% trans "Price" %}</span></dt>
+                        		<dd><span class="fS18 cLr-bLk" itemprop="priceRange">{{globalsettings.currency}} {{classified.classified_price|floatformat:2}}</span></dd>
+								{% endif %}
+								{% for attvalue in attrvalus %}
+									{% if attvalue.value %}
+	                                	<dt><span class="dT-iN">{{attvalue.attribute}}</span></dt>
+										<dd>{{attvalue.value}}</dd>
+									{% endif %}
+	                            {% endfor %}
+							</dl>
+							<div class="mRb20">
+								<h5>{% trans "Contact Information" %}</h5>
+								<dl class="dl-horizontal"  itemscope itemtype="http://schema.org/Person">
+									<dt><span class="dT-iN">{% trans "Contact Name" %}</span></dt>
+	                        		<dd itemprop="name">{{classified.created_by.display_name}}</dd>
+                                    {% if classified.address.telephone1 %}
+    									<dt><span class="dT-iN">{% trans "Phone No" %}</span></dt>
+    	                        		<dd itemprop="telephone">{{classified.address.telephone1}}</dd>
+                                    {% endif %}
+									<dt><span class="dT-iN">{% trans "Email ID" %}</span></dt>
+	                        		<dd itemprop="email">{{classified.address.email}}</dd>
+									{% if classified.address.website %}
+										<dt><span class="dT-iN">{% trans "Website" %}</span></dt>
+										<dd><a href="{{classified.address.website}}" target="_blank">{{classified.address.website}}</a></dd>
+									{% endif %}	
+								</dl>
+							</div>	
+							<div class="mP-wPr oTsT-hRz mRb20">
+								{% with classified.address as address %}
+                                <div class="mP-iN">
+                                    <img class="Rlb" src="https://maps.googleapis.com/maps/api/staticmap?center={{address.lat}},{{address.lon}}&zoom={{ address.zoom }}&size=438x86&markers={{address.lat}},{{address.lon}}&sensor=false" style="width:100%;" />
+                                    <div class="mP-aCtN">
+                                        <a href="javascript:void(0);" title="{% trans 'Directions' %}" onclick="init_get_direction('{{address.id}}','{{classified.id}}','classifieds','{% url 'locality_map_ajax_get_direction' %}');" role="button" class="btn btn-large btn-light"><i aria-hidden="true" class="bUi-iCn-dRt-16"></i></a>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                                <ul class="iCnC-lSt iCn16 tHcL mRb0 pD15 hide">
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-mP-mKr-12"></i>
+                                    </li>
+                                    <li class="iCnC-lSt-iTm">
+                                        <i class="bUi-iCn-cAl-12"></i>
+                                    </li>
+                                    <li class="iCnC-lSt-iTm">
+                                        <i aria-hidden="true" class="bUi-iCn-tAg-12"></i>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mRb20">
+								<h5>{% trans "Description" %}</h5>
+								{% if classified.description|length|get_digit:"-1" > 600 %} 
+									<div class="entry-body" id="less_synopsis">
+									    <span class="dSc sMl cLr-dRk mRb10" itemprop="description">{% autoescape off %}{{ classified.description|truncatechars:601 }}{% endautoescape %}<a onclick="show_toggle()" href="javascript:void(0)">{% trans 'More' %}</a></span>
+									</div>
+									<div class="entry-body" id="more_synopsis" style="display:none;">
+									    <span class="dSc sMl cLr-dRk mRb10">{% autoescape off %}{% spaceless %}{{ classified.description|rstrip_cont }}{% endspaceless %}{% endautoescape %}<a onclick="show_toggle()" href="javascript:void(0)">{% trans 'Less' %}</a></span>
+									</div>
+								{% else %}
+									<div class="entry-body" id="all_synopsis">
+										<span class="dSc sMl cLr-dRk mRb10" itemprop="description">{% autoescape off %}{{ classified.description }}{% endautoescape %}</span>
+									</div>
+								{% endif %}  
+							</div>										
+                        </div>
+                    </section>
+				</div>
+				{% if classified.payment.images == 'Y' and classified.album.get_gallery_uploaded_images %}
+				<div class="span6">
+					<section class="sCn pD0">
+						<div class="fTrD-bL tMbpGrpRw mRb0 sLdR-mDm mDa-75 aDpTv cTrL-rT">
+                            <div class="fTrD-bL-iN">
+                                <ul id="tMbpGrpRw" class="fTrD-iTmS fxslider" itemscope itemtype="http://schema.org/ImageObject">
+									{% for banner in classified.album.get_gallery_uploaded_images %}
+                                    <li class="fTrD-iTm bS-bRdR" data-src="{{banner.photo.url}}">
+                                        <figure class="fTrD-mDa">
+                                            <a class="bUi-tMb-wPr fLxiMgH" href="#">
+                                                <span class="bUi-tMb">
+                                                    <span class="bUi-tMb-pRpL">
+                                                        <span class="bUi-tMb-cLp">
+                                                            <span class="bUi-tMb-cLp-iN">
+																{% if banner.photo %}
+	                                                                <img class="mDa-oT" src="{% thumbnail banner.photo 0x292 %}" alt="{% trans 'Classifieds Photo'%}" itemprop="thumbnail"/><meta itemprop="caption" content="{{banner.caption}}">
+	                                                                <span class="vRtL-aLn"></span>
+																{% else %}
+																	<span class="iCn-bRdR50 oP25" title="{{classified.title}}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 cLr-gRy ib"></i></span> <div class="vRtL-aLn"></div>
+																{% endif %}
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </figure> <!-- /.TrD-mDa --> 
+                                    </li> <!-- /.fTrD-iTm -->
+									{% endfor %}
+                                </ul> <!-- /.fTrD-iTms -->
+                            </div><!-- /.fTrD-bL-iN -->		                        	 
+                        </div>
+                        <div class="fTrD-bL tMbpGr cTrL-dFt mRb10">
+                            <div class="fTrD-bL-iN">
+                                <div id="tMbpGr" itemscope itemtype="http://schema.org/ImageObject">
+									{% for banner in classified.album.get_gallery_uploaded_images %}
+                                    <a href="javascript:void(0)" class="bUi-tMb-wPr tMb-100 fLxiMgH bS-bRdR" data-slide-index="{{forloop.counter0}}">
+                                        <span class="bUi-tMb">
+                                            <span class="bUi-tMb-pRpL">
+                                                <span class="bUi-tMb-cLp">
+                                                    <span class="bUi-tMb-cLp-iN">
+														{% if banner.photo %}
+	                                                        <img alt="" src="{% thumbnail banner.photo 0x60 %}" class="mDa-oT" itemprop="thumbnail"/><meta itemprop="caption" content="{{banner.caption}}">
+	                                                        <span class="vRtL-aLn"></span>
+														{% else %}
+															<span class="iCn-bRdR50 oP25" title="{{classified.title}}"><i aria-hidden="true" class="bUi-iCn-cLfD-24 cLr-gRy ib"></i></span> <div class="vRtL-aLn"></div>
+														{% endif %}	
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </a>
+									{% endfor %}
+                                </div>
+                            </div><!-- /.fTrD-bL-iN -->		                        	 
+                        </div>
+					</section>
+				</div>
+				{% endif %}
+			</div>
+			<div class="row-fluid mRt20" style="{% if classified.payment.comments == 'N' %}display: none;{% endif %}">
+				{% with classified as object %}
+                    {% with 'classifieds' as appname %}
+                        {% include 'comments/include_comment.html' %}
+                    {% endwith %}
+                {% endwith %}
+			</div>
+		</div>
+		{% include 'default/classifieds/part_right.html' %}
+	</div>	
+</div>
+<div id="reply_to_ad" class="modal hide fade mW50" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="myModalLabel" class="mR50">Reply to Ad</h4>
+    </div>
+    <div class="modal-body" id="contact_from_holder">
+        <div style="text-align: center; width: 100%;">
+            <img src="{{STATIC_URL}}ui/images/global/loading.gif" align="...">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-light" type="submit" data-dismiss="modal">Cancel</button>
+        <button id="contactButton" class="btn btn-primary" type="button" onclick="contact_from('{% url 'classifieds_contact' %}?cid={{classified.id}}')">Submit</button>
+    </div>
+</div>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.colorbox.js"></script>    
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery/bm.common.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>  
+<script type="text/javascript" src="{{STATIC_URL}}js/locality/global-map-location.js"></script>
+<script>
+$(document).ready(function(){
+    $.fn.emulateTransitionEnd = function(duration) {
+       return true;
+    };
+    $("a[data-target=#reply_to_ad]").click(function(ev) {
+       ev.preventDefault();
+       target = $(this).attr("href");
+    
+       // load the url and show modal on success
+       $("#reply_to_ad .modal-body").load(target, function() {
+            $("#reply_to_ad").modal("show");
+       });
+    });
+});
+function getLBTitle(that){
+	title= $(that).data("title");
+	if(typeof title == 'undefined'){title = $(that).attr("original-title")}
+	if(typeof title == 'undefined'){title = $(that).attr("title")}
+	return title;
+}
+function show_toggle(){
+	$('#less_synopsis').toggle();
+	$('#more_synopsis').toggle();
+}
+$(function(){
+	var tMbpGrpRwpGr;
+	var tMbpGrpRw;
+	function cLsLpPg(mXsL,sTsL){
+		tMbpGrpRwpGr = $('#tMbpGr').bUiSlider({
+			slideWidth: 56,
+			minSlides: 1,
+			maxSlides: mXsL,
+			slideMargin: 6,
+			infiniteLoop: false,
+			hideControlOnEnd: true,
+			startSlide:sTsL,
+			onSliderLoad:function(){
+                $('.fLxiMgH').setrSpVHeight('mDa-lT');
+            }
+	
+		});
+	};
+	cLsLpPg(8,0);
+	function cLsLpR(sTsLpR){
+		tMbpGrpRw = $('#tMbpGrpRw').bUiSlider({
+			pagerCustom: '#tMbpGr',
+			animatepager: true,
+			infiniteLoop: false,
+			pagerSl:tMbpGrpRwpGr,
+			hideControlOnEnd: true,
+			startSlide:sTsLpR,
+			onSliderLoad:function(){
+				try{$(".fxslider").fxslider();}
+				catch(e){}
+                $('.fLxiMgH').setrSpVHeight('mDa-lT');
+            }
+		});
+	}
+	cLsLpR(0);
+	
+		
+	});
+
+function txtarealimit(txtobj,len){
+	var txtvalue = txtobj.value;
+	var the_len = txtvalue.length;
+	if (the_len > len){
+		txtobj.value = txtvalue.substring(0,len);
+	}
+	txtobj.scrollTop=txtobj.scrollHeight;
+}
+function contact_from(url){
+	var flag = $('#mform').validate().form()
+	var id=0;
+	if(flag){
+		var dataString='respond_name='+encodeURIComponent($('#respond_name').val());
+		dataString+='&respond_email='+encodeURIComponent($('#respond_email').val());
+		dataString+='&respond_phone='+encodeURIComponent($('#respond_phone').val());
+		dataString+='&respond_msg='+encodeURIComponent($('#respond_msg').val());
+		$('#contactButton').addClass('disabled').html('Submitting');
+		$.ajax({
+			type: "POST",
+			url:url,
+			data: dataString,
+			success: function(data){
+					$('#contactButton').html('Submitted');
+					//$('#ajax_content_loading').hide();
+					$('#ajax_content').hide();
+					if(data=='1'){$('#contact_from_holder').replaceWith('<div class="alert alert-success">'+gettext('Your message has been sent to ')+'<b>{{classified.created_by.display_name}}</b></div>').delay(100000);}
+					else{$('#ajax_content').empty().html(data);}
+					setTimeout(function(){$('#reply_to_ad').modal('hide');},3000);
+				}
+			});
+	}
+	else{return false;}
+}
+</script>
+<script>var disqus_identifier  = 'Classifieds-{{classified.id}}';</script>
+{% endblock %}

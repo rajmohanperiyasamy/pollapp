@@ -1,0 +1,86 @@
+ {% load i18n %}
+ <div id="search_attraction" class="module_search" style="position:relative; z-index:100">
+    <form method="get" id="search_from" action="{% url 'attraction_home' %}">
+        <input type="hidden" name="search" value="1">
+        <p class="search_for group">
+            <label for="id_for">{% trans 'Search for' %}</label>
+            <span class="field_wrap search_ex">
+                <input type="text" autocomplete="off" style="width:240px;" name="q" id="id_find" tabindex="1" class="attraction_tips_input ac_input" value="{% if q %}{{q}}{% endif%}">
+                <em class="tips" id="attraction_tips">{% trans 'Park, Zoo ...etc' %}</em>
+            </span>
+        </p>
+        <p class="near">
+            <label for="id_location">{% trans 'Near' %}</label>
+            <span class="field_wrap search_ex">
+                <input type="text" autocomplete="off" name="location" value="{% if location %}{{location}}{% endif%}" class="bus_loc_tips_input ac_input" title="location" id="id_location" tabindex="2">
+                <em class="tips" id="bus_loc_tips">{% trans 'Town,City, etc' %}</em>
+            </span>
+        </p>
+        <p class="submit_btn"><button class="super large blue button" id="search_id" type="submit">
+            <span class="biz_search">{% trans 'Search' %}</span></button></p>                     
+	</form>
+    <div class="clear"></div>
+</div>
+<input type="hidden" id="stop_accdn" value="yes" />
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}ui/js/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#id_location" ).autocomplete({
+		source: '{% url 'auto_suggest_attraction_address' %}',
+	   	select: function(event, ui) {
+ 			$("#id_location").val(ui.item.value);
+			$('#search_from').submit();
+ 	 	}
+	});
+	$( "#id_find" ).autocomplete({
+		source: '{% url 'auto_suggest_attraction' %}',
+	   	select: function(event, ui) {
+ 			$("#id_find").val(ui.item.value);
+			window.location.replace(ui.item.url);
+ 	 	}
+	});
+});
+</script>
+<style type="text/css">
+	/*autosuggest	*/
+.bm-autocomplete {
+	max-height: 160px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	width:89px;
+}
+.bm-menu {
+	list-style:none;
+	display:block;
+	float: left;
+	background:none repeat scroll 0 0 #fff;
+	border-bottom:1px solid #c2c2c2;
+	border:1px solid #bbb;
+	-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	   -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+		 -o-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.bm-menu .bm-menu-item {
+	margin:0;
+	padding: 0;
+	zoom: 1;
+	float: left;
+	clear: left;
+	width: 100%;
+}
+.bm-menu .bm-menu-item a {
+	text-decoration:none;
+	display:block;
+	padding:5px 10px 7px;
+	line-height:18px;
+	zoom:1;
+	color:#666;
+}
+.bm-menu .bm-menu-item a.bm-state-hover,
+.ubm-menu .bm-menu-item a.bm-state-active {
+	background:#f2f2f2;
+	cursor:pointer;
+}
+</style>

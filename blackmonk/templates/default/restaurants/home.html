@@ -1,0 +1,404 @@
+{% extends base %}
+{% load modulotag %}
+{% load truncate_filter %}
+{% load comparison %}
+{% load mptt_comments_tags %}
+{% load tabs %}
+{% load thumbnail %}
+{% load i18n %}
+{% load ds_utils %}
+{% load bm_restaurant_tags %}
+{% block pagetitle %}{% seo_format_tag module='Restaurants' title=seo.seo_title code='MT' as seo_meta_title %}{{seo_meta_title}}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ seo.seo_description }}" />
+{% endblock %}
+{% block head %}
+    <script src="{{STATIC_URL}}themes/js/jquery.bUislider.js"></script>
+    <script src="{{STATIC_URL}}themes/js/bootstrap-collapse.js"></script>
+    <script src="{{STATIC_URL}}themes/js/bootstrap-typeahead.js"></script>
+    
+    <script src="{{STATIC_URL}}themes/js/ios-orientationchange-fix.js"></script>
+    <script src="{{STATIC_URL}}themes/js/jquery.swipebox.js"></script>
+    <script src="{{STATIC_URL}}themes/js/jquery.raty.js"></script>
+    
+    <script type="text/javascript" src="{{STATIC_URL}}js/report_data.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/restaurants/restaurant.js"></script>
+   
+    <script type="text/javascript">
+    var pathname = window.location.pathname;
+    org_path=pathname;
+    $(document).ready(function(){
+        var bids=new Array();
+        var cat='';
+        var category=new Array();
+        var category_name='';
+        
+         $('.bids').each(function(){
+                bids.push($(this).val());
+        
+            });
+            $('.bicts').each(function(){
+                var cat=$(this).val();
+                cat=cat.toString();
+                var a='&';
+                var b='and';
+                category_name=cat.replace(a,b)
+                category.push(category_name);
+                });
+        reports_data(pathname,bids,category,org_path)
+    });
+    </script>
+{% endblock %}
+{% block navigation %}
+    {% activetab "topnav" "restaurants" %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        {% include 'default/restaurants/top-search.html' %}
+        <div class="row-fluid">
+            <div id="browse-options" class="span3 sP12mX767 collapse">
+                <section class="sCn pD200">
+                    <div class="sCn-tTl pD015 mRb10">
+                        <h4><span>{% trans 'Browse by...' %}</span> <a href="{% url 'restaurants_list_restaurants_by_types' %}" class="tXt-lNk rGhT">{% trans 'All Restaurants' %}</a></h4>
+                    </div>
+                    <hr class="mR100">
+                    {% get_restaurants_cuisines as cuisines %}
+                    <ul class="nav nav-list fS12">
+                        <li class="nav-header">{% trans 'Cuisines' %}</li>
+                        <ul class="nav nav-list cMpCt tWcL fOmX767 pDfX pD0 w100mN768">
+                            {% for cusine in cuisines %}
+                                <li><a href="{% url 'restaurants_restaurants_listing' cusine.slug %}">{{cusine.name}}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <!--li><a href="#" class="tXt-lNk cLr-lTgRy">Show More <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 ib"></i></a></li-->
+                    </ul>
+                    <hr class="mR100">
+                    <ul class="nav nav-list fS12">
+                        <li class="nav-header">Prices</li>
+                        <ul class="nav nav-list cMpCt tWcL fOmX767 pDfX pD0 w100mN768">
+                            <li><a href="{% url 'restaurants_list_restaurants_by_types' %}?price_range=25">$<span class="cLr-lTgRy">$$$</span></a></li>
+                            <li><a href="{% url 'restaurants_list_restaurants_by_types' %}?price_range=50">$$<span class="cLr-lTgRy">$$</span></a></li>
+                            <li><a href="{% url 'restaurants_list_restaurants_by_types' %}?price_range=75">$$$<span class="cLr-lTgRy">$</span></a></li>
+                            <li><a href="{% url 'restaurants_list_restaurants_by_types' %}?price_range=100">$$$$</a></li>
+                        </ul>
+                    </ul>
+                    {% get_restaurants_categories as categories %}
+                    {% if categories %}
+                    <hr class="mR100">
+                    <ul class="nav nav-list fS12">
+                        <li class="nav-header">{% trans 'Good For' %}</li>
+                        <ul class="nav nav-list cMpCt tWcL fOmX767 pDfX pD0 w100mN768">
+                            {% for cat in categories %}
+                                <li><a href="{% url 'restaurants_list_restaurants_by_types' %}?food-type={{cat.id}}">{{cat.name}}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <!--li><a href="#" class="tXt-lNk cLr-lTgRy">Show More <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 ib"></i></a></li-->
+                    </ul>
+                    {% endif %}
+                    {% get_restaurants_features as features %}
+                    {% if features %}
+                    <hr class="mR100">
+                    <ul class="nav nav-list fS12">
+                        <li class="nav-header">{% trans 'Features' %}</li>
+                        <ul class="nav nav-list cMpCt tWcL fOmX767 pDfX pD0 w100mN768">
+                            {% for feature in features %}
+                                <li><a href="{% url 'restaurants_list_restaurants_by_types' %}?feature={{feature.id}}">{{feature.name}}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <!--li><a href="#" class="tXt-lNk cLr-lTgRy">Show More <i aria-hidden="true" class="bUi-iCn-aNg-b-aLt-12 ib"></i></a></li-->
+                    </ul>
+                    {% endif %}
+                </section>
+            </div>
+            <div class="span9 sP12mX767">
+                <div class="row-fluid">
+                    <div class="span8 main">
+                        {% get_featured_restaurants limit=20 as featured_restaurants %}
+                        {% with featured_restaurants as featured_restaurants %}
+                        {% if featured_restaurants %}
+                        <section class="sCn pD0">
+                            <div class="fTrD-bL mRb0 fTrD-mDm mDa-50 aDpTv cTrL-dFt">
+                                <div class="fTrD-gR">
+                                    <div class="fTrD-bL-iN">
+                                        <ul id="restaurant-hero-media" class="fTrD-iTmS">
+                                            {% for restaurant in featured_restaurants %}
+                                            <li class="fTrD-iTm bS-bRdR">
+                                                <div class="fTrD-tXt sTrP">
+                                                    <div class="vAlGn">
+                                                        <div class="fTrD-tXt-iN">
+                                                            <h3 class="fTrD-hD w100P"><a href="{{restaurant.get_absolute_url}}" class="ib">{{restaurant.name}}</a> <div class="mRb0 sTr-rT ib pLrT"><span class="rT-oVrL-sCr ib fS16">{{restaurant.ratings}}</span> <span class="sTr-wPr sTr-rT-rD iCn16 rEd mRt-10 cLr-dRk" id="id_fb_rating_{{restaurant.id}}"></span><a href="#" class="cLr-lTgRy fS11 sPrTr ib mRt4 hMp">{% get_mptt_comment_count for restaurant as comment_count %}{{comment_count}} reviews</a></div></h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <script>$('#id_fb_rating_{{restaurant.id}}').raty({ readOnly: true, size: 16, score: {{restaurant.ratings}} });</script>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        <!-- /.fTrD-iTms -->
+                                        <ul id="restaurant-hero-text" class="fTrD-iTmS">
+                                            {% for restaurant in featured_restaurants %}
+                                            <li class="fTrD-iTm bS-bRdR">
+                                                <figure class="fTrD-mDa">
+                                                    <a class="bUi-tMb-wPr fLxiMgW" href="{{restaurant.get_absolute_url}}">
+                                                        <span class="bUi-tMb">
+                                                            <span class="bUi-tMb-pRpL">
+                                                                <span class="bUi-tMb-cLp">
+                                                                    <span class="bUi-tMb-cLp-iN">
+                                                                        <img class="mDa-oT" src="{% if restaurant.logo.logo %}{% thumbnail restaurant.logo.logo 600x0 %}{% endif %}" alt="{{restaurant.name}}">
+                                                                        <span class="vRtL-aLn">
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </a>
+                                                </figure>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        <!-- /.fTrD-iTms --> 
+                                    </div>
+                                    <!-- /.fTrD-bL-iN --> 
+                                </div>
+                                <!-- /.fTrD-gR --> 
+                            </div>
+                            <!-- /.fTrD-bL -->
+                        </section>
+                        {% endif %}
+                        {% endwith %}
+                        <section class="sCn pD15 hide">
+                            <div class="sCn-tTl mRb0">
+                                <h3><span>Best restaurants near Orlando, FL, USA</span></h3>
+                            </div>   
+                        </section>
+                        {% for cuisine in popular_cuisines %}
+                        {% with cuisine.restaurant_cuisines.all as restaurants %}
+                        {% if restaurants %}
+                        {% ifchanged cuisine.name %}
+                        <section class="sCn">
+                            <div class="sCn-tTl">
+                                <h3><span>{{cuisine.name}}</span><a href="{% url 'restaurants_restaurants_listing' cuisine.slug %}" class="tXt-lNk rGhT">{% trans 'View all' %}</a></h3>
+                            </div>
+                        {% endifchanged %}    
+                            <div class="fTrD-bL cRsL mDa-50 tXt-oTsD aDpTv cTrL-tR mRb0">
+                                <div class="fTrD-bL-iN">
+                                    <ul class="fTrD-iTmS {% if restaurants.count > 3 %}fTrD-cRsL{% else %}tHcL pDfX{% endif %}">
+                                        {% for restaurant in restaurants %}
+                                        {% if restaurant.status == 'P' %}
+                                        <li class="fTrD-iTm bDrR0">
+                                            <figure class="fTrD-mDa">
+                                                <a class="bUi-tMb-wPr fLxiMgW" href="{{restaurant.get_absolute_url}}">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="{% if restaurant.logo.logo %}{% thumbnail restaurant.logo.logo 600x0 %}{% else %}{{STATIC_URL}}themes/img/no-image.png{% endif %}" alt="{{restaurant.name}}">
+                                                                    <span class="vRtL-aLn"></span>    
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </figure>  <!-- /.TrD-mDa -->
+                                            <div class="fTrD-tXt">
+                                                <div class="vAlGn">
+                                                    <div class="fTrD-tXt-iN pD10-0-0">
+                                                        <h5 class="fTrD-hD"><a class="tXt-oVrF"  href="{{restaurant.get_absolute_url}}">{{restaurant.name}}</a></h5>
+                                                        <div class="fTrD-mTa fS11 pDt0">
+                                                               <div class="sTr-rT ib mRb0 mNi"><span class="rT-oVrL-sCr ib fS13 cLr-dRk">{{restaurant.ratings}}</span> <span class="sTr-wPr sTr-rT-mNi iCn16 rEd bM-dEv-rTng{{restaurant.id}}" id="id_rating_{{restaurant.id}}"></span><a href="#" class="cLr-lTgRy fS11 sPrTr ib mRt4">{% get_mptt_comment_count for restaurant as comment_count %}{{comment_count}} reviews</a></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- /.TrD-tXt -->   
+                                            <script>$('.bM-dEv-rTng{{restaurant.id}}').raty({ readOnly: true, size: 12, score: {{restaurant.ratings}} });</script>                                        
+                                        </li>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% ifchanged cuisine.name %}    
+                        </section>
+                        {% endifchanged %}  
+                        {% endif %}
+                        {% endwith %}
+                        {% endfor %}
+                    </div><!--main-->
+                    <aside class="sD-bR span4">
+                        <div>
+                            <section class="sCn">
+                                <div class="sCn-tTl">
+                                    <h3><span>{% trans 'Recent photos' %}</span></h3>
+                                </div>
+                                <ul class="tMbS tHcL pDfX pDmNi mRb0">
+                                    {% for photo in latest_photos %}
+                                    <li>
+                                        <a class="bUi-tMb-wPr tMb-100 fLxiMgH swipebox" href="{{photo.photo.url}}">
+                                            <span class="bUi-tMb">
+                                                <span class="bUi-tMb-pRpL">
+                                                    <span class="bUi-tMb-cLp">
+                                                        <span class="bUi-tMb-cLp-iN">
+                                                            <img class="mDa-oT" src="{% thumbnail photo.photo 600x0 %}" alt="{{photo.title}}" title="{{photo.title}}">
+                                                            <span class="vRtL-aLn">
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <footer class="sCn-fTr mRb-20 tXt-cTr sCn-fTr-bR"><a href="#" class="tXt-lNk">View more Photos <i aria-hidden="true" class="bUi-iCn-aNg-rT-aLt-12 ib"></i></a></footer>
+                            </section>    
+                        </div>
+                        <!-- div>
+                            <section class="tXt-cTr pD0 bNr-aD"> 
+                                <img width="300" height="300" src="http://pagead2.googlesyndication.com/simgad/15356456156878831271"> 
+                            </section>
+                        </div>
+                        <div>
+                            <section class="sCn mDa-lT-mNi">
+                                <div class="sCn-tTl sCn-tTl-bR">
+                                    <h3><span>Offers</span></h3>
+                                </div>
+                                <ul class="mDa-lT mDa-oT-lT">
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr bUi-tMb-40 tMb-100 fLxiMgH bS-bRdR" href="#">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh6.ggpht.com/2GnIQIokhqJ2nLc39KeHDgil0zWQNWiFhtqy_Sv0HkHDhijEugw1uksH78rCCA=w315-h244-p" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div class="mDa-bDy">
+                                                <h5 class="mDa-hD" title="#"><a class="tXt-oVrF"  href="#">15% off On All Our Standard Rates</a></h5>
+                                                <div class="mDa-dTa mRt4">
+                                                   <p class="fS12 cLr-gRy">Florida Transmission Repair</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr bUi-tMb-40 tMb-100 fLxiMgH bS-bRdR" href="#">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh4.ggpht.com/fFucxk6_S_LbeCwn4ix-GvVRHg3ibMskohvj2MgcjW3ZzHxH4zCruZGcL0Q5EWE=w315-h244-p" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a> 
+                                            </div>
+                                            <div class="mDa-bDy">
+                                                <h5 class="mDa-hD" title="#"><a class="tXt-oVrF"  href="#">$10 off any purchase of $40 or more</a></h5>
+                                                <div class="mDa-dTa mRt4">
+                                                    <p class="fS12 cLr-gRy">California Pizza Kitchen</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr bUi-tMb-40 tMb-100 fLxiMgH bS-bRdR" href="#">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh4.googleusercontent.com/-3Q47sZGLagM/UKOcQL4KH1I/AAAAAABjaDs/S68Bk63uWSo/w638-h624-no/photo.jpg" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a> 
+                                            </div>
+                                            <div class="mDa-bDy">
+                                                <h5 class="mDa-hD" title="#"><a class="tXt-oVrF"  href="#">Free Solo Appetizer when you purchase an entree</a></h5>
+                                                <div class="mDa-dTa mRt4">
+                                                    <p class="fS12 cLr-gRy">Falafel Moroccan Restaurant
+    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr bUi-tMb-40 tMb-100 fLxiMgH bS-bRdR" href="#">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh6.googleusercontent.com/-3-lxAB2iz0o/Tnot-tY6K4I/AAAAAAAAAEo/Ljfm2sbgj0s/w816-h612-no/Godfather%27s+Pizza" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a> 
+                                            </div>
+                                            <div class="mDa-bDy">
+                                                <h5 class="mDa-hD" title="#"><a class="tXt-oVrF"  href="#">$3 off a large pizza</a></h5>
+                                                <div class="mDa-dTa mRt4">
+                                                    <p class="fS12 cLr-gRy">Godfather's Pizza</p>
+    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mDa">
+                                        <div class="mDa-iN">
+                                            <div class="mDa-wPr"> 
+                                                <a class="bUi-tMb-wPr bUi-tMb-40 tMb-100 fLxiMgH bS-bRdR" href="#">
+                                                    <span class="bUi-tMb">
+                                                        <span class="bUi-tMb-pRpL">
+                                                            <span class="bUi-tMb-cLp">
+                                                                <span class="bUi-tMb-cLp-iN">
+                                                                    <img class="mDa-oT" src="https://lh5.googleusercontent.com/-jktdZl4Qjgg/UDTN6YdR1MI/AAAAAABSoEU/tBkytspKfPs/w1006-h707-no/LIDS" alt="">
+                                                                    <span class="vRtL-aLn">
+                                                                    </span>
+                                                                </span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </a> 
+                                            </div>
+                                            <div class="mDa-bDy">
+                                                <h5 class="mDa-hD" title="#"><a class="tXt-oVrF"  href="#">$5 off $30 purchase</a></h5>
+                                                <div class="mDa-dTa mRt4">
+                                                    <p class="fS12 cLr-gRy">Lids</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <footer class="sCn-fTr mRb-20 tXt-rT sCn-fTr-bR"><a href="#" class="tXt-lNk">View more Offers<i aria-hidden="true" class="bUi-iCn-aNg-rT-aLt-12"></i></a></footer>
+                            </section>
+                        </div -->
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+{% endblock %}            

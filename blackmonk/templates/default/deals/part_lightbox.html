@@ -1,0 +1,57 @@
+{% load i18n %}
+<input type="hidden" name="hashkey" id="id_hashkey" value="{{ scaptcha.hash }}" />
+
+<!-- Lightbox code begin -->   
+<div class="lightbox_outer" >
+<div class="lightbox_content_holder">
+<a href= "#" class="call_lightbox lb_close fix_ie6png enlarge click_pvnt"></a>
+<div class="lightbox_content">
+<!-- Put all your contents only inside this "lightbox_content" div -->
+
+
+<!-- Tell a friend begin -->
+<input type="hidden" id="as_exec_respond" value = "yes" />
+<div id="respond_to_div" class="allhide">
+<input type="hidden" id="content_id" name="content_id" value = "{{ deal.id }}" />
+<input name="respond_hashkey" id="respond_hashkey" value="" type="hidden" />	
+<div class="tellfriend" style="padding:0px;">
+    <h3>{% trans 'Tell a Friend' %} </h3>
+	<form id="respond_form" method="get" action="/deals/ajax_tell_a_friend/">
+		<label for="from_name">{% trans 'Your Name:' %}</label>
+		<p>
+			<input type="text" maxlength="15" autocomplete="off" size="30" name="from_name" id="from_name" class="input_text">
+    	</p>
+
+		<label for="to_name">{% blocktrans %}Your Friend's Name:{% endblocktrans %}</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="to_name" id="to_name" class="input_text">
+		</p>
+		
+		<label for="to_email">{% blocktrans %}Your Friend's Email:{% endblocktrans %}</label>
+		<p>
+			<input type="text" maxlength="50" size="30" name="to_email" id="to_email" class="input_text">
+    	</p>
+		
+	
+		<label>{% trans 'Subject:' %}</label>
+		<p style="width:410px" class="field">{{ globalsettings.domain }} - <span id="keyup_name"><b>{% trans 'Your Name' %}</b></span> {% trans 'sent you a Hot Deal from' %} {{ globalsettings.domain }} </p>
+    
+		<label for="msg">{% trans 'Message:' %}</label>
+        <textarea rows="5"  name="msg" id="msg" cols="30" class="medium field"></textarea>
+		
+   		<div class="form_footer">
+			<button type="submit" class="button green super large respond_submit"><span>{% trans 'Submit' %}</span></button>
+			<p id="respondstatus"></p>
+		</div>
+    </form>
+</div>
+</div>
+<!-- Tell a friend end -->
+
+
+<!-- put your contents only iside "lightbox_content" div -->		
+</div>			
+</div>
+</div>
+<div class="lightbox_background"></div>
+<!-- Lightbox code end -->
