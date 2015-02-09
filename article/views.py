@@ -263,7 +263,7 @@ def download(request,pk=0):
     opener = urllib.urlopen(url);  
     mimetype = "application/octet-stream"
     response = HttpResponse(opener.read(), mimetype=mimetype)
-    response["Content-Disposition"]= "attachment; filename=aktel.pdf"
+    response["Content-Disposition"]= "attachment; filename=aktel.rar"
     return response 
 #    doc = Document.objects.distinct().get(id=pk)
 #    fname=doc.docfile.name
