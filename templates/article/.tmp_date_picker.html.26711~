@@ -1,0 +1,46 @@
+{% extends "home.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script>
+  $(function() {
+  	var pickerOpts = {
+        dateFormat:"yy-mm-dd"
+    };
+    $( "#datepicker" ).datepicker(pickerOpts);
+  });
+   $('#dialog_link, ul#icons li').hover(
+        function() { $(this).addClass('ui-state-hover'); }, 
+        function() { $(this).removeClass('ui-state-hover'); }
+    );
+  </script>
+  
+<div>
+	<br><br>
+	<center><b></>please select the date</b></center>
+	
+</div>
+<div>
+	<br>
+<form action="/report/" method="POST">{% csrf_token %}
+<p>&nbsp;&nbsp;Date: <input type="text" name="date" required="true" id="datepicker" readonly="readonly"></p>	
+<div>&nbsp;
+<select name="select_client">
+	<option value="0">All clients</option>
+	{%for client in clients%}
+  
+  <option value="{{client.id}}">{{client.first_name}}</option>
+{% endfor %}
+</select>
+</div>
+<br>
+  &nbsp;&nbsp;<input type="submit" value="Submit">
+  </form>
+  </div>
+{% endblock %}
+
+

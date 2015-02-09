@@ -9,9 +9,9 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from django.views.generic.base import TemplateView
 from django.template import Context
-import random, re, os, datetime, time, urllib, urllib2
+import random, re, os, datetime, time, urllib
 from bs4 import BeautifulSoup
-
+from django.contrib.auth.decorators import login_required
 from article.models import Clients
 #from article.models import Person,Group,Membership
 #from article.models import Author
@@ -133,7 +133,7 @@ def contact(request):
     return render(request, 'contact.html', {
         'form': form,
     })
-    
+@login_required(login_url='/admin/')
 def calculate(request):
     data={}
     client = Clients.objects.all()
@@ -141,7 +141,7 @@ def calculate(request):
     data['client'] = client
     return render_to_response('calculate.html',data,context_instance=RequestContext(request))
 
-    
+@login_required(login_url='/admin/') 
 def clients_data(request,pk=0):
     data = {}
     
@@ -257,10 +257,10 @@ def download(request,pk=0):
     doc = Document.objects.distinct().get(id=pk)
     fname=doc.docfile.name
     print"SSSSSSsssss",fname
-    import urllib2;   
+    import urllib;   
     url ="http://192.168.1.59:8005/media/"+fname
     print"url",url
-    opener = urllib2.urlopen(url);  
+    opener = urllib.urlopen(url);  
     mimetype = "application/octet-stream"
     response = HttpResponse(opener.read(), mimetype=mimetype)
     response["Content-Disposition"]= "attachment; filename=aktel.pdf"
@@ -283,7 +283,13 @@ def download(request,pk=0):
 #    p.showPage()
 #    p.save()
 #    return response
-
+#def download_file(request,pk=0):
+#    global dump
+#    fname=doc.docfile.name
+##    url = "http://randomsite.com/file.gz"
+#    url ="http://192.168.1.59:8005/media/"+fname
+#    file = requests.get(url, stream=True)
+#    dump = file.raw
 
 
 
